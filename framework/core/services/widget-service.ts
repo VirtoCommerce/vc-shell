@@ -1,5 +1,6 @@
-import { Component, ComputedRef, Ref } from "vue";
+import { Component, ComputedRef, Ref, shallowReactive } from "vue";
 import type { BladeDescriptor } from "@core/blade-navigation/types";
+import type { Severity } from "@core/types/severity";
 import { cloneDeep } from "lodash-es";
 import { createBladeScopedRegistry, createPreregistrationBus } from "@core/services/_internal";
 
@@ -12,6 +13,32 @@ export interface IWidgetEvents {
 export interface IExposedWidget {
   id?: string;
   [key: string]: unknown;
+}
+
+export interface IWidgetAlertAction {
+  label: string;
+  run: () => void | Promise<void>;
+}
+
+export interface IWidgetAlert {
+  id: string;
+  severity: Severity;
+  /** Already translated */
+  text: string;
+  /** Secondary line: time, reason */
+  meta?: string;
+  /** Row click */
+  onOpen?: () => void;
+  action?: IWidgetAlertAction;
+}
+
+type AlertsSource = Ref<IWidgetAlert[]> | ComputedRef<IWidgetAlert[]>;
+
+/** Props of a custom alerts popup component (`alertsComponent`) */
+export interface IWidgetAlertsComponentProps {
+  alerts: IWidgetAlert[];
+  /** Closes the popup, e.g. after opening a blade from it */
+  close: () => void;
 }
 
 export interface IWidgetScope {
@@ -32,6 +59,10 @@ export interface IWidgetTrigger {
   onRefresh?: () => void | Promise<void>;
   /** Disabled state — static or reactive */
   disabled?: Ref<boolean> | ComputedRef<boolean> | boolean;
+  /** Live alerts shown in the widget's popup */
+  alerts?: AlertsSource;
+  /** Renders the popup content instead of the default rows; receives IWidgetAlertsComponentProps */
+  alertsComponent?: Component;
 }
 
 /** Fields present only on headless widgets (when `headless` is set on IWidget) */
@@ -42,6 +73,8 @@ export interface IHeadlessWidgetFields {
   disabled?: Ref<boolean> | ComputedRef<boolean> | boolean;
   onClick?: () => void;
   onRefresh?: () => void | Promise<void>;
+  alerts?: AlertsSource;
+  alertsComponent?: Component;
 }
 
 export interface IWidget {
@@ -88,7 +121,8 @@ export interface IWidgetService {
 
 // --- External widgets (module-level, independent of service instances) ---
 
-const externalWidgets = new Map<string, IExternalWidgetRegistration>();
+// Reactive: a module that loads after a blade opened still reaches that blade
+const externalWidgets = shallowReactive(new Map<string, IExternalWidgetRegistration>());
 
 function normalizeTargetBlades(targetBlades?: string[]): string[] | undefined {
   return targetBlades?.map((bladeId) => bladeId.toLowerCase());

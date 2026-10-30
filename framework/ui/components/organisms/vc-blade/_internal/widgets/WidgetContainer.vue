@@ -3,16 +3,18 @@
     v-if="visibleWidgets.length > 0 && isMobile"
     :widgets="visibleWidgets"
     :blade-id="normalizedBladeId"
+    :blade-name="rawBladeName"
   />
   <WidgetContainerDesktop
     v-else-if="visibleWidgets.length > 0"
     :widgets="visibleWidgets"
     :blade-id="normalizedBladeId"
+    :blade-name="rawBladeName"
   />
 </template>
 
 <script setup lang="ts">
-import { computed, inject, onMounted, onUnmounted } from "vue";
+import { computed, inject, onMounted, onUnmounted, watch } from "vue";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { useWidgets } from "@core/composables/useWidgets";
 import WidgetContainerDesktop from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainerDesktop.vue";
@@ -37,6 +39,7 @@ const descriptor = inject(BladeDescriptorKey, undefined);
 
 // ── External widget auto-resolution ─────────────────────────────────────────
 
+const rawBladeName = computed(() => descriptor?.value.name ?? "");
 const bladeName = computed(() => descriptor?.value.name?.toLowerCase() ?? "");
 const registeredExternalWidgetIds = new Set<string>();
 
@@ -98,6 +101,11 @@ function unregisterExternalWidgets() {
 }
 
 onMounted(registerExternalWidgets);
+// Remote modules can register their widgets after the blade opened
+watch(
+  () => [widgetService.getAllExternalWidgets().length, widgetService.getWidgets(bladeName.value).length],
+  registerExternalWidgets,
+);
 onUnmounted(unregisterExternalWidgets);
 
 // ── Standard widget rendering ───────────────────────────────────────────────

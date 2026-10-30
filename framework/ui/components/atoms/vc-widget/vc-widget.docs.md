@@ -111,6 +111,14 @@ Badge values above 99 are automatically displayed as "99+".
 | `--widget-border-radius`        | `8px`                 | Corner radius             |
 | `--widget-focus-ring-color`     | `var(--primary-300)`  | Focus ring color          |
 
+## Alert dot and badge highlight
+
+Inside a blade widget strip, `VcWidget` reads per-widget render state provided by the blade (it renders exactly as before elsewhere):
+
+- **Alert dot**: a small dot on the icon (`.vc-widget__alert-dot--danger|--warning|--info`), coloured from the highest alert severity. The dot itself is `aria-hidden`; the widget gets `aria-haspopup="dialog"`, `aria-expanded` for the alert popup, and an `aria-describedby` text such as "2 need attention".
+- **Badge change highlight**: when `value` changes, the badge pulses for about 1.5s (`.vc-widget__badge--changed`). A first change within 2s of mount counts as the initial load and does not pulse. Only inside a blade; a standalone `VcWidget` never pulses. The pulse is disabled under `prefers-reduced-motion`.
+- **Edit mode**: while the widget layout is being edited, the badge and dot are hidden and clicks are blocked.
+
 ## Accessibility
 
 - Renders with `role="button"` and `tabindex="0"` for keyboard interaction

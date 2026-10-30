@@ -48,7 +48,9 @@ export const withGlobalMocks: Decorator = (story, context) => {
 export const withVcApp: Decorator = (story, context) => {
   return {
     components: { story },
-    template: '<div class="vc-app" style="background-color: transparent;"><story /></div>',
+    // .vc-app clips its content (overflow: hidden) for the real app; a story must not lose
+    // badges and dots that sit past its edge
+    template: '<div class="vc-app" style="background-color: transparent; overflow: visible;"><story /></div>',
     setup() {
       return { args: context.args };
     },

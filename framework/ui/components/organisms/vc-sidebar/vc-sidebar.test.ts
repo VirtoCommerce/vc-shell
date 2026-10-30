@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import { nextTick } from "vue";
+import { defineComponent, h, nextTick, onMounted } from "vue";
 import VcSidebar from "@ui/components/organisms/vc-sidebar/vc-sidebar.vue";
 
 describe("VcSidebar", () => {
@@ -131,5 +131,79 @@ describe("VcSidebar", () => {
 
     expect((document.activeElement as HTMLElement | null)?.id).toBe("first-focusable");
     wrapper.unmount();
+  });
+
+  describe("forceMount", () => {
+    function mountWithProbe(props: Record<string, unknown>) {
+      const onProbeMounted = vi.fn();
+      const Probe = defineComponent({
+        setup() {
+          onMounted(() => {
+            onProbeMounted();
+          });
+          return () => h("button", { class: "probe" }, "probe");
+        },
+      });
+      const wrapper = mount(VcSidebar, {
+        props: { teleport: false, ...props } as any,
+        slots: { default: () => h(Probe) },
+      });
+      return { wrapper, onProbeMounted };
+    }
+
+    it("keeps content mounted while closed", async () => {
+      const { wrapper, onProbeMounted } = mountWithProbe({ forceMount: true, modelValue: false });
+      await nextTick();
+
+      const panel = wrapper.find(".vc-sidebar__panel");
+      expect(panel.exists()).toBe(true);
+      expect((panel.element as HTMLElement).style.display).toBe("none");
+      expect(panel.attributes()).toHaveProperty("inert");
+      expect(wrapper.find(".vc-sidebar__overlay").exists()).toBe(false);
+      expect(onProbeMounted).toHaveBeenCalledTimes(1);
+
+      await wrapper.setProps({ modelValue: true });
+      const opened = wrapper.find(".vc-sidebar__panel");
+      expect((opened.element as HTMLElement).style.display).not.toBe("none");
+      expect(opened.attributes()).not.toHaveProperty("inert");
+
+      await wrapper.setProps({ modelValue: false });
+      await wrapper.setProps({ modelValue: true });
+      expect(onProbeMounted).toHaveBeenCalledTimes(1);
+
+      wrapper.unmount();
+    });
+
+    it("default unmounts when closed", () => {
+      const { wrapper, onProbeMounted } = mountWithProbe({ modelValue: false });
+
+      expect(wrapper.find(".vc-sidebar__panel").exists()).toBe(false);
+      expect(onProbeMounted).not.toHaveBeenCalled();
+
+      wrapper.unmount();
+    });
+
+    it("closed forced panel does not trap focus or lock scroll", async () => {
+      const before = document.body.style.overflow;
+      const outside = document.createElement("button");
+      document.body.appendChild(outside);
+
+      const { wrapper } = mountWithProbe({ forceMount: true, modelValue: false });
+      await nextTick();
+
+      expect(document.body.style.overflow).toBe(before);
+      outside.focus();
+      await nextTick();
+      expect(document.activeElement).toBe(outside);
+
+      document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+      expect(wrapper.emitted("close")).toBeUndefined();
+
+      await wrapper.setProps({ modelValue: true });
+      expect(document.body.style.overflow).toBe("hidden");
+
+      wrapper.unmount();
+      outside.remove();
+    });
   });
 });

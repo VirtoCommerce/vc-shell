@@ -13,17 +13,27 @@
     :tabindex="disabled ? -1 : 0"
     :aria-disabled="disabled || undefined"
     :aria-label="title || undefined"
+    :aria-haspopup="alertsDescription ? 'dialog' : undefined"
+    :aria-expanded="alertsDescription ? alertsOpen : undefined"
+    :aria-describedby="alertsDescription ? alertsDescriptionId : undefined"
     @click="onClick"
     @keydown.enter.prevent="onClick"
     @keydown.space.prevent="onClick"
   >
     <VcBadge
-      :content="truncateCount"
+      :content="showBadge ? truncateCount : undefined"
+      :class="{ 'vc-widget__badge--changed': changed }"
       custom-position
       top="-6px"
       size="s"
     >
       <div class="vc-widget__icon-container">
+        <span
+          v-if="dotVariant && !editing"
+          class="vc-widget__alert-dot"
+          :class="`vc-widget__alert-dot--${dotVariant}`"
+          aria-hidden="true"
+        ></span>
         <VcIcon
           v-if="icon"
           class="vc-widget__icon"
@@ -41,11 +51,19 @@
         {{ title }}
       </div>
     </div>
+    <span
+      v-if="alertsDescription"
+      :id="alertsDescriptionId"
+      class="tw-sr-only"
+      >{{ alertsDescription }}</span
+    >
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, inject, onBeforeUnmount, ref, useId, watch, watchEffect } from "vue";
+import { WidgetRenderStateKey } from "@ui/components/atoms/vc-widget/widget-render-state";
+import { SEVERITY_DOT_VARIANT } from "@core/types/severity";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcBadge } from "@ui/components/atoms/vc-badge";
 import { formatBadgeCount } from "@core/utilities/formatBadgeCount";
@@ -71,6 +89,50 @@ function onClick() {
 }
 
 const truncateCount = computed(() => formatBadgeCount(props.value));
+
+// Render state is provided only inside blade widget strips; standalone use is unaffected
+const renderState = inject(WidgetRenderStateKey, null);
+const editing = computed(() => renderState?.editing.value ?? false);
+const showBadge = computed(() => !editing.value);
+const dotVariant = computed(() => {
+  const severity = renderState?.alertSeverity.value;
+  return severity ? SEVERITY_DOT_VARIANT[severity] : undefined;
+});
+const alertsDescription = computed(() => (editing.value ? undefined : renderState?.alertsDescription?.value));
+const alertsOpen = computed(() => renderState?.alertsOpen?.value ?? false);
+const alertsDescriptionId = `vc-widget-alerts-${useId()}`;
+
+// Lets the strip name the alerts popup of a component widget, which has no title in its registration
+if (renderState?.renderedTitle) {
+  watchEffect(() => {
+    renderState.renderedTitle.value = props.title;
+  });
+}
+
+const CHANGED_MS = 1500;
+const changed = ref(false);
+let changedTimer: ReturnType<typeof setTimeout> | undefined;
+
+// Pulses only inside blades. A first change soon after mount is the initial load, not news;
+// a later one (a widget that loaded early, then got a push) does pulse.
+const LOAD_WINDOW_MS = 2000;
+const mountedAt = Date.now();
+let firstChange = true;
+watch(
+  () => props.value,
+  (next, prev) => {
+    if (!renderState) return;
+    const isInitialLoad = firstChange && Date.now() - mountedAt < LOAD_WINDOW_MS;
+    firstChange = false;
+    if (isInitialLoad) return;
+    if (prev === undefined || next === undefined) return;
+    changed.value = true;
+    clearTimeout(changedTimer);
+    changedTimer = setTimeout(() => (changed.value = false), CHANGED_MS);
+  },
+);
+
+onBeforeUnmount(() => clearTimeout(changedTimer));
 </script>
 
 <style lang="scss">
@@ -85,6 +147,7 @@ const truncateCount = computed(() => formatBadgeCount(props.value));
   --widget-title-disabled-color: var(--neutrals-400);
   --widget-border-radius: 8px;
   --widget-focus-ring-color: var(--primary-300);
+  --widget-alert-dot-ring-color: var(--additional-50);
 }
 
 .vc-widget {
@@ -123,7 +186,45 @@ const truncateCount = computed(() => formatBadgeCount(props.value));
   }
 
   &__icon-container {
-    @apply tw-flex tw-flex-col tw-items-center tw-justify-center;
+    @apply tw-relative tw-flex tw-flex-col tw-items-center tw-justify-center;
+  }
+
+  &__alert-dot {
+    @apply tw-absolute tw-top-0 tw-z-[1] tw-size-2 tw-rounded-full tw-border-2 tw-border-solid;
+    // Opposite corner from the count badge (which sits at the inline-end)
+    inset-inline-start: 0;
+    margin-inline-start: -0.25rem;
+    margin-top: -0.125rem;
+    border-color: var(--widget-alert-dot-ring-color);
+    background-color: var(--badge-background-color-info);
+
+    &--danger {
+      background-color: var(--badge-background-color-danger);
+    }
+
+    &--warning {
+      background-color: var(--badge-background-color-warning);
+    }
+
+    &--info {
+      background-color: var(--badge-background-color-info);
+    }
+  }
+
+  &__badge--changed .vc-badge__badge {
+    animation: vc-widget-badge-pulse 0.75s ease-in-out 2;
+  }
+
+  @keyframes vc-widget-badge-pulse {
+    50% {
+      transform: scale(1.35);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &__badge--changed .vc-badge__badge {
+      animation: none;
+    }
   }
 
   &__icon {

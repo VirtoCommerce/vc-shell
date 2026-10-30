@@ -44,7 +44,7 @@ export function mirrorPlacement(placement: Placement): Placement {
  */
 export function useFloatingPosition(
   referenceEl: Ref<ReferenceElement | null>,
-  floatingEl: Ref<HTMLElement | null>,
+  floatingEl: Readonly<Ref<HTMLElement | null>>,
   options: UseFloatingPositionOptions = {},
 ) {
   const { isRtl } = useTextDirection();

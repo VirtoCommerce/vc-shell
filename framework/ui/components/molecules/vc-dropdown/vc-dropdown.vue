@@ -33,10 +33,12 @@
         appear
       >
         <div
-          v-if="isOpen"
+          v-if="isOpen || forceMount"
+          v-show="isOpen"
           :id="panelId"
           ref="floatingEl"
           v-on-click-outside="outsideClickBinding"
+          :inert="!isOpen || undefined"
           class="vc-dropdown__dropdown"
           :style="{
             maxHeight: normalizedMaxHeight,
@@ -109,6 +111,7 @@ import { vOnClickOutside } from "@vueuse/components";
 import { useFloatingPosition, type FloatingOffset, useTeleportTarget } from "@ui/composables";
 import type { Placement } from "@floating-ui/vue";
 import { useResponsive } from "@framework/core/composables/useResponsive";
+import { panelAnchorRegistry } from "@ui/components/molecules/vc-popover/panel-anchor-registry";
 
 export type DropdownRole = "menu" | "listbox";
 export type DropdownCloseReason = "outside" | "escape" | "action";
@@ -140,6 +143,8 @@ export interface VcDropdownProps<T> {
   padded?: boolean;
   /** Accessible name for the dropdown panel (menu/listbox). Required for a named listbox. */
   ariaLabel?: string;
+  /** Keep the panel content mounted (hidden and inert) while closed. */
+  forceMount?: boolean;
 }
 
 const props = withDefaults(defineProps<VcDropdownProps<T>>(), {
@@ -161,6 +166,7 @@ const props = withDefaults(defineProps<VcDropdownProps<T>>(), {
   autoFocusPanel: true,
   zIndex: 9300,
   padded: true,
+  forceMount: false,
 });
 
 const emit = defineEmits<{
@@ -204,7 +210,10 @@ const isOpen = computed({
   set: (value: boolean) => emit("update:modelValue", value),
 });
 
-const { x, y, resolvedPlacement, resolvedStrategy } = useFloatingPosition(referenceEl, floatingEl, {
+// A closed force-mounted panel stays in the DOM; hiding it from floating-ui stops autoUpdate until it opens
+const positionedEl = computed(() => (props.forceMount && !isOpen.value ? null : floatingEl.value));
+
+const { x, y, resolvedPlacement, resolvedStrategy, update } = useFloatingPosition(referenceEl, positionedEl, {
   placement: computed(() => props.placement),
   strategy: computed(() => (props.floating ? "fixed" : "absolute")),
   offset: computed(() => props.offset),
@@ -252,9 +261,18 @@ const activeDescendantId = computed(() => {
   return itemId(focusedIndex.value);
 });
 
-const outsideClickBinding: [() => void, { ignore: Array<Ref<HTMLElement | null>> }] = [
-  () => {
-    if (props.closeOnClickOutside) {
+// A popover opened from inside this panel is teleported out of it, yet belongs to it
+const isChildPopover = (panel: Element) => {
+  const anchor = panelAnchorRegistry.get(panel);
+  return !!anchor && !!floatingEl.value?.contains(anchor);
+};
+const hasOpenChildPopover = () => Array.from(document.querySelectorAll(".vc-popover")).some(isChildPopover);
+
+const outsideClickBinding: [(event: Event) => void, { ignore: Array<Ref<HTMLElement | null>> }] = [
+  (event) => {
+    const popover = (event.target as Element | null)?.closest?.(".vc-popover");
+    if (popover && isChildPopover(popover)) return;
+    if (props.closeOnClickOutside && isOpen.value) {
       closeByReason("outside");
     }
   },
@@ -368,7 +386,7 @@ function onPanelKeydown(event: KeyboardEvent) {
       break;
     }
     case "Escape": {
-      if (!props.closeOnEscape) {
+      if (!props.closeOnEscape || hasOpenChildPopover()) {
         return;
       }
 
@@ -383,7 +401,8 @@ function onPanelKeydown(event: KeyboardEvent) {
 }
 
 function onDocumentEscapeKeydown(event: KeyboardEvent) {
-  if (!props.closeOnEscape || !isOpen.value || event.key !== "Escape") {
+  // An open child popover takes this Escape; the next one closes the dropdown
+  if (!props.closeOnEscape || !isOpen.value || event.key !== "Escape" || hasOpenChildPopover()) {
     return;
   }
 
@@ -399,6 +418,11 @@ watch(
 
     if (opened) {
       syncFocusedIndex();
+
+      // A force-mounted panel was measured while display:none
+      if (props.forceMount) {
+        nextTick(() => update());
+      }
 
       if (props.closeOnEscape) {
         document.addEventListener("keydown", onDocumentEscapeKeydown);

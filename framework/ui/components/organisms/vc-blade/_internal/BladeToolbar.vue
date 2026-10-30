@@ -49,7 +49,10 @@
         </div>
       </template>
       <template v-else>
-        <div class="vc-blade-toolbar__buttons">
+        <div
+          class="vc-blade-toolbar__buttons"
+          :class="{ 'vc-blade-toolbar__buttons--reserved': visibleItems.length && !isMobile }"
+        >
           <ToolbarMobile
             v-if="isMobile"
             :items="visibleItems"
@@ -97,6 +100,7 @@ const { visibleItems } = useToolbarRegistration(toRef(props, "items"));
 <style lang="scss">
 :root {
   --blade-toolbar-height: 54px;
+  --blade-toolbar-buttons-min-width: 80px;
   --blade-toolbar-background-color: var(--neutrals-50);
   --blade-toolbar-border-color: var(--neutrals-200);
   --blade-toolbar-icon-color: var(--neutrals-700);
@@ -112,6 +116,11 @@ const { visibleItems } = useToolbarRegistration(toRef(props, "items"));
 
   &__buttons {
     @apply tw-relative tw-overflow-hidden tw-flex tw-flex-1 tw-min-w-0;
+
+    // Widgets shrink to fit; the toolbar keeps room for at least its "more" button
+    &--reserved {
+      min-width: var(--blade-toolbar-buttons-min-width);
+    }
   }
 
   &--mobile {

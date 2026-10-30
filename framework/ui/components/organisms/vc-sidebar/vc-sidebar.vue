@@ -20,8 +20,10 @@
 
       <Transition :name="panelTransitionName">
         <aside
-          v-if="modelValue"
+          v-if="modelValue || forceMount"
+          v-show="modelValue"
           ref="panelEl"
+          :inert="!modelValue || undefined"
           class="vc-sidebar__panel"
           :class="panelClasses"
           :style="panelStyle"
@@ -209,6 +211,8 @@ export interface Props {
   dragHandle?: boolean;
   /** Fraction of panel height user must swipe to trigger close (0-1) */
   closeThreshold?: number;
+  /** Keep the panel content mounted (hidden and inert) while closed. */
+  forceMount?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -235,6 +239,7 @@ const props = withDefaults(defineProps<Props>(), {
   draggable: false,
   dragHandle: false,
   closeThreshold: 0.3,
+  forceMount: false,
 });
 
 const emit = defineEmits<{

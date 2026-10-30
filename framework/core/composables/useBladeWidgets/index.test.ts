@@ -41,6 +41,18 @@ function mountWithBlade(setup: () => unknown, options: { bladeId?: string; widge
 }
 
 describe("useBladeWidgets", () => {
+  it("passes the alerts ref through to headless.alerts", () => {
+    const registerWidget = vi.fn();
+    const service = createMockWidgetService({ registerWidget });
+    const alerts = ref([{ id: "a", severity: "error" as const, text: "Broken" }]);
+
+    mountWithBlade(() => useBladeWidgets([{ id: "W1", icon: "lucide-tag", title: "W1", alerts }]), {
+      widgetService: service,
+    });
+
+    expect(registerWidget.mock.calls[0][0].headless.alerts).toBe(alerts);
+  });
+
   it("registers all widgets on mount with headless fields", () => {
     const registerWidget = vi.fn();
     const service = createMockWidgetService({ registerWidget });

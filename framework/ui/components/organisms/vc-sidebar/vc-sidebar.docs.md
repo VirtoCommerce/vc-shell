@@ -77,6 +77,7 @@ const open = ref(false);
 | `closeThreshold` | `number`                               | `0.3`             | Swipe fraction of panel height needed to dismiss (bottom).                                  |
 | `draggable`      | `boolean`                              | `false`           | Enable swipe-to-dismiss (bottom only).                                                      |
 | `dragHandle`     | `boolean`                              | `false`           | Show iOS-style drag handle bar.                                                             |
+| `forceMount`     | `boolean`                              | `false`           | Keep the panel content mounted (hidden, inert) while closed.                                |
 
 ## Events
 
@@ -116,6 +117,10 @@ When `trapFocus` is true (default), Tab key cycles through focusable elements in
 ### Swipe-to-Dismiss (Bottom Sheet)
 
 When `position="bottom"` and `draggable` is true, users can swipe the panel down to dismiss it. The `dragHandle` prop adds a visible handle bar at the top of the panel for better affordance.
+
+### Keeping Content Mounted
+
+By default the panel is unmounted while closed. Set `forceMount` to keep it in the DOM, hidden with `display: none` and `inert`, so content inside it (data loads, subscriptions) stays alive. The overlay, focus trap, scroll lock and Escape handling are active only while `modelValue` is true.
 
 ### Size Presets
 

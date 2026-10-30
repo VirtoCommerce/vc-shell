@@ -54,14 +54,7 @@ describe("WidgetContainerDesktop", () => {
   beforeEach(() => {
     localStorage.clear();
     stripWidth.value = 0;
-  });
-  afterEach(() => {
-    wrapper?.unmount();
-    document.documentElement.dir = "";
-    vi.unstubAllGlobals();
-  });
-
-  it("on a narrow blade shows the strip widgets that fit and puts the rest first in the dropdown", async () => {
+    // The strip fits its widgets through useAdaptiveItems, which observes them
     vi.stubGlobal(
       "ResizeObserver",
       class {
@@ -70,6 +63,14 @@ describe("WidgetContainerDesktop", () => {
         disconnect() {}
       },
     );
+  });
+  afterEach(() => {
+    wrapper?.unmount();
+    document.documentElement.dir = "";
+    vi.unstubAllGlobals();
+  });
+
+  it("on a narrow blade shows the strip widgets that fit and puts the rest first in the dropdown", async () => {
     const offsetWidth = vi.spyOn(HTMLElement.prototype, "offsetWidth", "get").mockImplementation(function (
       this: HTMLElement,
     ) {

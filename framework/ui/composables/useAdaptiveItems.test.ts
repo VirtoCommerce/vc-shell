@@ -13,6 +13,7 @@ import { useAdaptiveItems, type IUseAdaptiveItems } from "./useAdaptiveItems";
 const ITEM_WIDTH = 100;
 // keys with their own width; any other key is ITEM_WIDTH
 const WIDTHS: Record<string, number> = { wide: 180, narrow: 60 };
+const MORE_WIDTH = 40;
 
 describe("useAdaptiveItems", () => {
   const offsetWidth = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "offsetWidth");
@@ -29,6 +30,7 @@ describe("useAdaptiveItems", () => {
     Object.defineProperty(HTMLElement.prototype, "offsetWidth", {
       configurable: true,
       get(this: HTMLElement) {
+        if (this.hasAttribute("data-more-button")) return MORE_WIDTH;
         const key = this.getAttribute("data-item-key");
         return key === null ? 0 : (WIDTHS[key] ?? ITEM_WIDTH);
       },
@@ -40,7 +42,9 @@ describe("useAdaptiveItems", () => {
     if (offsetWidth) Object.defineProperty(HTMLElement.prototype, "offsetWidth", offsetWidth);
   });
 
-  function mountItems(items: string[]) {
+  // moreMargin renders a "more" button pushed to the end the way a consumer does it with an auto margin,
+  // which the browser resolves to the free space
+  function mountItems(items: string[], moreMargin?: string) {
     let adaptive!: IUseAdaptiveItems<string>;
     const Host = defineComponent({
       props: { items: { type: Array as PropType<string[]>, required: true } },
@@ -54,11 +58,12 @@ describe("useAdaptiveItems", () => {
           initialItemWidth: 60,
         });
         return () =>
-          h(
-            "div",
-            { ref: containerRef },
-            adaptive.visibleItems.value.map((key) => h("button", { key, "data-item-key": key })),
-          );
+          h("div", { ref: containerRef }, [
+            ...adaptive.visibleItems.value.map((key) => h("button", { key, "data-item-key": key })),
+            moreMargin && adaptive.showMoreButton.value
+              ? h("button", { "data-more-button": "", style: { marginLeft: moreMargin } })
+              : null,
+          ]);
       },
     });
     return { wrapper: mount(Host, { props: { items } }), adaptive: () => adaptive };
@@ -95,5 +100,14 @@ describe("useAdaptiveItems", () => {
 
     expect(adaptive().visibleItems.value).toEqual(["a"]);
     expect(adaptive().hiddenItems.value).toEqual(["wide", "narrow"]);
+  });
+
+  // The free space an auto margin takes is not the button's width: counting it hid one more item per pass,
+  // since every hidden item grew the free space, until the mobile widget bar was empty.
+  it("does not count the margin of the more button", async () => {
+    const { adaptive } = mountItems(["a", "b", "c", "d"], "120px");
+    await flushPromises();
+
+    expect(adaptive().visibleItems.value).toEqual(["a", "b"]);
   });
 });

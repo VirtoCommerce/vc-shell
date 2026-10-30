@@ -396,3 +396,36 @@ export const ScrollableList: Story = {
     `,
   }),
 };
+
+export const ForceMount: Story = {
+  render: (args) => ({
+    components: { VcDropdown, VcButton },
+    setup() {
+      const opened = ref(false);
+      const mountedAt = ref(new Date().toLocaleTimeString());
+      return { args, opened, mountedAt, workspaceItems };
+    },
+    template: `
+      <div class="tw-min-h-[240px] tw-rounded-xl tw-border tw-border-solid tw-border-neutrals-200 tw-bg-additional-50 tw-p-6">
+        <p class="tw-mb-4 tw-text-sm tw-text-neutrals-700">
+          Panel content stays mounted while closed. It was created at {{ mountedAt }} and keeps that value across toggles.
+        </p>
+
+        <VcDropdown
+          v-bind="args"
+          force-mount
+          :items="workspaceItems"
+          :model-value="opened"
+          @update:modelValue="opened = $event"
+        >
+          <template #trigger="{ toggle }">
+            <VcButton variant="ghost" @click="toggle">Toggle</VcButton>
+          </template>
+          <template #item="{ item }">
+            <div class="tw-px-2 tw-py-1.5 tw-text-sm">{{ item.title }} ({{ mountedAt }})</div>
+          </template>
+        </VcDropdown>
+      </div>
+    `,
+  }),
+};

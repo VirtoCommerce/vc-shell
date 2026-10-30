@@ -1,17 +1,20 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { ref, defineComponent, h } from "vue";
+import { ref, reactive, computed, defineComponent, h, nextTick } from "vue";
 import { mount } from "@vue/test-utils";
 import { IsMobileKey } from "@framework/injection-keys";
+import { BladeDescriptorKey } from "@core/blade-navigation/types";
 
 const mockWidgets = ref<Record<string, unknown>[]>([]);
-const mockExternalWidgets: Record<string, unknown>[] = [];
+// Reactive, as the real registry: a module loaded later adds to it
+const mockExternalWidgets = reactive<Record<string, unknown>[]>([]);
+const registerWidget = vi.fn();
 
 vi.mock("@core/composables/useWidgets", () => ({
   useWidgets: () => ({
     getWidgets: (_bladeId: string) => mockWidgets.value,
-    registerWidget: vi.fn(),
+    registerWidget,
     unregisterWidget: vi.fn(),
-    getAllExternalWidgets: () => mockExternalWidgets,
+    getAllExternalWidgets: () => [...mockExternalWidgets],
   }),
 }));
 
@@ -24,7 +27,7 @@ const StubWidgetComponent = defineComponent({
   },
 });
 
-function mountContainer(props: Record<string, unknown> = {}, options: { isMobile?: boolean } = {}) {
+function mountContainer(props: Record<string, unknown> = {}, options: { isMobile?: boolean; bladeName?: string } = {}) {
   return mount(WidgetContainer, {
     props: {
       bladeId: "test-blade",
@@ -33,6 +36,7 @@ function mountContainer(props: Record<string, unknown> = {}, options: { isMobile
     global: {
       provide: {
         [IsMobileKey as symbol]: ref(options.isMobile ?? false),
+        ...(options.bladeName && { [BladeDescriptorKey as symbol]: computed(() => ({ name: options.bladeName })) }),
       },
       stubs: {
         WidgetContainerDesktop: {
@@ -54,6 +58,23 @@ describe("WidgetContainer", () => {
   beforeEach(() => {
     mockWidgets.value = [];
     mockExternalWidgets.length = 0;
+    registerWidget.mockClear();
+  });
+
+  it("registers an external widget that targets the blade", () => {
+    mockExternalWidgets.push({ id: "ext", component: StubWidgetComponent, targetBlades: ["productdetails"] });
+
+    mountContainer({}, { bladeName: "ProductDetails" });
+    expect(registerWidget).toHaveBeenCalledWith(expect.objectContaining({ id: "ext" }), "test-blade");
+  });
+
+  it("registers an external widget whose module loads after the blade opened", async () => {
+    mountContainer({}, { bladeName: "ProductDetails" });
+    expect(registerWidget).not.toHaveBeenCalled();
+
+    mockExternalWidgets.push({ id: "late", component: StubWidgetComponent, targetBlades: ["productdetails"] });
+    await nextTick();
+    expect(registerWidget).toHaveBeenCalledWith(expect.objectContaining({ id: "late" }), "test-blade");
   });
 
   it("renders nothing when no widgets exist", () => {

@@ -45,7 +45,7 @@ export function useAdaptiveItems<T>(options: {
   moreButtonWidth: number;
   calculationStrategy?: "forward" | "reverse";
   initialItemWidth?: number;
-}): IUseAdaptiveItems<T> {
+}): IUseAdaptiveItems<T> & { naturalWidth: ComputedRef<number> } {
   const {
     containerRef,
     items,
@@ -71,6 +71,10 @@ export function useAdaptiveItems<T>(options: {
   const visibleItems = ref([]) as Ref<T[]>;
   const hiddenItems = ref([]) as Ref<T[]>;
   const showMoreButton = computed(() => hiddenItems.value.length > 0);
+  // Width all items take side by side, gaps included: what the container needs to show them all
+  const naturalWidth = computed(() =>
+    items.value.reduce((sum, item, index) => sum + getItemWidth(item) + (index ? containerGap.value : 0), 0),
+  );
 
   // Single persistent ResizeObserver
   let elementsObserver: ResizeObserver | null = null;
@@ -90,7 +94,9 @@ export function useAdaptiveItems<T>(options: {
     if (!containerRef.value) return;
     const el = containerRef.value.querySelector("[data-more-button]") as HTMLElement | null;
     if (el) {
-      const width = measureNaturalWidth(el);
+      // Border box only: an auto margin that pushes the button to the end resolves to the free space,
+      // which grows with every hidden item and would hide them all
+      const width = el.offsetWidth;
       if (width > 0) {
         measuredMoreWidth.value = width;
       }
@@ -350,6 +356,7 @@ export function useAdaptiveItems<T>(options: {
     visibleItems,
     hiddenItems,
     showMoreButton,
+    naturalWidth,
     recalculate: () => {
       nextTick(() => {
         measureElementSizes();

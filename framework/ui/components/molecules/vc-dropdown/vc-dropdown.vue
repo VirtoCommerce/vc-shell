@@ -561,8 +561,9 @@ onBeforeUnmount(() => {
       color: var(--vc-dropdown-accent-foreground);
     }
 
+    // The keyboard cursor shows only on a keyboard-focused panel; a mouse-opened one gets hover alone
     &--active,
-    &--focused {
+    .vc-dropdown__dropdown:focus-visible &--focused {
       background-color: var(--vc-dropdown-accent);
       color: var(--vc-dropdown-accent-foreground);
     }

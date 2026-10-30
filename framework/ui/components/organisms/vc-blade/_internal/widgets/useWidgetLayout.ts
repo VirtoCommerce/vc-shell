@@ -37,24 +37,22 @@ export function computeWidgetLayout(
   saved: IWidgetLayoutState | null,
   max: number = WIDGET_STRIP_MAX,
 ): IWidgetLayoutState {
-  const rendered = new Set(renderedIds);
-  const pick = (ids: string[] | undefined) => [...new Set(ids ?? [])].filter((id) => rendered.has(id));
+  if (!saved) return { strip: renderedIds.slice(0, max), overflow: renderedIds.slice(max) };
 
-  const savedStrip = pick(saved?.strip);
-  const savedOverflow = pick(saved?.overflow).filter((id) => !savedStrip.includes(id));
-  const known = new Set([...(saved?.strip ?? []), ...(saved?.overflow ?? [])]);
+  const rendered = new Set(renderedIds);
+  const pick = (ids: string[]) => [...new Set(ids)].filter((id) => rendered.has(id));
+
+  const savedStrip = pick(saved.strip);
+  const savedOverflow = pick(saved.overflow).filter((id) => !savedStrip.includes(id));
+  const known = new Set([...saved.strip, ...saved.overflow]);
   const unknown = renderedIds.filter((id) => !known.has(id));
 
   // A strip the user customized is theirs: a strip widget that is hidden or not loaded yet leaves
   // its slot empty, and widgets registered later wait in the overflow
-  const strip = savedStrip.slice(0, max);
-  const overflow = savedStrip.slice(max);
-
-  const fromUnknown = saved ? [] : unknown.slice(0, max);
-  strip.push(...fromUnknown);
-
-  overflow.push(...savedOverflow, ...unknown.slice(fromUnknown.length));
-  return { strip, overflow };
+  return {
+    strip: savedStrip.slice(0, max),
+    overflow: [...savedStrip.slice(max), ...savedOverflow, ...unknown],
+  };
 }
 
 export function useWidgetLayout(bladeName: MaybeRefOrGetter<string>, widgets: MaybeRefOrGetter<IWidget[]>) {

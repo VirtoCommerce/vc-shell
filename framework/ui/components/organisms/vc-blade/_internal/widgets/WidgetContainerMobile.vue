@@ -226,7 +226,7 @@ import WidgetItem from "./WidgetItem.vue";
 import { useWidgetLayout, WIDGET_STRIP_MAX } from "./useWidgetLayout";
 import { useWidgetEditReorder } from "./useWidgetEditReorder";
 import { useHeadlessWidgetHelpers } from "./useHeadlessWidgetHelpers";
-import { resolveAlerts, highestSeverity, sortAlertsFirst, SEVERITY_DOT_VARIANT } from "./widget-alerts";
+import { resolveAlerts, alertDotVariant, sortAlertsFirst } from "./widget-alerts";
 
 interface Props {
   widgets: IWidget[];
@@ -273,10 +273,7 @@ const sheetItems = computed(() => [...hiddenItems.value, ...sortAlertsFirst(barO
 const showMore = computed(() => canCustomize.value || sheetItems.value.length > 0);
 
 const hiddenAlerts = computed(() => [...hiddenItems.value, ...barOverflow.value].flatMap(resolveAlerts));
-const moreDot = computed(() => {
-  const severity = highestSeverity(hiddenAlerts.value);
-  return severity ? SEVERITY_DOT_VARIANT[severity] : undefined;
-});
+const moreDot = computed(() => alertDotVariant(hiddenAlerts.value));
 const moreLabel = computed(() =>
   hiddenAlerts.value.length && !editing.value
     ? t("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.MORE_WIDGETS_ALERTS", { count: hiddenAlerts.value.length })

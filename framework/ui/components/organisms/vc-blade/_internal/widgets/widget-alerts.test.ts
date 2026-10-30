@@ -1,7 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { ref } from "vue";
 import type { IWidget, IWidgetAlert } from "@core/services/widget-service";
-import { resolveAlerts, highestSeverity, SEVERITY_DOT_VARIANT, sortAlertsFirst } from "./widget-alerts";
+import { SEVERITY_DOT_VARIANT } from "@core/types/severity";
+import { resolveAlerts, highestSeverity, alertDotVariant, sortAlertsFirst } from "./widget-alerts";
 
 const alert = (id: string, severity: IWidgetAlert["severity"] = "info"): IWidgetAlert => ({
   id,
@@ -44,6 +45,14 @@ describe("SEVERITY_DOT_VARIANT", () => {
     expect(SEVERITY_DOT_VARIANT.error).toBe("danger");
     expect(SEVERITY_DOT_VARIANT.warning).toBe("warning");
     expect(SEVERITY_DOT_VARIANT.info).toBe("info");
+  });
+});
+
+describe("alertDotVariant", () => {
+  it("colours the dot by the most severe alert", () => {
+    expect(alertDotVariant([alert("a", "warning"), alert("b", "critical")])).toBe("danger");
+    expect(alertDotVariant([alert("a", "info")])).toBe("info");
+    expect(alertDotVariant([])).toBeUndefined();
   });
 });
 

@@ -36,7 +36,7 @@
             v-if="editing"
             type="button"
             class="vc-widget-container-desktop__edit-btn vc-widget-container-desktop__edit-btn--remove"
-            :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.REMOVE', { title: titleOf(widget) })"
+            :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.REMOVE', { title: resolveTitle(widget) })"
             @click="moveToOverflow(widget.id)"
           >
             <VcIcon
@@ -120,7 +120,7 @@
                   type="button"
                   class="vc-widget-container-desktop__edit-btn vc-widget-container-desktop__edit-btn--add"
                   :disabled="!canAddToStrip"
-                  :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.ADD', { title: titleOf(widget) })"
+                  :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.ADD', { title: resolveTitle(widget) })"
                   @click="moveToStrip(widget.id)"
                 >
                   <VcIcon
@@ -185,7 +185,7 @@ import { useWidgetLayout, WIDGET_STRIP_MAX } from "./useWidgetLayout";
 import { useWidgetEditReorder } from "./useWidgetEditReorder";
 import { useHeadlessWidgetHelpers } from "./useHeadlessWidgetHelpers";
 import { useAdaptiveItems } from "@ui/composables/useAdaptiveItems";
-import { resolveAlerts, highestSeverity, sortAlertsFirst, SEVERITY_DOT_VARIANT } from "./widget-alerts";
+import { resolveAlerts, alertDotVariant, sortAlertsFirst } from "./widget-alerts";
 
 interface Props {
   widgets: IWidget[];
@@ -201,7 +201,7 @@ const layout = useWidgetLayout(
   () => props.bladeName,
   () => props.widgets,
 );
-const { strip, overflow, editing, canAddToStrip, startEdit: beginEdit, commit, cancel, reset: resetLayout } = layout;
+const { strip, overflow, editing, canAddToStrip, startEdit: beginEdit, commit, cancel, reset } = layout;
 
 const menuOpen = ref(false);
 // An unnamed blade would share one storage key, so it cannot be customized
@@ -223,18 +223,13 @@ const notFitting = computed(() => (editing.value ? [] : hiddenItems.value));
 // Without hidden widgets or Customize the menu would open empty
 const showMore = computed(() => canCustomize.value || overflow.value.length > 0 || notFitting.value.length > 0);
 
-const titleOf = (widget: IWidget) => resolveTitle(widget);
-
 // Edit mode keeps the draft order so list indices stay meaningful
 const overflowItems = computed(() =>
   editing.value ? overflow.value : [...notFitting.value, ...sortAlertsFirst(overflow.value)],
 );
 
 const hiddenAlerts = computed(() => [...notFitting.value, ...overflow.value].flatMap(resolveAlerts));
-const moreDot = computed(() => {
-  const severity = highestSeverity(hiddenAlerts.value);
-  return severity ? SEVERITY_DOT_VARIANT[severity] : undefined;
-});
+const moreDot = computed(() => alertDotVariant(hiddenAlerts.value));
 const moreLabel = computed(() =>
   hiddenAlerts.value.length && !editing.value
     ? t("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.MORE_WIDGETS_ALERTS", { count: hiddenAlerts.value.length })
@@ -248,10 +243,6 @@ function startEdit() {
 function finishEdit() {
   commit();
   menuOpen.value = false;
-}
-
-function reset() {
-  resetLayout();
 }
 
 function onMenuToggle(open: boolean) {

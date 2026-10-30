@@ -70,7 +70,7 @@
 import { type Component, ref, watch } from "vue";
 import type { IWidgetAlert } from "@core/services/widget-service";
 import { VcPopover } from "@ui/components/molecules/vc-popover";
-import { SEVERITY_DOT_VARIANT } from "./widget-alerts";
+import { SEVERITY_DOT_VARIANT } from "@core/types/severity";
 
 interface Props {
   alerts: IWidgetAlert[];

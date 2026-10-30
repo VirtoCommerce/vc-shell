@@ -188,6 +188,21 @@ By default, `padded` is `true`, which adds compact padding and rounded item back
 </VcDropdown>
 ```
 
+### Keeping Content Mounted
+
+By default the panel is unmounted while closed. Set `forceMount` to keep it in the DOM, hidden with `display: none` and `inert`, so content inside it (data loads, subscriptions) stays alive. Outside-click and Escape handling only run while the dropdown is open, and a floating panel is repositioned each time it opens.
+
+```vue
+<VcDropdown v-model="isOpen" force-mount>
+  <template #trigger="{ toggle }">
+    <VcButton @click="toggle">Menu</VcButton>
+  </template>
+  <template #items-container>
+    <LiveStatusList />
+  </template>
+</VcDropdown>
+```
+
 ## Recipes
 
 ### Confirmation Dropdown
@@ -331,6 +346,7 @@ By default, `padded` is `true`, which adds compact padding and rounded item back
 | `autoFocusPanel`      | `boolean`                                      | `true`                          | Focus the panel element when opened                            |
 | `padded`              | `boolean`                                      | `true`                          | Apply compact padding and rounded item backgrounds             |
 | `zIndex`              | `number`                                       | `9300`                          | Z-index for the floating panel                                 |
+| `forceMount`          | `boolean`                                      | `false`                         | Keep the panel content mounted (hidden, inert) while closed    |
 
 ## Events
 
@@ -393,8 +409,8 @@ By default, `padded` is `true`, which adds compact padding and rounded item back
 - Floating positioning uses `useFloatingPosition` (a thin wrapper around `@floating-ui/vue`) with `autoUpdate: true` when `floating` is enabled — the panel recalculates its position on scroll/resize.
 - Teleport target is determined by `useTeleportTarget`. When `floating` is `true`, the panel is teleported to avoid z-index stacking context issues.
 - Keyboard navigation (`ArrowDown`, `ArrowUp`, `Home`, `End`, `Enter`/`Space`, `Escape`) is handled in `onPanelKeydown`. Escape also attaches a document-level listener when the dropdown is open to catch events that bubble past the panel.
-- `syncFocusedIndex` is called on open to pre-focus the active item (via `isItemActive`) or the first item.
-- The `VcDropdownItem` internal sub-component (in `_internal/VcDropdownItem.vue`) is used by `VcBreadcrumbs` for its overflow menu items.
+- `syncFocusedIndex` is called on open to pre-focus the active item (via `isItemActive`) or the first item. That cursor is painted only while the panel is `:focus-visible`, so a mouse-opened menu shows no pre-highlighted item.
+- The `VcDropdownItem` internal sub-component (in `_internal/VcDropdownItem.vue`) is used by `VcBreadcrumbs` for its overflow menu items. Its icon placeholder keeps titles aligned only when some item in the list has an icon or check; a list with none renders no icon gutter.
 - Default `zIndex` is `9300` (matches the CSS custom property `--z-critical-floating-panel`).
 
 <!-- internal:end -->

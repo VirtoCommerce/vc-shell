@@ -137,12 +137,18 @@ This means module load order does not matter. Remote modules loaded via Module F
 Components are sorted by `priority` (ascending). Lower numbers render first:
 
 ```typescript
-add({ id: "a", component: A, priority: 20 }); // Renders second
-add({ id: "b", component: B, priority: 10 }); // Renders first
-add({ id: "c", component: C }); // priority=0, renders first (tie)
+add({ id: "a", component: A, priority: 20 }); // Renders third
+add({ id: "b", component: B, priority: 10 }); // Renders second
+add({ id: "c", component: C }); // priority=0, renders first
 ```
 
-Default priority is `0`. Components with the same priority render in registration order.
+Default priority is `0`. Components with the same priority render in registration order. Inside one module that is the order of the `add()` calls. Across modules it is the order the modules install in, which can change between page loads when remote modules load asynchronously. When several modules contribute to one extension point, give each component an explicit `priority`, spaced out (10, 20, 30) so a new component can go in between.
+
+To move a component that another module registered, call `add()` with the same `id` and a new `priority`; the entry is replaced and re-sorted.
+
+!!! note "Toolbar sorts the other way"
+
+    Toolbar items put a higher `priority` first. See [useToolbar](../../composables/useToolbar/).
 
 ### Typed Metadata
 

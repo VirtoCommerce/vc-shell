@@ -163,17 +163,39 @@ Avoid wrapping `registerToolbarItem` in an `if (hasAccess(...))` check unless yo
 
 ## Cross-blade toolbar management
 
-All methods accept an optional `targetBladeId` second argument. Pass it to register, update, or clear toolbar items on a blade other than the current one:
+All methods accept an optional `targetBladeId` second argument. Pass it to register, update, or clear toolbar items on a blade other than the current one. The id is the blade instance id (`useBlade().id`), generated when the blade opens:
 
 ```typescript
-// Register a button on a specific child blade
-registerToolbarItem({ id: "child-action", title: "Action", clickHandler: () => {} }, "ChildBlade");
+// Register a button on a specific open blade instance
+registerToolbarItem({ id: "child-action", title: "Action", clickHandler: () => {} }, childBladeId);
 
 // Clear another blade's toolbar
-clearBladeToolbarItems("ChildBlade");
+clearBladeToolbarItems(childBladeId);
 ```
 
 Pass `"*"` as the bladeId to register a global item that appears on every blade.
+
+## Adding a button to another module's blade
+
+A module can add a button to a blade it does not own with `registerExternalToolbarItem()`, the toolbar counterpart of `registerExternalWidget()`. `targetBlades` lists blade names (the `name` from `defineBlade`). The button shows on every open instance of those blades and survives the blades closing:
+
+```typescript
+import { registerExternalToolbarItem } from "@vc-shell/framework";
+
+export default defineAppModule({
+  install() {
+    registerExternalToolbarItem({
+      id: "quality-check",
+      title: "Quality check",
+      icon: "lucide-sparkles",
+      targetBlades: ["Products"],
+      clickHandler: () => runCheck(),
+    });
+  },
+});
+```
+
+The name match is case-insensitive. If the blade registers its own item with the same `id`, the blade's item wins. `registerToolbarItem(item, "Products")` does the same for a single blade.
 
 ## Auto-cleanup control
 

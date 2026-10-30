@@ -32,16 +32,16 @@ Every service follows the same architecture:
 
 ## Services
 
-| Service                        | Factory                                  | Module-level API                                                                                                          | Key Type                                  |
-| ------------------------------ | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| **MenuService**                | `createMenuService()`                    | `addMenuItem()`, `removeRegisteredMenuItem()`, `setMenuBadge()`, `removeMenuBadge()`, `getMenuBadge()`, `getMenuBadges()` | `MenuItem`                                |
-| **WidgetService**              | `createWidgetService()`                  | `registerWidget()`, `registerExternalWidget()`                                                                            | `IWidget` / `IExternalWidgetRegistration` |
-| **ToolbarService**             | `createToolbarService()`                 | `registerToolbarItem()`                                                                                                   | `IToolbarItem`                            |
-| **DashboardService**           | `createDashboardService({ hasAccess? })` | `registerDashboardWidget()`                                                                                               | `DashboardWidget`                         |
-| **SettingsMenuService**        | `createSettingsMenuService()`            | `addSettingsMenuItem()`                                                                                                   | `ISettingsMenuItem`                       |
-| **AppBarWidgetService**        | `createAppBarWidgetService()`            | `addAppBarWidget()`                                                                                                       | `AppBarWidget`                            |
-| **AppBarMobileButtonsService** | `createAppBarMobileButtonsService()`     | (direct API)                                                                                                              | `AppBarButtonContent`                     |
-| **LanguageService**            | `createLanguageService()`                | (direct API)                                                                                                              | locale strings                            |
+| Service                        | Factory                                  | Module-level API                                                                                                          | Key Type                                            |
+| ------------------------------ | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| **MenuService**                | `createMenuService()`                    | `addMenuItem()`, `removeRegisteredMenuItem()`, `setMenuBadge()`, `removeMenuBadge()`, `getMenuBadge()`, `getMenuBadges()` | `MenuItem`                                          |
+| **WidgetService**              | `createWidgetService()`                  | `registerWidget()`, `registerExternalWidget()`                                                                            | `IWidget` / `IExternalWidgetRegistration`           |
+| **ToolbarService**             | `createToolbarService()`                 | `registerToolbarItem()`, `registerExternalToolbarItem()`                                                                  | `IToolbarItem` / `IExternalToolbarItemRegistration` |
+| **DashboardService**           | `createDashboardService({ hasAccess? })` | `registerDashboardWidget()`                                                                                               | `DashboardWidget`                                   |
+| **SettingsMenuService**        | `createSettingsMenuService()`            | `addSettingsMenuItem()`                                                                                                   | `ISettingsMenuItem`                                 |
+| **AppBarWidgetService**        | `createAppBarWidgetService()`            | `addAppBarWidget()`                                                                                                       | `AppBarWidget`                                      |
+| **AppBarMobileButtonsService** | `createAppBarMobileButtonsService()`     | (direct API)                                                                                                              | `AppBarButtonContent`                               |
+| **LanguageService**            | `createLanguageService()`                | (direct API)                                                                                                              | locale strings                                      |
 
 ## Usage
 

@@ -1,5 +1,19 @@
 # Changelog
 
+# [2.8.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.7.0...v2.8.0) (2026-10-30)
+
+### Features
+
+- **framework:** blade widget alerts and user-customizable widget strip (#392) ([b587721](https://github.com/VirtoCommerce/vc-shell/commit/b587721c0d2fb4d0c819e2ae0725a25a671cc8c9)), closes [#392](https://github.com/VirtoCommerce/vc-shell/issues/392)
+- **framework:** register toolbar items and widgets by blade name (#395) ([b57bc2f](https://github.com/VirtoCommerce/vc-shell/commit/b57bc2f71ee1a03b022242432e377de03bbd463f)), closes [#395](https://github.com/VirtoCommerce/vc-shell/issues/395) [#392](https://github.com/VirtoCommerce/vc-shell/issues/392)
+
+### Bug Fixes
+
+- **change-password:** don't hold the current password to the new-password rules (#393) ([76c326f](https://github.com/VirtoCommerce/vc-shell/commit/76c326f505273f41f84403eb9d62d4e2cf4668ef)), closes [#393](https://github.com/VirtoCommerce/vc-shell/issues/393)
+- **dropdown:** no pre-highlighted item on mouse open, no empty icon gutter (#397) ([d1357e4](https://github.com/VirtoCommerce/vc-shell/commit/d1357e42b06fef61a6f9af4e15e8df3a5fe2f5cd)), closes [#397](https://github.com/VirtoCommerce/vc-shell/issues/397)
+- **extension-points:** correct the priority example and cover sort order (#398) ([7f4e1c5](https://github.com/VirtoCommerce/vc-shell/commit/7f4e1c5be15cea8976effc6e32c5deb655bbe04e)), closes [#398](https://github.com/VirtoCommerce/vc-shell/issues/398)
+- **storybook:** stop the story wrapper from clipping badges (#394) ([9ff45d5](https://github.com/VirtoCommerce/vc-shell/commit/9ff45d5008403eb01861a03610f24611936b3aa0)), closes [#394](https://github.com/VirtoCommerce/vc-shell/issues/394)
+
 # [2.7.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.6.2...v2.7.0) (2026-10-26)
 
 ### Features

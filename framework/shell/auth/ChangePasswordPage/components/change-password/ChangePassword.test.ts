@@ -88,4 +88,12 @@ describe("ChangePassword.vue", () => {
     // password into them and offer to save the old one back.
     expect(tokens).toEqual(["current-password", "new-password", "new-password"]);
   });
+
+  it("doesn't hold the current password to the new-password length rule", () => {
+    const wrapper = mountComponent();
+    // the stubbed Field passes its rules through as an attribute
+    const rules = wrapper.findAll("[rules]").map((field) => field.attributes("rules"));
+    // An older or administrator-set password can be shorter than the policy for new ones.
+    expect(rules).toEqual(["required", "required|min:6", "required|min:6"]);
+  });
 });

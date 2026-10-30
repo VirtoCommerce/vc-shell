@@ -44,7 +44,7 @@ The `ChangePassword` component renders a `VcPopup` with three validated input fi
 
 ### Validation
 
-- Field-level: `required` and `min:6` rules via vee-validate's `Field` component.
+- Field-level: `required` on every field; `min:6` on the new password and its confirmation only. The current password can be any password the account has (one set before the policy changed, or by an administrator), so it isn't checked against the policy for new passwords; the platform verifies it on save.
 - API-level: `validatePassword()` checks the platform's password policy on each input change.
 - Custom checks: confirms that new password matches confirmation and that the new password differs from the current one.
 - Errors are displayed as `IdentityError` codes mapped to i18n keys: `COMPONENTS.CHANGE_PASSWORD.ERRORS.{code}`.
@@ -64,7 +64,7 @@ The `ChangePassword` component renders a `VcPopup` with three validated input fi
 
 | Field            | Validation                           | Description                                    |
 | ---------------- | ------------------------------------ | ---------------------------------------------- |
-| Current Password | `required`, `min:6`                  | Verifies the user knows their current password |
+| Current Password | `required`                           | Verifies the user knows their current password |
 | New Password     | `required`, `min:6`, platform policy | The desired new password                       |
 | Confirm Password | `required`, `min:6`, must match new  | Confirmation of the new password               |
 

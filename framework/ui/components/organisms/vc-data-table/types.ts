@@ -404,7 +404,7 @@ export interface VcDataTableProps<T = any> {
   removableSort?: boolean;
 
   // === Visual ===
-  /** Alternate row background colors for readability */
+  /** Alternate row background colors for readability (default: `true`) */
   striped?: boolean;
   /** Add border around the table */
   bordered?: boolean;

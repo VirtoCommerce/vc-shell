@@ -8,10 +8,16 @@
         v-for="item in visibleItems"
         :key="item.id"
       >
+        <!-- Props one by one: the button forwards unknown attrs to <button>, so a spread
+             item would leak clickHandler, isVisible, bladeId into the DOM -->
         <ToolbarBaseButton
-          v-bind="item"
+          :id="item.id"
+          :icon="item.icon"
+          :title="item.title"
+          :disabled="item.disabled"
+          :separator="item.separator"
+          :shortcut="item.shortcut"
           :data-item-key="item.id"
-          :show-title="isExpanded"
           :on-click="item.clickHandler"
         />
       </template>
@@ -62,26 +68,27 @@ import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import VcDropdownItem from "@ui/components/molecules/vc-dropdown/_internal/VcDropdownItem.vue";
 import { useAdaptiveItems } from "@ui/composables/useAdaptiveItems";
-import type { IBladeToolbar } from "@core/types";
+import type { ResolvedToolbarItem } from "@ui/components/organisms/vc-blade/_internal/composables/useToolbarRegistration";
 import ToolbarBaseButton from "@ui/components/organisms/vc-blade/_internal/toolbar/ToolbarBaseButton.vue";
 
 const props = defineProps<{
-  items: IBladeToolbar[];
+  items: ResolvedToolbarItem[];
   isExpanded: boolean;
 }>();
 
 const isMenuOpen = ref(false);
 const toolbarContentRef = ref<HTMLElement | null>(null);
 
-const { visibleItems, hiddenItems, showMoreButton, recalculate, updateObserver } = useAdaptiveItems<IBladeToolbar>({
-  containerRef: toolbarContentRef,
-  items: toRef(props, "items"),
-  getItemKey: (item) => item.id ?? `toolbar_item_${props.items.indexOf(item)}`,
-  moreButtonWidth: 70,
-  initialItemWidth: 60,
-});
+const { visibleItems, hiddenItems, showMoreButton, recalculate, updateObserver } =
+  useAdaptiveItems<ResolvedToolbarItem>({
+    containerRef: toolbarContentRef,
+    items: toRef(props, "items"),
+    getItemKey: (item) => item.id ?? `toolbar_item_${props.items.indexOf(item)}`,
+    moreButtonWidth: 70,
+    initialItemWidth: 60,
+  });
 
-function handleItemClick(item: IBladeToolbar) {
+function handleItemClick(item: ResolvedToolbarItem) {
   // a disabled command in the "more" menu stays disabled, as it is on the bar
   if (toValue(item.disabled)) return;
   item.clickHandler?.();

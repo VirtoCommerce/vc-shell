@@ -109,28 +109,28 @@
 <script lang="ts" setup>
 import { ref, isRef, toValue } from "vue";
 import { VcIcon } from "@ui/components/atoms";
-import type { IBladeToolbar } from "@core/types";
+import type { ResolvedToolbarItem } from "@ui/components/organisms/vc-blade/_internal/composables/useToolbarRegistration";
 import { resolveReactiveBoolean } from "@ui/components/organisms/vc-blade/utils";
 
 const props = defineProps<{
-  items: IBladeToolbar[];
+  items: ResolvedToolbarItem[];
 }>();
 
 const isExpanded = ref(false);
 
-function resolveTitle(item: IBladeToolbar): string {
+function resolveTitle(item: ResolvedToolbarItem): string {
   if (!item.title) return "";
   if (isRef(item.title)) return toValue(item.title) ?? "";
   return String(item.title);
 }
 
-function resolveIcon(item: IBladeToolbar): string {
+function resolveIcon(item: ResolvedToolbarItem): string {
   if (!item.icon) return "";
   if (typeof item.icon === "function") return item.icon();
   return item.icon;
 }
 
-function isItemDisabled(item: IBladeToolbar): boolean {
+function isItemDisabled(item: ResolvedToolbarItem): boolean {
   return resolveReactiveBoolean(item.disabled);
 }
 
@@ -153,7 +153,7 @@ function handlePrimaryClick() {
   }
 }
 
-function handleItemClick(item: IBladeToolbar) {
+function handleItemClick(item: ResolvedToolbarItem) {
   item.clickHandler?.();
   closeMenu();
 }

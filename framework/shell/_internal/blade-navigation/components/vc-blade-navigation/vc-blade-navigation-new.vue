@@ -43,6 +43,7 @@ import { useToolbar } from "@core/composables/useToolbar";
 import { usePermissions } from "@core/composables/usePermissions";
 import { useIsMac } from "@core/composables/useKeyboardShortcuts";
 import { resolveVisibility, resolveReactiveBoolean } from "@ui/components/organisms/vc-blade/utils";
+import { getBladeContext } from "@core/composables/bladeContext/registry";
 import { createShortcutDispatcher } from "./shortcut-dispatch";
 import { resolveShortcutTargetBlade } from "./focus-target";
 import { AiAgentServiceKey } from "@framework/injection-keys";
@@ -123,8 +124,12 @@ const dispatchShortcut = createShortcutDispatcher({
     ),
   getToolbarItems: (bladeId, bladeName) => getToolbarItems(bladeId, bladeName),
   isMobile: () => isMobile.value,
-  isEnabled: (item) =>
-    hasAccess(item.permissions) && resolveVisibility(item.isVisible) && !resolveReactiveBoolean(item.disabled),
+  getBladeContext,
+  // The blade goes to isVisible as the toolbar passes it, or a `(blade) => …` check fails here
+  isEnabled: (item, context, blade) =>
+    hasAccess(item.permissions) &&
+    resolveVisibility(item.isVisible, blade, context) &&
+    !resolveReactiveBoolean(item.disabled, context),
   closeBlade: (id) => bladeStack.closeBlade(id),
   toggleMaximized: (id) => bladeStack.toggleMaximized(id),
   isModalOpen: () => typeof document !== "undefined" && document.querySelector('[aria-modal="true"]') !== null,

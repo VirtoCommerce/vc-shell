@@ -1,9 +1,14 @@
-import { toValue } from "vue";
+import { inject, toValue } from "vue";
 import { useI18n } from "vue-i18n";
 import { IWidget } from "@core/services/widget-service";
+import { BladeContextKey } from "@framework/injection-keys";
+import type { BladeContext } from "@core/types";
 
 export function useHeadlessWidgetHelpers() {
   const { t } = useI18n({ useScope: "global" });
+  // Widgets registered by blade name from another module have no component to inject it from
+  const bladeContext = inject(BladeContextKey, undefined);
+  const context = (): BladeContext => bladeContext?.value ?? {};
 
   function resolveBadge(widget: IWidget): string | number | undefined {
     const badge = widget.headless?.badge;
@@ -20,6 +25,7 @@ export function useHeadlessWidgetHelpers() {
   function resolveDisabled(widget: IWidget): boolean {
     const disabled = widget.headless?.disabled;
     if (disabled === undefined) return false;
+    if (typeof disabled === "function") return Boolean(disabled(context()));
     return typeof disabled === "boolean" ? disabled : toValue(disabled);
   }
 
@@ -29,7 +35,7 @@ export function useHeadlessWidgetHelpers() {
   }
 
   function handleHeadlessClick(widget: IWidget) {
-    widget.headless?.onClick?.();
+    widget.headless?.onClick?.(context());
   }
 
   return { resolveBadge, resolveLoading, resolveDisabled, resolveTitle, handleHeadlessClick };

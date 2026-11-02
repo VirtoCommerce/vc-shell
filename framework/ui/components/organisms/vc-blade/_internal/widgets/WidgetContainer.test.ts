@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { ref, reactive, computed, defineComponent, h, nextTick } from "vue";
 import { mount } from "@vue/test-utils";
-import { IsMobileKey } from "@framework/injection-keys";
+import { BladeContextKey, IsMobileKey } from "@framework/injection-keys";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import { createWidgetService, type IWidgetService } from "@core/services/widget-service";
 
@@ -30,7 +30,10 @@ const StubWidgetComponent = defineComponent({
   },
 });
 
-function mountContainer(props: Record<string, unknown> = {}, options: { isMobile?: boolean; bladeName?: string } = {}) {
+function mountContainer(
+  props: Record<string, unknown> = {},
+  options: { isMobile?: boolean; bladeName?: string; context?: Record<string, unknown> } = {},
+) {
   return mount(WidgetContainer, {
     props: {
       bladeId: "test-blade",
@@ -40,6 +43,7 @@ function mountContainer(props: Record<string, unknown> = {}, options: { isMobile
       provide: {
         [IsMobileKey as symbol]: ref(options.isMobile ?? false),
         ...(options.bladeName && { [BladeDescriptorKey as symbol]: computed(() => ({ name: options.bladeName })) }),
+        ...(options.context && { [BladeContextKey as symbol]: ref(options.context) }),
       },
       stubs: {
         WidgetContainerDesktop: {
@@ -108,6 +112,16 @@ describe("WidgetContainer", () => {
 
     const wrapper = mountContainer();
     expect(wrapper.find(".stub-desktop-widgets").exists()).toBe(false);
+  });
+
+  it("passes the blade context to an isVisible function", () => {
+    const isVisible = vi.fn((_blade: unknown, ctx: Record<string, unknown>) => ctx.status === "draft");
+    mockWidgets.value = [{ id: "w1", component: StubWidgetComponent, isVisible }];
+
+    const wrapper = mountContainer({}, { context: { status: "draft" } });
+
+    expect(wrapper.find(".stub-desktop-widgets").attributes("data-count")).toBe("1");
+    expect(isVisible).toHaveBeenCalledWith(undefined, { status: "draft" });
   });
 
   it("normalizes bladeId to lowercase", () => {

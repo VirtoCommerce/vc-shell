@@ -20,6 +20,7 @@ import { useWidgets } from "@core/composables/useWidgets";
 import WidgetContainerDesktop from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainerDesktop.vue";
 import WidgetContainerMobile from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainerMobile.vue";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
+import { BladeContextKey } from "@framework/injection-keys";
 import { IWidget } from "@core/services/widget-service";
 import { resolveVisibility } from "@ui/components/organisms/vc-blade/utils";
 import { createLogger } from "@core/utilities";
@@ -36,6 +37,7 @@ const normalizedBladeId = computed(() => props.bladeId.toLowerCase());
 const widgetService = useWidgets();
 
 const descriptor = inject(BladeDescriptorKey, undefined);
+const bladeContext = inject(BladeContextKey, undefined);
 
 // ── External widget auto-resolution ─────────────────────────────────────────
 
@@ -113,6 +115,8 @@ onUnmounted(unregisterExternalWidgets);
 const widgets = computed(() => widgetService.getWidgets(normalizedBladeId.value));
 
 const visibleWidgets = computed(() =>
-  widgets.value.filter((widget: IWidget) => resolveVisibility(widget.isVisible, descriptor?.value)),
+  widgets.value.filter((widget: IWidget) =>
+    resolveVisibility(widget.isVisible, descriptor?.value, bladeContext?.value),
+  ),
 );
 </script>

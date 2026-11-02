@@ -431,7 +431,7 @@ const props = withDefaults(defineProps<VcDataTableExtendedProps<T> & { fitMode?:
   sortMode: "single",
   multiSortMeta: () => [],
   removableSort: true,
-  striped: false,
+  striped: true,
   bordered: false,
   showGridlines: false,
   rowHover: true,

@@ -295,6 +295,27 @@ describe("useDataTableOrchestrator", () => {
     }
   });
 
+  it("computedVariant prefers bordered and an explicit variant over striped", () => {
+    const bordered = withSetup(() =>
+      useDataTableOrchestrator<TestItem>(
+        buildOptions({ props: { ...buildOptions().props, striped: true, bordered: true } }),
+      ),
+    );
+    const variant = withSetup(() =>
+      useDataTableOrchestrator<TestItem>(
+        buildOptions({ props: { ...buildOptions().props, striped: true, variant: "bordered" } }),
+      ),
+    );
+
+    try {
+      expect(bordered.result.computedVariant.value).toBe("bordered");
+      expect(variant.result.computedVariant.value).toBe("bordered");
+    } finally {
+      bordered.app.unmount();
+      variant.app.unmount();
+    }
+  });
+
   it("emits the reloaded objects in update:selection after items are replaced", async () => {
     const options = buildOptions();
     options.props = reactive({

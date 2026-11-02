@@ -1561,7 +1561,7 @@ function onRowRemove(event: { data: Product; index: number; cancel: () => void }
 
 | Prop            | Type                                   | Default     | Description                    |
 | --------------- | -------------------------------------- | ----------- | ------------------------------ |
-| `striped`       | `boolean`                              | `false`     | Alternate row backgrounds.     |
+| `striped`       | `boolean`                              | `true`      | Alternate row backgrounds.     |
 | `bordered`      | `boolean`                              | `false`     | Border around the table.       |
 | `showGridlines` | `boolean`                              | `false`     | Grid lines between cells.      |
 | `rowHover`      | `boolean`                              | `true`      | Highlight rows on hover.       |

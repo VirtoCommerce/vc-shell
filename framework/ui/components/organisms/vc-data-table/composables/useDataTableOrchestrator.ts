@@ -251,9 +251,10 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
   const isSelectionViaColumn = computed(() => selectionColumn.value !== null);
 
   const computedVariant = computed(() => {
-    if (props.striped) return "striped";
+    // striped is on by default, so explicit bordered/variant must win over it
     if (props.bordered) return "bordered";
-    return props.variant ?? "default";
+    if (props.variant && props.variant !== "default") return props.variant;
+    return props.striped ? "striped" : "default";
   });
 
   // ============================================================================

@@ -66,8 +66,9 @@ export function getThumbnailUrl(url: string | undefined, size?: ThumbnailSize): 
  * isExternalImage({ relativeUrl: "/catalog/a.jpg" }) // false
  * isExternalImage({ relativeUrl: "https://cdn.example.com/a.jpg" }) // true
  */
-export function isExternalImage(image: { relativeUrl?: unknown; [key: string]: unknown } | null | undefined): boolean {
-  const relativeUrl = image?.relativeUrl;
+// Takes any object: API client models are classes, and a class has no index signature to match a narrower type
+export function isExternalImage(image: object | null | undefined): boolean {
+  const relativeUrl = (image as { relativeUrl?: unknown } | null | undefined)?.relativeUrl;
   // Not new URL(): it reads "//catalog/a.jpg" as a link to the host "catalog"
   return typeof relativeUrl === "string" && /^[a-z][a-z\d+.-]*:/i.test(relativeUrl);
 }

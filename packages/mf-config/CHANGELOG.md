@@ -1,5 +1,9 @@
 # Changelog
 
+# [2.9.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.8.0...v2.9.0) (2026-11-02)
+
+**Note:** Version bump only for package @vc-shell/mf-config
+
 # [2.8.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.7.0...v2.8.0) (2026-10-30)
 
 **Note:** Version bump only for package @vc-shell/mf-config

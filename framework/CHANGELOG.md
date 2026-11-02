@@ -1,5 +1,11 @@
 # Changelog
 
+# [2.9.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.8.0...v2.9.0) (2026-11-02)
+
+### Features
+
+- **framework:** pass blade context to toolbar items and widgets registered from other modules (#399) ([fd1e671](https://github.com/VirtoCommerce/vc-shell/commit/fd1e671bac4df415d57679a0ff1cdfedbbed225c)), closes [#399](https://github.com/VirtoCommerce/vc-shell/issues/399)
+
 # [2.8.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.7.0...v2.8.0) (2026-10-30)
 
 ### Features

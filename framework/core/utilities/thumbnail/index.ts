@@ -58,6 +58,21 @@ export function getThumbnailUrl(url: string | undefined, size?: ThumbnailSize): 
 }
 
 /**
+ * Thumbnails exist only for files the platform stores. An image linked from another host keeps that
+ * absolute URL in `relativeUrl` (a stored one has a path there, sometimes starting with "//"), and a
+ * thumbnail URL guessed on that host gets a 404 or an unrelated image. Use the original for such images.
+ *
+ * @example
+ * isExternalImage({ relativeUrl: "/catalog/a.jpg" }) // false
+ * isExternalImage({ relativeUrl: "https://cdn.example.com/a.jpg" }) // true
+ */
+export function isExternalImage(image: { relativeUrl?: unknown; [key: string]: unknown } | null | undefined): boolean {
+  const relativeUrl = image?.relativeUrl;
+  // Not new URL(): it reads "//catalog/a.jpg" as a link to the host "catalog"
+  return typeof relativeUrl === "string" && /^[a-z][a-z\d+.-]*:/i.test(relativeUrl);
+}
+
+/**
  * Maps a display size in pixels to the best-fit thumbnail preset.
  * Picks the smallest thumbnail that is >= the display size.
  *

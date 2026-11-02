@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getThumbnailUrl, getBestThumbnailSize } from "./index";
+import { getThumbnailUrl, getBestThumbnailSize, isExternalImage } from "./index";
 
 describe("getThumbnailUrl", () => {
   it("appends preset suffix before extension", () => {
@@ -67,5 +67,23 @@ describe("getBestThumbnailSize", () => {
 
   it("returns lg for very large sizes", () => {
     expect(getBestThumbnailSize(500)).toBe("lg");
+  });
+});
+
+describe("isExternalImage", () => {
+  it("is false for a file the platform stores", () => {
+    expect(isExternalImage({ relativeUrl: "/catalog/a.jpg" })).toBe(false);
+    expect(isExternalImage({ relativeUrl: "//catalog/a.jpg" })).toBe(false);
+  });
+
+  it("is true for an image linked from another host", () => {
+    expect(isExternalImage({ relativeUrl: "https://cdn.example.com/a.jpg" })).toBe(true);
+    expect(isExternalImage({ relativeUrl: "HTTP://cdn.example.com/a.jpg" })).toBe(true);
+  });
+
+  it("is false when it cannot tell", () => {
+    expect(isExternalImage({ url: "https://cdn.example.com/a.jpg" })).toBe(false);
+    expect(isExternalImage(undefined)).toBe(false);
+    expect(isExternalImage(null)).toBe(false);
   });
 });

@@ -36,8 +36,7 @@ import type { AssetLike } from "@core/composables/useAssetsManager";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcImageTile } from "@ui/components/molecules/vc-image-tile";
 import { useResponsive } from "@framework/core/composables/useResponsive";
-import type { ThumbnailSize } from "@core/utilities/thumbnail";
-import { isExternalImage } from "../thumbnails";
+import { isExternalImage, type ThumbnailSize } from "@core/utilities/thumbnail";
 
 export interface Props {
   image?: AssetLike;

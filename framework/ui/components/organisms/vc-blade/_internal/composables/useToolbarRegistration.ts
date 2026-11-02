@@ -103,9 +103,11 @@ export function useToolbarRegistration(items: Ref<IBladeToolbar[]>) {
       const { clickHandler } = item;
       bound = {
         ...item,
-        disabled: computed(() => resolveReactiveBoolean(item.disabled, context.value)),
+        disabled: computed(() => resolveReactiveBoolean(item.disabled, descriptor?.value, context.value)),
         // The handler may be async; return its promise so the button can show it is busy
-        clickHandler: clickHandler ? () => clickHandler.call(item, context.value) as void | Promise<void> : undefined,
+        clickHandler: clickHandler
+          ? () => clickHandler.call(item, descriptor?.value, context.value) as void | Promise<void>
+          : undefined,
       };
       boundItems.set(item, bound);
     }
@@ -121,7 +123,7 @@ export function useToolbarRegistration(items: Ref<IBladeToolbar[]>) {
         (item) =>
           hasAccess(item.permissions) &&
           resolveVisibility(item.isVisible, descriptor?.value, ctx) &&
-          (isMobile.value ? !resolveReactiveBoolean(item.disabled, ctx) : true),
+          (isMobile.value ? !resolveReactiveBoolean(item.disabled, descriptor?.value, ctx) : true),
       )
       .sort((a, b) => {
         const priorityA = a.priority ?? 0;

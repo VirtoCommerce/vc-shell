@@ -29,9 +29,10 @@ describe("resolveVisibility", () => {
     expect(resolveVisibility(visible)).toBe(false);
   });
 
-  it("calls a function with blade instance", () => {
-    const bladeInstance = { id: "test-blade" } as any;
-    const fn = (blade: any) => blade?.id === "test-blade";
+  // The form modules have used since 1.1.37: `isVisible: (blade) => !!blade?.param`
+  it("calls a function with the blade as the first argument", () => {
+    const bladeInstance = { id: "test-blade", param: "42" } as any;
+    const fn = (blade: any) => !!blade?.param;
 
     expect(resolveVisibility(fn, bladeInstance)).toBe(true);
     expect(resolveVisibility(fn, undefined)).toBe(false);
@@ -80,10 +81,16 @@ describe("resolveReactiveBoolean", () => {
     expect(resolveReactiveBoolean(val)).toBe(false);
   });
 
-  it("calls a function with the blade context", () => {
-    const disabled = (ctx: Record<string, unknown>) => !(ctx.selectedItems as unknown[]).length;
-    expect(resolveReactiveBoolean(disabled, { selectedItems: [] })).toBe(true);
-    expect(resolveReactiveBoolean(disabled, { selectedItems: [1] })).toBe(false);
+  it("calls a function with the blade context as the second argument", () => {
+    const disabled = (_blade: unknown, ctx: Record<string, unknown>) => !(ctx.selectedItems as unknown[]).length;
+    expect(resolveReactiveBoolean(disabled, undefined, { selectedItems: [] })).toBe(true);
+    expect(resolveReactiveBoolean(disabled, undefined, { selectedItems: [1] })).toBe(false);
+  });
+
+  it("passes the blade as the first argument", () => {
+    const disabled = (blade?: { name: string }) => blade?.name === "Offers";
+    expect(resolveReactiveBoolean(disabled, { name: "Offers" } as any)).toBe(true);
+    expect(resolveReactiveBoolean(disabled, { name: "Products" } as any)).toBe(false);
   });
 });
 

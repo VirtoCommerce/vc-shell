@@ -101,13 +101,13 @@ defineBladeContext(
 
 ## Recipe: Consumers Registered from Another Module
 
-Toolbar buttons and headless widgets registered by blade name from another module are plain objects, so `injectBladeContext()` has no component to run in. The framework hands them the context instead:
+Toolbar buttons and headless widgets registered by blade name from another module are plain objects, so `injectBladeContext()` has no component to run in. The framework calls their function forms with two arguments instead: `(blade, ctx)`, the descriptor of the blade the button or widget sits on and its context. The blade comes first because `isVisible: (blade) => …` has worked that way since 1.1.37.
 
-| Registration                                          | Receives the context                                                              |
-| ----------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `registerExternalToolbarItem` / `registerToolbarItem` | `clickHandler(ctx)`, `disabled: (ctx) => …`, `isVisible: (blade, ctx) => …`       |
-| `registerExternalWidget` / `registerWidget`           | `isVisible: (blade, ctx) => …`; the component itself calls `injectBladeContext()` |
-| `registerWidget` with `headless`                      | `headless.onClick(ctx)`, `headless.disabled: (ctx) => …`                          |
+| Registration                                          | Called with `(blade, ctx)`                                     |
+| ----------------------------------------------------- | -------------------------------------------------------------- |
+| `registerExternalToolbarItem` / `registerToolbarItem` | `clickHandler`, `disabled`, `isVisible`                        |
+| `registerExternalWidget` / `registerWidget`           | `isVisible`; the component itself calls `injectBladeContext()` |
+| `registerWidget` with `headless`                      | `headless.onClick`, `headless.disabled`                        |
 
 ```typescript
 // In the blade
@@ -118,12 +118,23 @@ registerExternalToolbarItem({
   id: "bulk-export",
   title: "Export selected",
   targetBlades: ["Products"],
-  disabled: (ctx) => !(ctx.selectedItems as Product[] | undefined)?.length,
-  clickHandler: (ctx) => exportProducts(ctx?.selectedItems as Product[]),
+  disabled: (_blade, ctx) => !(ctx.selectedItems as Product[] | undefined)?.length,
+  clickHandler: (_blade, ctx) => exportProducts(ctx.selectedItems as Product[]),
 });
 ```
 
 The values are the same unwrapped snapshot `injectBladeContext()` returns, and the state is reactive: `disabled` and `isVisible` follow the blade's refs. A blade without `defineBladeContext` gives these handlers `{}`, not an error.
+
+`ctx` does not say which blade it came from. When one registration targets several blades, tell them apart by `blade.name`:
+
+```typescript
+registerExternalToolbarItem({
+  id: "bulk-export",
+  targetBlades: ["Products", "Offers"],
+  disabled: (_blade, ctx) => !(ctx.selectedItems as unknown[] | undefined)?.length,
+  clickHandler: (blade, ctx) => (blade?.name === "Offers" ? exportOffers(ctx.selectedItems as Offer[]) : exportProducts(ctx.selectedItems as Product[])),
+});
+```
 
 ## Details
 

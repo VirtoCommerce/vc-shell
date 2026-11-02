@@ -1,3 +1,4 @@
+import type { BladeDescriptor } from "@core/blade-navigation/types";
 import type { BladeContext, IBladeToolbar, ShortcutDefinition } from "@core/types";
 import {
   hotkey,
@@ -8,21 +9,15 @@ import {
   expectedEventKey,
 } from "@core/composables/useKeyboardShortcuts";
 
-interface ActiveBladeLike {
-  id: string;
-  name?: string;
-  parentId?: string;
-}
-
-export interface ShortcutDispatchDeps<B extends ActiveBladeLike = ActiveBladeLike> {
+export interface ShortcutDispatchDeps {
   isMac: boolean;
-  getActiveBlade: () => B | undefined;
+  getActiveBlade: () => BladeDescriptor | undefined;
   getToolbarItems: (bladeId: string, bladeName?: string) => IBladeToolbar[];
   isMobile: () => boolean;
   /** Data the blade exposed with defineBladeContext; `{}` when none. */
   getBladeContext: (bladeId: string) => BladeContext;
   /** Resolves permissions + isVisible + disabled for a toolbar item on the given blade. */
-  isEnabled: (item: IBladeToolbar, context: BladeContext, blade: B) => boolean;
+  isEnabled: (item: IBladeToolbar, context: BladeContext, blade: BladeDescriptor) => boolean;
   closeBlade: (id: string) => void | Promise<unknown>;
   toggleMaximized: (id: string) => void;
   /** True while a modal (`aria-modal="true"`) is open; blade shortcuts are suppressed while it is. */
@@ -83,7 +78,7 @@ export function warnShortcutIssues(bladeId: string, items: IBladeToolbar[], isMa
   }
 }
 
-export function createShortcutDispatcher<B extends ActiveBladeLike>(deps: ShortcutDispatchDeps<B>) {
+export function createShortcutDispatcher(deps: ShortcutDispatchDeps) {
   const inFlight = new Set<string>();
 
   async function runGuarded(runKey: string, run: () => unknown | Promise<unknown>): Promise<void> {
@@ -121,7 +116,7 @@ export function createShortcutDispatcher<B extends ActiveBladeLike>(deps: Shortc
       event.preventDefault(); // matched toolbar item claims the combo, even if disabled
       const context = deps.getBladeContext(bladeId);
       if (!deps.isEnabled(item, context, active)) return; // disabled: consumed as a no-op
-      await runGuarded(`${bladeId}::${item.id ?? "item"}`, () => item.clickHandler?.(context));
+      await runGuarded(`${bladeId}::${item.id ?? "item"}`, () => item.clickHandler?.(active, context));
       return;
     }
 

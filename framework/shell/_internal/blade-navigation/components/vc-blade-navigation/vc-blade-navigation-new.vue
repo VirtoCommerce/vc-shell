@@ -129,7 +129,7 @@ const dispatchShortcut = createShortcutDispatcher({
   isEnabled: (item, context, blade) =>
     hasAccess(item.permissions) &&
     resolveVisibility(item.isVisible, blade, context) &&
-    !resolveReactiveBoolean(item.disabled, context),
+    !resolveReactiveBoolean(item.disabled, blade, context),
   closeBlade: (id) => bladeStack.closeBlade(id),
   toggleMaximized: (id) => bladeStack.toggleMaximized(id),
   isModalOpen: () => typeof document !== "undefined" && document.querySelector('[aria-modal="true"]') !== null,

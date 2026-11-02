@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.10.4](https://github.com/VirtoCommerce/vc-shell/compare/v2.10.3...v2.10.4) (2026-11-02)
+
+### Bug Fixes
+
+- **framework:** let isExternalImage take API client models (#405) ([ec5bc41](https://github.com/VirtoCommerce/vc-shell/commit/ec5bc413b450f5b400eb1a722cab33c93ed69add)), closes [#405](https://github.com/VirtoCommerce/vc-shell/issues/405) [#404](https://github.com/VirtoCommerce/vc-shell/issues/404) [VirtoCommerce/vendor-portal#261](https://github.com/VirtoCommerce/vendor-portal/issues/261)
+
 ## [2.10.3](https://github.com/VirtoCommerce/vc-shell/compare/v2.10.2...v2.10.3) (2026-11-02)
 
 ### Bug Fixes

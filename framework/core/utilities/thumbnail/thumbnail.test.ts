@@ -81,6 +81,14 @@ describe("isExternalImage", () => {
     expect(isExternalImage({ relativeUrl: "HTTP://cdn.example.com/a.jpg" })).toBe(true);
   });
 
+  it("takes an API client model class", () => {
+    class Image {
+      constructor(public relativeUrl?: string) {}
+    }
+    expect(isExternalImage(new Image("https://cdn.example.com/a.jpg"))).toBe(true);
+    expect(isExternalImage(new Image("/catalog/a.jpg"))).toBe(false);
+  });
+
   it("is false when it cannot tell", () => {
     expect(isExternalImage({ url: "https://cdn.example.com/a.jpg" })).toBe(false);
     expect(isExternalImage(undefined)).toBe(false);

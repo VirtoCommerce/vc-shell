@@ -264,31 +264,41 @@ export function useAdaptiveItems<T>(options: {
 
     nextTick(() => {
       if (!containerRef.value) return;
-
-      const elements = containerRef.value.querySelectorAll("[data-item-key]");
-      const newElements = new Set<Element>();
-
-      // Observe new elements
-      elements.forEach((element) => {
-        newElements.add(element);
-        if (!observedElements.has(element)) {
-          elementsObserver?.observe(element);
-          observedElements.add(element);
-        }
-      });
-
-      // Unobserve removed elements
-      for (const element of observedElements) {
-        if (!newElements.has(element)) {
-          elementsObserver?.unobserve(element);
-          observedElements.delete(element);
-        }
-      }
-
+      observeRenderedItems();
       // Measure all current elements
       measureElementSizes();
     });
   };
+
+  /** Observe the item elements in the DOM now and drop the ones that left it. */
+  const observeRenderedItems = () => {
+    if (!containerRef.value || !elementsObserver) return;
+
+    const elements = containerRef.value.querySelectorAll("[data-item-key]");
+    const newElements = new Set<Element>();
+
+    elements.forEach((element) => {
+      newElements.add(element);
+      if (!observedElements.has(element)) {
+        elementsObserver?.observe(element);
+        observedElements.add(element);
+      }
+    });
+
+    for (const element of observedElements) {
+      if (!newElements.has(element)) {
+        elementsObserver?.unobserve(element);
+        observedElements.delete(element);
+      }
+    }
+  };
+
+  // An item shown again after it was hidden renders as a new element. Observing it picks up a width
+  // that changed while it was hidden, such as a widget that finished loading.
+  watch(
+    () => visibleItems.value.map(getItemKey).join("\0"),
+    () => nextTick(observeRenderedItems),
+  );
 
   // Debounced recalculation for container width changes (avoid per-pixel recalcs during animation)
   const debouncedCalculate = useDebounceFn(() => {

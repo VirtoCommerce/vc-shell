@@ -170,11 +170,13 @@ describe("WidgetContainerDesktop", () => {
       expect(document.activeElement).toBe(byLabel(/REMOVE:W1/)[0].element);
     });
 
-    it("disables plus at 5 and shows the hint", async () => {
+    it("plus on a full strip swaps in the widget and hides the last one", async () => {
       await edit();
       const plus = byLabel(/ADD:W6/)[0];
-      expect(plus.attributes("disabled")).toBeDefined();
-      expect(wrapper.text()).toContain("STRIP_FULL");
+      expect(plus.attributes("disabled")).toBeUndefined();
+      await plus.trigger("click");
+      expect(byLabel(/REMOVE:W6/).length).toBe(1);
+      expect(byLabel(/ADD:W5/).length).toBe(1);
     });
 
     it("Done writes storage, Reset clears it", async () => {

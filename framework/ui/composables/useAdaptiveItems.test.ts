@@ -1,11 +1,12 @@
-import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
+import { describe, it, expect, vi, beforeAll, beforeEach, afterAll } from "vitest";
 import { defineComponent, h, ref, toRef, type PropType } from "vue";
 import { mount, flushPromises } from "@vue/test-utils";
 
-// Fixed container width; jsdom has no layout
+// Container width set by the test; jsdom has no layout
+const layout = vi.hoisted(() => ({ width: undefined as unknown as import("vue").Ref<number> }));
 vi.mock("@vueuse/core", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@vueuse/core")>()),
-  useElementSize: () => ({ width: ref(300), height: ref(0) }),
+  useElementSize: () => ({ width: layout.width, height: ref(0) }),
 }));
 
 import { useAdaptiveItems, type IUseAdaptiveItems } from "./useAdaptiveItems";
@@ -18,12 +19,23 @@ const MORE_WIDTH = 40;
 describe("useAdaptiveItems", () => {
   const offsetWidth = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "offsetWidth");
 
+  const observed = new Set<Element>();
+
+  beforeEach(() => {
+    layout.width = ref(300);
+    observed.clear();
+  });
+
   beforeAll(() => {
     vi.stubGlobal(
       "ResizeObserver",
       class {
-        observe() {}
-        unobserve() {}
+        observe(el: Element) {
+          observed.add(el);
+        }
+        unobserve(el: Element) {
+          observed.delete(el);
+        }
         disconnect() {}
       },
     );
@@ -109,5 +121,22 @@ describe("useAdaptiveItems", () => {
     await flushPromises();
 
     expect(adaptive().visibleItems.value).toEqual(["a", "b"]);
+  });
+
+  // An item hidden and shown again renders as a new element. Unobserved, it kept the width measured
+  // while it was loading, so the widget strip sized itself too narrow and clipped the last widget.
+  it("observes an item rendered again after it was hidden", async () => {
+    layout.width.value = 250;
+    const { wrapper, adaptive } = mountItems(["a", "b", "c"]);
+    await flushPromises();
+    expect(adaptive().visibleItems.value).toEqual(["a", "b"]);
+
+    layout.width.value = 400;
+    await new Promise((resolve) => setTimeout(resolve, 60));
+    await flushPromises();
+
+    expect(adaptive().visibleItems.value).toEqual(["a", "b", "c"]);
+    const c = wrapper.find('[data-item-key="c"]').element;
+    expect(observed.has(c)).toBe(true);
   });
 });

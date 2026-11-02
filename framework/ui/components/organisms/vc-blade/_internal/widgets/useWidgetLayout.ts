@@ -1,4 +1,4 @@
-import { computed, readonly, ref, toValue, type ComputedRef, type MaybeRefOrGetter, type Ref } from "vue";
+import { computed, readonly, ref, toValue, type MaybeRefOrGetter, type Ref } from "vue";
 import { useLocalStorage } from "@vueuse/core";
 import type { IWidget } from "@core/services/widget-service";
 
@@ -80,7 +80,6 @@ export function useWidgetLayout(bladeName: MaybeRefOrGetter<string>, widgets: Ma
   // Edits take positions in the lists as shown; the draft can also hold ids that stopped rendering
   // during the edit, so positions are mapped onto it by id
   const shownIds = (list: keyof IWidgetLayoutState) => (list === "strip" ? strip : overflow).value.map((w) => w.id);
-  const canAddToStrip = computed(() => shownIds("strip").length < WIDGET_STRIP_MAX);
 
   function draftIndex(list: keyof IWidgetLayoutState, shownIndex: number) {
     const anchor = shownIds(list)[shownIndex];
@@ -96,10 +95,17 @@ export function useWidgetLayout(bladeName: MaybeRefOrGetter<string>, widgets: Ma
     if (!editing.value) return;
     const from = to === "strip" ? "overflow" : "strip";
     if (!draft.value[from].includes(id)) return;
-    if (to === "strip" && !canAddToStrip.value) return;
+    // A full strip hands its last widget over to the place the new one left
+    const shownStrip = shownIds("strip");
+    const displaced = to === "strip" && shownStrip.length >= WIDGET_STRIP_MAX ? shownStrip.at(-1) : undefined;
     const at = draftIndex(to, index ?? Infinity);
+    const left = draft.value[from].indexOf(id);
     draft.value[from] = draft.value[from].filter((x) => x !== id);
     draft.value[to].splice(at, 0, id);
+    if (displaced) {
+      draft.value.strip = draft.value.strip.filter((x) => x !== displaced);
+      draft.value.overflow.splice(left, 0, displaced);
+    }
   }
 
   const moveToStrip = (id: string, index?: number) => move(id, "strip", index);
@@ -156,7 +162,6 @@ export function useWidgetLayout(bladeName: MaybeRefOrGetter<string>, widgets: Ma
     overflow,
     editing: readonly(editing) as Readonly<Ref<boolean>>,
     draft: readonly(draft) as Readonly<Ref<IWidgetLayoutState>>,
-    canAddToStrip: canAddToStrip as ComputedRef<boolean>,
     startEdit,
     moveToStrip,
     moveToOverflow,

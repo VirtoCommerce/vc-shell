@@ -1,6 +1,8 @@
 import { ref, nextTick, defineComponent, h } from "vue";
 import { mount } from "@vue/test-utils";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
+import { BladeContextKey } from "@framework/injection-keys";
+import { getBladeContext } from "@core/composables/bladeContext/registry";
 import { mountWithSetup } from "@framework/test-helpers";
 
 const mockRegisteredItems = ref<any[]>([]);
@@ -39,6 +41,7 @@ import { useToolbarRegistration } from "./useToolbarRegistration";
 describe("useToolbarRegistration", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockGetItems.mockImplementation(() => mockRegisteredItems.value);
     mockRegisteredItems.value = [];
   });
 
@@ -122,5 +125,93 @@ describe("useToolbarRegistration", () => {
     });
 
     expect(mockGetItems).toHaveBeenCalledWith("test-blade", "Products");
+  });
+
+  describe("blade context", () => {
+    function mountWithContext(context: Record<string, unknown>) {
+      const ctx = ref(context);
+      let visibleItems: any;
+      const Test = defineComponent({
+        setup() {
+          visibleItems = useToolbarRegistration(ref<any[]>([])).visibleItems;
+          return () => h("div");
+        },
+      });
+      const wrapper = mount(Test, {
+        global: {
+          provide: {
+            [BladeDescriptorKey as symbol]: ref({ id: "test-blade", name: "Products" }),
+            [BladeContextKey as symbol]: ctx,
+          },
+        },
+      });
+      return { ctx, wrapper, items: () => visibleItems.value };
+    }
+
+    it("passes the context to clickHandler", () => {
+      const clickHandler = vi.fn();
+      mockRegisteredItems.value = [{ id: "export", clickHandler }];
+      const { items } = mountWithContext({ selectedItems: ["a"] });
+
+      items()[0].clickHandler();
+
+      expect(clickHandler).toHaveBeenCalledWith({ selectedItems: ["a"] });
+    });
+
+    it("resolves a disabled function against the context and follows it", async () => {
+      mockRegisteredItems.value = [{ id: "export", disabled: (ctx: any) => !(ctx.selectedItems as unknown[]).length }];
+      const { ctx, items } = mountWithContext({ selectedItems: [] });
+      expect(items()[0].disabled.value).toBe(true);
+
+      ctx.value = { selectedItems: ["a"] };
+      await nextTick();
+
+      expect(items()[0].disabled.value).toBe(false);
+    });
+
+    // The desktop toolbar keeps the item objects it got first and refreshes them only when ids change
+    it("keeps an item already handed out in sync with the context", async () => {
+      const clickHandler = vi.fn();
+      mockRegisteredItems.value = [
+        { id: "export", disabled: (ctx: any) => !(ctx.selectedItems as unknown[]).length, clickHandler },
+      ];
+      const { ctx, items } = mountWithContext({ selectedItems: [] });
+      const snapshot = items()[0];
+
+      ctx.value = { selectedItems: ["a", "b"] };
+      await nextTick();
+
+      expect(snapshot.disabled.value).toBe(false);
+      snapshot.clickHandler!();
+      expect(clickHandler).toHaveBeenCalledWith({ selectedItems: ["a", "b"] });
+    });
+
+    it("passes the descriptor and the context to an isVisible function", () => {
+      const isVisible = vi.fn(() => false);
+      mockRegisteredItems.value = [{ id: "export", isVisible }];
+      const { items } = mountWithContext({ status: "draft" });
+
+      expect(items()).toEqual([]);
+      expect(isVisible).toHaveBeenCalledWith(expect.objectContaining({ name: "Products" }), { status: "draft" });
+    });
+
+    it("gives handlers an empty object when the blade defines no context", () => {
+      const clickHandler = vi.fn();
+      mockRegisteredItems.value = [{ id: "export", clickHandler }];
+      const { result } = mountWithSetup(() => useToolbarRegistration(ref<any[]>([])));
+
+      result.visibleItems.value[0].clickHandler!();
+
+      expect(clickHandler).toHaveBeenCalledWith({});
+    });
+
+    it("exposes the context to keyboard shortcuts until unmount", () => {
+      const { wrapper } = mountWithContext({ selectedItems: ["a"] });
+      expect(getBladeContext("test-blade")).toEqual({ selectedItems: ["a"] });
+
+      wrapper.unmount();
+
+      expect(getBladeContext("test-blade")).toEqual({});
+    });
   });
 });

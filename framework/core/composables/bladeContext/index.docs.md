@@ -99,6 +99,32 @@ defineBladeContext(
 </script>
 ```
 
+## Recipe: Consumers Registered from Another Module
+
+Toolbar buttons and headless widgets registered by blade name from another module are plain objects, so `injectBladeContext()` has no component to run in. The framework hands them the context instead:
+
+| Registration                                          | Receives the context                                                              |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `registerExternalToolbarItem` / `registerToolbarItem` | `clickHandler(ctx)`, `disabled: (ctx) => …`, `isVisible: (blade, ctx) => …`       |
+| `registerExternalWidget` / `registerWidget`           | `isVisible: (blade, ctx) => …`; the component itself calls `injectBladeContext()` |
+| `registerWidget` with `headless`                      | `headless.onClick(ctx)`, `headless.disabled: (ctx) => …`                          |
+
+```typescript
+// In the blade
+defineBladeContext({ selectedItems });
+
+// In another module
+registerExternalToolbarItem({
+  id: "bulk-export",
+  title: "Export selected",
+  targetBlades: ["Products"],
+  disabled: (ctx) => !(ctx.selectedItems as Product[] | undefined)?.length,
+  clickHandler: (ctx) => exportProducts(ctx?.selectedItems as Product[]),
+});
+```
+
+The values are the same unwrapped snapshot `injectBladeContext()` returns, and the state is reactive: `disabled` and `isVisible` follow the blade's refs. A blade without `defineBladeContext` gives these handlers `{}`, not an error.
+
 ## Details
 
 - **Automatic ref unwrapping**: `defineBladeContext` shallow-unwraps all ref/computed values in the provided object. Consumers get plain values directly (`ctx.value.item` instead of `ctx.value.item.value`). This works reactively — when the source ref changes, the context updates automatically.

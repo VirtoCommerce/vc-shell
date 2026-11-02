@@ -30,7 +30,8 @@ describe("createShortcutDispatcher", () => {
     getActiveBlade: () => ({ id: "b1", parentId: "root" }) as any,
     getToolbarItems: (_id: string) => [] as any[],
     isMobile: () => false,
-    isEnabled: (_item: any) => true,
+    getBladeContext: (_id: string) => ({}) as Record<string, unknown>,
+    isEnabled: (_item: any, _context: Record<string, unknown>, _blade: any) => true,
     closeBlade: vi.fn(),
     toggleMaximized: vi.fn(),
     isModalOpen: () => false,
@@ -73,6 +74,23 @@ describe("createShortcutDispatcher", () => {
     const dispatch = createShortcutDispatcher(deps);
     await dispatch(ev({ code: "KeyS", ctrlKey: true }));
     expect(clickHandler).not.toHaveBeenCalled();
+  });
+
+  it("passes the active blade and its context to isEnabled, and the context to the handler", async () => {
+    const clickHandler = vi.fn();
+    const context = { selectedItems: [{ id: "1" }] };
+    const deps = baseDeps();
+    deps.getBladeContext = (id) => (id === "b1" ? context : {});
+    const isEnabled = vi.fn(() => true);
+    deps.isEnabled = isEnabled;
+    deps.getToolbarItems = () => [{ id: "save", shortcut: { key: "s", mod: true }, clickHandler }];
+    const dispatch = createShortcutDispatcher(deps);
+    await dispatch(ev({ code: "KeyS", ctrlKey: true }));
+    expect(isEnabled).toHaveBeenCalledWith(expect.objectContaining({ id: "save" }), context, {
+      id: "b1",
+      parentId: "root",
+    });
+    expect(clickHandler).toHaveBeenCalledWith(context);
   });
 
   it("Esc closes a closable active blade", async () => {

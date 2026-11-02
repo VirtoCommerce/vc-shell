@@ -73,18 +73,26 @@ export interface ShortcutDefinition {
   shift?: boolean;
 }
 
+/**
+ * Data a blade exposes with `defineBladeContext`, refs already unwrapped.
+ * Empty when the blade defines none.
+ */
+export type BladeContext = Record<string, unknown>;
+
 export interface IBladeToolbar {
   id?: string;
   icon?: string | (() => string);
-  disabled?: boolean | ComputedRef<boolean | undefined>;
+  /** A function form receives the blade context, e.g. `(ctx) => !(ctx.selectedItems as Item[])?.length`. */
+  disabled?: boolean | ComputedRef<boolean | undefined> | ((context: BladeContext) => boolean | undefined);
   title?: string | Ref<string> | ComputedRef<string>;
   isVisible?:
     | boolean
     | Ref<boolean | undefined>
     | ComputedRef<boolean | undefined>
-    | ((blade?: BladeDescriptor) => boolean | undefined);
+    | ((blade: BladeDescriptor | undefined, context: BladeContext) => boolean | undefined);
 
-  clickHandler?(app?: Record<string, any> | null): void;
+  /** Receives the blade context of the blade the button sits on. */
+  clickHandler?(context?: BladeContext): void;
   separator?: "left" | "right" | "both";
   permissions?: string | string[];
   /** Keyboard shortcut that triggers this item's clickHandler. Use `hotkey.*`. */

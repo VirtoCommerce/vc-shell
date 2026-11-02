@@ -1,6 +1,7 @@
 import { Component, ComputedRef, Ref, shallowReactive } from "vue";
 import type { BladeDescriptor } from "@core/blade-navigation/types";
 import type { Severity } from "@core/types/severity";
+import type { BladeContext } from "@core/types";
 import { cloneDeep } from "lodash-es";
 import { createBladeScopedRegistry, createPreregistrationBus } from "@core/services/_internal";
 
@@ -70,8 +71,10 @@ export interface IHeadlessWidgetFields {
   icon: string;
   badge?: Ref<number | string> | ComputedRef<number | string>;
   loading?: Ref<boolean> | ComputedRef<boolean>;
-  disabled?: Ref<boolean> | ComputedRef<boolean> | boolean;
-  onClick?: () => void;
+  /** A function form receives the blade context */
+  disabled?: Ref<boolean> | ComputedRef<boolean> | boolean | ((context: BladeContext) => boolean);
+  /** Receives the blade context of the blade the widget sits on */
+  onClick?: (context?: BladeContext) => void;
   onRefresh?: () => void | Promise<void>;
   alerts?: AlertsSource;
   alertsComponent?: Component;
@@ -86,13 +89,20 @@ export interface IWidget {
   props?: Record<string, unknown>;
   /** @deprecated External widgets inject data via `injectBladeContext()` */
   events?: Record<string, unknown>;
-  isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: BladeDescriptor) => boolean);
+  /** A function form receives the blade descriptor and the blade context. */
+  isVisible?: WidgetVisibility;
   /** @deprecated Use headless widgets via `useBladeWidgets()` instead */
   updateFunctionName?: string;
   trigger?: IWidgetTrigger;
   /** When set, framework renders VcWidget from these fields instead of component */
   headless?: IHeadlessWidgetFields;
 }
+
+export type WidgetVisibility =
+  | boolean
+  | ComputedRef<boolean>
+  | Ref<boolean>
+  | ((blade: BladeDescriptor | undefined, context: BladeContext) => boolean);
 
 export interface IWidgetRegistration {
   bladeId: string;
@@ -103,7 +113,8 @@ export interface IExternalWidgetRegistration {
   id: string;
   component: Component;
   targetBlades?: string[];
-  isVisible?: boolean | ComputedRef<boolean> | Ref<boolean> | ((blade?: BladeDescriptor) => boolean);
+  /** A function form receives the blade descriptor and the blade context. */
+  isVisible?: WidgetVisibility;
   title?: string;
   /** @deprecated Use headless widgets via `useBladeWidgets()` instead */
   updateFunctionName?: string;

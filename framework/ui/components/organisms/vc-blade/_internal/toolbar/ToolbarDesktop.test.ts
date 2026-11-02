@@ -44,7 +44,7 @@ function mountToolbar(props: Record<string, unknown> = {}) {
       stubs: {
         ToolbarBaseButton: {
           name: "ToolbarBaseButton",
-          props: ["id", "icon", "title", "showTitle", "onClick", "disabled", "dataItemKey"],
+          props: ["id", "icon", "title", "onClick", "disabled", "dataItemKey", "separator", "shortcut"],
           template: '<button class="toolbar-base-button-stub" :data-item-key="dataItemKey"><slot /></button>',
         },
         VcDropdown: {
@@ -90,6 +90,20 @@ describe("ToolbarDesktop", () => {
       items: [createToolbarItem({ id: "1" })],
     });
     expect(wrapper.findAll(".toolbar-base-button-stub")).toHaveLength(1);
+  });
+
+  it("does not leak item fields into the button's DOM attributes", () => {
+    const item = {
+      ...createToolbarItem({ id: "export", isVisible: () => true, permissions: "seller:export" }),
+      bladeId: "offers",
+      priority: 2,
+    };
+    const button = mountToolbar({ items: [item] }).find(".toolbar-base-button-stub");
+
+    const names = button.attributes();
+    for (const leaked of ["clickhandler", "isvisible", "bladeid", "priority", "permissions", "show-title"]) {
+      expect(names).not.toHaveProperty(leaked);
+    }
   });
 
   it("renders no buttons when items is empty", () => {

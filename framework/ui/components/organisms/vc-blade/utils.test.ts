@@ -79,4 +79,18 @@ describe("resolveReactiveBoolean", () => {
     const val = ref<boolean | undefined>(undefined);
     expect(resolveReactiveBoolean(val)).toBe(false);
   });
+
+  it("calls a function with the blade context", () => {
+    const disabled = (ctx: Record<string, unknown>) => !(ctx.selectedItems as unknown[]).length;
+    expect(resolveReactiveBoolean(disabled, { selectedItems: [] })).toBe(true);
+    expect(resolveReactiveBoolean(disabled, { selectedItems: [1] })).toBe(false);
+  });
+});
+
+describe("resolveVisibility with context", () => {
+  it("passes the blade context as the second argument", () => {
+    const fn = (_blade: unknown, ctx: Record<string, unknown>) => ctx.status === "draft";
+    expect(resolveVisibility(fn, undefined, { status: "draft" })).toBe(true);
+    expect(resolveVisibility(fn)).toBe(false);
+  });
 });

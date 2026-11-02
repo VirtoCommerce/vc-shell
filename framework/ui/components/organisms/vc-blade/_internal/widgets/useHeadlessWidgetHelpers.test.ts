@@ -2,6 +2,7 @@ import { defineComponent, h, ref } from "vue";
 import { mount } from "@vue/test-utils";
 import { mountWithSetup } from "@framework/test-helpers";
 import { BladeContextKey } from "@framework/injection-keys";
+import { BladeDescriptorKey } from "@core/blade-navigation/types";
 
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({
@@ -141,7 +142,14 @@ describe("useHeadlessWidgetHelpers", () => {
             return () => h("div");
           },
         }),
-        { global: { provide: { [BladeContextKey as symbol]: ref(context) } } },
+        {
+          global: {
+            provide: {
+              [BladeContextKey as symbol]: ref(context),
+              [BladeDescriptorKey as symbol]: ref({ id: "b1", name: "OrderDetails" }),
+            },
+          },
+        },
       );
       return result;
     }
@@ -152,12 +160,12 @@ describe("useHeadlessWidgetHelpers", () => {
 
       helpers.handleHeadlessClick(makeWidget({ headless: { icon: "x", onClick } }));
 
-      expect(onClick).toHaveBeenCalledWith({ id: "order-1" });
+      expect(onClick).toHaveBeenCalledWith({ id: "b1", name: "OrderDetails" }, { id: "order-1" });
     });
 
     it("resolves a disabled function against the context", () => {
       const helpers = setupWithContext({ status: "closed" });
-      const widget = makeWidget({ headless: { icon: "x", disabled: (ctx) => ctx.status === "closed" } });
+      const widget = makeWidget({ headless: { icon: "x", disabled: (_blade, ctx) => ctx.status === "closed" } });
 
       expect(helpers.resolveDisabled(widget)).toBe(true);
     });
@@ -168,7 +176,7 @@ describe("useHeadlessWidgetHelpers", () => {
 
       result.handleHeadlessClick(makeWidget({ headless: { icon: "x", onClick } }));
 
-      expect(onClick).toHaveBeenCalledWith({});
+      expect(onClick).toHaveBeenCalledWith(undefined, {});
     });
   });
 });

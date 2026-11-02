@@ -114,14 +114,14 @@ describe("WidgetContainer", () => {
     expect(wrapper.find(".stub-desktop-widgets").exists()).toBe(false);
   });
 
-  it("passes the blade context to an isVisible function", () => {
-    const isVisible = vi.fn((_blade: unknown, ctx: Record<string, unknown>) => ctx.status === "draft");
+  it("passes the blade context and the blade to an isVisible function", () => {
+    const isVisible = vi.fn((ctx: Record<string, unknown>) => ctx.status === "draft");
     mockWidgets.value = [{ id: "w1", component: StubWidgetComponent, isVisible }];
 
-    const wrapper = mountContainer({}, { context: { status: "draft" } });
+    const wrapper = mountContainer({}, { context: { status: "draft" }, bladeName: "OrderDetails" });
 
     expect(wrapper.find(".stub-desktop-widgets").attributes("data-count")).toBe("1");
-    expect(isVisible).toHaveBeenCalledWith(undefined, { status: "draft" });
+    expect(isVisible).toHaveBeenCalledWith({ status: "draft" }, { name: "OrderDetails" });
   });
 
   it("normalizes bladeId to lowercase", () => {

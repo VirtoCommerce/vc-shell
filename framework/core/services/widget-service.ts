@@ -71,10 +71,14 @@ export interface IHeadlessWidgetFields {
   icon: string;
   badge?: Ref<number | string> | ComputedRef<number | string>;
   loading?: Ref<boolean> | ComputedRef<boolean>;
-  /** A function form receives the blade context */
-  disabled?: Ref<boolean> | ComputedRef<boolean> | boolean | ((context: BladeContext) => boolean);
-  /** Receives the blade context of the blade the widget sits on */
-  onClick?: (context?: BladeContext) => void;
+  /** A function form receives the blade context and the blade */
+  disabled?:
+    | Ref<boolean>
+    | ComputedRef<boolean>
+    | boolean
+    | ((context: BladeContext, blade?: BladeDescriptor) => boolean);
+  /** Receives the blade context and the blade the widget sits on */
+  onClick?: (context: BladeContext, blade?: BladeDescriptor) => void;
   onRefresh?: () => void | Promise<void>;
   alerts?: AlertsSource;
   alertsComponent?: Component;
@@ -89,7 +93,7 @@ export interface IWidget {
   props?: Record<string, unknown>;
   /** @deprecated External widgets inject data via `injectBladeContext()` */
   events?: Record<string, unknown>;
-  /** A function form receives the blade descriptor and the blade context. */
+  /** A function form receives the blade context and the blade. */
   isVisible?: WidgetVisibility;
   /** @deprecated Use headless widgets via `useBladeWidgets()` instead */
   updateFunctionName?: string;
@@ -102,7 +106,7 @@ export type WidgetVisibility =
   | boolean
   | ComputedRef<boolean>
   | Ref<boolean>
-  | ((blade: BladeDescriptor | undefined, context: BladeContext) => boolean);
+  | ((context: BladeContext, blade?: BladeDescriptor) => boolean);
 
 export interface IWidgetRegistration {
   bladeId: string;
@@ -113,7 +117,7 @@ export interface IExternalWidgetRegistration {
   id: string;
   component: Component;
   targetBlades?: string[];
-  /** A function form receives the blade descriptor and the blade context. */
+  /** A function form receives the blade context and the blade. */
   isVisible?: WidgetVisibility;
   title?: string;
   /** @deprecated Use headless widgets via `useBladeWidgets()` instead */

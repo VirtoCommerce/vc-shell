@@ -29,12 +29,12 @@ describe("resolveVisibility", () => {
     expect(resolveVisibility(visible)).toBe(false);
   });
 
-  it("calls a function with blade instance", () => {
+  it("calls a function with the blade as the second argument", () => {
     const bladeInstance = { id: "test-blade" } as any;
-    const fn = (blade: any) => blade?.id === "test-blade";
+    const fn = (_ctx: unknown, blade: any) => blade?.id === "test-blade";
 
-    expect(resolveVisibility(fn, bladeInstance)).toBe(true);
-    expect(resolveVisibility(fn, undefined)).toBe(false);
+    expect(resolveVisibility(fn, {}, bladeInstance)).toBe(true);
+    expect(resolveVisibility(fn, {}, undefined)).toBe(false);
   });
 
   it("coerces function return to boolean", () => {
@@ -85,12 +85,18 @@ describe("resolveReactiveBoolean", () => {
     expect(resolveReactiveBoolean(disabled, { selectedItems: [] })).toBe(true);
     expect(resolveReactiveBoolean(disabled, { selectedItems: [1] })).toBe(false);
   });
+
+  it("passes the blade as the second argument", () => {
+    const disabled = (_ctx: unknown, blade?: { name: string }) => blade?.name === "Offers";
+    expect(resolveReactiveBoolean(disabled, {}, { name: "Offers" } as any)).toBe(true);
+    expect(resolveReactiveBoolean(disabled, {}, { name: "Products" } as any)).toBe(false);
+  });
 });
 
 describe("resolveVisibility with context", () => {
-  it("passes the blade context as the second argument", () => {
-    const fn = (_blade: unknown, ctx: Record<string, unknown>) => ctx.status === "draft";
-    expect(resolveVisibility(fn, undefined, { status: "draft" })).toBe(true);
+  it("passes the blade context as the first argument", () => {
+    const fn = (ctx: Record<string, unknown>) => ctx.status === "draft";
+    expect(resolveVisibility(fn, { status: "draft" })).toBe(true);
     expect(resolveVisibility(fn)).toBe(false);
   });
 });

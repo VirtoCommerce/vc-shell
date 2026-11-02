@@ -118,7 +118,7 @@ export default {
 };
 ```
 
-The widget component reads the blade's data with [`injectBladeContext()`](../bladeContext/), since it renders inside the blade. `isVisible` runs before the component exists, so a function form receives the blade context as its second argument:
+The widget component reads the blade's data with [`injectBladeContext()`](../bladeContext/), since it renders inside the blade. `isVisible` runs before the component exists, so a function form receives `(ctx, blade)`: the blade context and the blade descriptor.
 
 ```typescript
 registerExternalWidget({
@@ -126,11 +126,11 @@ registerExternalWidget({
   targetBlades: ["OrderDetails"],
   component: markRaw(ShippingTracker),
   // the blade calls defineBladeContext({ item })
-  isVisible: (blade, ctx) => (ctx.item as Order | undefined)?.status === "Shipped",
+  isVisible: (ctx) => (ctx.item as Order | undefined)?.status === "Shipped",
 });
 ```
 
-A headless widget registered by blade name has no component to inject from, so its `onClick` and a function `disabled` receive the context too:
+A headless widget registered by blade name has no component to inject from, so its `onClick` and a function `disabled` receive `(ctx, blade)` too:
 
 ```typescript
 registerWidget(
@@ -140,7 +140,7 @@ registerWidget(
     headless: {
       icon: "lucide-receipt",
       disabled: (ctx) => !ctx.item,
-      onClick: (ctx) => openInvoice((ctx?.item as Order).id),
+      onClick: (ctx) => openInvoice((ctx.item as Order).id),
     },
   },
   "OrderDetails",

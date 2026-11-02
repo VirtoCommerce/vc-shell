@@ -199,7 +199,7 @@ The name match is case-insensitive. If the blade registers its own item with the
 
 ### Reading the blade's data
 
-A button registered from outside cannot call `injectBladeContext()`: its handlers run outside the blade's component tree. The framework passes them the data the blade exposed with [`defineBladeContext`](../bladeContext/) instead. `clickHandler` receives it, and so do the function forms of `disabled` and `isVisible`:
+A button registered from outside cannot call `injectBladeContext()`: its handlers run outside the blade's component tree. The framework calls `clickHandler` and the function forms of `disabled` and `isVisible` with `(ctx, blade)`: the data the blade exposed with [`defineBladeContext`](../bladeContext/), and the descriptor of the blade the button sits on.
 
 ```typescript
 // In the target blade
@@ -212,11 +212,21 @@ registerExternalToolbarItem({
   icon: "lucide-download",
   targetBlades: ["Products"],
   disabled: (ctx) => !(ctx.selectedItems as Product[] | undefined)?.length,
-  clickHandler: (ctx) => exportProducts(ctx?.selectedItems as Product[]),
+  clickHandler: (ctx) => exportProducts(ctx.selectedItems as Product[]),
 });
 ```
 
-Refs are already unwrapped, and the state follows the blade: the button enables as soon as the user selects a row. A keyboard `shortcut` on the item gets the same context. When the blade defines no context, the handlers get `{}`.
+Refs are already unwrapped, and the state follows the blade: the button enables as soon as the user selects a row. A keyboard `shortcut` on the item gets the same arguments. When the blade defines no context, `ctx` is `{}`.
+
+`ctx` does not say which blade it came from. With several `targetBlades`, branch on `blade.name`:
+
+```typescript
+registerExternalToolbarItem({
+  id: "bulk-export",
+  targetBlades: ["Products", "Offers"],
+  clickHandler: (ctx, blade) => (blade?.name === "Offers" ? exportOffers(ctx.selectedItems as Offer[]) : exportProducts(ctx.selectedItems as Product[])),
+});
+```
 
 ## Auto-cleanup control
 
@@ -399,19 +409,19 @@ function helperFunction() {
 
 ### IToolbarItem
 
-| Property       | Type                                                                                                                      | Required | Description                                                                                                                 |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `id`           | `string`                                                                                                                  | Yes      | Unique identifier for the button                                                                                            |
-| `title`        | `string \| Ref<string> \| ComputedRef<string>`                                                                            | No       | Button label (supports reactive values)                                                                                     |
-| `icon`         | `string \| (() => string)`                                                                                                | No       | Icon class (e.g., `"fas fa-save"`) or a function returning one                                                              |
-| `clickHandler` | `(context?: BladeContext) => void`                                                                                        | No       | Click callback; receives the blade context                                                                                  |
-| `disabled`     | `boolean \| ComputedRef<boolean \| undefined> \| ((context: BladeContext) => boolean \| undefined)`                       | No       | Whether the button is disabled; a function receives the blade context                                                       |
-| `isVisible`    | `boolean \| Ref<boolean \| undefined> \| ComputedRef<boolean \| undefined> \| ((blade, context) => boolean \| undefined)` | No       | Controls button visibility; a function receives the blade descriptor and the blade context                                  |
-| `priority`     | `number`                                                                                                                  | No       | Sort order (higher = displayed first, default `0`)                                                                          |
-| `separator`    | `"left" \| "right" \| "both"`                                                                                             | No       | Adds a visual divider next to the button                                                                                    |
-| `permissions`  | `string \| string[]`                                                                                                      | No       | Required permission(s) to display the button                                                                                |
-| `bladeId`      | `string`                                                                                                                  | No       | Target blade ID (auto-resolved from context)                                                                                |
-| `shortcut`     | `ShortcutDefinition`                                                                                                      | No       | Keyboard shortcut that triggers `clickHandler`; build with `hotkey.*`. See [useKeyboardShortcuts](../useKeyboardShortcuts/) |
+| Property       | Type                                                                                                                       | Required | Description                                                                                                                 |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `id`           | `string`                                                                                                                   | Yes      | Unique identifier for the button                                                                                            |
+| `title`        | `string \| Ref<string> \| ComputedRef<string>`                                                                             | No       | Button label (supports reactive values)                                                                                     |
+| `icon`         | `string \| (() => string)`                                                                                                 | No       | Icon class (e.g., `"fas fa-save"`) or a function returning one                                                              |
+| `clickHandler` | `(context, blade?) => void`                                                                                                | No       | Click callback; receives the blade context and the blade                                                                    |
+| `disabled`     | `boolean \| ComputedRef<boolean \| undefined> \| ((context, blade?) => boolean \| undefined)`                              | No       | Whether the button is disabled; a function receives the blade context and the blade                                         |
+| `isVisible`    | `boolean \| Ref<boolean \| undefined> \| ComputedRef<boolean \| undefined> \| ((context, blade?) => boolean \| undefined)` | No       | Controls button visibility; a function receives the blade context and the blade                                             |
+| `priority`     | `number`                                                                                                                   | No       | Sort order (higher = displayed first, default `0`)                                                                          |
+| `separator`    | `"left" \| "right" \| "both"`                                                                                              | No       | Adds a visual divider next to the button                                                                                    |
+| `permissions`  | `string \| string[]`                                                                                                       | No       | Required permission(s) to display the button                                                                                |
+| `bladeId`      | `string`                                                                                                                   | No       | Target blade ID (auto-resolved from context)                                                                                |
+| `shortcut`     | `ShortcutDefinition`                                                                                                       | No       | Keyboard shortcut that triggers `clickHandler`; build with `hotkey.*`. See [useKeyboardShortcuts](../useKeyboardShortcuts/) |
 
 `IToolbarItem` is the shape consumed by `ToolbarService`. The blade-level array binding uses `IBladeToolbar` (see [Core types](../../types/)), a near-identical shape that the framework normalizes into `IToolbarItem` before render.
 

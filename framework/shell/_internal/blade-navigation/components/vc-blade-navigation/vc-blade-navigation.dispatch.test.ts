@@ -76,7 +76,7 @@ describe("createShortcutDispatcher", () => {
     expect(clickHandler).not.toHaveBeenCalled();
   });
 
-  it("passes the active blade and its context to isEnabled, and the context to the handler", async () => {
+  it("passes the active blade and its context to isEnabled and to the handler", async () => {
     const clickHandler = vi.fn();
     const context = { selectedItems: [{ id: "1" }] };
     const deps = baseDeps();
@@ -90,7 +90,7 @@ describe("createShortcutDispatcher", () => {
       id: "b1",
       parentId: "root",
     });
-    expect(clickHandler).toHaveBeenCalledWith(context);
+    expect(clickHandler).toHaveBeenCalledWith(context, { id: "b1", parentId: "root" });
   });
 
   it("Esc closes a closable active blade", async () => {

@@ -148,14 +148,24 @@ describe("useToolbarRegistration", () => {
       return { ctx, wrapper, items: () => visibleItems.value };
     }
 
-    it("passes the context to clickHandler", () => {
+    it("passes the blade to a disabled function, so one item can serve several blades", () => {
+      mockRegisteredItems.value = [{ id: "export", disabled: (_ctx: any, blade: any) => blade?.name !== "Products" }];
+      const { items } = mountWithContext({});
+
+      expect(items()[0].disabled.value).toBe(false);
+    });
+
+    it("passes the context and the blade to clickHandler", () => {
       const clickHandler = vi.fn();
       mockRegisteredItems.value = [{ id: "export", clickHandler }];
       const { items } = mountWithContext({ selectedItems: ["a"] });
 
       items()[0].clickHandler();
 
-      expect(clickHandler).toHaveBeenCalledWith({ selectedItems: ["a"] });
+      expect(clickHandler).toHaveBeenCalledWith(
+        { selectedItems: ["a"] },
+        expect.objectContaining({ name: "Products" }),
+      );
     });
 
     it("resolves a disabled function against the context and follows it", async () => {
@@ -183,16 +193,19 @@ describe("useToolbarRegistration", () => {
 
       expect(snapshot.disabled.value).toBe(false);
       snapshot.clickHandler!();
-      expect(clickHandler).toHaveBeenCalledWith({ selectedItems: ["a", "b"] });
+      expect(clickHandler).toHaveBeenCalledWith(
+        { selectedItems: ["a", "b"] },
+        expect.objectContaining({ name: "Products" }),
+      );
     });
 
-    it("passes the descriptor and the context to an isVisible function", () => {
+    it("passes the context and the blade to an isVisible function", () => {
       const isVisible = vi.fn(() => false);
       mockRegisteredItems.value = [{ id: "export", isVisible }];
       const { items } = mountWithContext({ status: "draft" });
 
       expect(items()).toEqual([]);
-      expect(isVisible).toHaveBeenCalledWith(expect.objectContaining({ name: "Products" }), { status: "draft" });
+      expect(isVisible).toHaveBeenCalledWith({ status: "draft" }, expect.objectContaining({ name: "Products" }));
     });
 
     it("gives handlers an empty object when the blade defines no context", () => {
@@ -202,7 +215,7 @@ describe("useToolbarRegistration", () => {
 
       result.visibleItems.value[0].clickHandler!();
 
-      expect(clickHandler).toHaveBeenCalledWith({});
+      expect(clickHandler).toHaveBeenCalledWith({}, undefined);
     });
 
     it("exposes the context to keyboard shortcuts until unmount", () => {

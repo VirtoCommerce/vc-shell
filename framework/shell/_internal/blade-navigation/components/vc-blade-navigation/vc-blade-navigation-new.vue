@@ -128,8 +128,8 @@ const dispatchShortcut = createShortcutDispatcher({
   // The blade goes to isVisible as the toolbar passes it, or a `(blade) => …` check fails here
   isEnabled: (item, context, blade) =>
     hasAccess(item.permissions) &&
-    resolveVisibility(item.isVisible, blade, context) &&
-    !resolveReactiveBoolean(item.disabled, context),
+    resolveVisibility(item.isVisible, context, blade) &&
+    !resolveReactiveBoolean(item.disabled, context, blade),
   closeBlade: (id) => bladeStack.closeBlade(id),
   toggleMaximized: (id) => bladeStack.toggleMaximized(id),
   isModalOpen: () => typeof document !== "undefined" && document.querySelector('[aria-modal="true"]') !== null,

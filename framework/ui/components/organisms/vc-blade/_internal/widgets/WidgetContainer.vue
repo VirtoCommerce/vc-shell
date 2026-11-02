@@ -116,7 +116,7 @@ const widgets = computed(() => widgetService.getWidgets(normalizedBladeId.value)
 
 const visibleWidgets = computed(() =>
   widgets.value.filter((widget: IWidget) =>
-    resolveVisibility(widget.isVisible, descriptor?.value, bladeContext?.value),
+    resolveVisibility(widget.isVisible, bladeContext?.value, descriptor?.value),
   ),
 );
 </script>

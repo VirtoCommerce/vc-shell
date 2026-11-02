@@ -359,9 +359,10 @@ interface IBladeToolbar {
   id?: string;
   title?: string | Ref<string> | ComputedRef<string>;
   icon?: string | (() => string);
-  clickHandler?(app?: Record<string, any> | null): void;
-  disabled?: boolean | ComputedRef<boolean | undefined>;
-  isVisible?: boolean | Ref<boolean | undefined> | ComputedRef<boolean | undefined> | ((blade?: BladeDescriptor) => boolean | undefined);
+  // function forms get (context, blade): the blade context and the blade descriptor
+  clickHandler?(context: BladeContext, blade?: BladeDescriptor): void;
+  disabled?: boolean | ComputedRef<boolean | undefined> | ((context: BladeContext, blade?: BladeDescriptor) => boolean | undefined);
+  isVisible?: boolean | Ref<boolean | undefined> | ComputedRef<boolean | undefined> | ((context: BladeContext, blade?: BladeDescriptor) => boolean | undefined);
   separator?: "left" | "right" | "both";
   permissions?: string | string[];
 }

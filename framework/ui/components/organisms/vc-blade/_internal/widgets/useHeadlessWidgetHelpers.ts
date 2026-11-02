@@ -27,7 +27,7 @@ export function useHeadlessWidgetHelpers() {
   function resolveDisabled(widget: IWidget): boolean {
     const disabled = widget.headless?.disabled;
     if (disabled === undefined) return false;
-    if (typeof disabled === "function") return Boolean(disabled(context(), descriptor?.value));
+    if (typeof disabled === "function") return Boolean(disabled(descriptor?.value, context()));
     return typeof disabled === "boolean" ? disabled : toValue(disabled);
   }
 
@@ -37,7 +37,7 @@ export function useHeadlessWidgetHelpers() {
   }
 
   function handleHeadlessClick(widget: IWidget) {
-    widget.headless?.onClick?.(context(), descriptor?.value);
+    widget.headless?.onClick?.(descriptor?.value, context());
   }
 
   return { resolveBadge, resolveLoading, resolveDisabled, resolveTitle, handleHeadlessClick };

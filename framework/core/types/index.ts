@@ -82,20 +82,20 @@ export type BladeContext = Record<string, unknown>;
 export interface IBladeToolbar {
   id?: string;
   icon?: string | (() => string);
-  // Every function form gets (context, blade): what the blade passed to defineBladeContext,
-  // and the blade the button sits on.
+  // Every function form gets (blade, context): the blade the button sits on, and what it
+  // passed to defineBladeContext.
   disabled?:
     | boolean
     | ComputedRef<boolean | undefined>
-    | ((context: BladeContext, blade?: BladeDescriptor) => boolean | undefined);
+    | ((blade: BladeDescriptor | undefined, context: BladeContext) => boolean | undefined);
   title?: string | Ref<string> | ComputedRef<string>;
   isVisible?:
     | boolean
     | Ref<boolean | undefined>
     | ComputedRef<boolean | undefined>
-    | ((context: BladeContext, blade?: BladeDescriptor) => boolean | undefined);
+    | ((blade: BladeDescriptor | undefined, context: BladeContext) => boolean | undefined);
 
-  clickHandler?(context: BladeContext, blade?: BladeDescriptor): void;
+  clickHandler?(blade: BladeDescriptor | undefined, context: BladeContext): void;
   separator?: "left" | "right" | "both";
   permissions?: string | string[];
   /** Keyboard shortcut that triggers this item's clickHandler. Use `hotkey.*`. */

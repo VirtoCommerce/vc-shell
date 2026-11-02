@@ -114,14 +114,35 @@ describe("WidgetContainer", () => {
     expect(wrapper.find(".stub-desktop-widgets").exists()).toBe(false);
   });
 
-  it("passes the blade context and the blade to an isVisible function", () => {
-    const isVisible = vi.fn((ctx: Record<string, unknown>) => ctx.status === "draft");
+  it("passes the blade and the blade context to an isVisible function", () => {
+    const isVisible = vi.fn((_blade: unknown, ctx: Record<string, unknown>) => ctx.status === "draft");
     mockWidgets.value = [{ id: "w1", component: StubWidgetComponent, isVisible }];
 
     const wrapper = mountContainer({}, { context: { status: "draft" }, bladeName: "OrderDetails" });
 
     expect(wrapper.find(".stub-desktop-widgets").attributes("data-count")).toBe("1");
-    expect(isVisible).toHaveBeenCalledWith({ status: "draft" }, { name: "OrderDetails" });
+    expect(isVisible).toHaveBeenCalledWith({ name: "OrderDetails" }, { status: "draft" });
+  });
+
+  // Most modules hide a widget on unsaved entities this way; it must keep getting the blade first
+  it("keeps the `(blade) => !!blade?.param` form working", () => {
+    mockWidgets.value = [{ id: "w1", component: StubWidgetComponent, isVisible: (blade: any) => !!blade?.param }];
+
+    const saved = mount(WidgetContainer, {
+      props: { bladeId: "test-blade" },
+      global: {
+        provide: {
+          [IsMobileKey as symbol]: ref(false),
+          [BladeDescriptorKey as symbol]: computed(() => ({ name: "OrderDetails", param: "42" })),
+          [BladeContextKey as symbol]: ref({ item: { id: "42" } }),
+        },
+        stubs: { WidgetContainerDesktop: { props: ["widgets"], template: '<div class="stub-desktop-widgets" />' } },
+      },
+    });
+    expect(saved.find(".stub-desktop-widgets").exists()).toBe(true);
+
+    const unsaved = mountContainer({}, { bladeName: "OrderDetails", context: { item: {} } });
+    expect(unsaved.find(".stub-desktop-widgets").exists()).toBe(false);
   });
 
   it("normalizes bladeId to lowercase", () => {

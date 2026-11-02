@@ -149,27 +149,28 @@ describe("useToolbarRegistration", () => {
     }
 
     it("passes the blade to a disabled function, so one item can serve several blades", () => {
-      mockRegisteredItems.value = [{ id: "export", disabled: (_ctx: any, blade: any) => blade?.name !== "Products" }];
+      mockRegisteredItems.value = [{ id: "export", disabled: (blade: any) => blade?.name !== "Products" }];
       const { items } = mountWithContext({});
 
       expect(items()[0].disabled.value).toBe(false);
     });
 
-    it("passes the context and the blade to clickHandler", () => {
+    it("passes the blade and the context to clickHandler", () => {
       const clickHandler = vi.fn();
       mockRegisteredItems.value = [{ id: "export", clickHandler }];
       const { items } = mountWithContext({ selectedItems: ["a"] });
 
       items()[0].clickHandler();
 
-      expect(clickHandler).toHaveBeenCalledWith(
-        { selectedItems: ["a"] },
-        expect.objectContaining({ name: "Products" }),
-      );
+      expect(clickHandler).toHaveBeenCalledWith(expect.objectContaining({ name: "Products" }), {
+        selectedItems: ["a"],
+      });
     });
 
     it("resolves a disabled function against the context and follows it", async () => {
-      mockRegisteredItems.value = [{ id: "export", disabled: (ctx: any) => !(ctx.selectedItems as unknown[]).length }];
+      mockRegisteredItems.value = [
+        { id: "export", disabled: (_blade: any, ctx: any) => !(ctx.selectedItems as unknown[]).length },
+      ];
       const { ctx, items } = mountWithContext({ selectedItems: [] });
       expect(items()[0].disabled.value).toBe(true);
 
@@ -183,7 +184,7 @@ describe("useToolbarRegistration", () => {
     it("keeps an item already handed out in sync with the context", async () => {
       const clickHandler = vi.fn();
       mockRegisteredItems.value = [
-        { id: "export", disabled: (ctx: any) => !(ctx.selectedItems as unknown[]).length, clickHandler },
+        { id: "export", disabled: (_blade: any, ctx: any) => !(ctx.selectedItems as unknown[]).length, clickHandler },
       ];
       const { ctx, items } = mountWithContext({ selectedItems: [] });
       const snapshot = items()[0];
@@ -193,19 +194,18 @@ describe("useToolbarRegistration", () => {
 
       expect(snapshot.disabled.value).toBe(false);
       snapshot.clickHandler!();
-      expect(clickHandler).toHaveBeenCalledWith(
-        { selectedItems: ["a", "b"] },
-        expect.objectContaining({ name: "Products" }),
-      );
+      expect(clickHandler).toHaveBeenCalledWith(expect.objectContaining({ name: "Products" }), {
+        selectedItems: ["a", "b"],
+      });
     });
 
-    it("passes the context and the blade to an isVisible function", () => {
+    it("passes the blade and the context to an isVisible function", () => {
       const isVisible = vi.fn(() => false);
       mockRegisteredItems.value = [{ id: "export", isVisible }];
       const { items } = mountWithContext({ status: "draft" });
 
       expect(items()).toEqual([]);
-      expect(isVisible).toHaveBeenCalledWith({ status: "draft" }, expect.objectContaining({ name: "Products" }));
+      expect(isVisible).toHaveBeenCalledWith(expect.objectContaining({ name: "Products" }), { status: "draft" });
     });
 
     it("gives handlers an empty object when the blade defines no context", () => {
@@ -215,7 +215,7 @@ describe("useToolbarRegistration", () => {
 
       result.visibleItems.value[0].clickHandler!();
 
-      expect(clickHandler).toHaveBeenCalledWith({}, undefined);
+      expect(clickHandler).toHaveBeenCalledWith(undefined, {});
     });
 
     it("exposes the context to keyboard shortcuts until unmount", () => {

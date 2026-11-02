@@ -160,12 +160,12 @@ describe("useHeadlessWidgetHelpers", () => {
 
       helpers.handleHeadlessClick(makeWidget({ headless: { icon: "x", onClick } }));
 
-      expect(onClick).toHaveBeenCalledWith({ id: "order-1" }, { id: "b1", name: "OrderDetails" });
+      expect(onClick).toHaveBeenCalledWith({ id: "b1", name: "OrderDetails" }, { id: "order-1" });
     });
 
     it("resolves a disabled function against the context", () => {
       const helpers = setupWithContext({ status: "closed" });
-      const widget = makeWidget({ headless: { icon: "x", disabled: (ctx) => ctx.status === "closed" } });
+      const widget = makeWidget({ headless: { icon: "x", disabled: (_blade, ctx) => ctx.status === "closed" } });
 
       expect(helpers.resolveDisabled(widget)).toBe(true);
     });
@@ -176,7 +176,7 @@ describe("useHeadlessWidgetHelpers", () => {
 
       result.handleHeadlessClick(makeWidget({ headless: { icon: "x", onClick } }));
 
-      expect(onClick).toHaveBeenCalledWith({}, undefined);
+      expect(onClick).toHaveBeenCalledWith(undefined, {});
     });
   });
 });

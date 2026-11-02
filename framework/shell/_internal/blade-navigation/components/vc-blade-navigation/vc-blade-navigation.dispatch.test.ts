@@ -90,7 +90,7 @@ describe("createShortcutDispatcher", () => {
       id: "b1",
       parentId: "root",
     });
-    expect(clickHandler).toHaveBeenCalledWith(context, { id: "b1", parentId: "root" });
+    expect(clickHandler).toHaveBeenCalledWith({ id: "b1", parentId: "root" }, context);
   });
 
   it("Esc closes a closable active blade", async () => {

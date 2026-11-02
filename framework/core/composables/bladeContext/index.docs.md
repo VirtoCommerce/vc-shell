@@ -101,9 +101,9 @@ defineBladeContext(
 
 ## Recipe: Consumers Registered from Another Module
 
-Toolbar buttons and headless widgets registered by blade name from another module are plain objects, so `injectBladeContext()` has no component to run in. The framework calls their function forms with two arguments instead: `(ctx, blade)`, the blade context and the descriptor of the blade the button or widget sits on.
+Toolbar buttons and headless widgets registered by blade name from another module are plain objects, so `injectBladeContext()` has no component to run in. The framework calls their function forms with two arguments instead: `(blade, ctx)`, the descriptor of the blade the button or widget sits on and its context. The blade comes first because `isVisible: (blade) => …` has worked that way since 1.1.37.
 
-| Registration                                          | Called with `(ctx, blade)`                                     |
+| Registration                                          | Called with `(blade, ctx)`                                     |
 | ----------------------------------------------------- | -------------------------------------------------------------- |
 | `registerExternalToolbarItem` / `registerToolbarItem` | `clickHandler`, `disabled`, `isVisible`                        |
 | `registerExternalWidget` / `registerWidget`           | `isVisible`; the component itself calls `injectBladeContext()` |
@@ -118,8 +118,8 @@ registerExternalToolbarItem({
   id: "bulk-export",
   title: "Export selected",
   targetBlades: ["Products"],
-  disabled: (ctx) => !(ctx.selectedItems as Product[] | undefined)?.length,
-  clickHandler: (ctx) => exportProducts(ctx.selectedItems as Product[]),
+  disabled: (_blade, ctx) => !(ctx.selectedItems as Product[] | undefined)?.length,
+  clickHandler: (_blade, ctx) => exportProducts(ctx.selectedItems as Product[]),
 });
 ```
 
@@ -131,8 +131,8 @@ The values are the same unwrapped snapshot `injectBladeContext()` returns, and t
 registerExternalToolbarItem({
   id: "bulk-export",
   targetBlades: ["Products", "Offers"],
-  disabled: (ctx) => !(ctx.selectedItems as unknown[] | undefined)?.length,
-  clickHandler: (ctx, blade) => (blade?.name === "Offers" ? exportOffers(ctx.selectedItems as Offer[]) : exportProducts(ctx.selectedItems as Product[])),
+  disabled: (_blade, ctx) => !(ctx.selectedItems as unknown[] | undefined)?.length,
+  clickHandler: (blade, ctx) => (blade?.name === "Offers" ? exportOffers(ctx.selectedItems as Offer[]) : exportProducts(ctx.selectedItems as Product[])),
 });
 ```
 

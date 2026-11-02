@@ -2,23 +2,23 @@ import { isRef, toValue } from "vue";
 import type { BladeDescriptor } from "@core/blade-navigation/types";
 import type { BladeContext } from "@core/types";
 
-type BladeCallback = (context: BladeContext, blade?: BladeDescriptor) => boolean | undefined;
+type BladeCallback = (blade: BladeDescriptor | undefined, context: BladeContext) => boolean | undefined;
 
 /**
  * Resolves a visibility value: `undefined` defaults to visible, a boolean is used as is,
- * a ref or computed is unwrapped, and a function is called with the blade context and the blade.
+ * a ref or computed is unwrapped, and a function is called with the blade and its context.
  */
 export function resolveVisibility(
   isVisible: boolean | BladeCallback | { value: boolean | undefined } | undefined,
-  context: BladeContext = {},
   blade?: BladeDescriptor,
+  context: BladeContext = {},
 ): boolean {
   if (isVisible === undefined) {
     return true;
   }
 
   if (typeof isVisible === "function") {
-    return Boolean(isVisible(context, blade));
+    return Boolean(isVisible(blade, context));
   }
 
   if (isRef(isVisible)) {
@@ -33,19 +33,19 @@ export function resolveVisibility(
  * - `undefined` → defaults to `false`
  * - `boolean` → used directly
  * - `Ref<boolean>` or `ComputedRef<boolean>` → unwrapped
- * - a function → called with the blade context and the blade
+ * - a function → called with the blade and its context
  */
 export function resolveReactiveBoolean(
   value: boolean | { value: boolean | undefined } | BladeCallback | undefined,
-  context: BladeContext = {},
   blade?: BladeDescriptor,
+  context: BladeContext = {},
 ): boolean {
   if (value === undefined) {
     return false;
   }
 
   if (typeof value === "function") {
-    return Boolean(value(context, blade));
+    return Boolean(value(blade, context));
   }
 
   if (isRef(value)) {

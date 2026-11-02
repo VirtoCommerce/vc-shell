@@ -221,7 +221,7 @@ registerExternalWidget({
   id: "MessageWidget",
   component: markRaw(MessageWidget),
   targetBlades: ["ProductDetails", "OrderDetails"],
-  isVisible: (_ctx, blade?: BladeDescriptor) => !!blade?.param,
+  isVisible: (blade?: BladeDescriptor) => !!blade?.param,
 });
 ```
 

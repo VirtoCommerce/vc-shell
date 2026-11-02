@@ -116,7 +116,7 @@ export function createShortcutDispatcher(deps: ShortcutDispatchDeps) {
       event.preventDefault(); // matched toolbar item claims the combo, even if disabled
       const context = deps.getBladeContext(bladeId);
       if (!deps.isEnabled(item, context, active)) return; // disabled: consumed as a no-op
-      await runGuarded(`${bladeId}::${item.id ?? "item"}`, () => item.clickHandler?.(context, active));
+      await runGuarded(`${bladeId}::${item.id ?? "item"}`, () => item.clickHandler?.(active, context));
       return;
     }
 

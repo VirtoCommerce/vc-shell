@@ -1,5 +1,11 @@
 # Changelog
 
+# [2.10.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.9.0...v2.10.0) (2026-11-02)
+
+### Features
+
+- **framework:** pass the blade along with its context to toolbar and widget callbacks (#400) ([413c13a](https://github.com/VirtoCommerce/vc-shell/commit/413c13a36017f081530c065295e16aeef6741576)), closes [#400](https://github.com/VirtoCommerce/vc-shell/issues/400)
+
 # [2.9.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.8.0...v2.9.0) (2026-11-02)
 
 ### Features

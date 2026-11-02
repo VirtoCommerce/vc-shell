@@ -1,5 +1,9 @@
 # Changelog
 
+# [2.10.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.9.0...v2.10.0) (2026-11-02)
+
+**Note:** Version bump only for package @vc-shell/create-vc-app
+
 # [2.9.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.8.0...v2.9.0) (2026-11-02)
 
 **Note:** Version bump only for package @vc-shell/create-vc-app

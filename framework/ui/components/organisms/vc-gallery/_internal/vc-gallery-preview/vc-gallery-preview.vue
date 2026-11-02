@@ -118,7 +118,7 @@
                 @click="slideTo(i)"
               >
                 <img
-                  :src="getThumbnailUrl(item.url, '64x64') ?? item.url"
+                  :src="thumbSrc(item)"
                   :alt="item.name || ''"
                   loading="lazy"
                   class="vc-gallery-preview__thumb-img"
@@ -146,7 +146,7 @@ import type { AssetLike } from "@core/composables/useAssetsManager";
 import { useI18n } from "vue-i18n";
 import { useScrollLock } from "@vueuse/core";
 import { useResponsive } from "@framework/core/composables/useResponsive";
-import { getThumbnailUrl } from "@core/utilities/thumbnail";
+import { getThumbnailUrl, isExternalImage } from "@core/utilities/thumbnail";
 
 export interface Props {
   images?: AssetLike[];
@@ -208,6 +208,10 @@ function slidePrev() {
 
 function slideNext() {
   mainSwiper.value?.slideNext();
+}
+
+function thumbSrc(item: AssetLike): string | undefined {
+  return isExternalImage(item) ? item.url : (getThumbnailUrl(item.url, "64x64") ?? item.url);
 }
 
 function onThumbImageError(event: Event, fallbackUrl?: string) {

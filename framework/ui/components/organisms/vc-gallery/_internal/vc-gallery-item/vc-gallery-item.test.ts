@@ -49,4 +49,29 @@ describe("VcGalleryItem actions", () => {
     expect(wrapper.emitted("edit")?.length).toBe(1);
     expect(wrapper.emitted("remove")?.length).toBe(1);
   });
+
+  describe("thumbnails", () => {
+    const tileSize = (image: Record<string, unknown>) =>
+      mount(VcGalleryItem, { props: { image, thumbnailSize: "216x216" }, global: { plugins: [i18n] } })
+        .findComponent({ name: "VcImageTile" })
+        .props("thumbnailSize");
+
+    it("asks for a thumbnail of a file the platform stores", () => {
+      expect(
+        tileSize({ url: "https://shop.test/cms-content/assets/catalog/a.jpg", relativeUrl: "/catalog/a.jpg" }),
+      ).toBe("216x216");
+      expect(
+        tileSize({ url: "https://shop.test/cms-content/assets//catalog/a.jpg", relativeUrl: "//catalog/a.jpg" }),
+      ).toBe("216x216");
+    });
+
+    it("shows the original of an image linked from another host", () => {
+      const url = "https://i.etsystatic.com/1/r/il/a.jpg";
+      expect(tileSize({ url, relativeUrl: url })).toBeUndefined();
+    });
+
+    it("keeps the thumbnail when the image has no relativeUrl", () => {
+      expect(tileSize({ url: "https://cdn.test/a.jpg" })).toBe("216x216");
+    });
+  });
 });

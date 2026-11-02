@@ -21,12 +21,12 @@ vi.mock("sortablejs", () => ({
 
 import { useWidgetSortable } from "./useWidgetSortable";
 
-function setup(onMove = vi.fn(), canPut?: (l: "strip" | "overflow") => boolean) {
+function setup(onMove = vi.fn()) {
   const enabled = ref(true);
   const Host = defineComponent({
     setup() {
       const el = ref<HTMLElement>();
-      useWidgetSortable(el, { group: "w", enabled, onMove, canPut });
+      useWidgetSortable(el, { group: "w", enabled, onMove });
       return () =>
         h(
           "div",
@@ -95,10 +95,9 @@ describe("useWidgetSortable", () => {
     wrapper.unmount();
   });
 
-  it("refuses a drop through canPut and follows enabled", async () => {
-    const { wrapper, enabled } = setup(vi.fn(), () => false);
+  it("follows enabled", async () => {
+    const { wrapper, enabled } = setup();
     await nextTick();
-    expect(created[0].options.group.put()).toBe(false);
     expect(created[0].options.disabled).toBe(false);
     enabled.value = false;
     await nextTick();

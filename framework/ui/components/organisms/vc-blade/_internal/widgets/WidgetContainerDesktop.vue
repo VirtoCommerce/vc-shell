@@ -119,7 +119,6 @@
                   v-if="editing"
                   type="button"
                   class="vc-widget-container-desktop__edit-btn vc-widget-container-desktop__edit-btn--add"
-                  :disabled="!canAddToStrip"
                   :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.ADD', { title: resolveTitle(widget) })"
                   @click="moveToStrip(widget.id)"
                 >
@@ -129,12 +128,6 @@
                   />
                 </button>
               </div>
-            </div>
-            <div
-              v-if="editing && !canAddToStrip && overflowItems.length"
-              class="vc-widget-container-desktop__empty"
-            >
-              {{ t("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.STRIP_FULL", { max: WIDGET_STRIP_MAX }) }}
             </div>
 
             <div
@@ -181,7 +174,7 @@ import type { IWidget } from "@core/services/widget-service";
 import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import WidgetItem from "./WidgetItem.vue";
-import { useWidgetLayout, WIDGET_STRIP_MAX } from "./useWidgetLayout";
+import { useWidgetLayout } from "./useWidgetLayout";
 import { useWidgetEditReorder } from "./useWidgetEditReorder";
 import { useHeadlessWidgetHelpers } from "./useHeadlessWidgetHelpers";
 import { useAdaptiveItems } from "@ui/composables/useAdaptiveItems";
@@ -201,7 +194,7 @@ const layout = useWidgetLayout(
   () => props.bladeName,
   () => props.widgets,
 );
-const { strip, overflow, editing, canAddToStrip, startEdit: beginEdit, commit, cancel, reset } = layout;
+const { strip, overflow, editing, startEdit: beginEdit, commit, cancel, reset } = layout;
 
 const menuOpen = ref(false);
 // An unnamed blade would share one storage key, so it cannot be customized
@@ -352,14 +345,8 @@ const { onStripKeydown, onOverflowKeydown, moveToStrip, moveToOverflow } = useWi
       @apply tw-shrink-0 tw-w-5 tw-h-5 tw-me-2;
       background-color: var(--primary-500);
 
-      &:hover:not(:disabled) {
+      &:hover {
         background-color: var(--primary-600);
-      }
-
-      &:disabled {
-        @apply tw-cursor-not-allowed;
-        color: var(--neutrals-400);
-        background-color: var(--neutrals-200);
       }
     }
 
@@ -431,11 +418,6 @@ const { onStripKeydown, onOverflowKeydown, moveToStrip, moveToOverflow } = useWi
         @apply tw-mt-0 tw-text-xs tw-font-normal;
       }
     }
-  }
-
-  &__empty {
-    @apply tw-px-3 tw-py-2 tw-text-xs;
-    color: var(--neutrals-500);
   }
 
   &__footer {

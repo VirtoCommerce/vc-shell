@@ -1,6 +1,7 @@
 import { nextTick, type Ref } from "vue";
 import { useWidgetSortable, type IWidgetMove, type WidgetListName } from "./useWidgetSortable";
-import type { useWidgetLayout } from "./useWidgetLayout";
+import { WIDGET_STRIP_MAX, type useWidgetLayout } from "./useWidgetLayout";
+import { createStripDisplacement } from "./stripDisplacement";
 
 type Layout = ReturnType<typeof useWidgetLayout>;
 
@@ -12,10 +13,7 @@ function isRtl(el: HTMLElement) {
 }
 
 export interface IUseWidgetEditReorderOptions {
-  layout: Pick<
-    Layout,
-    "strip" | "overflow" | "editing" | "canAddToStrip" | "reorder" | "moveToStrip" | "moveToOverflow"
-  >;
+  layout: Pick<Layout, "strip" | "overflow" | "editing" | "reorder" | "moveToStrip" | "moveToOverflow">;
   stripEl: Ref<HTMLElement | undefined>;
   overflowEl: Ref<HTMLElement | undefined>;
   /** Direction the strip list is laid out in */
@@ -39,12 +37,14 @@ export function useWidgetEditReorder(opts: IUseWidgetEditReorderOptions) {
     else layout.moveToOverflow(id, to);
   }
 
+  const displacement = createStripDisplacement(WIDGET_STRIP_MAX);
   const sortableOpts = {
     group: "blade-widgets",
     enabled: layout.editing,
     handle: opts.handle,
     onMove,
-    canPut: (toList: WidgetListName) => toList !== "strip" || layout.canAddToStrip.value,
+    onChange: displacement.onChange,
+    onDrop: displacement.restore,
   };
   useWidgetSortable(stripEl, sortableOpts);
   useWidgetSortable(overflowEl, sortableOpts);

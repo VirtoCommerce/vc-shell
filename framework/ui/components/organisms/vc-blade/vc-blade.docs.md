@@ -462,7 +462,7 @@ Registered widgets (see [`useBladeWidgets`](../../../../core/composables/useBlad
 
 ### Customizing the layout
 
-Choose Customize in the dropdown (sheet on mobile) to edit which widgets are on the blade and in what order: the minus and plus buttons move a widget off or onto the strip (plus is disabled while the strip is full), drag changes the order, and arrow keys reorder the focused widget. Reset restores the default layout, Done leaves edit mode. On desktop, closing the dropdown with Escape or the chevron discards the edit. On mobile, swiping the sheet down saves it like Done.
+Choose Customize in the dropdown (sheet on mobile) to edit which widgets are on the blade and in what order: the minus and plus buttons move a widget off or onto the strip, drag changes the order or moves a widget between the lists, and arrow keys reorder the focused widget. Adding a widget to a full strip moves the last widget on the strip to the place the new one left. Reset restores the default layout, Done leaves edit mode. On desktop, closing the dropdown with Escape or the chevron discards the edit. On mobile, swiping the sheet down saves it like Done.
 
 A widget you remove stays in the dropdown. A strip widget that is not shown right now (hidden on this record, or its module has not loaded yet) keeps its slot, and no other widget takes it. An external widget whose module loads after the blade opened appears as soon as the module registers it. New widgets fill free strip slots until the user customizes the blade; after that they appear in the dropdown.
 

@@ -123,7 +123,6 @@ describe("useWidgetLayout", () => {
     const { api } = setup("Order", widgets);
     api.startEdit();
     widgets.value = mk("abde");
-    expect(api.canAddToStrip.value).toBe(true);
     api.reorder("strip", 2, 3);
     expect(stripIds(api)).toEqual(ids("abed"));
     api.moveToOverflow("a");
@@ -167,16 +166,25 @@ describe("useWidgetLayout", () => {
     expect(stripIds(api)).toEqual(ids("gcdea"));
   });
 
-  it("moveToStrip is a no-op when full; canAddToStrip false at 5", () => {
+  it("a full strip hands its last widget over to the place the new one left", () => {
     const { api } = setup("Order", mk("abcdefg"));
     api.startEdit();
     expect(api.draft.value.strip).toHaveLength(WIDGET_STRIP_MAX);
-    expect(api.canAddToStrip.value).toBe(false);
+    api.moveToStrip("g", 1);
+    expect(api.draft.value).toEqual({ strip: ids("agbcd"), overflow: ids("fe") });
     api.moveToStrip("f");
-    expect(api.draft.value.strip).toEqual(ids("abcde"));
-    expect(api.draft.value.overflow).toEqual(ids("fg"));
-    api.moveToOverflow("e");
-    expect(api.canAddToStrip.value).toBe(true);
+    expect(api.draft.value).toEqual({ strip: ids("agbcf"), overflow: ids("de") });
+  });
+
+  it("a full strip skips a widget that does not render when it hands one over", () => {
+    const widgets = ref(mk("abcdefg"));
+    const { api } = setup("Order", widgets);
+    api.startEdit();
+    widgets.value = mk("abcdfg");
+    api.moveToStrip("f");
+    expect(api.draft.value.strip).toEqual(ids("abcdef"));
+    api.moveToStrip("g");
+    expect(api.draft.value).toEqual({ strip: ids("abcdeg"), overflow: ids("f") });
   });
 
   it("reset removes key and returns to default", async () => {

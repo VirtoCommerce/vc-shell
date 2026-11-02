@@ -252,7 +252,6 @@
           "ON_BLADE": "On blade · up to {max}",
           "ALL_ON_BLADE": "Drag a widget here to hide it",
           "STRIP_EMPTY": "Drag a widget here to show it",
-          "STRIP_FULL": "Up to {max} widgets on the blade. Remove one to add.",
           "REMOVE": "Remove {title} from the blade",
           "ADD": "Add {title} to the blade",
           "REORDER": "Reorder {title}"

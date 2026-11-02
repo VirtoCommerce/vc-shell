@@ -159,7 +159,6 @@
             <button
               type="button"
               class="vc-widget-container-mobile__edit-btn vc-widget-container-mobile__edit-btn--add"
-              :disabled="!canAddToStrip"
               :aria-label="t('COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.ADD', { title: titleOf(widget) })"
               @click="moveToStrip(widget.id)"
             >
@@ -171,12 +170,6 @@
               </span>
             </button>
           </div>
-        </div>
-        <div
-          v-if="overflow.length && !canAddToStrip"
-          class="vc-widget-container-mobile__empty"
-        >
-          {{ t("COMPONENTS.ORGANISMS.VC_BLADE.WIDGETS.STRIP_FULL", { max: WIDGET_STRIP_MAX }) }}
         </div>
       </div>
 
@@ -242,7 +235,7 @@ const layout = useWidgetLayout(
   () => props.bladeName,
   () => props.widgets,
 );
-const { strip, overflow, editing, canAddToStrip, startEdit: beginEdit, commit, reset: resetLayout } = layout;
+const { strip, overflow, editing, startEdit: beginEdit, commit, reset: resetLayout } = layout;
 
 const containerRef = ref<HTMLElement | null>(null);
 const showOverflow = ref(false);
@@ -435,23 +428,10 @@ const { onStripKeydown, onOverflowKeydown, moveToStrip, moveToOverflow } = useWi
       background-color: var(--primary-500);
     }
 
-    &--add:disabled {
-      @apply tw-cursor-not-allowed;
-
-      .vc-widget-container-mobile__edit-btn-icon {
-        background-color: var(--neutrals-300);
-      }
-    }
-
     &:focus-visible {
       outline: 2px solid var(--primary-500);
       outline-offset: 1px;
     }
-  }
-
-  &__empty {
-    @apply tw-px-4 tw-py-2 tw-text-xs;
-    color: var(--neutrals-500);
   }
 
   &__footer {

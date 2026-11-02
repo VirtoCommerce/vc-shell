@@ -11,13 +11,22 @@ export interface IWidgetMove {
   id: string;
 }
 
+export interface IWidgetDragChange {
+  item: HTMLElement;
+  from: HTMLElement;
+  to: HTMLElement;
+  oldIndex: number;
+}
+
 export interface IUseWidgetSortableOptions {
   group: string;
   enabled: Readonly<Ref<boolean>>;
   handle?: string;
   onMove: (e: IWidgetMove) => void;
-  /** Return false to refuse a drop from another list (e.g. a full strip). */
-  canPut?: (toList: WidgetListName) => boolean;
+  /** The dragged item took a new place, in its own list or another one, before the drop */
+  onChange?: (e: IWidgetDragChange) => void;
+  /** Runs on drop before the dragged item is put back, to undo other DOM changes made during the drag */
+  onDrop?: () => void;
 }
 
 const listName = (el: HTMLElement): WidgetListName => (el.dataset.widgetList === "overflow" ? "overflow" : "strip");
@@ -33,10 +42,7 @@ export function useWidgetSortable(el: Ref<HTMLElement | undefined>, opts: IUseWi
   function create(target: HTMLElement) {
     destroy();
     instance = Sortable.create(target, {
-      group: {
-        name: opts.group,
-        put: () => opts.canPut?.(listName(target)) ?? true,
-      },
+      group: opts.group,
       handle: opts.handle,
       animation: 150,
       forceFallback: true,
@@ -49,7 +55,12 @@ export function useWidgetSortable(el: Ref<HTMLElement | undefined>, opts: IUseWi
       onMove: (evt) => {
         if (Sortable.ghost) Sortable.ghost.dataset.overList = listName(evt.to);
       },
+      onChange: (evt) => {
+        if (evt.oldIndex == null) return;
+        opts.onChange?.({ item: evt.item, from: evt.from, to: evt.to, oldIndex: evt.oldIndex });
+      },
       onEnd: (evt) => {
+        opts.onDrop?.();
         const item = evt.item;
         const id = item.dataset.widgetId;
         const { oldIndex, newIndex } = evt;

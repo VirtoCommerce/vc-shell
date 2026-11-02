@@ -166,10 +166,11 @@ describe("WidgetContainerMobile", () => {
       expect(strip()).toContain("w1");
     });
 
-    it("disables plus at 5 and shows the hint", async () => {
+    it("plus on a full strip swaps in the widget and hides the last one", async () => {
       await edit();
-      expect(byLabel(/ADD:W6/)[0].attributes("disabled")).toBeDefined();
-      expect(wrapper.text()).toContain("STRIP_FULL");
+      await byLabel(/ADD:W6/)[0].trigger("click");
+      expect(strip()).toEqual(["w1", "w2", "w3", "w4", "w6"]);
+      expect(overflow()).toEqual(["w5", "w7"]);
     });
 
     it("Done persists, Reset clears", async () => {

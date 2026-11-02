@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.10.2](https://github.com/VirtoCommerce/vc-shell/compare/v2.10.1...v2.10.2) (2026-11-02)
+
+**Note:** Version bump only for package @vc-shell/migrate
+
 ## [2.10.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.10.0...v2.10.1) (2026-11-02)
 
 **Note:** Version bump only for package @vc-shell/migrate

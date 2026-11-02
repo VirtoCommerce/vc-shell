@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.10.2](https://github.com/VirtoCommerce/vc-shell/compare/v2.10.1...v2.10.2) (2026-11-02)
+
+### Bug Fixes
+
+- **framework:** keep blade widgets inside the strip, swap into a full strip (#403) ([5d90207](https://github.com/VirtoCommerce/vc-shell/commit/5d902072a4dce4c3725ee0f2dc6e8f926c099adb)), closes [#403](https://github.com/VirtoCommerce/vc-shell/issues/403) [#392](https://github.com/VirtoCommerce/vc-shell/issues/392)
+
 ## [2.10.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.10.0...v2.10.1) (2026-11-02)
 
 ### Features

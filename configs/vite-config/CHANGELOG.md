@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.10.3](https://github.com/VirtoCommerce/vc-shell/compare/v2.10.2...v2.10.3) (2026-11-02)
+
+**Note:** Version bump only for package @vc-shell/config-generator
+
 ## [2.10.2](https://github.com/VirtoCommerce/vc-shell/compare/v2.10.1...v2.10.2) (2026-11-02)
 
 **Note:** Version bump only for package @vc-shell/config-generator

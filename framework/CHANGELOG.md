@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.10.3](https://github.com/VirtoCommerce/vc-shell/compare/v2.10.2...v2.10.3) (2026-11-02)
+
+### Bug Fixes
+
+- **framework:** show the original for images linked from another host (#404) ([2e784ea](https://github.com/VirtoCommerce/vc-shell/commit/2e784ea6e53bd5bd5b3fae1e5d61bc711f3849af)), closes [#404](https://github.com/VirtoCommerce/vc-shell/issues/404)
+
 ## [2.10.2](https://github.com/VirtoCommerce/vc-shell/compare/v2.10.1...v2.10.2) (2026-11-02)
 
 ### Bug Fixes

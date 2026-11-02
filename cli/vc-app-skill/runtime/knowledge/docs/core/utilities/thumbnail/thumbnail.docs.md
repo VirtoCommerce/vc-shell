@@ -77,6 +77,25 @@ getBestThumbnailSize(200); // → "216x216"
 getBestThumbnailSize(500); // → "lg"
 ```
 
+### `isExternalImage(image)`
+
+Returns `true` for an image linked from another host. Thumbnails exist only for files the platform stores: for an image on another host the guessed thumbnail URL gets a 404, or a CDN answers with a placeholder or an unrelated image. The platform keeps a storage path in `relativeUrl` for a stored file and the full URL for a linked one.
+
+```ts
+import { isExternalImage } from "@vc-shell/framework";
+
+isExternalImage({ relativeUrl: "/catalog/a.jpg" }); // → false
+isExternalImage({ relativeUrl: "//catalog/a.jpg" }); // → false
+isExternalImage({ relativeUrl: "https://cdn.example.com/a.jpg" }); // → true
+isExternalImage({ url: "https://cdn.example.com/a.jpg" }); // → false (no relativeUrl: unknown)
+```
+
+Use it when you pass `thumbnailSize` to `VcImage` yourself:
+
+```vue
+<VcImage :src="image.url" :thumbnail-size="isExternalImage(image) ? undefined : 'sm'" size="s" />
+```
+
 ## Usage in Components
 
 ### VcImage
@@ -97,11 +116,15 @@ Gallery auto-maps `size` prop to thumbnail size. Override with `thumbnailSize`:
 <VcGallery :images="images" thumbnail-size="128x128" />
 ```
 
-Gallery preview uses `64x64` for the thumbnail strip and full-size for the main image automatically.
+Gallery preview uses `64x64` for the thumbnail strip and full-size for the main image automatically. Gallery tiles and the preview strip show the original of an image linked from another host.
 
 ### VcDataTable (CellImage)
 
-Table image cells use `sm` thumbnail by default — no action needed.
+Table image cells use the `sm` thumbnail. A URL string cannot tell a stored image from a linked one, so when images can come from another host, point the column at the image object; the cell then shows the original of a linked image:
+
+```vue
+<VcColumn id="image" field="images[0]" type="image" width="60px" />
+```
 
 ## Types
 
@@ -114,7 +137,7 @@ type ThumbnailSize = ThumbnailPreset | ThumbnailPixelSize;
 ## Notes
 
 - The utility only transforms the URL — the backend must have generated the thumbnail for the URL to resolve
-- If a thumbnail doesn't exist on the server, the browser will show a broken image. Ensure your asset pipeline generates all required sizes.
+- If a thumbnail doesn't exist on the server, `VcImage` falls back to the original only when the request fails. A host that answers a missing file with an image (some CDNs send a placeholder with the 404, or an unrelated image with 200) shows that image instead, so skip thumbnails for linked images with `isExternalImage`.
 - The suffix is inserted before the file extension: `photo.jpg` → `photo_sm.jpg`
 - URLs without a file extension are returned unchanged
 - Already-suffixed URLs are not double-transformed

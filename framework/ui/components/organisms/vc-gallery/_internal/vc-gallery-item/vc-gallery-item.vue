@@ -4,7 +4,7 @@
     :alt="image.altText || image.name || ''"
     :name="image.name"
     :image-fit="imageFit"
-    :thumbnail-size="thumbnailSize"
+    :thumbnail-size="resolvedThumbnailSize"
     :actions="resolvedActions"
     class="vc-gallery-item"
     :class="{
@@ -37,6 +37,7 @@ import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcImageTile } from "@ui/components/molecules/vc-image-tile";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import type { ThumbnailSize } from "@core/utilities/thumbnail";
+import { isExternalImage } from "../thumbnails";
 
 export interface Props {
   image?: AssetLike;
@@ -65,6 +66,8 @@ defineEmits<{
   (e: "edit", image: AssetLike): void;
   (e: "remove", image: AssetLike): void;
 }>();
+
+const resolvedThumbnailSize = computed(() => (isExternalImage(props.image) ? undefined : props.thumbnailSize));
 
 const resolvedActions = computed(() => ({
   preview: props.actions?.preview !== false,

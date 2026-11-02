@@ -130,6 +130,21 @@ describe("vc-gallery-preview.vue", () => {
     expect(wrapper.findAll(".vc-gallery-preview__thumb").length).toBe(3);
   });
 
+  it("uses a thumbnail for a stored image and the original for one linked from another host", () => {
+    const external = "https://i.etsystatic.com/1/r/il/a.jpg";
+    const wrapper = mount(VcGalleryPreview, {
+      props: {
+        images: [
+          { url: "https://shop.test/cms-content/assets/catalog/a.jpg", relativeUrl: "/catalog/a.jpg" },
+          { url: external, relativeUrl: external },
+        ],
+        index: 0,
+      },
+    });
+    const srcs = wrapper.findAll(".vc-gallery-preview__thumb-img").map((img) => img.attributes("src"));
+    expect(srcs).toEqual(["https://shop.test/cms-content/assets/catalog/a_64x64.jpg", external]);
+  });
+
   it("does not render thumbnail strip for single image", () => {
     const wrapper = mount(VcGalleryPreview, {
       props: { images: [images[0]], index: 0 },

@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.10.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.10.0...v2.10.1) (2026-11-02)
+
+### Features
+
+- **framework:** enable striped rows by default in VcDataTable (#402) ([6c025ce](https://github.com/VirtoCommerce/vc-shell/commit/6c025cebd53ec4220ca80432ff5683bc034c050c)), closes [#402](https://github.com/VirtoCommerce/vc-shell/issues/402)
+
 # [2.10.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.9.0...v2.10.0) (2026-11-02)
 
 ### Features

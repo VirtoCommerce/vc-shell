@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.10.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.10.0...v2.10.1) (2026-11-02)
+
+### Features
+
+- **framework:** enable striped rows by default in VcDataTable (#402) ([6c025ce](https://github.com/VirtoCommerce/vc-shell/commit/6c025cebd53ec4220ca80432ff5683bc034c050c)), closes [#402](https://github.com/VirtoCommerce/vc-shell/issues/402)
+
+### Bug Fixes
+
+- **deps:** bump bundled `@nevware21/ts-utils` to 0.16.0 (CVE-2026-46681) (#401) ([1c9b5af](https://github.com/VirtoCommerce/vc-shell/commit/1c9b5af588db9484902d3585813ad2a2d5b1d2fd)), closes [#401](https://github.com/VirtoCommerce/vc-shell/issues/401) [#396](https://github.com/VirtoCommerce/vc-shell/issues/396)
+
 # [2.10.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.9.0...v2.10.0) (2026-11-02)
 
 ### Features

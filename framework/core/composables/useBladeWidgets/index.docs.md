@@ -20,6 +20,8 @@ Headless widgets are defined as plain configuration objects with reactive refs f
 
 - **`useBladeWidgets`**: Register sidebar widgets (counters, action buttons) for a blade without creating Vue components. Refresh widget data after blade operations (save, delete).
 - **`useWidgetTrigger`**: Inside an external widget component (registered via `registerExternalWidget`) to register `onRefresh` / `onClick` callbacks. The blade can then call `refresh(widgetId)` or `refreshAll()` to trigger them.
+- **Badge color** for a status (quality, completeness): see [Badge color](#badge-color).
+- **Alerts** for things the user should look at (a declined payment, unread messages): see [Alerts](#alerts).
 - When NOT to use `useBladeWidgets`: for widgets that need their own template or complex UI (use `registerExternalWidget` + `useWidgetTrigger` instead).
 
 ## Basic Usage
@@ -72,56 +74,166 @@ async function onSave() {
 
 Inline `useBladeWidgets([...])` is fine for one-off widgets, but extracting becomes essential when widget data comes from API calls (which need their own composables anyway).
 
-## API
+## Badge color
 
-### Parameters
+`badgeVariant` colors the badge to report a status that needs no action, such as a quality score. Unset keeps the default `"primary"`.
 
-| Parameter | Type                          | Required | Description                  |
-| --------- | ----------------------------- | -------- | ---------------------------- |
-| `widgets` | `HeadlessWidgetDeclaration[]` | Yes      | Array of widget declarations |
+| `WidgetBadgeVariant` | Typical meaning              |
+| -------------------- | ---------------------------- |
+| `"primary"`          | Default, a plain counter     |
+| `"success"`          | Good state                   |
+| `"warning"`          | Medium state, worth a glance |
+| `"danger"`           | Bad state                    |
+| `"info"`             | Neutral information          |
+| `"secondary"`        | No data, inactive            |
 
-### HeadlessWidgetDeclaration
+Badge color is a status. For something the user should look at, use [alerts](#alerts) instead. A widget can use both: a yellow badge for medium quality and a red dot for a new problem.
 
-| Field             | Type                                                     | Required | Description                               |
-| ----------------- | -------------------------------------------------------- | -------- | ----------------------------------------- |
-| `id`              | `string`                                                 | Yes      | Unique widget identifier                  |
-| `icon`            | `string`                                                 | Yes      | Icon name (e.g., `"lucide-tag"`)          |
-| `title`           | `string`                                                 | Yes      | i18n key or display title                 |
-| `badge`           | `Ref<number \| string> \| ComputedRef<number \| string>` | No       | Badge counter value                       |
-| `loading`         | `Ref<boolean> \| ComputedRef<boolean>`                   | No       | Show loading indicator                    |
-| `disabled`        | `Ref<boolean> \| boolean`                                | No       | Disable the widget                        |
-| `isVisible`       | `ComputedRef<boolean> \| Ref<boolean> \| boolean`        | No       | Toggle visibility                         |
-| `onClick`         | `() => void`                                             | No       | Action when widget is clicked             |
-| `onRefresh`       | `() => void \| Promise<void>`                            | No       | Called by `refresh(id)` or `refreshAll()` |
-| `alerts`          | `Ref<IWidgetAlert[]> \| ComputedRef<IWidgetAlert[]>`     | No       | Live alerts shown in the widget popup     |
-| `alertsComponent` | `Component`                                              | No       | Popup content instead of the default rows |
+### Headless widget
 
-### Alerts
+```ts
+const score = ref<number>();
 
-A widget with a non-empty `alerts` list shows a dot on its icon, colored by the highest severity. Hovering the widget (desktop) opens a popup with the alerts; clicking the widget still opens the blade. On touch screens the first tap on a widget with alerts opens the popup, which then has an Open button; a second tap on the widget also opens the blade. Widgets without alerts show no popup.
-
-```typescript
-const alerts = computed<IWidgetAlert[]>(() => (outOfStock.value ? [{ id: "stock", severity: "warning", text: t("OFFERS.OUT_OF_STOCK") }] : []));
-
-useBladeWidgets([{ id: "OffersWidget", icon: "lucide-tag", title: "OFFERS.TITLE", alerts }]);
+useBladeWidgets([
+  {
+    id: "QualityWidget",
+    icon: "lucide-gauge",
+    title: "PRODUCTS.WIDGETS.QUALITY",
+    badge: score,
+    badgeVariant: computed(() => (score.value === undefined ? undefined : score.value >= 80 ? "success" : score.value >= 50 ? "warning" : "danger")),
+  },
+]);
 ```
 
-| `IWidgetAlert` field | Type                                           | Required | Description                       |
-| -------------------- | ---------------------------------------------- | -------- | --------------------------------- |
-| `id`                 | `string`                                       | Yes      | Unique within the widget          |
-| `severity`           | `"info" \| "warning" \| "error" \| "critical"` | Yes      | Drives the dot color and row icon |
-| `text`               | `string`                                       | Yes      | Already translated                |
-| `meta`               | `string`                                       | No       | Secondary line (time, reason)     |
-| `onOpen`             | `() => void`                                   | No       | Called on row click               |
-| `action`             | `{ label: string; run: () => void }`           | No       | Inline action button              |
+### External widget
 
-Alerts are data: compute them from what the widget has loaded, and they stay exactly as long as the problem does. When a push means the data changed, refetch it; the alerts follow, together with the badge. A component widget passes the same `alerts` through `useWidgetTrigger`.
+An external widget renders `VcWidget` itself, so it passes `badge-variant` as a prop. The registration does not change.
 
-```typescript
+```vue
+<!-- QualityWidget.vue -->
+<script setup lang="ts">
+import { computed, ref } from "vue";
+import { VcWidget, injectBladeContext, useWidgetTrigger } from "@vc-shell/framework";
+
+const ctx = injectBladeContext();
+const productId = computed(() => (ctx.value.item as { id?: string })?.id ?? "");
+const score = ref<number>();
+const variant = computed(() => (score.value === undefined ? undefined : score.value >= 80 ? "success" : score.value >= 50 ? "warning" : "danger"));
+
+async function load() {
+  score.value = await qualityApi.getScore(productId.value);
+}
+
+useWidgetTrigger({ onRefresh: load });
+load();
+</script>
+
+<template>
+  <VcWidget
+    icon="lucide-gauge"
+    :title="$t('QUALITY.WIDGET.TITLE')"
+    :value="score"
+    :badge-variant="variant"
+  />
+</template>
+```
+
+```ts
+registerExternalWidget({ id: "QualityWidget", component: QualityWidget, targetBlades: ["ProductDetails"] });
+```
+
+## Alerts
+
+Alerts tell the user that something in the widget's data needs a look: a declined payment, an address to confirm, unread messages.
+
+::storybook id="navigation-vcblade--widgets-with-alerts" height="520"
+
+What the user sees:
+
+- A dot on the widget icon, colored by the highest severity in the list.
+- Desktop: hovering the widget opens a popup with the alerts. A click on the widget still opens its blade.
+- Touch: the first tap opens the popup with an Open button; a second tap opens the blade.
+- In the overflow menu, widgets with alerts are listed first.
+- An empty list means no dot and no popup.
+
+| `severity`   | Dot color | Use for                        |
+| ------------ | --------- | ------------------------------ |
+| `"info"`     | Blue      | Something new, no problem      |
+| `"warning"`  | Yellow    | Needs attention soon           |
+| `"error"`    | Red       | Something failed               |
+| `"critical"` | Red       | Blocks work; ranks above error |
+
+### IWidgetAlert
+
+| Field      | Type                                                  | Required | Description                         |
+| ---------- | ----------------------------------------------------- | -------- | ----------------------------------- |
+| `id`       | `string`                                              | Yes      | Unique within the widget            |
+| `severity` | `"info" \| "warning" \| "error" \| "critical"`        | Yes      | Drives the dot color and row marker |
+| `text`     | `string`                                              | Yes      | Already translated                  |
+| `meta`     | `string`                                              | No       | Secondary line (time, reason)       |
+| `onOpen`   | `() => void`                                          | No       | Called on row click                 |
+| `action`   | `{ label: string; run: () => void \| Promise<void> }` | No       | Inline action button on the row     |
+
+### Alerts are data
+
+Compute alerts from what the widget has loaded. They stay exactly as long as the problem does: fix the data and the alert is gone. There is no "mark as seen" and no API to push an alert. When something changes on the server, refetch the data and the alerts follow, together with the badge.
+
+### Headless widget
+
+```ts
+const { t } = useI18n();
+const order = ref<Order>();
+
+const alerts = computed<IWidgetAlert[]>(() => {
+  const list: IWidgetAlert[] = [];
+  if (order.value?.paymentStatus === "Declined") {
+    list.push({
+      id: "payment",
+      severity: "error",
+      text: t("ORDERS.ALERTS.PAYMENT_DECLINED"),
+      meta: formatRelative(order.value.modifiedDate),
+      onOpen: () => openBlade({ name: "OrderPayments", param: order.value!.id }),
+    });
+  }
+  if (order.value && !order.value.shippingAddress?.isConfirmed) {
+    list.push({
+      id: "address",
+      severity: "warning",
+      text: t("ORDERS.ALERTS.ADDRESS_UNCONFIRMED"),
+      action: { label: t("ORDERS.ALERTS.CONFIRM"), run: () => confirmAddress(order.value!.id) },
+    });
+  }
+  return list;
+});
+
+useBladeWidgets([
+  {
+    id: "PaymentsWidget",
+    icon: "lucide-credit-card",
+    title: "ORDERS.WIDGETS.PAYMENTS",
+    alerts,
+    onClick: () => openBlade({ name: "OrderPayments", param: order.value?.id }),
+  },
+]);
+```
+
+### External widget
+
+An external widget passes the same `alerts` through `useWidgetTrigger`. This one counts unread messages and refetches on a push for its entity:
+
+```vue
+<!-- MessagesWidget.vue -->
+<script setup lang="ts">
+import { computed, ref } from "vue";
+import { VcWidget, injectBladeContext, useBladeNotifications, useWidgetTrigger, type IWidgetAlert } from "@vc-shell/framework";
+
+const ctx = injectBladeContext();
+const entityId = computed(() => (ctx.value.item as { id?: string })?.id ?? "");
 const unread = ref<Message[]>([]);
-const load = async () => {
-  unread.value = await api.searchUnread({ entityId: entityId.value });
-};
+
+async function load() {
+  unread.value = await messagesApi.searchUnread({ entityId: entityId.value });
+}
 
 // A push for this entity: refetch, and the badge and alerts update together
 useBladeNotifications<MessagePush>({
@@ -130,8 +242,28 @@ useBladeNotifications<MessagePush>({
   onMessage: load,
 });
 
-const alerts = computed<IWidgetAlert[]>(() => unread.value.map((m) => ({ id: m.id!, severity: "info", text: m.content ?? "", onOpen: openMessenger })));
+const alerts = computed<IWidgetAlert[]>(() =>
+  unread.value.map((m): IWidgetAlert => ({
+    id: m.id!,
+    severity: "info",
+    text: m.content ?? "",
+    meta: m.senderName,
+    onOpen: openMessenger,
+  })),
+);
+
 useWidgetTrigger({ onRefresh: load, alerts });
+load();
+</script>
+
+<template>
+  <VcWidget
+    icon="lucide-message-square"
+    :title="$t('MESSAGES.WIDGET.TITLE')"
+    :value="unread.length"
+    @click="openMessenger"
+  />
+</template>
 ```
 
 Widget alerts are independent from the notification bell: the bell lists notifications, the widget lists what is unresolved in its data.
@@ -139,6 +271,8 @@ Widget alerts are independent from the notification bell: the bell lists notific
 ### Custom popup content
 
 The popup shows one row per alert by default. To draw it yourself (message previews, an offer card), pass `alertsComponent`. The alerts still decide the dot and whether the popup opens; the component decides what it shows. It receives `IWidgetAlertsComponentProps`: the `alerts` and a `close()` to call after it opens a blade.
+
+::storybook id="navigation-vcblade--widgets-custom-alerts-content" height="520"
 
 ```vue
 <!-- MessagesPreview.vue -->
@@ -160,11 +294,38 @@ defineProps<IWidgetAlertsComponentProps>();
 </template>
 ```
 
-```typescript
+```ts
 useWidgetTrigger({ onRefresh: load, alerts, alertsComponent: MessagesPreview });
+// or, for a headless widget:
+useBladeWidgets([{ id: "MessagesWidget", icon: "lucide-message-square", title: "MESSAGES.TITLE", alerts, alertsComponent: MessagesPreview }]);
 ```
 
 Keyboard opening moves focus to the first button, link or input in the component, so put the main action first or make it a real `<button>`.
+
+## API
+
+### Parameters
+
+| Parameter | Type                          | Required | Description                  |
+| --------- | ----------------------------- | -------- | ---------------------------- |
+| `widgets` | `HeadlessWidgetDeclaration[]` | Yes      | Array of widget declarations |
+
+### HeadlessWidgetDeclaration
+
+| Field             | Type                                                         | Required | Description                               |
+| ----------------- | ------------------------------------------------------------ | -------- | ----------------------------------------- |
+| `id`              | `string`                                                     | Yes      | Unique widget identifier                  |
+| `icon`            | `string`                                                     | Yes      | Icon name (e.g., `"lucide-tag"`)          |
+| `title`           | `string`                                                     | Yes      | i18n key or display title                 |
+| `badge`           | `Ref<number \| string> \| ComputedRef<number \| string>`     | No       | Badge counter value                       |
+| `badgeVariant`    | `WidgetBadgeVariant \| Ref<WidgetBadgeVariant \| undefined>` | No       | Badge color; unset keeps `"primary"`      |
+| `loading`         | `Ref<boolean> \| ComputedRef<boolean>`                       | No       | Show loading indicator                    |
+| `disabled`        | `Ref<boolean> \| boolean`                                    | No       | Disable the widget                        |
+| `isVisible`       | `ComputedRef<boolean> \| Ref<boolean> \| boolean`            | No       | Toggle visibility                         |
+| `onClick`         | `() => void`                                                 | No       | Action when widget is clicked             |
+| `onRefresh`       | `() => void \| Promise<void>`                                | No       | Called by `refresh(id)` or `refreshAll()` |
+| `alerts`          | `Ref<IWidgetAlert[]> \| ComputedRef<IWidgetAlert[]>`         | No       | Live alerts, see [Alerts](#alerts)        |
+| `alertsComponent` | `Component`                                                  | No       | Popup content instead of the default rows |
 
 ### Returns
 
@@ -196,7 +357,7 @@ useWidgetTrigger({ onRefresh: loadData });
 | `onClick`         | `() => void`                  | No       | Handler called when widget is clicked in dropdown     |
 | `onRefresh`       | `() => void \| Promise<void>` | No       | Handler called to refresh widget data                 |
 | `disabled`        | `Ref<boolean> \| boolean`     | No       | Disabled state                                        |
-| `alerts`          | `Ref<IWidgetAlert[]>`         | No       | Live alerts shown in the widget popup (see above)     |
+| `alerts`          | `Ref<IWidgetAlert[]>`         | No       | Live alerts, see [Alerts](#alerts)                    |
 | `alertsComponent` | `Component`                   | No       | Popup content instead of the default rows (see above) |
 
 ### How It Works

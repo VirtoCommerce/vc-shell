@@ -49,6 +49,7 @@
           :icon="widget.headless.icon"
           :title="resolveTitle(widget)"
           :value="resolveBadge(widget)"
+          :badge-variant="resolveBadgeVariant(widget)"
           :disabled="resolveDisabled(widget)"
           :widget-id="widget.id"
           :horizontal="horizontal"
@@ -111,7 +112,8 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits<{ (event: "click"): void }>();
 
-const { resolveBadge, resolveLoading, resolveDisabled, resolveTitle, handleHeadlessClick } = useHeadlessWidgetHelpers();
+const { resolveBadge, resolveBadgeVariant, resolveLoading, resolveDisabled, resolveTitle, handleHeadlessClick } =
+  useHeadlessWidgetHelpers();
 
 const { t } = useI18n();
 const alerts = computed(() => resolveAlerts(props.widget));

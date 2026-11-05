@@ -35,6 +35,14 @@ export interface IWidgetAlert {
 
 type AlertsSource = Ref<IWidgetAlert[]> | ComputedRef<IWidgetAlert[]>;
 
+/** Badge color: a status the widget reports, e.g. medium quality as `"warning"`. Unset keeps `"primary"`. */
+export type WidgetBadgeVariant = "primary" | "secondary" | "success" | "warning" | "danger" | "info";
+
+type BadgeVariantSource =
+  | WidgetBadgeVariant
+  | Ref<WidgetBadgeVariant | undefined>
+  | ComputedRef<WidgetBadgeVariant | undefined>;
+
 /** Props of a custom alerts popup component (`alertsComponent`) */
 export interface IWidgetAlertsComponentProps {
   alerts: IWidgetAlert[];
@@ -70,6 +78,7 @@ export interface IWidgetTrigger {
 export interface IHeadlessWidgetFields {
   icon: string;
   badge?: Ref<number | string> | ComputedRef<number | string>;
+  badgeVariant?: BadgeVariantSource;
   loading?: Ref<boolean> | ComputedRef<boolean>;
   /** A function form receives the blade and the blade context */
   disabled?:

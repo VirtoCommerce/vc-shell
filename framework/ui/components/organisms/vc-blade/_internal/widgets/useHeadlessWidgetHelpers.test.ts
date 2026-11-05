@@ -52,6 +52,28 @@ describe("useHeadlessWidgetHelpers", () => {
     });
   });
 
+  describe("resolveBadgeVariant", () => {
+    it("returns undefined when unset", () => {
+      const { result } = mountWithSetup(() => useHeadlessWidgetHelpers());
+      expect(result.resolveBadgeVariant(makeWidget({ headless: { icon: "x" } }))).toBeUndefined();
+    });
+
+    it("returns a static variant", () => {
+      const { result } = mountWithSetup(() => useHeadlessWidgetHelpers());
+      const widget = makeWidget({ headless: { icon: "x", badgeVariant: "success" } });
+      expect(result.resolveBadgeVariant(widget)).toBe("success");
+    });
+
+    it("follows a ref variant", () => {
+      const { result } = mountWithSetup(() => useHeadlessWidgetHelpers());
+      const badgeVariant = ref<"warning" | "danger">("warning");
+      const widget = makeWidget({ headless: { icon: "x", badgeVariant } });
+      expect(result.resolveBadgeVariant(widget)).toBe("warning");
+      badgeVariant.value = "danger";
+      expect(result.resolveBadgeVariant(widget)).toBe("danger");
+    });
+  });
+
   describe("resolveLoading", () => {
     it("returns false when no headless config", () => {
       const { result } = mountWithSetup(() => useHeadlessWidgetHelpers());

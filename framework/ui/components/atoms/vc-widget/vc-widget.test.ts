@@ -149,6 +149,17 @@ describe("VcWidget render state", () => {
     expect(wrapper.find(".vc-badge__badge").exists()).toBe(false);
   });
 
+  it("keeps the primary badge color by default", () => {
+    const wrapper = mountWith(null, { value: 4 });
+    expect(wrapper.find(".vc-badge__badge--primary").exists()).toBe(true);
+  });
+
+  it("colors the badge with badgeVariant", () => {
+    const wrapper = mountWith(null, { value: 4, badgeVariant: "warning" });
+    expect(wrapper.find(".vc-badge__badge--warning").exists()).toBe(true);
+    expect(wrapper.find(".vc-badge__badge--primary").exists()).toBe(false);
+  });
+
   it("shows the badge when not editing", () => {
     const wrapper = mountWith({ alertSeverity: computed(() => undefined), editing: ref(false) }, { value: 4 });
     expect(wrapper.find(".vc-badge__badge").exists()).toBe(true);

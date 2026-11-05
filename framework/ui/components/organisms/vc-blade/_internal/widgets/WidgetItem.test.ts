@@ -99,6 +99,17 @@ describe("WidgetItem", () => {
     expect(wrapper.emitted("click")).toBeUndefined();
   });
 
+  it("recolors a headless widget badge when badgeVariant changes", async () => {
+    const badgeVariant = ref<"success" | "warning">("success");
+    const widget: IWidget = { id: "w", headless: { icon: "x", badge: ref(72), badgeVariant } };
+    const wrapper = mountItem(widget);
+    expect(wrapper.find(".vc-badge__badge--success").exists()).toBe(true);
+
+    badgeVariant.value = "warning";
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find(".vc-badge__badge--warning").exists()).toBe(true);
+  });
+
   it("renders a skeleton while a headless widget loads", () => {
     const widget: IWidget = { id: "w", headless: { icon: "x", loading: ref(true) } };
     const wrapper = mountItem(widget);

@@ -42,15 +42,16 @@ function openNotifications() {
 
 ## Key Props
 
-| Prop         | Type               | Default | Description                                                                                                                                                      |
-| ------------ | ------------------ | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `icon`       | `string`           | --      | Icon name (Lucide format, e.g., `"lucide-save"`)                                                                                                                 |
-| `title`      | `string`           | --      | Label text below (or beside) the icon                                                                                                                            |
-| `value`      | `string \| number` | --      | Badge count displayed on the icon; numbers above 99 show as "99+"                                                                                                |
-| `disabled`   | `boolean`          | `false` | Prevents clicks and applies muted styling                                                                                                                        |
-| `isExpanded` | `boolean`          | `false` | Expanded visual state                                                                                                                                            |
-| `horizontal` | `boolean`          | `false` | Arranges icon and title side by side instead of stacked                                                                                                          |
-| `widgetId`   | `string`           | --      | Sets the `data-widget-id` attribute on the root element. The root also binds `data-widget-name` from `title`; both are used for widget identification/targeting. |
+| Prop           | Type                                                                       | Default     | Description                                                                                                                                                      |
+| -------------- | -------------------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `icon`         | `string`                                                                   | --          | Icon name (Lucide format, e.g., `"lucide-save"`)                                                                                                                 |
+| `title`        | `string`                                                                   | --          | Label text below (or beside) the icon                                                                                                                            |
+| `value`        | `string \| number`                                                         | --          | Badge count displayed on the icon; numbers above 99 show as "99+"                                                                                                |
+| `badgeVariant` | `"primary" \| "secondary" \| "success" \| "warning" \| "danger" \| "info"` | `"primary"` | Badge color for a status the widget reports                                                                                                                      |
+| `disabled`     | `boolean`                                                                  | `false`     | Prevents clicks and applies muted styling                                                                                                                        |
+| `isExpanded`   | `boolean`                                                                  | `false`     | Expanded visual state                                                                                                                                            |
+| `horizontal`   | `boolean`                                                                  | `false`     | Arranges icon and title side by side instead of stacked                                                                                                          |
+| `widgetId`     | `string`                                                                   | --          | Sets the `data-widget-id` attribute on the root element. The root also binds `data-widget-name` from `title`; both are used for widget identification/targeting. |
 
 ## Events
 
@@ -96,6 +97,14 @@ Badge values above 99 are automatically displayed as "99+".
 <!-- Badge shows "99+" -->
 ```
 
+### Badge Color for a Status
+
+Use `badgeVariant` when the badge reports a state that needs no action, such as a quality score. For things the user should look at, use alerts (the dot) instead. See [useBladeWidgets](../../../../core/composables/useBladeWidgets/index.docs.md#badge-color) for headless and external widget examples.
+
+```vue
+<VcWidget icon="lucide-gauge" title="Quality" :value="64" badge-variant="warning" />
+```
+
 ## CSS Custom Properties
 
 | Variable                        | Default               | Description               |
@@ -112,6 +121,10 @@ Badge values above 99 are automatically displayed as "99+".
 | `--widget-focus-ring-color`     | `var(--primary-300)`  | Focus ring color          |
 
 ## Alert dot and badge highlight
+
+::storybook id="data-display-vcwidget--with-alert-dot" height="200"
+
+How to give a widget alerts: [useBladeWidgets → Alerts](../../../../core/composables/useBladeWidgets/index.docs.md#alerts).
 
 Inside a blade widget strip, `VcWidget` reads per-widget render state provided by the blade (it renders exactly as before elsewhere):
 

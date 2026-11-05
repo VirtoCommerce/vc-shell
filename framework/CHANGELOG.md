@@ -1,5 +1,11 @@
 # Changelog
 
+# [2.11.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.10.4...v2.11.0) (2026-11-05)
+
+### Features
+
+- **framework:** add badgeVariant to blade widgets (#406) ([1bfeef1](https://github.com/VirtoCommerce/vc-shell/commit/1bfeef1d5f14ef77b8b5562d075d765e4d795415)), closes [#406](https://github.com/VirtoCommerce/vc-shell/issues/406)
+
 ## [2.10.4](https://github.com/VirtoCommerce/vc-shell/compare/v2.10.3...v2.10.4) (2026-11-02)
 
 ### Bug Fixes

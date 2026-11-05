@@ -1,7 +1,13 @@
 import { type Component, type ComputedRef, type Ref, onMounted, onUnmounted, inject } from "vue";
 import { WidgetServiceKey, WidgetScopeKey } from "@framework/injection-keys";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
-import type { IWidget, IHeadlessWidgetFields, IWidgetTrigger, IWidgetAlert } from "@core/services/widget-service";
+import type {
+  IWidget,
+  IHeadlessWidgetFields,
+  IWidgetTrigger,
+  IWidgetAlert,
+  WidgetBadgeVariant,
+} from "@core/services/widget-service";
 import { createLogger, InjectionError } from "@core/utilities";
 
 const logger = createLogger("use-blade-widgets");
@@ -11,6 +17,8 @@ export interface HeadlessWidgetDeclaration {
   icon: string;
   title: string;
   badge?: Ref<number | string> | ComputedRef<number | string>;
+  /** Badge color; unset keeps the default `"primary"` */
+  badgeVariant?: WidgetBadgeVariant | Ref<WidgetBadgeVariant | undefined> | ComputedRef<WidgetBadgeVariant | undefined>;
   loading?: Ref<boolean> | ComputedRef<boolean>;
   disabled?: Ref<boolean> | ComputedRef<boolean> | boolean;
   isVisible?: ComputedRef<boolean> | Ref<boolean> | boolean;
@@ -125,6 +133,7 @@ function buildWidget(decl: HeadlessWidgetDeclaration): IWidget {
   const headless: IHeadlessWidgetFields = {
     icon: decl.icon,
     badge: decl.badge,
+    badgeVariant: decl.badgeVariant,
     loading: decl.loading,
     disabled: decl.disabled,
     onClick: decl.onClick,

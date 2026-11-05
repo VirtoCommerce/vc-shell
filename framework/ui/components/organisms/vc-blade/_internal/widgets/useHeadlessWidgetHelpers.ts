@@ -1,6 +1,6 @@
 import { inject, toValue } from "vue";
 import { useI18n } from "vue-i18n";
-import { IWidget } from "@core/services/widget-service";
+import type { IWidget, WidgetBadgeVariant } from "@core/services/widget-service";
 import { BladeContextKey } from "@framework/injection-keys";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import type { BladeContext } from "@core/types";
@@ -16,6 +16,10 @@ export function useHeadlessWidgetHelpers() {
     const badge = widget.headless?.badge;
     if (badge === undefined) return undefined;
     return toValue(badge);
+  }
+
+  function resolveBadgeVariant(widget: IWidget): WidgetBadgeVariant | undefined {
+    return toValue(widget.headless?.badgeVariant);
   }
 
   function resolveLoading(widget: IWidget): boolean {
@@ -40,5 +44,5 @@ export function useHeadlessWidgetHelpers() {
     widget.headless?.onClick?.(descriptor?.value, context());
   }
 
-  return { resolveBadge, resolveLoading, resolveDisabled, resolveTitle, handleHeadlessClick };
+  return { resolveBadge, resolveBadgeVariant, resolveLoading, resolveDisabled, resolveTitle, handleHeadlessClick };
 }

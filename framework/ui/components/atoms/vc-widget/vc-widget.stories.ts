@@ -50,6 +50,15 @@ const meta = {
         defaultValue: { summary: "undefined" },
       },
     },
+    badgeVariant: {
+      description: "Badge color for a status the widget reports, e.g. medium quality as `warning`",
+      control: "select",
+      options: ["primary", "secondary", "success", "warning", "danger", "info"],
+      table: {
+        type: { summary: '"primary" | "secondary" | "success" | "warning" | "danger" | "info"' },
+        defaultValue: { summary: "primary" },
+      },
+    },
     disabled: {
       description: "Whether the widget is disabled",
       control: "boolean",
@@ -337,6 +346,39 @@ export const BadgeChanged: Story = {
       <div class="tw-bg-gray-100 tw-p-4 tw-inline-flex tw-gap-4 tw-items-center">
         <vc-widget icon="lucide-mail" title="Messages" :value="count" />
         <button class="tw-border tw-px-2" @click="count++">Increment</button>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * Badge color reports a status without asking for action, e.g. a quality score.
+ * Alerts (the dot) are for things that need attention.
+ */
+export const BadgeVariants: Story = {
+  render: () => ({
+    components: { VcWidget },
+    setup() {
+      const items = [
+        { title: "Default", value: 4, badgeVariant: undefined },
+        { title: "Good", value: 92, badgeVariant: "success" },
+        { title: "Medium", value: 64, badgeVariant: "warning" },
+        { title: "Poor", value: 31, badgeVariant: "danger" },
+        { title: "Info", value: 7, badgeVariant: "info" },
+        { title: "No data", value: "-", badgeVariant: "secondary" },
+      ];
+      return { items };
+    },
+    template: `
+      <div class="tw-bg-gray-100 tw-p-4 tw-inline-flex tw-gap-4">
+        <vc-widget
+          v-for="item in items"
+          :key="item.title"
+          icon="lucide-gauge"
+          :title="item.title"
+          :value="item.value"
+          :badge-variant="item.badgeVariant"
+        />
       </div>
     `,
   }),

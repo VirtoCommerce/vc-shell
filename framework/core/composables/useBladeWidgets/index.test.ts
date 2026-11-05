@@ -126,6 +126,22 @@ describe("useBladeWidgets", () => {
     );
   });
 
+  it("passes badgeVariant to the headless fields", () => {
+    const registerWidget = vi.fn();
+    const service = createMockWidgetService({ registerWidget });
+    const badgeVariant = ref<"warning" | undefined>("warning");
+
+    mountWithBlade(() => useBladeWidgets([{ id: "W1", icon: "lucide-gauge", title: "Quality", badgeVariant }]), {
+      widgetService: service,
+      bladeId: "blade-1",
+    });
+
+    expect(registerWidget).toHaveBeenCalledWith(
+      expect.objectContaining({ headless: expect.objectContaining({ badgeVariant }) }),
+      "blade-1",
+    );
+  });
+
   it("wires onRefresh as trigger.onRefresh", () => {
     const registerWidget = vi.fn();
     const service = createMockWidgetService({ registerWidget });

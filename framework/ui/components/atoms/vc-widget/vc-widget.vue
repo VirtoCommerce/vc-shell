@@ -23,6 +23,7 @@
     <VcBadge
       :content="showBadge ? truncateCount : undefined"
       :class="{ 'vc-widget__badge--changed': changed }"
+      :variant="badgeVariant"
       custom-position
       top="-6px"
       size="s"
@@ -67,11 +68,14 @@ import { SEVERITY_DOT_VARIANT } from "@core/types/severity";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcBadge } from "@ui/components/atoms/vc-badge";
 import { formatBadgeCount } from "@core/utilities/formatBadgeCount";
+import type { WidgetBadgeVariant } from "@core/services/widget-service";
 
 export interface Props {
   icon?: string;
   title?: string;
   value?: string | number;
+  /** Badge color for a status, e.g. `"warning"` for medium quality. Defaults to `"primary"`. */
+  badgeVariant?: WidgetBadgeVariant;
   disabled?: boolean;
   isExpanded?: boolean;
   horizontal?: boolean;

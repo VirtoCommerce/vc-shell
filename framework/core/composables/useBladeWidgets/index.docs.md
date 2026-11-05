@@ -243,13 +243,15 @@ useBladeNotifications<MessagePush>({
 });
 
 const alerts = computed<IWidgetAlert[]>(() =>
-  unread.value.map((m): IWidgetAlert => ({
-    id: m.id!,
-    severity: "info",
-    text: m.content ?? "",
-    meta: m.senderName,
-    onOpen: openMessenger,
-  })),
+  unread.value.map(
+    (m): IWidgetAlert => ({
+      id: m.id!,
+      severity: "info",
+      text: m.content ?? "",
+      meta: m.senderName,
+      onOpen: openMessenger,
+    }),
+  ),
 );
 
 useWidgetTrigger({ onRefresh: load, alerts });

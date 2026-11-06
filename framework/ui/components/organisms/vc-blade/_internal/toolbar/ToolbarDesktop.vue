@@ -51,7 +51,9 @@
         </template>
 
         <template #item="{ item }">
+          <!-- The same test id the command carries on the bar, so automation finds it after it overflows -->
           <VcDropdownItem
+            :data-test-id="item.id"
             :title="toValue(item.title) ?? ''"
             :icon="typeof item.icon === 'function' ? item.icon() : item.icon"
             :disabled="!!toValue(item.disabled)"

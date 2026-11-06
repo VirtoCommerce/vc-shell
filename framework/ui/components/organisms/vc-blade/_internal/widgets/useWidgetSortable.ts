@@ -32,7 +32,8 @@ export interface IUseWidgetSortableOptions {
 const listName = (el: HTMLElement): WidgetListName => (el.dataset.widgetList === "overflow" ? "overflow" : "strip");
 
 /**
- * SortableJS over a widget list (`data-widget-list`, items carry `data-widget-id`).
+ * SortableJS over a widget list (`data-widget-list`, items carry `data-widget-slot`).
+ * Not `data-widget-id`: that belongs to the `VcWidget` inside the slot, one per widget, for automation.
  * Sortable moves the DOM node itself; it is put back before the move is reported
  * so Vue's keyed patch still matches what it last rendered.
  */
@@ -62,7 +63,7 @@ export function useWidgetSortable(el: Ref<HTMLElement | undefined>, opts: IUseWi
       onEnd: (evt) => {
         opts.onDrop?.();
         const item = evt.item;
-        const id = item.dataset.widgetId;
+        const id = item.dataset.widgetSlot;
         const { oldIndex, newIndex } = evt;
         if (oldIndex == null || newIndex == null) return;
         if (item.parentNode) item.parentNode.removeChild(item);

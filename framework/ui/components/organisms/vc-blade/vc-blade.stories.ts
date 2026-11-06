@@ -1034,8 +1034,8 @@ export const WidgetsCustomizable: Story = {
     // The rendered strip keeps the free slot: removed widgets are not promoted back.
     await waitFor(() => {
       const strip = canvasElement.ownerDocument.querySelector('[data-widget-list="strip"]');
-      const rendered = [...(strip?.querySelectorAll(":scope > [data-widget-id]") ?? [])].map((el) =>
-        el.getAttribute("data-widget-id"),
+      const rendered = [...(strip?.querySelectorAll(":scope > [data-widget-slot]") ?? [])].map((el) =>
+        el.getAttribute("data-widget-slot"),
       );
       expect(rendered).toEqual(["widget-3", "widget-4", "widget-5", "widget-6"]);
     });

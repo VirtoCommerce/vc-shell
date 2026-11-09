@@ -39,6 +39,7 @@
     "check:locales": "tsx framework/scripts/check-locales.mts",
     "check:circular": "madge --circular framework/",
     "check:layers": "tsx scripts/check-layer-violations.ts",
+    "check:audit": "tsx scripts/audit-published.ts",
     "generate:api-client": "yarn workspace @vc-shell/framework exec cross-env api-client-generator --APP_PLATFORM_MODULES='[VirtoCommerce.Platform]' --APP_API_CLIENT_DIRECTORY=./core/api/ --SKIP_BUILD=true --APP_TYPE_STYLE=Interface",
     "generate:changelogs": "tsx scripts/generate-initial-changelogs.ts",
     "release:dry": "tsx scripts/release-preflight.ts && release-it --dry-run",

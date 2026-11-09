@@ -4167,15 +4167,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/adm-zip@npm:^0.5.5":
-  version: 0.5.8
-  resolution: "@types/adm-zip@npm:0.5.8"
-  dependencies:
-    "@types/node": "npm:*"
-  checksum: 10/0739e5abda05f5c02b84048a02d308f77dd9e2d4e7d6ac7126830a0000b9e962a1f5795efd96d50df289333af9ae3b264adacfad9623dde66c10570ce65029d5
-  languageName: node
-  linkType: hard
-
 "@types/argparse@npm:1.0.38":
   version: 1.0.38
   resolution: "@types/argparse@npm:1.0.38"
@@ -5536,7 +5527,6 @@ __metadata:
     "@storybook/addon-vitest": "npm:10.2.10"
     "@storybook/vue3": "npm:10.2.10"
     "@storybook/vue3-vite": "npm:10.2.10"
-    "@types/adm-zip": "npm:^0.5.5"
     "@types/conventional-changelog": "npm:^6.0.1"
     "@types/jest-image-snapshot": "npm:^6.4.1"
     "@types/jquery": "npm:^3.5.32"
@@ -5551,7 +5541,7 @@ __metadata:
     "@vitest/coverage-v8": "npm:^4.1.10"
     "@vue/eslint-config-prettier": "npm:^10.2.0"
     "@vue/eslint-config-typescript": "npm:^14.6.0"
-    adm-zip: "npm:^0.5.10"
+    adm-zip: "npm:^0.6.1"
     autoprefixer: "npm:^10.4.16"
     chalk: "npm:^5.3.0"
     conventional-changelog: "npm:^5.1.0"
@@ -6418,10 +6408,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"adm-zip@npm:^0.5.10":
-  version: 0.5.18
-  resolution: "adm-zip@npm:0.5.18"
-  checksum: 10/6eaa298828b92e543241fa24d01af774ad8709b80539b3fa60d4ba6f69fd5a15a19d8177e6d739f18f4e0933610ed555215dc6553b51c532534414702c255167
+"adm-zip@npm:^0.6.1":
+  version: 0.6.1
+  resolution: "adm-zip@npm:0.6.1"
+  checksum: 10/072af04891b33a68aba6b6979d6eec56cbe8d5bca9a349c2e78f86cc64e872e75faf56341e20541c6ffd7bcfb931187157c24f141b97ad1f18ebd8bfacbcf437
   languageName: node
   linkType: hard
 

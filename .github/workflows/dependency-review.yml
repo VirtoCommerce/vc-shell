@@ -1,0 +1,39 @@
+# Blocks a PR that adds or upgrades to a dependency with a known high or
+# critical advisory. Only the lockfile diff is checked, so a new advisory on
+# an existing dependency does not fail unrelated PRs; the release audit
+# (`yarn check:audit` in publish.yml) covers those.
+#
+# Make "Dependency review" a required status check in the branch protection
+# rules, otherwise a red run does not block the merge.
+
+name: Dependency review
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write # summary comment
+
+concurrency:
+  group: dependency-review-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dependency-review:
+    name: Dependency review
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Review dependency changes
+        uses: actions/dependency-review-action@v5
+        with:
+          fail-on-severity: high
+          # yarn.lock does not tell runtime from dev, so check every scope.
+          fail-on-scopes: runtime, development, unknown
+          # Fork PRs get a read-only token, so the comment step would fail.
+          comment-summary-in-pr: ${{ github.event.pull_request.head.repo.full_name == github.repository && 'on-failure' || 'never' }}
+          show-patched-versions: true

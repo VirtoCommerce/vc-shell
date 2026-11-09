@@ -2,12 +2,13 @@
 
 Overview of every GitHub Actions workflow in this repository. Each workflow file starts with a header comment that repeats the essentials below.
 
-| Workflow      | File               | Trigger                                                                                                    | Purpose                                                                                                                                                                                       | Required for merge?                               |
-| ------------- | ------------------ | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| **CI**        | `ci.yml`           | pull_request, push to main / dev / feat/\*\*                                                               | Static checks (lint, format, stylelint, typecheck, locales, circular, layers) and framework unit tests                                                                                        | Yes                                               |
-| **PR Title**  | `pr-title.yml`     | pull_request (opened, edited, synchronize, reopened)                                                       | Validates the PR title is Conventional Commits format                                                                                                                                         | Yes                                               |
-| **Publish**   | `publish.yml`      | pull_request (opened, synchronize, reopened), workflow_dispatch                                            | One workflow for all npm publishing: `pr-<N>` previews on PR push and manual releases (version bump, CHANGELOG, tag, publish, GitHub Release). Both publish paths use OIDC — fully token-free | No (PR preview informational); manual for release |
-| **Storybook** | `storybook-ci.yml` | reusable (`workflow_call`) — invoked by `ci.yml` on push to main / feat/redesign; also `workflow_dispatch` | Builds Storybook + Docker image, pushes to ghcr.io, deploys to ArgoCD (`vc-shell-storybook.govirto.com`)                                                                                      | No                                                |
+| Workflow              | File                    | Trigger                                                                                                    | Purpose                                                                                                                                                                                       | Required for merge?                               |
+| --------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| **CI**                | `ci.yml`                | pull_request, push to main / dev / feat/\*\*                                                               | Static checks (lint, format, stylelint, typecheck, locales, circular, layers) and framework unit tests                                                                                        | Yes                                               |
+| **Dependency review** | `dependency-review.yml` | pull_request                                                                                               | Fails when the lockfile diff adds a dependency version with a high or critical advisory                                                                                                       | Yes                                               |
+| **PR Title**          | `pr-title.yml`          | pull_request (opened, edited, synchronize, reopened)                                                       | Validates the PR title is Conventional Commits format                                                                                                                                         | Yes                                               |
+| **Publish**           | `publish.yml`           | pull_request (opened, synchronize, reopened), workflow_dispatch                                            | One workflow for all npm publishing: `pr-<N>` previews on PR push and manual releases (version bump, CHANGELOG, tag, publish, GitHub Release). Both publish paths use OIDC — fully token-free | No (PR preview informational); manual for release |
+| **Storybook**         | `storybook-ci.yml`      | reusable (`workflow_call`) — invoked by `ci.yml` on push to main / feat/redesign; also `workflow_dispatch` | Builds Storybook + Docker image, pushes to ghcr.io, deploys to ArgoCD (`vc-shell-storybook.govirto.com`)                                                                                      | No                                                |
 
 ## CI (`ci.yml`)
 
@@ -29,6 +30,12 @@ Two Storybook jobs also live here:
 
 - **`storybook`** — on push to `main` / `feat/redesign` only, calls the reusable `storybook-ci.yml` (with `secrets: inherit`) to build, push the image, and deploy to ArgoCD. It omits the `release:` skip guard the checks carry, so the release commit redeploys Storybook. See [Storybook CI](#storybook-ci-storybook-ciyml).
 - **`storybook-build`** — on `pull_request` only, builds the framework and the Storybook bundle (`yarn build` → `yarn build:storybook`) with no Docker push and no deploy. Catches broken stories in review instead of after merge.
+
+## Dependency review (`dependency-review.yml`)
+
+Runs [`actions/dependency-review-action`](https://github.com/actions/dependency-review-action) on the PR's lockfile diff and fails on a new or upgraded dependency with a **high** or **critical** advisory, in any scope (yarn.lock does not separate dev from runtime). Only what the PR changes is checked, so an advisory published today against an existing dependency does not turn unrelated PRs red. Existing advisories are caught by the release audit below.
+
+To block merges, "Dependency review" must be a required status check in the branch protection rules.
 
 ## PR Title (`pr-title.yml`)
 
@@ -60,7 +67,7 @@ Manual release with three inputs:
 The **`release`** job:
 
 1. Checkout with `secrets.REPO_TOKEN` (vc-ci bot, admin) so the release commit and tag push past the ruleset.
-2. `yarn install --immutable` → `yarn check` → `yarn build`.
+2. `yarn install --immutable` → `yarn check` → `yarn check:audit` → `yarn build`. `check:audit` (`scripts/audit-published.ts`) runs `yarn npm audit` over the runtime dependencies of every published workspace and stops the release on a high or critical advisory. An advisory with no fix is accepted through `npmAuditIgnoreAdvisories` in `.yarnrc.yml`, with a comment saying why.
 3. Configure git user as `vc-ci`.
 4. Run `release-it` with the computed args. `PRERELEASE_CHANNEL` is exposed to `.release-it.cjs`, which conditionally enables/disables the CHANGELOG plugin and GitHub Release creation. During `after:bump`, release-it runs `yarn install` with `YARN_ENABLE_IMMUTABLE_INSTALLS=false` so the lockfile can be updated after workspace version bump.
 5. For non-dry runs: `yarn publish:packages --tag <channel>` (OIDC — no token), then verify dist-tags.

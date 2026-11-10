@@ -1,6 +1,16 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { ref } from "vue";
+import { computed, provide, reactive, ref } from "vue";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { VcDataTable, VcColumn } from "@ui/components/organisms/vc-data-table";
+import type { GlobalFilterConfig } from "@ui/components/organisms/vc-data-table/types";
+import type { SearchBarValue } from "@ui/components/organisms/vc-search-bar";
+import { createLocalPresetStore } from "@ui/components/organisms/vc-search-bar/lib/storage";
+import {
+  TableQueryStateKey,
+  decodeQueryState,
+  encodeQueryState,
+  type ITableQueryStateService,
+} from "@core/blade-navigation/table-query-state";
 import { mockProducts } from "./vc-data-table.stories.helpers";
 
 const meta = {
@@ -111,9 +121,9 @@ export const GlobalFilters: Story = {
       <div class="tw-mb-4 tw-p-4 tw-bg-gradient-to-r tw-from-accent-50 tw-to-info-50 tw-rounded-lg">
         <p class="tw-font-semibold tw-text-lg tw-mb-2">Global Filters</p>
         <p class="tw-text-neutrals-600 tw-text-sm tw-mb-3">
-          The <code class="tw-bg-additional-50 tw-px-1 tw-rounded">globalFilters</code> prop renders a
-          "Filters" button above the table. Click it to open a panel with text, select, multi-select
-          and date-range filters. The <code class="tw-bg-additional-50 tw-px-1 tw-rounded">@filter</code> event
+          The <code class="tw-bg-additional-50 tw-px-1 tw-rounded">globalFilters</code> prop renders
+          the filters as pills in the search bar above the table. Click a pill to edit it: text, select,
+          multi-select and date-range filters. The <code class="tw-bg-additional-50 tw-px-1 tw-rounded">@filter</code> event
           emits a single flat payload merging both column and global filter values.
         </p>
 
@@ -136,7 +146,7 @@ export const GlobalFilters: Story = {
 
       <div class="tw-mb-3 tw-p-2 tw-bg-neutrals-100 tw-rounded tw-text-xs tw-font-mono tw-h-16 tw-overflow-hidden">
         <div v-for="(log, i) in filterLog" :key="i" class="tw-text-neutrals-600 tw-truncate">{{ log }}</div>
-        <div v-if="!filterLog.length" class="tw-text-neutrals-400">No filters applied yet — click the "Filters" button above the table</div>
+        <div v-if="!filterLog.length" class="tw-text-neutrals-400">No filters applied yet — click a filter pill above the table</div>
       </div>
 
       <VcDataTable
@@ -186,8 +196,8 @@ GlobalFilters.parameters = {
   docs: {
     description: {
       story:
-        "Global filters rendered via the `globalFilters` prop. A 'Filters' button appears above the table. " +
-        "The panel supports text, single/multi select, and date range filters. " +
+        "Global filters rendered via the `globalFilters` prop as pills in the search bar above the table. " +
+        "Pill editors support text, single/multi select, and date range filters. " +
         "The @filter event emits a flat object combining both column and global filter values.",
     },
   },
@@ -286,7 +296,7 @@ export const GlobalAndColumnFiltersCombined: Story = {
       <div class="tw-mb-4 tw-p-4 tw-bg-gradient-to-r tw-from-warning-50 tw-to-warning-100 tw-rounded-lg">
         <p class="tw-font-semibold tw-text-lg tw-mb-2">Global + Column Filters Combined</p>
         <p class="tw-text-neutrals-600 tw-text-sm tw-mb-3">
-          Both <code class="tw-bg-additional-50 tw-px-1 tw-rounded">globalFilters</code> (button above table) and
+          Both <code class="tw-bg-additional-50 tw-px-1 tw-rounded">globalFilters</code> (pills above the table) and
           column-level <code class="tw-bg-additional-50 tw-px-1 tw-rounded">filter</code> props (icons in headers)
           work together. The <code class="tw-bg-additional-50 tw-px-1 tw-rounded">@filter</code> event merges
           both payloads into a single flat object for the backend.
@@ -294,7 +304,7 @@ export const GlobalAndColumnFiltersCombined: Story = {
 
         <div class="tw-grid tw-grid-cols-2 tw-gap-4 tw-text-sm">
           <div>
-            <p class="tw-font-medium tw-mb-1">Global Filters (button panel):</p>
+            <p class="tw-font-medium tw-mb-1">Global Filters (pills):</p>
             <ul class="tw-list-disc tw-list-inside tw-text-neutrals-600">
               <li>Quick Search (text)</li>
               <li>Created Date (date range)</li>
@@ -315,7 +325,7 @@ export const GlobalAndColumnFiltersCombined: Story = {
 
       <div class="tw-mb-3 tw-p-2 tw-bg-neutrals-100 tw-rounded tw-text-xs tw-font-mono tw-h-12 tw-overflow-hidden">
         <div v-for="(log, i) in filterLog" :key="i" class="tw-text-neutrals-600 tw-truncate">{{ log }}</div>
-        <div v-if="!filterLog.length" class="tw-text-neutrals-400">Try both: click column filter icons and the "Filters" button</div>
+        <div v-if="!filterLog.length" class="tw-text-neutrals-400">Try both: click column filter icons and the filter pills</div>
       </div>
 
       <VcDataTable
@@ -374,6 +384,107 @@ GlobalAndColumnFiltersCombined.parameters = {
         "Demonstrates combining global filters (via `globalFilters` prop) with per-column filters (via `filter` prop on VcColumn). " +
         "Both filter types merge their values into a single flat @filter payload.",
     },
+  },
+};
+
+// Search bar stories: a fresh stateKey per run keeps saved presets from leaking
+const barKey = (name: string) => `story-table-bar-${name}-${Math.random().toString(36).slice(2, 8)}`;
+const barFilters: GlobalFilterConfig[] = [
+  {
+    id: "status",
+    label: "Status",
+    filter: { options: ["In Stock", "Low Stock", "Out of Stock"].map((s) => ({ value: s, label: s })) },
+  },
+  { id: "created", label: "Created", filter: { range: ["createdFrom", "createdTo"] } },
+];
+// Hidden from the sidebar and docs, still run by the story tests
+const TEST_ONLY = ["!dev", "!autodocs", "test"];
+
+// `filters` is the initial `<stateKey>_filters` value of the simulated blade URL
+const barTable = (
+  stateKey: string,
+  opts: { filters?: string; preset?: { name: string; values: Record<string, SearchBarValue> } } = {},
+) => ({
+  components: { VcDataTable, VcColumn },
+  setup() {
+    // Stand-in for the blade's URL query service, with the real namespaced serialization
+    const query = reactive<Record<string, string>>(opts.filters ? { [`${stateKey}_filters`]: opts.filters } : {});
+    const service: ITableQueryStateService = {
+      read: (key) => decodeQueryState(key ?? "", query),
+      write: (key, patch) => Object.assign(query, encodeQueryState(key ?? "", patch)),
+    };
+    provide(TableQueryStateKey, service);
+    const queryString = computed(() => `?${new URLSearchParams(Object.entries(query).filter(([, v]) => v))}`);
+    if (opts.preset)
+      createLocalPresetStore(stateKey).save({ id: "story-preset", ...opts.preset, version: 1, scope: "user" });
+    const products = ref([...mockProducts]);
+    const filterLog = ref<string[]>([]);
+    const onFilter = ({ filters }: { filters: Record<string, unknown> }) => {
+      filterLog.value.push(JSON.stringify(filters));
+      products.value = mockProducts.filter((p) => !filters.status || p.status === filters.status);
+    };
+    return { products, filterLog, onFilter, stateKey, barFilters, queryString };
+  },
+  template: `
+    <div style="height: 520px" class="tw-overflow-hidden">
+      <pre data-testid="filter-log" class="tw-text-xs tw-mb-2">{{ filterLog.length }} filter event(s) {{ filterLog.at(-1) ?? "" }}</pre>
+      <pre data-testid="url-query" class="tw-text-xs tw-mb-2">URL: {{ queryString }}</pre>
+      <VcDataTable :items="products" :state-key="stateKey" searchable :global-filters="barFilters" @filter="onFilter">
+        <VcColumn id="name" field="name" title="Product Name" />
+        <VcColumn id="status" field="status" title="Status" />
+        <VcColumn id="createdAt" field="createdAt" title="Created Date" type="date" />
+      </VcDataTable>
+    </div>`,
+});
+
+/** With a `stateKey` the table's bar offers presets: a saved preset shows as a chip, lit while its filters are set. */
+export const BarWithPresets: Story = {
+  render: () =>
+    barTable(barKey("presets"), {
+      filters: "status:In Stock",
+      preset: { name: "In Stock", values: { status: "In Stock" } },
+    }),
+};
+
+/** Interaction test: set a filter, save it as a preset, the chip appears lit. */
+export const BarWithPresetsTest: Story = {
+  name: "Bar with presets (test)",
+  tags: TEST_ONLY,
+  render: () => barTable(barKey("presets")),
+  play: async ({ canvasElement }) => {
+    const bar = within(canvasElement.querySelector(".vc-search-bar") as HTMLElement);
+    const body = within(canvasElement.ownerDocument.body);
+    await userEvent.click(await bar.findByRole("button", { name: "Status" }));
+    await userEvent.click(await body.findByRole("button", { name: "In Stock" }));
+    await waitFor(() => expect(canvasElement.querySelector("[data-testid=filter-log]")).toHaveTextContent("1 filter"));
+    await userEvent.click(await bar.findByRole("button", { name: "Save as preset" }));
+    await userEvent.type(await bar.findByRole("textbox", { name: "Preset name" }), "{Enter}");
+    await expect(await bar.findByRole("button", { name: "In Stock" })).toHaveAttribute("aria-pressed", "true");
+  },
+};
+
+/**
+ * The applied filters live in the blade URL under `<stateKey>_filters`, next to the table's sort, search and page,
+ * so a link to the screen opens with the same filters. On open the bar restores them and the table emits one `@filter`.
+ * This story simulates the blade URL; the line above the table shows it.
+ */
+export const BarFiltersInUrl: Story = {
+  render: () => barTable(barKey("url"), { filters: "status:Low Stock;created:30d" }),
+};
+
+/** Test: the filters from the URL show as pills, the table emits them once, a change is written back. */
+export const BarFiltersInUrlTest: Story = {
+  name: "Bar filters in URL (test)",
+  tags: TEST_ONLY,
+  render: () => barTable("story-url", { filters: "status:Low Stock" }),
+  play: async ({ canvasElement }) => {
+    const bar = within(canvasElement.querySelector(".vc-search-bar") as HTMLElement);
+    await expect(await bar.findByRole("button", { name: /Status: Low Stock/ })).toBeInTheDocument();
+    const log = canvasElement.querySelector("[data-testid=filter-log]");
+    await waitFor(() => expect(log).toHaveTextContent('1 filter event(s) {"status":"Low Stock"}'));
+    const url = canvasElement.querySelector("[data-testid=url-query]");
+    await userEvent.click(await bar.findByRole("button", { name: /Clear all/i }));
+    await waitFor(() => expect(url).toHaveTextContent(/^URL: \?$/));
   },
 };
 

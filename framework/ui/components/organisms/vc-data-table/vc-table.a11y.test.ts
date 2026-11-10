@@ -27,9 +27,6 @@ describe("VcDataTable a11y", () => {
         plugins: [i18n],
         stubs: {
           // Stub all heavy sub-components — we only test the root element's a11y
-          TableSearchHeader: true,
-          GlobalFiltersPanel: true,
-          GlobalFiltersButton: true,
           TableColumnSwitcher: true,
           TableAddRowButton: true,
           TableSelectAllBar: true,

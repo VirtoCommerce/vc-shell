@@ -1,0 +1,81 @@
+// Phone row of VcSearchBar: search button | swipeable filters | presets button.
+// The search widens over the row and pushes the rest out; folding brings them back.
+$ease: cubic-bezier(0.2, 0.9, 0.25, 1.05);
+
+.vc-search-bar {
+  &__row--phone {
+    height: 46px;
+    // the widening search overshoots a little; keep focus rings visible
+    overflow-x: clip;
+    overflow-clip-margin: 4px;
+  }
+  // a phone swipes the filters; on desktop the wrapper is layout-transparent
+  &__filters {
+    display: contents;
+
+    &--scroll {
+      @apply tw-flex tw-flex-1 tw-items-center tw-min-w-0 tw-overflow-x-auto;
+      // room for the focus rings the scroller would clip
+      padding: 4px;
+      scrollbar-width: none;
+      transition:
+        opacity 0.2s,
+        margin-inline-end 0.3s $ease,
+        visibility 0s;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      .vc-search-bar__filter-row {
+        @apply tw-flex-nowrap tw-shrink-0;
+      }
+    }
+    &--fade-r {
+      mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent);
+    }
+    &--fade-l {
+      mask-image: linear-gradient(to right, transparent, #000 40px);
+    }
+    &--fade-l#{&}--fade-r {
+      mask-image: linear-gradient(to right, transparent, #000 40px, #000 calc(100% - 40px), transparent);
+    }
+    // the search is open: squeezed by it, faded, and out of the tab order once the search is wide
+    &--hidden#{&}--scroll {
+      opacity: 0;
+      visibility: hidden;
+      // cancels the row gap so the search can take the whole row
+      margin-inline-end: -6px;
+      transition:
+        opacity 0.15s,
+        margin-inline-end 0.3s $ease,
+        visibility 0s 0.3s;
+    }
+  }
+  &__phone-tray {
+    width: 30px;
+    transition:
+      width 0.3s $ease,
+      opacity 0.2s,
+      margin-inline-start 0.3s $ease,
+      visibility 0s;
+
+    &--hidden {
+      width: 0;
+      opacity: 0;
+      visibility: hidden;
+      overflow: hidden;
+      margin-inline-start: -6px;
+      transition:
+        width 0.3s $ease,
+        opacity 0.15s,
+        margin-inline-start 0.3s $ease,
+        visibility 0s 0.3s;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vc-search-bar__filters--scroll,
+  .vc-search-bar__phone-tray {
+    transition: none;
+  }
+}

@@ -44,3 +44,19 @@ describe("decodeQueryState", () => {
     expect(decodeQueryState("offers", { other_sort: "x:ASC" })).toEqual({});
   });
 });
+
+describe("filters", () => {
+  it("encodes under `${ns}_filters` and clears with an empty string", () => {
+    expect(encodeQueryState("offers", { filters: "status:Paid" })).toEqual({ offers_filters: "status:Paid" });
+    expect(encodeQueryState("offers", { filters: undefined })).toEqual({ offers_filters: "" });
+    expect(encodeQueryState("offers", { filters: "" })).toEqual({ offers_filters: "" });
+  });
+
+  it("decodes a non-empty string and ignores empty or array values", () => {
+    expect(decodeQueryState("offers", { offers_filters: "status:Paid,New;created:7d" })).toEqual({
+      filters: "status:Paid,New;created:7d",
+    });
+    expect(decodeQueryState("offers", { offers_filters: "" })).toEqual({});
+    expect(decodeQueryState("offers", { offers_filters: ["a:1"] } as never)).toEqual({});
+  });
+});

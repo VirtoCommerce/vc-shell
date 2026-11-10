@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { ref } from "vue";
+import { VcButton } from "@ui/components/atoms";
 import { VcDataTable, VcColumn } from "@ui/components/organisms/vc-data-table";
+import type { GlobalFilterConfig } from "@ui/components/organisms/vc-data-table/types";
 import { mockProducts } from "./vc-data-table.stories.helpers";
 
 const meta = {
@@ -223,3 +225,39 @@ SearchWithGlobalFilters.parameters = {
  * Empty state using the declarative `emptyState` prop (TableStateConfig).
  * Shown when `items` is empty and there is no active search or filters.
  */
+
+/** Custom `#search-header-actions` get their own left-aligned row above the search bar, inside the table's header. */
+export const SearchWithHeaderActions: Story = {
+  render: () => ({
+    components: { VcDataTable, VcColumn, VcButton },
+    setup() {
+      const products = ref([...mockProducts]);
+      const view = ref<"list" | "grid">("list");
+      const globalFilters: GlobalFilterConfig[] = [
+        {
+          id: "status",
+          label: "Status",
+          filter: { options: ["In Stock", "Low Stock", "Out of Stock"].map((s) => ({ value: s, label: s })) },
+        },
+        { id: "created", label: "Created", filter: { range: ["createdFrom", "createdTo"] } },
+      ];
+      const handleFilter = ({ filters }: { filters: Record<string, unknown> }) => {
+        products.value = mockProducts.filter((p) => !filters.status || p.status === filters.status);
+      };
+      return { products, view, globalFilters, handleFilter };
+    },
+    template: `
+    <div style="height: 520px" class="tw-overflow-hidden">
+      <VcDataTable :items="products" searchable :global-filters="globalFilters" @filter="handleFilter">
+        <template #search-header-actions>
+          <VcButton icon="lucide-list" size="sm" variant="outline" :selected="view === 'list'" :aria-pressed="view === 'list'" @click="view = 'list'">List</VcButton>
+          <VcButton icon="lucide-layout-grid" size="sm" variant="outline" :selected="view === 'grid'" :aria-pressed="view === 'grid'" @click="view = 'grid'">Grid</VcButton>
+        </template>
+        <VcColumn id="name" field="name" title="Product Name" />
+        <VcColumn id="status" field="status" title="Status" />
+        <VcColumn id="createdAt" field="createdAt" title="Created Date" type="date" />
+      </VcDataTable>
+    </div>
+  `,
+  }),
+};

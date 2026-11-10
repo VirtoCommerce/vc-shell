@@ -54,6 +54,14 @@ vi.mock("@ui/components/organisms/vc-data-table/components", () => ({
   TableSelectAllBar: defineComponent({ name: "TableSelectAllBar", template: "<div />" }),
 }));
 
+vi.mock("@ui/components/organisms/vc-search-bar", () => ({
+  VcSearchBar: defineComponent({
+    name: "VcSearchBar",
+    props: ["fields", "search", "placeholder", "searchDebounce", "storageKey", "name", "searchable"],
+    template: "<div class='mock-search-bar'><slot name='actions' /></div>",
+  }),
+}));
+
 vi.mock("@ui/components/molecules", () => ({
   VcPagination: defineComponent({ name: "VcPagination", template: "<div class='mock-pagination' />" }),
 }));
@@ -311,14 +319,14 @@ describe("VcDataTable", () => {
     expect(wrapper.find(".vc-data-table__header").exists()).toBe(false);
   });
 
-  it("renders search header when searchable is true", () => {
+  it("renders the search bar when searchable is true", () => {
     const wrapper = mountTable({ searchable: true });
-    expect(wrapper.find(".mock-search-header").exists()).toBe(true);
+    expect(wrapper.find(".mock-search-bar").exists()).toBe(true);
   });
 
-  it("does not render search header when searchable is false and no filters", () => {
+  it("does not render the search bar when searchable is false and no filters", () => {
     const wrapper = mountTable({ searchable: false });
-    expect(wrapper.find(".mock-search-header").exists()).toBe(false);
+    expect(wrapper.find(".mock-search-bar").exists()).toBe(false);
   });
 
   it("renders desktop Table component when not mobile", () => {

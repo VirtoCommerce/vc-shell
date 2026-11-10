@@ -129,65 +129,17 @@ export type VcColumnCellType = CellType;
 
 // === Declarative Filter Configuration Types ===
 
-/** Supported filter UI types for column and global filters */
-export type FilterType = "text" | "select" | "dateRange" | "none";
-
-/** Option item for select-type filters */
-export interface FilterOption {
-  /** Value sent to the backend API */
-  value: string | number;
-  /** Human-readable label shown in the dropdown */
-  label: string;
-}
-
-/** Configuration for a dropdown select filter */
-export interface SelectFilterConfig {
-  /** Available options in the dropdown */
-  options: FilterOption[];
-  /** Allow selecting multiple values (default: false) */
-  multiple?: boolean;
-}
-
-/** Select filter with explicit backend field override */
-export interface SelectFilterWithFieldConfig extends SelectFilterConfig {
-  /** Backend field name to use instead of column id */
-  field: string;
-}
-
-/** Configuration for a date range filter */
-export interface DateRangeFilterConfig {
-  /** Tuple of [startFieldName, endFieldName] for the date range */
-  range: [string, string];
-}
-
-/**
- * Declarative filter configuration for VcColumn's `filter` prop.
- * - `true` — text filter keyed by column id
- * - `"fieldName"` — text filter on that field
- * - `SelectFilterConfig` — dropdown filter
- * - `DateRangeFilterConfig` — date range picker
- */
-export type ColumnFilterConfig =
-  | boolean
-  | string
-  | SelectFilterConfig
-  | SelectFilterWithFieldConfig
-  | DateRangeFilterConfig;
-
-/** Runtime filter value — varies by filter type */
-export type FilterValue = string | string[] | number | { start?: string; end?: string } | null | undefined;
-
-/** Configuration for a global filter shown in the filter panel (not tied to a column) */
-export interface GlobalFilterConfig {
-  /** Unique filter identifier (used as backend field name) */
-  id: string;
-  /** Human-readable label shown above the filter control */
-  label: string;
-  /** Filter type configuration (same as VcColumn `filter` prop) */
-  filter: ColumnFilterConfig;
-  /** Placeholder text for the filter input */
-  placeholder?: string;
-}
+export type {
+  FilterType,
+  FilterOption,
+  SelectFilterConfig,
+  SelectFilterWithFieldConfig,
+  DateRangeFilterConfig,
+  ColumnFilterConfig,
+  FilterValue,
+  GlobalFilterConfig,
+} from "@core/types/search-bar";
+import type { ColumnFilterConfig, FilterValue, GlobalFilterConfig } from "@core/types/search-bar";
 
 /**
  * VcColumn Props Interface — declarative column definition for VcDataTable.
@@ -436,7 +388,7 @@ export interface VcDataTableProps<T = any> {
   scrollHeight?: string;
 
   // === State ===
-  /** Key for persisting table state (column widths, order, sort, filters) to storage */
+  /** Key for persisting table state (column widths, order, hidden columns); also enables the search bar's presets and remembered filters */
   stateKey?: string;
   /** Storage type for state persistence: `"local"` (localStorage) or `"session"` (sessionStorage) */
   stateStorage?: "session" | "local";
@@ -540,7 +492,7 @@ export interface VcDataTableExtendedProps<T = any> extends VcDataTableProps<T> {
   infiniteScroll?: boolean;
   /** Distance in px from bottom to trigger load-more (default: 100) */
   infiniteScrollDistance?: number;
-  /** Global filter configurations shown in a separate panel */
+  /** Global filter configurations shown as pills in the search bar */
   globalFilters?: GlobalFilterConfig[];
   /**
    * Show column visibility switcher in the toolbar.
@@ -555,8 +507,12 @@ export interface VcDataTableExtendedProps<T = any> extends VcDataTableProps<T> {
   searchValue?: string;
   /** Placeholder text for search input */
   searchPlaceholder?: string;
+  /** Hide the search behind a button. Default: automatic, hidden in a narrow bar or on a phone */
+  collapseSearch?: boolean;
   /** Debounce delay in ms for the search emit (default: 300) */
   searchDebounce?: number;
+  /** Search bar name for external filters (`registerExternalSearchFilters` targets); defaults to the blade's name */
+  searchName?: string;
   /**
    * When `true` (default), all visible columns are shown.
    * When `false`, only columns with `alwaysVisible` are displayed —

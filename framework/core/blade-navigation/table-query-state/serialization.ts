@@ -12,6 +12,7 @@ export function encodeQueryState(ns: string, patch: TableQueryPatch): Record<str
   if ("sort" in patch) out[`${ns}_sort`] = patch.sort ?? "";
   if ("search" in patch) out[`${ns}_search`] = patch.search ?? "";
   if ("page" in patch) out[`${ns}_page`] = patch.page != null ? String(patch.page) : "";
+  if ("filters" in patch) out[`${ns}_filters`] = patch.filters ?? "";
   return out;
 }
 
@@ -32,6 +33,9 @@ export function decodeQueryState(ns: string, query: RawQuery): TableQueryPatch {
     const n = Number(pageRaw);
     if (Number.isInteger(n) && n >= 1) res.page = n;
   }
+
+  const filters = query[`${ns}_filters`];
+  if (typeof filters === "string" && filters !== "") res.filters = filters;
 
   return res;
 }

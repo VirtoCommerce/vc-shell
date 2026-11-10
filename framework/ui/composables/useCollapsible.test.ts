@@ -6,6 +6,8 @@ vi.mock("@vueuse/core", () => ({
   useResizeObserver: vi.fn(),
 }));
 
+import { defineComponent, h } from "vue";
+import { mount } from "@vue/test-utils";
 import { useCollapsible } from "./useCollapsible";
 
 describe("useCollapsible", () => {
@@ -95,5 +97,23 @@ describe("useCollapsible", () => {
     const { result } = mountWithSetup(() => useCollapsible());
 
     expect(result.contentHeight.value).toBe(0);
+  });
+
+  it("measures the content on mount, before the first resize callback", () => {
+    // The resize observer is mocked out, so only the mount-time measurement can set the height
+    const height = vi.spyOn(HTMLElement.prototype, "scrollHeight", "get").mockReturnValue(120);
+    let result!: ReturnType<typeof useCollapsible>;
+    const wrapper = mount(
+      defineComponent({
+        setup() {
+          result = useCollapsible();
+          return () => h("div", { ref: result.contentRef });
+        },
+      }),
+    );
+    expect(result.contentHeight.value).toBe(120);
+    expect(result.hasOverflow.value).toBe(true);
+    wrapper.unmount();
+    height.mockRestore();
   });
 });

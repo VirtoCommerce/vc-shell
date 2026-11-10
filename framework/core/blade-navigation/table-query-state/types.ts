@@ -8,10 +8,12 @@ export interface TableQueryPatch {
   search?: string;
   /** 1-based current page. `undefined` clears it. */
   page?: number;
+  /** Applied search-bar filters in the bar's compact format. `undefined`/"" clears it. */
+  filters?: string;
 }
 
 /**
- * Per-blade service that persists table view state (sort/search/page) into the
+ * Per-blade service that persists table view state (sort/search/page/filters) into the
  * URL query. Provided by the blade rendering layer for URL-addressable blades;
  * absent for standalone tables (then VcDataTable simply does not persist).
  */

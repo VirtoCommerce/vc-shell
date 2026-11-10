@@ -13,38 +13,31 @@
       <slot name="header" />
     </div>
 
-    <!-- Search bar + Global Filters + Column Switcher (combined toolbar) -->
-    <TableSearchHeader
+    <!-- Search header: custom actions row above the bar (search, global filters as pills, presets) -->
+    <div
       v-if="searchable || globalFilters?.length || $slots['search-header-actions']"
-      :searchable="searchable"
-      :model-value="internalSearchValue"
-      :placeholder="searchPlaceholder"
-      @update:model-value="handleSearchInput"
+      class="vc-data-table__search-header"
     >
-      <template #actions>
-        <GlobalFiltersButton
-          v-if="globalFilters?.length"
-          ref="globalFiltersButtonRef"
-          :active-count="globalActiveFilterCount"
-          @click="showGlobalFiltersPanel = !showGlobalFiltersPanel"
-        />
+      <div
+        v-if="$slots['search-header-actions']"
+        class="vc-data-table__search-header-actions"
+      >
         <!-- Custom actions from parent (e.g. adapter's filter button) -->
         <slot name="search-header-actions" />
-      </template>
-    </TableSearchHeader>
-
-    <!-- Global Filters Panel (separate, teleported to body) -->
-    <GlobalFiltersPanel
-      v-if="globalFilters?.length"
-      :filters="globalFilters"
-      :model-value="globalFilterValues"
-      :show="showGlobalFiltersPanel"
-      :anchor-ref="globalFiltersButtonEl"
-      @update:model-value="globalFilterValues = $event"
-      @update:show="showGlobalFiltersPanel = $event"
-      @apply="handleGlobalFilterApply"
-      @clear="handleGlobalFilterClear"
-    />
+      </div>
+      <VcSearchBar
+        :fields="globalFilters"
+        :search="internalSearchValue"
+        :placeholder="searchPlaceholder"
+        :search-debounce="searchDebounce"
+        :storage-key="stateKey"
+        :name="searchName"
+        :searchable="searchable"
+        :collapse-search="collapseSearch"
+        @update:search="handleSearchInput"
+        @change="handleSearchBarChange"
+      />
+    </div>
 
     <!-- Column Switcher Panel (separate, teleported to body) -->
     <TableColumnSwitcher
@@ -375,7 +368,18 @@
  * Orchestration (sub-composable wiring, watchers, event handlers, derived computeds)
  * lives in useDataTableOrchestrator so it can be tested on its own.
  */
-import { ref, computed, provide, watch, watchEffect, onBeforeUnmount, useSlots, type VNode } from "vue";
+import {
+  ref,
+  computed,
+  provide,
+  watch,
+  watchEffect,
+  nextTick,
+  onMounted,
+  onBeforeUnmount,
+  useSlots,
+  type VNode,
+} from "vue";
 import { useElementSize } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import {
@@ -385,16 +389,14 @@ import {
   TableRowActions,
   DataTableHeader,
   DataTableBody,
-  GlobalFiltersButton,
-  GlobalFiltersPanel,
   TableColumnSwitcher,
   DataTableMobileView,
   TableAddRowButton,
-  TableSearchHeader,
   TableSelectAllBar,
   TableCheckbox,
 } from "@ui/components/organisms/vc-data-table/components";
 import { VcPagination } from "@ui/components/molecules";
+import { VcSearchBar, type SearchBarChange } from "@ui/components/organisms/vc-search-bar";
 import { useDataTableOrchestrator } from "@ui/components/organisms/vc-data-table/composables/useDataTableOrchestrator";
 import { ColumnCollector, type ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
 import {
@@ -470,6 +472,7 @@ const props = withDefaults(defineProps<VcDataTableExtendedProps<T> & { fitMode?:
   searchable: false,
   searchValue: undefined,
   searchPlaceholder: "Search...",
+  collapseSearch: undefined,
   emptyState: undefined,
   notFoundState: undefined,
   searchDebounce: 300,
@@ -642,7 +645,9 @@ const notFoundDescription = computed(() => t("COMPONENTS.ORGANISMS.VC_TABLE.NOT_
 /** Detect not-found state: items empty + active search or filters */
 const isNotFoundState = computed(
   () =>
-    displayItems.value.length === 0 && !props.loading && (internalSearchValue.value !== "" || hasActiveFilters.value),
+    displayItems.value.length === 0 &&
+    !props.loading &&
+    (internalSearchValue.value !== "" || hasActiveFilters.value || hasGlobalFilters.value),
 );
 
 /** Resolved title/description/icon/action for the current empty-like state */
@@ -1070,28 +1075,8 @@ const handleRowMouseEnter = (_index: number) => {};
 const handleRowMouseLeave = () => {};
 
 // ============================================================================
-// Global Filter UI State (UI-level state, component-owned)
+// Column Switcher + Search Bar UI State (component-owned)
 // ============================================================================
-
-const showGlobalFiltersPanel = ref(false);
-const globalFilterValues = ref<Record<string, unknown>>({});
-const globalFiltersButtonRef = ref<InstanceType<typeof GlobalFiltersButton> | null>(null);
-
-// floating-ui VirtualElement so the anchor resolves lazily on every position update.
-// `$el` is not reactive: when VcButton's `v-if="!bladeLoading"` swaps the DOM root,
-// a `computed(() => ref.value?.$el)` holds a stale detached node. Reading `$el`
-// inside getBoundingClientRect() picks up the live element.
-const globalFiltersButtonEl = computed<VirtualElement | null>(() => {
-  const inst = globalFiltersButtonRef.value;
-  if (!inst) return null;
-  return {
-    getBoundingClientRect: () =>
-      (inst as unknown as { $el?: HTMLElement }).$el?.getBoundingClientRect() ?? new DOMRect(),
-    get contextElement() {
-      return (inst as unknown as { $el?: HTMLElement }).$el;
-    },
-  };
-});
 
 // Column switcher state
 const showColumnSwitcherPanel = ref(false);
@@ -1108,32 +1093,30 @@ const columnSwitcherButtonEl = computed<VirtualElement | null>(() => {
   };
 });
 
-// Computed: count of active global filters
-const globalActiveFilterCount = computed(() => {
-  let count = 0;
-  for (const val of Object.values(globalFilterValues.value)) {
-    if (val === null || val === undefined || val === "") continue;
-    if (Array.isArray(val) && val.length === 0) continue;
-    if (typeof val === "object" && !Array.isArray(val)) {
-      const range = val as { start?: string; end?: string };
-      if (range.start || range.end) count++;
-      continue;
-    }
-    count++;
-  }
-  return count;
+// The bar owns the global filter values; its flat filters merge with column filters in one @filter.
+// Restored state arrives during the bar's setup, before the screen's own onMounted load: hold that
+// @filter until the screen has mounted, so the restored filters land after its initial request.
+let tableMounted = false;
+let restoredFilterPending = false;
+const handleSearchBarChange = (change: SearchBarChange) => {
+  // A preset can set or clear the search text; typing never differs here (update:search came first)
+  if (change.search !== internalSearchValue.value) handleSearchInput(change.search);
+  globalFilterPayload.value = change.filters;
+  if (tableMounted) emitFilterPayload();
+  else restoredFilterPending = true;
+};
+onMounted(() => {
+  tableMounted = true;
+  if (!restoredFilterPending) return;
+  // nextTick runs after the parent's onMounted in the same mount flush
+  nextTick(() => {
+    restoredFilterPending = false;
+    emitFilterPayload();
+  });
 });
 
-const handleGlobalFilterApply = (payload: Record<string, unknown>) => {
-  globalFilterPayload.value = payload;
-  emitFilterPayload();
-};
-
-const handleGlobalFilterClear = () => {
-  globalFilterPayload.value = null;
-  globalFilterValues.value = {};
-  emitFilterPayload();
-};
+// Bar filters count for the not-found state (the flat payload holds set values only)
+const hasGlobalFilters = computed(() => Object.keys(globalFilterPayload.value ?? {}).length > 0);
 
 // ============================================================================
 // Row Props Builder (for DataTableRow component)
@@ -1275,6 +1258,17 @@ onBeforeUnmount(() => {
 
   &__header {
     @apply tw-flex-shrink-0 tw-px-4 tw-py-2;
+  }
+
+  &__search-header {
+    @apply tw-flex tw-flex-col tw-gap-2 tw-flex-shrink-0 tw-px-4 tw-border-b tw-border-solid;
+    background-color: var(--table-header-bg, var(--neutrals-50));
+    border-color: var(--table-header-border, var(--neutrals-200));
+  }
+
+  // The bar carries its own vertical padding; only the actions row keeps the header's top spacing
+  &__search-header-actions {
+    @apply tw-flex tw-flex-wrap tw-items-center tw-gap-2 tw-pt-2;
   }
 
   &__content {

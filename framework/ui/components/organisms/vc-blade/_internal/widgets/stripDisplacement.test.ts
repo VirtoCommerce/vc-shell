@@ -8,15 +8,15 @@ function list(name: "strip" | "overflow", ids: string[]) {
   el.append(document.createTextNode(""));
   for (const id of ids) {
     const item = document.createElement("div");
-    item.dataset.widgetId = id;
+    item.dataset.widgetSlot = id;
     el.append(item);
   }
   el.append(document.createTextNode(""));
   return el;
 }
 
-const ids = (el: HTMLElement) => Array.from(el.children).map((c) => (c as HTMLElement).dataset.widgetId);
-const byId = (el: HTMLElement, id: string) => el.querySelector<HTMLElement>(`[data-widget-id="${id}"]`)!;
+const ids = (el: HTMLElement) => Array.from(el.children).map((c) => (c as HTMLElement).dataset.widgetSlot);
+const byId = (el: HTMLElement, id: string) => el.querySelector<HTMLElement>(`[data-widget-slot="${id}"]`)!;
 
 describe("createStripDisplacement", () => {
   // Sortable has already moved the dragged node when it reports the change

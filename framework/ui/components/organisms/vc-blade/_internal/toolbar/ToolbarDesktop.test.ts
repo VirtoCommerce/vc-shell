@@ -5,18 +5,21 @@ import type { IBladeToolbar } from "@core/types";
 // items a test puts into the "more" menu
 const mockOverflow = vi.hoisted(() => ({ hidden: [] as IBladeToolbar[] }));
 
-vi.mock("@ui/composables/useAdaptiveItems", () => ({
-  useAdaptiveItems: (opts: Record<string, unknown>) => {
-    const items = opts.items as { value: IBladeToolbar[] };
-    return {
-      visibleItems: items,
-      hiddenItems: { value: mockOverflow.hidden },
-      showMoreButton: { value: mockOverflow.hidden.length > 0 },
-      recalculate: vi.fn(),
-      updateObserver: vi.fn(),
-    };
-  },
-}));
+vi.mock("@ui/composables/useAdaptiveItems", async () => {
+  const { ref } = await import("vue");
+  return {
+    useAdaptiveItems: (opts: Record<string, unknown>) => {
+      const items = opts.items as { value: IBladeToolbar[] };
+      return {
+        visibleItems: items,
+        hiddenItems: ref(mockOverflow.hidden),
+        showMoreButton: ref(mockOverflow.hidden.length > 0),
+        recalculate: vi.fn(),
+        updateObserver: vi.fn(),
+      };
+    },
+  };
+});
 
 import ToolbarDesktop from "./ToolbarDesktop.vue";
 
@@ -50,7 +53,9 @@ function mountToolbar(props: Record<string, unknown> = {}) {
         VcDropdown: {
           name: "VcDropdown",
           props: ["modelValue", "items", "floating", "placement", "variant", "isItemDisabled"],
-          template: '<div class="vc-dropdown-stub"><slot name="trigger" :isActive="false" /></div>',
+          template:
+            '<div class="vc-dropdown-stub"><slot name="trigger" :isActive="false" />' +
+            '<template v-for="item in items" :key="item.id"><slot name="item" :item="item" /></template></div>',
         },
         VcIcon: {
           name: "VcIcon",
@@ -109,6 +114,19 @@ describe("ToolbarDesktop", () => {
   it("renders no buttons when items is empty", () => {
     const wrapper = mountToolbar({ items: [] });
     expect(wrapper.findAll(".toolbar-base-button-stub")).toHaveLength(0);
+  });
+
+  it("gives a command in the more menu the same test id it has on the bar", () => {
+    // An action that no longer fits moves into the menu; automation that found it by id on the bar
+    // has to find it by the same id there.
+    mockOverflow.hidden = [createToolbarItem({ id: "delete" }), createToolbarItem({ id: "setDefault" })];
+    try {
+      const wrapper = mountToolbar({ items: [] });
+      expect(wrapper.find('.vc-dropdown-item-stub[data-test-id="delete"]').exists()).toBe(true);
+      expect(wrapper.find('.vc-dropdown-item-stub[data-test-id="setDefault"]').exists()).toBe(true);
+    } finally {
+      mockOverflow.hidden = [];
+    }
   });
 
   it("ignores a click on a disabled command in the more menu", () => {

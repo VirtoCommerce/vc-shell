@@ -50,15 +50,15 @@ export function useWidgetEditReorder(opts: IUseWidgetEditReorderOptions) {
   useWidgetSortable(overflowEl, sortableOpts);
 
   function itemOf(event: KeyboardEvent) {
-    const item = (event.target as HTMLElement | null)?.closest<HTMLElement>("[data-widget-id]");
-    return item?.dataset.widgetId ?? undefined;
+    const item = (event.target as HTMLElement | null)?.closest<HTMLElement>("[data-widget-slot]");
+    return item?.dataset.widgetSlot ?? undefined;
   }
 
   const idsOf = (list: WidgetListName) =>
     (list === "strip" ? layout.strip.value : layout.overflow.value).map((w) => w.id);
   const itemsOf = (list: WidgetListName) =>
     Array.from((list === "strip" ? stripEl.value : overflowEl.value)?.children ?? []) as HTMLElement[];
-  const findItem = (list: WidgetListName, id: string) => itemsOf(list).find((c) => c.dataset.widgetId === id);
+  const findItem = (list: WidgetListName, id: string) => itemsOf(list).find((c) => c.dataset.widgetSlot === id);
 
   async function move(list: WidgetListName, id: string, delta: number) {
     const from = idsOf(list).indexOf(id);

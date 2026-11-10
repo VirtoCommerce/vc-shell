@@ -160,6 +160,7 @@
     ]
   },
   "resolutions": {
+    "basic-ftp": "^6.2.6",
     "undici": "^6.24.0"
   },
   "packageManager": "yarn@4.9.2"

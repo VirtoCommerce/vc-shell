@@ -121,12 +121,17 @@ const listStyle = computed(() => ({
   top: px(suggest.top),
   bottom: px(suggest.bottom),
 }));
-// The list sits at fixed viewport coordinates: any scroll but the textarea's own moves the text away from it
+// The list sits at fixed viewport coordinates, so a scroll moves the text away from it. Typing itself scrolls
+// the panel to the caret: the list follows the text while it is in view and closes once it is not.
 useEventListener(
   window,
   "scroll",
   (e: Event) => {
-    if (suggest.items.length && e.target !== wrap.value?.querySelector("textarea")) close();
+    const ta = wrap.value?.querySelector("textarea");
+    if (!suggest.items.length || !ta || e.target === ta) return;
+    const r = ta.getBoundingClientRect();
+    if (r.bottom <= 0 || r.top >= window.innerHeight) close();
+    else update();
   },
   { capture: true, passive: true },
 );

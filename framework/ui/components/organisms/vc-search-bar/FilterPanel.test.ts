@@ -362,6 +362,23 @@ describe("FilterPanel", () => {
       expect(ta.attributes("aria-activedescendant")).toBe(options()[0].id);
     });
 
+    it("keeps the suggestions when the panel scrolls with the text still in view, closes them once it is out", async () => {
+      w = mountPanel({ search: "", values: {} }, { builder: false, advanced: true });
+      await type(w, "sta");
+      const ta = w.find("textarea").element as HTMLTextAreaElement;
+      const rect = vi.spyOn(ta, "getBoundingClientRect");
+      // typing scrolls the panel to the caret: the list follows the text
+      rect.mockReturnValue({ top: 100, bottom: 140, left: 0, right: 200, width: 200, height: 40 } as DOMRect);
+      w.element.dispatchEvent(new Event("scroll"));
+      await w.vm.$nextTick();
+      expect(document.body.querySelector("[role=listbox]")).not.toBeNull();
+      // scrolled away: the list would float detached from its text
+      rect.mockReturnValue({ top: -200, bottom: -160, left: 0, right: 200, width: 200, height: 40 } as DOMRect);
+      w.element.dispatchEvent(new Event("scroll"));
+      await w.vm.$nextTick();
+      expect(document.body.querySelector("[role=listbox]")).toBeNull();
+    });
+
     it("closes the suggestions when focus leaves the text", async () => {
       w = mountPanel({ search: "", values: {} }, { builder: false, advanced: true });
       await type(w, "sta");

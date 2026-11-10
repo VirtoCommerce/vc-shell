@@ -1261,14 +1261,14 @@ onBeforeUnmount(() => {
   }
 
   &__search-header {
-    @apply tw-flex tw-flex-col tw-gap-2 tw-flex-shrink-0 tw-px-4 tw-border-b tw-border-solid;
+    @apply tw-flex tw-flex-col tw-gap-2 tw-flex-shrink-0 tw-border-b tw-border-solid;
     background-color: var(--table-header-bg, var(--neutrals-50));
     border-color: var(--table-header-border, var(--neutrals-200));
   }
 
-  // The bar carries its own vertical padding; only the actions row keeps the header's top spacing
+  // The bar carries its own padding; only the actions row keeps the header's spacing
   &__search-header-actions {
-    @apply tw-flex tw-flex-wrap tw-items-center tw-gap-2 tw-pt-2;
+    @apply tw-flex tw-flex-wrap tw-items-center tw-gap-2 tw-pt-2 tw-px-4;
   }
 
   &__content {

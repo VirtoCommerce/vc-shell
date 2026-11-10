@@ -4,7 +4,8 @@ $ease: cubic-bezier(0.2, 0.9, 0.25, 1.05);
 
 .vc-search-bar {
   &__row--phone {
-    height: 46px;
+    // 32px controls plus 8px above and below, as on desktop
+    height: 48px;
     // the widening search overshoots a little; keep focus rings visible
     overflow-x: clip;
     overflow-clip-margin: 4px;

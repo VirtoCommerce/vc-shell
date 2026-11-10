@@ -46,7 +46,7 @@ For the builder, the Advanced query or full control over the state, leave `searc
 
 ## Layout
 
-The bar is one row, 46px high: search, filter pills, **+ Filter**, then **Clear all** and **Save as preset** after a divider, the **Edit filters** icon button (with `builder` or `advanced`), and the preset tray at the end.
+The bar is one row, 48px high with its own 16px side and 8px top and bottom padding, so it needs no wrapper: search, filter pills, **+ Filter**, then **Clear all** and **Save as preset** after a divider, the **Edit filters** icon button (with `builder` or `advanced`), and the preset tray at the end.
 
 - The search field is 180px wide and does not grow on focus.
 - In a bar narrower than 640px (a narrow blade) the search folds into a square button that widens into the field on click; it folds back when focus leaves an empty field. Pills show only the set filters there; on a wide bar pinned fields show too.

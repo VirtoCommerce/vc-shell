@@ -348,13 +348,20 @@ function removeFilter(id: string) {
 </script>
 
 <style lang="scss">
+$pad-x: 16px;
+$pad-y: 8px;
+// the tallest control (the 32px search field) plus the vertical padding
+$bar-h: 32px + 2 * $pad-y;
+
 .vc-search-bar {
   @apply tw-flex tw-flex-col tw-gap-2 tw-w-full;
+  // the bar is ready to drop into any container; the table no longer pads it
+  padding-inline: $pad-x;
 
-  // desktop: one 46px line; the row is lifted out of the flow so it can unfold over the table
+  // desktop: one 48px line; the row is lifted out of the flow so it can unfold over the table
   &:not(&--mobile) {
     @apply tw-relative tw-block;
-    height: 46px;
+    height: $bar-h;
   }
   &__row {
     @apply tw-flex tw-flex-nowrap tw-items-center tw-gap-1.5 tw-min-w-0;
@@ -363,9 +370,10 @@ function removeFilter(id: string) {
     &--clip {
       @apply tw-absolute tw-overflow-hidden;
       top: 0;
-      left: -4px;
-      right: -4px;
-      height: 46px;
+      // absolute children start at the padding edge: line up with the bar's own padding
+      left: $pad-x - 4px;
+      right: $pad-x - 4px;
+      height: $bar-h;
       padding-inline: 4px;
     }
     &--clip .vc-search-bar__filter-row {
@@ -380,11 +388,11 @@ function removeFilter(id: string) {
       @apply tw-flex-wrap tw-overflow-visible tw-rounded-md;
       // above the sticky table header; the row's own popovers are teleported over it
       z-index: var(--z-overlay-dropdown);
-      left: -12px;
-      right: -12px;
+      left: $pad-x - 12px;
+      right: $pad-x - 12px;
       height: auto;
-      min-height: 46px;
-      padding: 7px 12px;
+      min-height: $bar-h;
+      padding: $pad-y 12px;
       background: var(--neutrals-50);
       box-shadow:
         0 0 0 1px var(--neutrals-200),

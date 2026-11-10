@@ -260,6 +260,11 @@ jobs:
       - name: Preflight checks
         run: yarn check
 
+      # Fails on a high or critical advisory in the runtime dependencies of any
+      # published package. See scripts/audit-published.ts for accepting one.
+      - name: Dependency audit
+        run: yarn check:audit
+
       # NB: the build runs inside release-it's `after:bump` hook (see
       # .release-it.cjs), i.e. AFTER the version bump, so buildInfo.ts inlines the
       # released version. Do not add a pre-bump `Build` step here.

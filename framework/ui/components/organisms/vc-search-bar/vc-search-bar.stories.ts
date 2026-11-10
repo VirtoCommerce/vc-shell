@@ -353,7 +353,8 @@ export const PhoneFiltersSheetTest: Story = {
     // the search opens over the row
     await userEvent.click(canvas.getByRole("button", { name: "Search" }));
     await expect(await canvas.findByRole("textbox", { name: "Search" })).toBeInTheDocument();
-    await expect(canvas.queryByRole("button", { name: "Presets" })).toBeNull();
+    // the presets button slides out with the widening search, then leaves the accessibility tree
+    await waitFor(() => expect(canvas.queryByRole("button", { name: "Presets" })).toBeNull());
     await userEvent.tab();
     // the presets button opens all presets and Save as preset
     await userEvent.click(await canvas.findByRole("button", { name: "Presets" }));

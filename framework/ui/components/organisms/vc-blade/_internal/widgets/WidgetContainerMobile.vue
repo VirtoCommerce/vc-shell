@@ -59,7 +59,7 @@
           :widget="item"
           :editing="editing"
           horizontal
-          :data-widget-id="item.id"
+          :data-widget-slot="item.id"
           @click="showOverflow = false"
         />
       </div>
@@ -85,7 +85,7 @@
             v-for="widget in strip"
             :key="widget.id"
             class="vc-widget-container-mobile__row"
-            :data-widget-id="widget.id"
+            :data-widget-slot="widget.id"
           >
             <button
               type="button"
@@ -136,7 +136,7 @@
             v-for="widget in overflow"
             :key="widget.id"
             class="vc-widget-container-mobile__row"
-            :data-widget-id="widget.id"
+            :data-widget-slot="widget.id"
           >
             <button
               type="button"

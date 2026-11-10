@@ -3,7 +3,7 @@ import type { IWidgetDragChange } from "./useWidgetSortable";
 const isWidget = (el: Element, dragged: HTMLElement): el is HTMLElement =>
   el !== dragged &&
   el instanceof HTMLElement &&
-  el.dataset.widgetId !== undefined &&
+  el.dataset.widgetSlot !== undefined &&
   !el.classList.contains("sortable-fallback");
 
 /**

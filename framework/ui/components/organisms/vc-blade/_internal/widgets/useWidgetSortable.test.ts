@@ -31,7 +31,7 @@ function setup(onMove = vi.fn()) {
         h(
           "div",
           { ref: el, "data-widget-list": "strip" },
-          ["a", "b", "c"].map((id) => h("div", { "data-widget-id": id, key: id })),
+          ["a", "b", "c"].map((id) => h("div", { "data-widget-slot": id, key: id })),
         );
     },
   });
@@ -44,7 +44,7 @@ describe("useWidgetSortable", () => {
   it("restores the DOM order before onMove is called", async () => {
     const order: string[] = [];
     const onMove = vi.fn(() =>
-      order.push(...Array.from(list.children).map((c) => (c as HTMLElement).dataset.widgetId!)),
+      order.push(...Array.from(list.children).map((c) => (c as HTMLElement).dataset.widgetSlot!)),
     );
     const { wrapper } = setup(onMove);
     await nextTick();

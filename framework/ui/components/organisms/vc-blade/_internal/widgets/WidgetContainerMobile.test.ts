@@ -52,7 +52,8 @@ async function mountContainer(
   await flushPromises();
   return wrapper;
 }
-const ids = (sel: string) => wrapper.findAll(`${sel} > [data-widget-id]`).map((e) => e.attributes("data-widget-id"));
+const ids = (sel: string) =>
+  wrapper.findAll(`${sel} > [data-widget-slot]`).map((e) => e.attributes("data-widget-slot"));
 const strip = () => ids("[data-widget-list=strip]");
 const overflow = () => ids("[data-widget-list=overflow]");
 const byLabel = (re: RegExp) =>
@@ -95,7 +96,7 @@ describe("WidgetContainerMobile", () => {
     await mountContainer(make(5));
     const inBar = wrapper.findAll(".vc-widget-container-mobile__content > [data-item-key]");
     expect(inBar.length).toBeLessThan(5);
-    const sheet = wrapper.findAll(".vc-widget-container-mobile__sheet-list > [data-widget-id]");
+    const sheet = wrapper.findAll(".vc-widget-container-mobile__sheet-list > [data-widget-slot]");
     expect(sheet.length).toBe(5 - inBar.length);
   });
 
@@ -112,8 +113,8 @@ describe("WidgetContainerMobile", () => {
     await mountContainer(widgets);
     expect(mounted).toHaveBeenCalled();
     expect(wrapper.find(".vc-widget-container-mobile__more-dot--danger").exists()).toBe(true);
-    const sheet = wrapper.findAll(".vc-widget-container-mobile__sheet-list > [data-widget-id]");
-    expect(sheet.map((e) => e.attributes("data-widget-id")).slice(-2)).toEqual(["w7", "w6"]);
+    const sheet = wrapper.findAll(".vc-widget-container-mobile__sheet-list > [data-widget-slot]");
+    expect(sheet.map((e) => e.attributes("data-widget-slot")).slice(-2)).toEqual(["w7", "w6"]);
   });
 
   it("puts the dot on the chevron for an alerted adaptive-hidden strip widget", async () => {
@@ -194,7 +195,7 @@ describe("WidgetContainerMobile", () => {
     it("ArrowDown on a grip reorders the strip list", async () => {
       await edit();
       await wrapper
-        .find("[data-widget-list=strip] > [data-widget-id=w1] .vc-widget-container-mobile__grip")
+        .find("[data-widget-list=strip] > [data-widget-slot=w1] .vc-widget-container-mobile__grip")
         .trigger("keydown", { key: "ArrowDown" });
       expect(strip().slice(0, 2)).toEqual(["w2", "w1"]);
     });
@@ -202,7 +203,7 @@ describe("WidgetContainerMobile", () => {
     it("ArrowDown reorders the not-on-blade list", async () => {
       await edit();
       await wrapper
-        .find("[data-widget-list=overflow] > [data-widget-id=w6] .vc-widget-container-mobile__grip")
+        .find("[data-widget-list=overflow] > [data-widget-slot=w6] .vc-widget-container-mobile__grip")
         .trigger("keydown", { key: "ArrowDown" });
       expect(overflow()).toEqual(["w7", "w6"]);
     });
@@ -222,7 +223,7 @@ describe("WidgetContainerMobile", () => {
     expect(mounted).toHaveBeenCalledTimes(1);
     await chevron().trigger("click");
     await byLabel(/\.CUSTOMIZE$/)[0].trigger("click");
-    expect(wrapper.find("[data-widget-list=strip] > [data-widget-id=w2]").text()).toContain("W2");
+    expect(wrapper.find("[data-widget-list=strip] > [data-widget-slot=w2]").text()).toContain("W2");
     await byLabel(/\.DONE$/)[0].trigger("click");
     expect(mounted).toHaveBeenCalledTimes(1);
   });

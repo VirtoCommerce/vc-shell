@@ -18,7 +18,7 @@
           :key="widget.id"
           class="vc-widget-container-desktop__item"
           :class="{ 'vc-widget-container-desktop__item--editing': editing }"
-          :data-widget-id="widget.id"
+          :data-widget-slot="widget.id"
           :data-item-key="widget.id"
         >
           <VcIcon
@@ -100,7 +100,7 @@
                 v-for="widget in overflowItems"
                 :key="widget.id"
                 class="vc-widget-container-desktop__row"
-                :data-widget-id="widget.id"
+                :data-widget-slot="widget.id"
               >
                 <VcIcon
                   v-if="editing"

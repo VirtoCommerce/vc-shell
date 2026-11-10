@@ -44,7 +44,8 @@ function mountContainer(widgets: IWidget[], bladeName = "testblade") {
   });
   return wrapper;
 }
-const ids = (sel: string) => wrapper.findAll(`${sel} > [data-widget-id]`).map((e) => e.attributes("data-widget-id"));
+const ids = (sel: string) =>
+  wrapper.findAll(`${sel} > [data-widget-slot]`).map((e) => e.attributes("data-widget-slot"));
 const strip = () => ids("[data-widget-list=strip]");
 const overflow = () => ids("[data-widget-list=overflow]");
 const byLabel = (re: RegExp) =>
@@ -94,6 +95,18 @@ describe("WidgetContainerDesktop", () => {
     await nextTick();
     expect(strip()).toEqual(["w1", "w2", "w3", "w4", "w5"]);
     offsetWidth.mockRestore();
+  });
+
+  it("renders exactly one data-widget-id per widget, on the widget itself", async () => {
+    // `data-widget-id` is what an app's automation addresses a widget by. The strip's own slots carry
+    // `data-widget-slot`; when they carried `data-widget-id` too, every widget matched twice.
+    mountContainer(make(7));
+    await nextTick();
+    for (const id of ["w1", "w5", "w6", "w7"]) {
+      const matches = wrapper.findAll(`[data-widget-id="${id}"]`);
+      expect(matches).toHaveLength(1);
+      expect(matches[0].classes()).toContain("vc-widget");
+    }
   });
 
   it("puts 5 widgets in the strip and the rest in the dropdown", async () => {
@@ -192,7 +205,7 @@ describe("WidgetContainerDesktop", () => {
     it("does not run a widget click handler while editing", async () => {
       const onClick = vi.fn();
       await edit(make(7, { w1: { headless: { icon: "x", onClick } as IWidget["headless"] } }));
-      await wrapper.find("[data-widget-id=w1] .vc-widget").trigger("click");
+      await wrapper.find("[data-widget-slot=w1] .vc-widget").trigger("click");
       expect(onClick).not.toHaveBeenCalled();
     });
 
@@ -200,7 +213,7 @@ describe("WidgetContainerDesktop", () => {
       document.documentElement.dir = "rtl";
       await edit();
       await wrapper
-        .find("[data-widget-list=strip] > [data-widget-id=w2] .vc-widget")
+        .find("[data-widget-list=strip] > [data-widget-slot=w2] .vc-widget")
         .trigger("keydown", { key: "ArrowRight" });
       expect(strip().slice(0, 2)).toEqual(["w2", "w1"]);
     });
@@ -208,7 +221,7 @@ describe("WidgetContainerDesktop", () => {
     it("ArrowDown reorders inside the dropdown list", async () => {
       await edit();
       await wrapper
-        .find("[data-widget-list=overflow] > [data-widget-id=w6] .vc-widget")
+        .find("[data-widget-list=overflow] > [data-widget-slot=w6] .vc-widget")
         .trigger("keydown", { key: "ArrowDown" });
       expect(overflow()).toEqual(["w7", "w6"]);
     });
@@ -216,7 +229,7 @@ describe("WidgetContainerDesktop", () => {
     it("ArrowRight swaps the focused strip item with the next", async () => {
       await edit();
       await wrapper
-        .find("[data-widget-list=strip] [data-widget-id=w1] .vc-widget")
+        .find("[data-widget-list=strip] [data-widget-slot=w1] .vc-widget")
         .trigger("keydown", { key: "ArrowRight" });
       expect(strip().slice(0, 2)).toEqual(["w2", "w1"]);
     });
@@ -275,13 +288,13 @@ describe("WidgetContainerDesktop", () => {
     mountContainer(make(7));
     await wrapper.find("button[aria-label$='MORE_WIDGETS']").trigger("click");
     await byLabel(/\.CUSTOMIZE$/)[0].trigger("click");
-    const item = wrapper.find("[data-widget-list=strip] > [data-widget-id=w1]");
+    const item = wrapper.find("[data-widget-list=strip] > [data-widget-slot=w1]");
     await item.find(".vc-widget").trigger("keydown", { key: "ArrowRight" });
     await wrapper.vm.$nextTick();
     await wrapper.vm.$nextTick();
     expect(other.element.contains(document.activeElement)).toBe(false);
     expect(
-      wrapper.find("[data-widget-list=strip] > [data-widget-id=w1]").element.contains(document.activeElement),
+      wrapper.find("[data-widget-list=strip] > [data-widget-slot=w1]").element.contains(document.activeElement),
     ).toBe(true);
     other.unmount();
   });
@@ -329,7 +342,7 @@ describe("WidgetContainerDesktop", () => {
     const onClick = vi.fn();
     mountContainer(make(2, { w1: { headless: { icon: "x", onClick } as IWidget["headless"] } }));
     await nextTick();
-    await wrapper.find("[data-widget-id=w1] .vc-widget").trigger("click");
+    await wrapper.find("[data-widget-slot=w1] .vc-widget").trigger("click");
     expect(onClick).toHaveBeenCalled();
   });
 });

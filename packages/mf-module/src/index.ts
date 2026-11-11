@@ -31,7 +31,7 @@ const getPackageJson = () => {
  * });
  * ```
  */
-export function getDynamicModuleConfiguration(options: DynamicModuleOptions): UserConfig {
+export function getDynamicModuleConfiguration(options: DynamicModuleOptions = {}): UserConfig {
   const pkg = getPackageJson();
   console.log(`Building dynamic module: ${pkg.name}@${pkg.version}`);
 

@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import path from "node:path";
 import vue from "@vitejs/plugin-vue";
 import { federation } from "@module-federation/vite";
@@ -9,9 +10,12 @@ import { viteBladePlugin } from "@vc-shell/config-generator";
 
 export default function dynamicModuleConfiguration(
   pkg: { name: string; version: string },
-  options: DynamicModuleOptions,
+  options: DynamicModuleOptions = {},
 ): UserConfig {
   const entry = options.entry ?? "./src/modules/index.ts";
+  // A remote only needs remoteEntry.js. Without an index.html Vite has no build entry,
+  // so build from the module entry unless the project ships its own page.
+  const hasHtmlEntry = fs.existsSync(path.resolve(options.root ?? process.cwd(), "index.html"));
   const base = process.env.APP_BASE_PATH || `/apps/${pkg.name}/`;
   const remoteName = options.remoteName ?? pkg.name;
 
@@ -49,6 +53,7 @@ export default function dynamicModuleConfiguration(
       target: "esnext",
       outDir,
       emptyOutDir,
+      ...(hasHtmlEntry ? {} : { rollupOptions: { input: entry } }),
     },
   };
 }

@@ -21,11 +21,15 @@
       @click="toggle"
     >
       <span class="vc-search-bar__view-btn-name">{{ current.name }}</span>
-      <span
+      <VcBadge
         v-if="modified"
         class="vc-search-bar__view-badge"
-        >{{ $t(`${K}MODIFIED`) }}</span
-      >
+        :content="$t(`${K}MODIFIED`)"
+        variant="warning"
+        size="s"
+        inline
+        label
+      />
       <VcIcon
         icon="lucide-chevron-down"
         size="s"
@@ -176,7 +180,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, ref, type ComponentPublicInstance } from "vue";
-import { VcButton, VcIcon } from "@ui/components/atoms";
+import { VcBadge, VcButton, VcIcon } from "@ui/components/atoms";
 import MenuHost from "./MenuHost.vue";
 import ViewNameField from "./ViewNameField.vue";
 import type { ViewsApi } from "../composables/useViews";
@@ -265,14 +269,6 @@ function act(run: () => void) {
   &__view-btn-name {
     @apply tw-truncate;
     max-width: 220px;
-  }
-  &__view-badge {
-    @apply tw-inline-flex tw-items-center tw-px-1.5 tw-font-semibold;
-    height: 18px;
-    border-radius: 4px;
-    font-size: 10.5px;
-    background: var(--warning-100);
-    color: var(--warning-800);
   }
   &__views-menu {
     @apply tw-flex tw-flex-col tw-gap-1;

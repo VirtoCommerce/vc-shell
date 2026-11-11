@@ -37,6 +37,8 @@
         class="vc-search-bar__filters-badge"
         :content="count"
         size="s"
+        :inline="mode !== 'narrow'"
+        solid
         aria-hidden="true"
       />
     </VcButton>
@@ -101,9 +103,10 @@ const showNames = computed(() => !!props.names && props.count > 0 && props.mode 
   &__filters-x {
     --button-default-padding-hor: 8px;
   }
-  // the solid count: in line after the funnel and the names, on the funnel's corner when narrow
-  &__filters-btn:not(.vc-search-bar__filters-btn--icon) .vc-search-bar__filters-badge .vc-badge__badge {
-    @apply tw-static;
+  // the count: an 18px primary-600 disc
+  &__filters-badge {
+    --badge-size-small: 18px;
+    --badge-background-color-primary: var(--primary-600);
   }
   // narrow: the count sits on the funnel's corner
   &__filters-btn--icon .vc-search-bar__filters-badge {

@@ -70,9 +70,8 @@
             :key="v.id"
             class="vc-search-bar__view-chip"
             :class="{ 'vc-search-bar__view-chip--current': v.id === views.current.value.id }"
-            variant="secondary"
+            :variant="v.id === views.current.value.id ? 'primary' : 'secondary'"
             :icon="v.id === views.current.value.id ? 'lucide-check' : undefined"
-            :selected="v.id === views.current.value.id"
             :aria-pressed="v.id === views.current.value.id"
             @click="views.select(v.id)"
           >
@@ -352,8 +351,15 @@ function clearAll() {
     @apply tw-flex tw-gap-2 tw-overflow-x-auto tw-px-3 tw-py-1;
     scrollbar-width: none;
   }
+  // pills; the current view is a solid primary-600 one
   &__view-chip {
+    --button-default-padding-hor: 14px;
+    --button-border-radius: 9999px;
     @apply tw-shrink-0;
+  }
+  &__view-chip--current {
+    --button-primary-background-color: var(--primary-600);
+    --button-primary-border-color: var(--primary-600);
   }
   &__sheet-foot {
     @apply tw-shrink-0 tw-p-3;

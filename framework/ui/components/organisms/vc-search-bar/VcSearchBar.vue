@@ -445,4 +445,8 @@ function onTypedChip(c: { fieldId: string; value: unknown; rest: string }) {
     @apply tw-flex tw-flex-1 tw-items-center tw-gap-2 tw-min-w-0 tw-truncate;
   }
 }
+// the prototype's 13px rows: sm sets 12px with !important, so this matches it on specificity
+.vc-button.vc-button-ghost.vc-button--sm.vc-search-bar__menu-row {
+  font-size: 13px #{!important};
+}
 </style>

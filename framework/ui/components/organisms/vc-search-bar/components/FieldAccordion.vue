@@ -31,18 +31,15 @@
             >{{ isSet(f.id) ? summary(f).text : $t(`${K}PANEL.ANY`) }}</span
           >
         </component>
-        <button
+        <VcButton
           v-if="isSet(f.id)"
-          type="button"
           class="vc-search-bar__acc-clear"
+          variant="ghost"
+          size="icon-sm"
+          icon="lucide-x"
           :aria-label="$t(`${K}REMOVE_FILTER`, { label: f.label })"
           @click="emit('clear-field', f.id)"
-        >
-          <VcIcon
-            icon="lucide-x"
-            :custom-size="14"
-          />
-        </button>
+        />
       </div>
       <div
         v-if="f.kind !== 'toggle' && isOpen(f.id)"
@@ -63,7 +60,7 @@
 <script setup lang="ts">
 import { ref, useId } from "vue";
 import { useI18n } from "vue-i18n";
-import { VcIcon } from "@ui/components/atoms";
+import { VcButton, VcIcon } from "@ui/components/atoms";
 import type { BarField } from "../lib/fields";
 import { chipLabel, isEmptyValue } from "../lib/values";
 import type { SearchBarState, SearchBarValue } from "../types";
@@ -142,14 +139,8 @@ const onValue = (v: SearchBarValue | undefined, id: string) =>
     color: var(--primary-700);
   }
   &__acc-clear {
-    @apply tw-inline-flex tw-items-center tw-justify-center tw-shrink-0 tw-rounded;
-    width: 24px;
-    height: 24px;
-    color: var(--neutrals-500);
-    &:hover {
-      background: var(--neutrals-100);
-      color: var(--neutrals-800);
-    }
+    --button-ghost-text-color: var(--neutrals-500);
+    @apply tw-shrink-0;
   }
   &__acc-body {
     @apply tw-overflow-y-auto tw-px-3 tw-py-2;

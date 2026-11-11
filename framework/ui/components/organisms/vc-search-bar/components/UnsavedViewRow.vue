@@ -19,31 +19,31 @@
         class="vc-search-bar__unsaved-icon"
       />
       <span class="vc-search-bar__unsaved-label">{{ $t(`${K}UNSAVED`) }}</span>
-      <button
-        type="button"
+      <VcButton
         class="vc-search-bar__unsaved-revert"
+        variant="ghost"
+        :size="touch ? 'default' : '2xs'"
+        icon="lucide-rotate-ccw"
+        :icon-size="touch ? 'm' : 's'"
         :aria-label="$t(`${K}REVERT`, { name: views.current.value.name })"
         :title="$t(`${K}REVERT`, { name: views.current.value.name })"
         @click="views.revert()"
       >
-        <VcIcon
-          icon="lucide-rotate-ccw"
-          :custom-size="touch ? 16 : 14"
-        />
-        <span v-if="touch">{{ $t(`${K}REVERT_SHORT`) }}</span>
-      </button>
-      <button
+        <template v-if="touch">{{ $t(`${K}REVERT_SHORT`) }}</template>
+      </VcButton>
+      <VcButton
         v-if="views.current.value.scope !== 'system'"
-        type="button"
-        class="vc-search-bar__view-text-btn"
+        class="vc-search-bar__unsaved-save"
+        variant="link"
+        :size="touch ? 'default' : '2xs'"
         @click="views.saveChanges()"
       >
         {{ $t(`${K}SAVE`) }}
-      </button>
+      </VcButton>
       <VcButton
         class="vc-search-bar__unsaved-save-as"
         variant="outline"
-        size="sm"
+        :size="touch ? 'default' : 'sm'"
         @click="naming = true"
       >
         {{ $t(`${K}SAVE_AS_VIEW`) }}
@@ -102,25 +102,11 @@ function cancel() {
     color: var(--neutrals-600);
   }
   &__unsaved-revert {
-    @apply tw-inline-flex tw-items-center tw-justify-center tw-gap-1 tw-rounded tw-shrink-0;
-    min-width: 28px;
-    width: auto;
-    height: 28px;
-    color: var(--neutrals-600);
-    &:hover {
-      background: var(--neutrals-100);
-    }
+    --button-ghost-text-color: var(--neutrals-600);
+    @apply tw-shrink-0;
   }
   &__unsaved--touch {
     min-height: 48px;
-    .vc-search-bar__unsaved-revert {
-      min-width: 40px;
-      padding-inline: 8px;
-      height: 40px;
-      font-size: 13px;
-    }
-    .vc-search-bar__view-text-btn,
-    .vc-search-bar__unsaved-save-as,
     .vc-button {
       min-height: 40px;
     }

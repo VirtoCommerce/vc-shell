@@ -16,29 +16,26 @@
           >{{ $t(`${K}PANEL.ACTIVE`, { count: active }) }}</span
         >
       </span>
-      <button
+      <VcButton
         ref="closeBtn"
-        type="button"
         class="vc-search-bar__panel-close"
+        variant="ghost"
+        size="2xs"
+        icon="lucide-x"
         :aria-label="$t('COMPONENTS.CONTROLS.CLOSE')"
         @click="emit('close')"
-      >
-        <VcIcon
-          icon="lucide-x"
-          :custom-size="16"
-        />
-      </button>
+      />
     </div>
     <template v-else>
       <div class="vc-search-bar__sheet-head">
-        <button
-          type="button"
+        <VcButton
           class="vc-search-bar__sheet-clear"
+          variant="ghost"
           :disabled="!active"
           @click="clearAll"
         >
           {{ $t(`${PH}CLEAR`) }}
-        </button>
+        </VcButton>
         <span class="vc-search-bar__sheet-title">
           {{ $t(`${K}FILTERS`) }}
           <span
@@ -47,14 +44,14 @@
             >{{ active }}</span
           >
         </span>
-        <button
+        <VcButton
           ref="closeBtn"
-          type="button"
           class="vc-search-bar__sheet-done"
+          variant="ghost"
           @click="emit('close')"
         >
           {{ $t(`${PH}DONE`) }}
-        </button>
+        </VcButton>
       </div>
       <div class="vc-search-bar__sheet-views">
         <div
@@ -68,22 +65,19 @@
           role="group"
           :aria-labelledby="viewsLabelId"
         >
-          <button
+          <VcButton
             v-for="v in views.all.value"
             :key="v.id"
-            type="button"
             class="vc-search-bar__view-chip"
             :class="{ 'vc-search-bar__view-chip--current': v.id === views.current.value.id }"
+            variant="secondary"
+            :icon="v.id === views.current.value.id ? 'lucide-check' : undefined"
+            :selected="v.id === views.current.value.id"
             :aria-pressed="v.id === views.current.value.id"
             @click="views.select(v.id)"
           >
-            <VcIcon
-              v-if="v.id === views.current.value.id"
-              icon="lucide-check"
-              :custom-size="14"
-            />
             {{ v.name }}<template v-if="v.id === views.current.value.id && views.modified.value">*</template>
-          </button>
+          </VcButton>
         </div>
         <div ref="unsaved">
           <UnsavedViewRow
@@ -173,8 +167,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, useId, watch } from "vue";
-import { VcButton, VcIcon } from "@ui/components/atoms";
+import { computed, nextTick, ref, useId, watch, type ComponentPublicInstance } from "vue";
+import { VcButton } from "@ui/components/atoms";
 import { VcSwitch } from "@ui/components/molecules";
 import type { BarField } from "../lib/fields";
 import { isEmptyValue } from "../lib/values";
@@ -221,9 +215,9 @@ const firstOpen =
 const toggleCount = (id: string) => props.counts?.[id]?.true;
 const setToggle = (id: string, on: unknown) => (on ? emit("set", id, true) : emit("clear-field", id));
 
-const closeBtn = ref<HTMLButtonElement>();
+const closeBtn = ref<ComponentPublicInstance>();
 const unsaved = ref<HTMLElement>();
-const focusClose = () => void nextTick(() => closeBtn.value?.focus());
+const focusClose = () => void nextTick(() => (closeBtn.value?.$el as HTMLElement | undefined)?.focus());
 
 // Save, Save as and revert remove the unsaved row, and the focus with it
 watch(
@@ -263,14 +257,7 @@ function clearAll() {
     }
   }
   &__panel-close {
-    @apply tw-inline-flex tw-items-center tw-justify-center tw-rounded-md;
-    width: 28px;
-    height: 28px;
-    color: var(--neutrals-500);
-    &:hover {
-      background: var(--neutrals-100);
-      color: var(--neutrals-800);
-    }
+    --button-ghost-text-color: var(--neutrals-500);
   }
   // the head, the unsaved row and the footer stay in view; the body takes what is left
   &__panel-body {
@@ -330,19 +317,14 @@ function clearAll() {
   }
   &__sheet-clear,
   &__sheet-done {
-    @apply tw-inline-flex tw-items-center tw-px-2 tw-rounded-md;
-    min-height: 40px;
-    font-size: 14px;
-    &:disabled {
-      color: var(--neutrals-400);
-    }
+    --button-default-padding-hor: 8px;
+    --button-default-height: 40px;
   }
   &__sheet-clear {
-    color: var(--neutrals-600);
+    --button-ghost-text-color: var(--neutrals-600);
   }
   &__sheet-done {
-    @apply tw-font-semibold;
-    color: var(--primary-600);
+    --button-ghost-text-color: var(--primary-700);
   }
   &__sheet-title {
     @apply tw-absolute tw-inline-flex tw-items-center tw-gap-1.5 tw-font-semibold tw-pointer-events-none;
@@ -371,16 +353,7 @@ function clearAll() {
     scrollbar-width: none;
   }
   &__view-chip {
-    @apply tw-inline-flex tw-items-center tw-gap-1 tw-shrink-0 tw-rounded-full tw-px-3.5 tw-font-medium;
-    height: 36px;
-    border: 1px solid var(--neutrals-300);
-    font-size: 13px;
-    color: var(--neutrals-800);
-    &--current {
-      border-color: var(--primary-600);
-      background: var(--primary-600);
-      color: var(--additional-50);
-    }
+    @apply tw-shrink-0;
   }
   &__sheet-foot {
     @apply tw-shrink-0 tw-p-3;

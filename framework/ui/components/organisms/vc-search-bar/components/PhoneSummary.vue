@@ -30,20 +30,22 @@
         aria-hidden="true"
         >·</span
       >
-      <button
-        type="button"
+      <VcButton
         class="vc-search-bar__summary-clear"
+        variant="link"
+        size="2xs"
         :disabled="disabled"
         @click="emit('clear')"
       >
         {{ $t(`${K}CLEAR_ALL`) }}
-      </button>
+      </VcButton>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
+import { VcButton } from "@ui/components/atoms";
 
 defineOptions({ name: "PhoneSummary" });
 
@@ -84,12 +86,9 @@ const hasCount = computed(() => props.resultCount !== undefined);
     @apply tw-font-medium;
     color: var(--neutrals-800);
   }
+  // a link in the line of text: no padding of its own
   &__summary-clear {
-    @apply tw-font-medium;
-    color: var(--primary-600);
-    &:hover:not(:disabled) {
-      text-decoration: underline;
-    }
+    --button-2xs-padding-hor: 0;
   }
 }
 </style>

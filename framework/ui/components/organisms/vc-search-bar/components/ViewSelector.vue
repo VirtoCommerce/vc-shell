@@ -1,10 +1,15 @@
 <template>
   <span class="vc-search-bar__view-selector">
-    <button
+    <VcButton
       ref="trigger"
-      type="button"
       class="vc-search-bar__view-btn"
       :class="{ 'vc-search-bar__view-btn--open': open }"
+      variant="ghost"
+      size="2xs"
+      icon="lucide-bookmark"
+      icon-class="vc-search-bar__view-btn-icon"
+      :selected="open"
+      :aria-pressed="undefined"
       :disabled="disabled"
       :aria-label="
         modified
@@ -15,11 +20,6 @@
       :aria-expanded="open"
       @click="toggle"
     >
-      <VcIcon
-        icon="lucide-bookmark"
-        size="s"
-        class="vc-search-bar__view-btn-icon"
-      />
       <span class="vc-search-bar__view-btn-name">{{ current.name }}</span>
       <span
         v-if="modified"
@@ -30,11 +30,11 @@
         icon="lucide-chevron-down"
         size="s"
       />
-    </button>
+    </VcButton>
     <MenuHost
       :open="open"
       :sheet="false"
-      :anchor="trigger"
+      :anchor="triggerEl"
       fit
       role="dialog"
       :aria-label="$t(`${K}SAVED_VIEWS`)"
@@ -67,67 +67,62 @@
               v-else
               class="vc-search-bar__view-line"
             >
-              <button
-                type="button"
-                class="vc-search-bar__view-item"
+              <VcButton
+                class="vc-search-bar__menu-row vc-search-bar__view-item"
+                variant="ghost"
+                size="sm"
+                icon="lucide-check"
+                icon-size="xs"
+                :icon-class="`vc-search-bar__view-check${v.id === current.id ? ' vc-search-bar__view-check--on' : ''}`"
                 :aria-current="v.id === current.id || undefined"
                 @click="act(() => views.select(v.id))"
               >
-                <VcIcon
-                  icon="lucide-check"
-                  size="xs"
-                  class="vc-search-bar__view-check"
-                  :class="{ 'vc-search-bar__view-check--on': v.id === current.id }"
-                />
                 <span class="vc-search-bar__view-item-name">{{ v.name }}</span>
                 <span
                   v-if="counts?.[v.id] !== undefined"
                   class="vc-search-bar__view-count"
                   >{{ counts[v.id] }}</span
                 >
-              </button>
-              <button
+              </VcButton>
+              <VcButton
                 v-if="v.scope === 'user'"
-                type="button"
                 class="vc-search-bar__view-more"
+                variant="ghost"
+                size="2xs"
+                icon="lucide-ellipsis"
+                icon-size="xs"
+                :selected="optionsFor === v.id"
+                :aria-pressed="undefined"
                 :data-view-id="v.id"
                 :aria-label="$t(`${K}OPTIONS`, { name: v.name })"
                 :aria-expanded="optionsFor === v.id"
                 @click="optionsFor = optionsFor === v.id ? null : v.id"
-              >
-                <VcIcon
-                  icon="lucide-ellipsis"
-                  size="xs"
-                />
-              </button>
+              />
             </div>
             <div
               v-if="optionsFor === v.id && renaming !== v.id"
               class="vc-search-bar__view-options"
             >
-              <button
-                type="button"
+              <VcButton
+                class="vc-search-bar__menu-row"
+                variant="ghost"
+                size="sm"
+                icon="lucide-pencil"
+                icon-class="vc-search-bar__row-icon"
                 @click="startRename(v.id)"
               >
-                <VcIcon
-                  icon="lucide-pencil"
-                  size="s"
-                  class="vc-search-bar__row-icon"
-                />
-                <span class="vc-search-bar__row-text">{{ $t(`${K}RENAME`) }}</span>
-              </button>
-              <button
-                type="button"
-                class="vc-search-bar__view-options-danger"
+                {{ $t(`${K}RENAME`) }}
+              </VcButton>
+              <VcButton
+                class="vc-search-bar__menu-row vc-search-bar__view-options-danger"
+                variant="ghost"
+                size="sm"
+                icon="lucide-trash-2"
+                icon-class="vc-search-bar__row-icon"
                 @click="act(() => views.remove(v.id))"
               >
-                <VcIcon
-                  icon="lucide-trash-2"
-                  size="s"
-                  class="vc-search-bar__row-icon"
-                />
-                <span class="vc-search-bar__row-text">{{ $t(`${K}DELETE`) }}</span>
-              </button>
+                {{ $t(`${K}DELETE`) }}
+              </VcButton>
             </div>
           </li>
         </ul>
@@ -135,50 +130,44 @@
           v-if="modified"
           class="vc-search-bar__views-modified"
         >
-          <button
+          <VcButton
             v-if="current.scope !== 'system'"
-            type="button"
-            class="vc-search-bar__views-action"
+            class="vc-search-bar__menu-row vc-search-bar__views-action"
+            variant="ghost"
+            size="sm"
+            icon="lucide-check"
+            icon-class="vc-search-bar__row-icon"
             @click="act(views.saveChanges)"
           >
-            <VcIcon
-              icon="lucide-check"
-              size="s"
-              class="vc-search-bar__row-icon"
-            />
-            <span class="vc-search-bar__row-text">{{ $t(`${K}SAVE_CHANGES`, { name: current.name }) }}</span>
-          </button>
+            {{ $t(`${K}SAVE_CHANGES`, { name: current.name }) }}
+          </VcButton>
           <ViewNameField
             v-if="naming"
             :label="$t(`${K}NAME_PLACEHOLDER`)"
             @save="(name) => act(() => views.saveAs(name))"
             @cancel="cancelNaming"
           />
-          <button
+          <VcButton
             v-else
-            type="button"
-            class="vc-search-bar__views-action vc-search-bar__views-save-as"
+            class="vc-search-bar__menu-row vc-search-bar__views-action vc-search-bar__views-save-as"
+            variant="ghost"
+            size="sm"
+            icon="lucide-bookmark"
+            icon-class="vc-search-bar__row-icon"
             @click="naming = true"
           >
-            <VcIcon
-              icon="lucide-bookmark"
-              size="s"
-              class="vc-search-bar__row-icon"
-            />
-            <span class="vc-search-bar__row-text">{{ $t(`${K}SAVE_AS_NEW`) }}</span>
-          </button>
-          <button
-            type="button"
-            class="vc-search-bar__views-action"
+            {{ $t(`${K}SAVE_AS_NEW`) }}
+          </VcButton>
+          <VcButton
+            class="vc-search-bar__menu-row vc-search-bar__views-action"
+            variant="ghost"
+            size="sm"
+            icon="lucide-rotate-ccw"
+            icon-class="vc-search-bar__row-icon"
             @click="act(views.revert)"
           >
-            <VcIcon
-              icon="lucide-rotate-ccw"
-              size="s"
-              class="vc-search-bar__row-icon"
-            />
-            <span class="vc-search-bar__row-text">{{ $t(`${K}REVERT`, { name: current.name }) }}</span>
-          </button>
+            {{ $t(`${K}REVERT`, { name: current.name }) }}
+          </VcButton>
         </div>
       </div>
     </MenuHost>
@@ -186,8 +175,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref } from "vue";
-import { VcIcon } from "@ui/components/atoms";
+import { computed, nextTick, ref, type ComponentPublicInstance } from "vue";
+import { VcButton, VcIcon } from "@ui/components/atoms";
 import MenuHost from "./MenuHost.vue";
 import ViewNameField from "./ViewNameField.vue";
 import type { ViewsApi } from "../composables/useViews";
@@ -203,7 +192,8 @@ const props = defineProps<{
 
 const K = "COMPONENTS.ORGANISMS.VC_SEARCH_BAR.VIEWS.";
 
-const trigger = ref<HTMLButtonElement>();
+const trigger = ref<ComponentPublicInstance>();
+const triggerEl = computed(() => trigger.value?.$el as HTMLButtonElement | undefined);
 const menu = ref<HTMLElement>();
 const open = ref(false);
 const naming = ref(false);
@@ -224,7 +214,7 @@ function toggle() {
 
 function close() {
   open.value = false;
-  void nextTick(() => trigger.value?.focus());
+  void nextTick(() => triggerEl.value?.focus());
 }
 
 /** The name field unmounts on cancel; focus goes back to the control that opened it */
@@ -262,18 +252,11 @@ function act(run: () => void) {
     @apply tw-inline-flex tw-min-w-0;
   }
   &__view-btn {
-    @apply tw-inline-flex tw-items-center tw-gap-1.5 tw-px-2 tw-font-medium tw-shrink-0;
-    height: 28px;
-    border-radius: 6px;
-    font-size: 13px;
-    color: var(--neutrals-800);
-    &:hover:not(:disabled),
-    &--open {
-      background: var(--neutrals-100);
-    }
-    &:disabled {
-      opacity: 0.55;
-      cursor: default;
+    --button-ghost-text-color: var(--neutrals-800);
+    @apply tw-shrink-0;
+
+    .vc-button__title {
+      @apply tw-inline-flex tw-items-center tw-gap-1.5;
     }
   }
   &__view-btn-icon {
@@ -305,17 +288,13 @@ function act(run: () => void) {
     @apply tw-flex tw-flex-col tw-min-h-0 tw-overflow-y-auto;
   }
   &__view-line {
-    @apply tw-flex tw-items-center;
+    @apply tw-flex tw-items-center tw-gap-0.5;
   }
   &__view-item {
-    @apply tw-flex tw-flex-1 tw-items-center tw-gap-2 tw-px-2 tw-rounded tw-text-start tw-min-w-0;
-    height: 32px;
-    font-size: 13px;
-    &:hover {
-      background: var(--neutrals-100);
-    }
+    @apply tw-flex-1;
   }
   &__view-check {
+    @apply tw-shrink-0;
     color: var(--primary-600);
     visibility: hidden;
     &--on {
@@ -326,32 +305,17 @@ function act(run: () => void) {
     @apply tw-flex-1 tw-truncate;
   }
   &__view-count {
-    font-size: 12px;
     color: var(--neutrals-500);
   }
   &__view-more {
-    @apply tw-inline-flex tw-items-center tw-justify-center tw-rounded tw-shrink-0;
-    width: 28px;
-    height: 28px;
-    color: var(--neutrals-500);
-    &:hover,
-    &[aria-expanded="true"] {
-      background: var(--neutrals-100);
-    }
+    --button-ghost-text-color: var(--neutrals-500);
+    @apply tw-shrink-0;
   }
   &__view-options {
     @apply tw-flex tw-flex-col tw-ms-6 tw-mb-1;
-    button {
-      @apply tw-flex tw-items-center tw-gap-2 tw-text-start tw-px-2 tw-rounded tw-min-w-0;
-      height: 32px;
-      font-size: 13px;
-      &:hover {
-        background: var(--neutrals-100);
-      }
-    }
   }
   &__view-options-danger {
-    color: var(--danger-600, var(--danger-500));
+    --button-ghost-text-color: var(--danger-600, var(--danger-500));
     .vc-search-bar__row-icon {
       color: inherit;
     }
@@ -360,21 +324,10 @@ function act(run: () => void) {
     @apply tw-shrink-0;
     color: var(--neutrals-500);
   }
-  &__row-text {
-    @apply tw-truncate;
-  }
   &__views-modified {
     @apply tw-flex tw-flex-col tw-gap-0.5 tw-p-1 tw-mt-1;
     border: 1px solid var(--neutrals-200);
     border-radius: 6px;
-  }
-  &__views-action {
-    @apply tw-flex tw-items-center tw-gap-2 tw-text-start tw-px-2 tw-rounded tw-min-w-0;
-    height: 32px;
-    font-size: 13px;
-    &:hover {
-      background: var(--neutrals-100);
-    }
   }
 }
 </style>

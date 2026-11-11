@@ -43,11 +43,14 @@
             @open="openEditor(f.id, $event)"
             @remove="removeFilter(f.id)"
           />
-          <button
+          <VcButton
             v-if="hiddenChips.length"
-            type="button"
             class="vc-search-bar__more"
             :class="{ 'vc-search-bar__more--open': list === 'overflow' }"
+            variant="tonal"
+            size="2xs"
+            :selected="list === 'overflow'"
+            :aria-pressed="undefined"
             aria-haspopup="dialog"
             :aria-expanded="list === 'overflow'"
             :aria-label="$t('COMPONENTS.ORGANISMS.VC_SEARCH_BAR.MORE_FILTERS', { count: hiddenChips.length })"
@@ -55,7 +58,7 @@
             @click="openList('overflow', $event.currentTarget as HTMLElement)"
           >
             +{{ hiddenChips.length }}
-          </button>
+          </VcButton>
         </template>
         <FiltersButton
           v-if="fields.length"
@@ -153,10 +156,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, nextTick, ref, watch } from "vue";
+import { computed, inject, nextTick, provide, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
+import { BladeLoadingKey } from "@framework/injection-keys";
+import { VcButton } from "@ui/components/atoms";
 import { TableQueryStateKey } from "@core/blade-navigation/table-query-state";
 import type { SearchBarChange, SearchBarField, SearchBarState, SearchBarValue, SearchBarView } from "./types";
 import { useSearchBarState } from "./composables/useSearchBarState";
@@ -222,6 +227,8 @@ const emit = defineEmits<{
 
 const { t } = useI18n({ useScope: "global" });
 const { isMobile } = useResponsive();
+// The bar is chrome, not content: its buttons stay while the blade shows its first-load skeleton
+provide(BladeLoadingKey, ref(false));
 const descriptor = inject(BladeDescriptorKey, undefined);
 const queryState = inject(TableQueryStateKey, undefined);
 
@@ -406,19 +413,8 @@ function onTypedChip(c: { fieldId: string; value: unknown; rest: string }) {
     background: var(--neutrals-300);
   }
   &__more {
-    @apply tw-inline-flex tw-items-center tw-justify-center tw-shrink-0 tw-font-semibold;
-    width: 40px;
-    height: 28px;
-    border: 1px solid var(--primary-200);
-    border-radius: 6px;
-    background: var(--primary-50);
-    color: var(--primary-700);
-    font-size: 12.5px;
-
-    &--open,
-    &:hover:not(:disabled) {
-      background: var(--primary-100);
-    }
+    @apply tw-shrink-0;
+    min-width: 40px;
   }
   // zero-sized and clipped, so the chips inside keep their own width without widening any scroll area
   &__measure {
@@ -431,6 +427,22 @@ function onTypedChip(c: { fieldId: string; value: unknown; rest: string }) {
   }
   &__editor {
     @apply tw-flex tw-flex-col tw-gap-2 tw-p-3;
+  }
+}
+
+// The bar's buttons sit edge to edge (a chip and its ×, stacked menu rows): VcButton's 44px hit area would
+// reach into the neighbour and take its clicks. Every button here is 24px or more on its own (WCAG 2.5.8)
+:is(.vc-search-bar, .vc-search-bar__fit, .vc-search-bar__acc, .vc-search-bar__editor) .vc-button::after {
+  content: none;
+}
+
+// a menu row: a ghost button laid out as a full-width, start-aligned line (menus are teleported: no bar ancestor)
+.vc-button.vc-button-ghost.vc-search-bar__menu-row {
+  --button-sm-padding-hor: 8px;
+  @apply tw-w-full tw-min-w-0 tw-justify-start tw-text-start tw-font-normal;
+
+  .vc-button__title {
+    @apply tw-flex tw-flex-1 tw-items-center tw-gap-2 tw-min-w-0 tw-truncate;
   }
 }
 </style>

@@ -1,23 +1,25 @@
 <template>
   <div class="vc-search-bar-editor">
-    <div
+    <VcButtonGroup
       v-if="canNegate"
       class="vc-search-bar-editor__segments"
-      role="group"
+      size="2xs"
+      attached
       :aria-label="field.label"
     >
-      <button
+      <VcButton
         v-for="m in modes"
         :key="m.id"
-        type="button"
         class="vc-search-bar-editor__segment"
         :class="{ 'vc-search-bar-editor__segment--on': mode === m.id }"
+        variant="secondary"
+        :selected="mode === m.id"
         :aria-pressed="mode === m.id"
         @click="setMode(m.id)"
       >
         {{ $t(m.label) }}
-      </button>
-    </div>
+      </VcButton>
+    </VcButtonGroup>
 
     <VcInput
       v-if="field.options.length > FIND_AFTER"
@@ -56,27 +58,30 @@
             class="vc-search-bar-editor__count"
             >{{ countOf(o) }}</span
           >
-          <button
-            type="button"
+          <VcButton
             class="vc-search-bar-editor__only"
+            variant="link"
+            size="2xs"
             :aria-label="$t(`${E}ONLY_LABEL`, { label: o.label })"
             @click="only(o.value)"
           >
             {{ $t(`${E}ONLY`) }}
-          </button>
+          </VcButton>
         </div>
       </template>
 
       <template v-else>
-        <button
+        <VcButton
           v-for="o in shown"
           :key="o.value"
-          type="button"
-          class="vc-search-bar-editor__row vc-search-bar-editor__option"
+          class="vc-search-bar__menu-row vc-search-bar-editor__row vc-search-bar-editor__option"
           :class="{
             'vc-search-bar-editor__option--on': value === o.value,
             'vc-search-bar-editor__row--dim': isDim(o),
           }"
+          variant="ghost"
+          size="sm"
+          :selected="value === o.value"
           :aria-pressed="value === o.value"
           @click="emit('update:value', value === o.value ? undefined : o.value)"
         >
@@ -86,7 +91,7 @@
             class="vc-search-bar-editor__count"
             >{{ countOf(o) }}</span
           >
-        </button>
+        </VcButton>
       </template>
 
       <p
@@ -101,7 +106,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { VcIcon } from "@ui/components/atoms";
+import { VcButton, VcButtonGroup, VcIcon } from "@ui/components/atoms";
 import { VcCheckbox, VcInput } from "@ui/components/molecules";
 import type { BarField } from "../../lib/fields";
 import type { FilterOption, SearchBarValue } from "../../types";
@@ -183,23 +188,6 @@ function setMode(m: Mode) {
   @apply tw-flex tw-flex-col tw-gap-2;
   font-size: 13px;
 
-  &__segments {
-    @apply tw-flex tw-gap-1;
-  }
-  &__segment {
-    @apply tw-inline-flex tw-items-center tw-justify-center tw-rounded-md tw-px-2;
-    min-height: 28px;
-    border: 1px solid var(--neutrals-300);
-    color: var(--neutrals-700);
-    &:hover {
-      background: var(--neutrals-100);
-    }
-  }
-  &__segment--on {
-    border-color: var(--primary-300);
-    background: var(--primary-50);
-    color: var(--primary-700);
-  }
   &__list {
     @apply tw-flex tw-flex-col;
   }
@@ -212,6 +200,7 @@ function setMode(m: Mode) {
     }
   }
   &__row--dim {
+    --button-ghost-text-color: var(--neutrals-400);
     color: var(--neutrals-400);
   }
   &__check {
@@ -220,9 +209,12 @@ function setMode(m: Mode) {
   &__label {
     @apply tw-flex-1 tw-truncate;
   }
+  &__option {
+    --button-ghost-text-color: var(--neutrals-800);
+  }
   &__option--on {
-    color: var(--primary-700);
-    @apply tw-font-medium;
+    --button-ghost-text-color: var(--primary-700);
+    @apply tw-font-medium #{!important};
   }
   &__count {
     @apply tw-ms-auto tw-shrink-0 tw-tabular-nums;
@@ -230,18 +222,13 @@ function setMode(m: Mode) {
     color: var(--neutrals-500);
   }
   // "Only" covers the count while the row is hovered or holds focus; it stays focusable
-  &__only {
+  .vc-button.vc-search-bar-editor__only {
     @apply tw-absolute tw-opacity-0;
     inset-inline-end: 8px;
-    font-size: 12px;
-    color: var(--primary-600);
-    &:hover {
-      text-decoration: underline;
-    }
   }
   &__row:hover,
   &__row:focus-within {
-    .vc-search-bar-editor__only {
+    .vc-button.vc-search-bar-editor__only {
       @apply tw-opacity-100;
     }
     .vc-search-bar-editor__count {

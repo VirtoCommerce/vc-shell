@@ -32,8 +32,9 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{ close: [] }>();
 
-// The longest leave transition: the sheet's slide-down
-const LEAVE_MS = 400;
+// The host stays mounted for its leave transition, with some slack: VcPopover fades out in 120ms,
+// VcSidebar's sheet slides down in 320ms
+const LEAVE_MS = { popover: 200, sheet: 400 };
 
 // The popover and the sheet animate only when their flag flips on a mounted instance:
 // the host mounts closed, then opens, and stays until its leave has played
@@ -46,7 +47,8 @@ watch(
     clearTimeout(unmountTimer);
     if (!open) {
       shown.value = false;
-      if (mounted.value) unmountTimer = setTimeout(() => (mounted.value = false), LEAVE_MS);
+      if (mounted.value)
+        unmountTimer = setTimeout(() => (mounted.value = false), props.sheet ? LEAVE_MS.sheet : LEAVE_MS.popover);
       return;
     }
     mounted.value = true;

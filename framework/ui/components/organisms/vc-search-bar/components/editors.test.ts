@@ -46,7 +46,9 @@ const fields: SearchBarField[] = [
 
 describe("DateRangeEditor", () => {
   const field = normalizeField(fields[1]);
-  const radios = (w: ReturnType<typeof mount>) => w.findAll("[role='radio']");
+  // one row per choice: the radio with its label, and the count
+  const rows = (w: ReturnType<typeof mount>) => w.findAll(".vc-search-bar-editor__radio");
+  const radio = (w: ReturnType<typeof mount>, i: number) => rows(w)[i].get<HTMLInputElement>("input[type='radio']");
 
   it("writing the same range twice emits once", async () => {
     const w = mount(DateRangeEditor, { props: { field, value: undefined }, global });
@@ -61,24 +63,37 @@ describe("DateRangeEditor", () => {
 
   it("lists Any time first, then the relative ranges; a range writes a relative value", async () => {
     const w = mount(DateRangeEditor, { props: { field, value: undefined }, global });
-    expect(radios(w).map((r) => r.text())).toEqual([`${D}ANY`, `${D}TODAY`, `${D}LAST_7`, `${D}LAST_30`]);
-    expect(radios(w)[0].attributes("aria-checked")).toBe("true");
-    await radios(w)[2].trigger("click");
+    expect(w.get("[role='radiogroup']").attributes("aria-label")).toBe("Created");
+    expect(rows(w).map((r) => r.text())).toEqual([`${D}ANY`, `${D}TODAY`, `${D}LAST_7`, `${D}LAST_30`]);
+    expect(radio(w, 0).element.checked).toBe(true);
+    await radio(w, 2).setValue(true);
     expect(w.emitted("update:value")).toEqual([[{ relative: "7d" }]]);
   });
 
   it("Any time clears the value", async () => {
     const w = mount(DateRangeEditor, { props: { field, value: { relative: "today" } }, global });
-    expect(radios(w)[1].attributes("aria-checked")).toBe("true");
-    expect(radios(w)[0].attributes("aria-checked")).toBe("false");
-    await radios(w)[0].trigger("click");
+    expect(radio(w, 1).element.checked).toBe(true);
+    expect(radio(w, 0).element.checked).toBe(false);
+    await radio(w, 0).setValue(true);
     expect(w.emitted("update:value")).toEqual([[undefined]]);
+  });
+
+  it("a custom range checks none of the rows", () => {
+    const w = mount(DateRangeEditor, { props: { field, value: { start: "2026-01-05", end: "2026-01-09" } }, global });
+    expect(rows(w).map((_, i) => radio(w, i).element.checked)).toEqual([false, false, false, false]);
+  });
+
+  it("the radios share one group name, so arrow keys move between them", () => {
+    const w = mount(DateRangeEditor, { props: { field, value: undefined }, global });
+    const names = new Set(rows(w).map((_, i) => radio(w, i).attributes("name")));
+    expect(names.size).toBe(1);
+    expect([...names][0]).toBeTruthy();
   });
 
   it("shows a count per relative range when counts are given", () => {
     const w = mount(DateRangeEditor, { props: { field, value: undefined, counts: { "7d": 12 } }, global });
-    expect(radios(w)[2].find(".vc-search-bar-editor__count").text()).toBe("12");
-    expect(radios(w)[1].find(".vc-search-bar-editor__count").exists()).toBe(false);
+    expect(rows(w)[2].find(".vc-search-bar-editor__count").text()).toBe("12");
+    expect(rows(w)[1].find(".vc-search-bar-editor__count").exists()).toBe(false);
   });
 });
 

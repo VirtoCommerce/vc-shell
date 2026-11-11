@@ -33,19 +33,17 @@
       aria-hidden="true"
       >/</kbd
     >
-    <button
+    <VcButton
       v-if="modelValue"
-      type="button"
       class="vc-search-bar__search-clear"
+      variant="ghost"
+      size="icon-sm"
+      icon="lucide-x"
+      icon-size="xs"
       :aria-label="$t('COMPONENTS.ORGANISMS.VC_SEARCH_BAR.CLEAR_SEARCH')"
       :disabled="disabled"
       @click="clearText"
-    >
-      <VcIcon
-        icon="lucide-x"
-        size="xs"
-      />
-    </button>
+    />
     <div
       v-if="open"
       class="vc-search-bar__suggest"
@@ -100,7 +98,7 @@
 <script setup lang="ts">
 import { computed, ref, useId, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { VcIcon } from "@ui/components/atoms";
+import { VcButton, VcIcon } from "@ui/components/atoms";
 import type { BarField } from "../lib/fields";
 import { chipFromTyped, getSuggestions, type Suggestion } from "../composables/useSearchSyntax";
 
@@ -250,14 +248,8 @@ defineExpose({ focus: () => input.value?.focus() });
     padding: 0;
   }
   &__search-clear {
-    @apply tw-inline-flex tw-items-center tw-justify-center tw-shrink-0 tw-rounded;
-    width: 24px;
-    height: 24px;
-    color: var(--neutrals-500);
-
-    &:hover {
-      background: var(--neutrals-100);
-    }
+    --button-ghost-text-color: var(--neutrals-500);
+    @apply tw-shrink-0;
   }
   &__suggest {
     @apply tw-absolute tw-rounded-lg tw-py-1;
@@ -301,5 +293,11 @@ defineExpose({ focus: () => input.value?.focus() });
     font-size: 11.5px;
     color: var(--neutrals-500);
   }
+}
+
+// dark theme: --neutrals-100 is the input's own surface there, so the key cap takes the next step
+:root[data-theme="dark"] .vc-search-bar__search-hint,
+:root[data-theme="dark"] .vc-search-bar__suggest-key {
+  background: var(--neutrals-200);
 }
 </style>

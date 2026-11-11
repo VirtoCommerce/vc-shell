@@ -1,32 +1,29 @@
 <template>
   <div class="vc-search-bar-editor">
-    <div
+    <VcRadioGroup
       class="vc-search-bar-editor__list"
-      role="radiogroup"
       :aria-label="field.label"
     >
-      <button
+      <div
         v-for="c in choices"
         :key="c.id"
-        type="button"
-        role="radio"
         class="vc-search-bar-editor__row vc-search-bar-editor__radio"
         :class="{ 'vc-search-bar-editor__radio--on': c.on }"
-        :aria-checked="c.on"
-        @click="!c.on && emit('update:value', c.value)"
       >
-        <span
-          class="vc-search-bar-editor__dot"
-          aria-hidden="true"
+        <VcRadioButton
+          class="vc-search-bar-editor__check"
+          :model-value="checkedId"
+          :value="c.id"
+          :label="$t(`${D}${c.key}`)"
+          @update:model-value="pick"
         />
-        <span class="vc-search-bar-editor__label">{{ $t(`${D}${c.key}`) }}</span>
         <span
           v-if="c.count !== undefined"
           class="vc-search-bar-editor__count"
           >{{ c.count }}</span
         >
-      </button>
-    </div>
+      </div>
+    </VcRadioGroup>
     <VcDatePicker
       :model-value="pickerValue"
       size="small"
@@ -40,7 +37,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { VcDatePicker } from "@ui/components/molecules";
+import { VcDatePicker, VcRadioButton, VcRadioGroup } from "@ui/components/molecules";
 import type { BarField } from "../../lib/fields";
 import { isEmptyValue, pickerToRange, RELATIVE_DATES, toDate } from "../../lib/values";
 import type { RelativeDate, SearchBarValue } from "../../types";
@@ -73,6 +70,13 @@ const choices = computed(() => [
   })),
 ]);
 
+const checkedId = computed(() => choices.value.find((c) => c.on)?.id ?? "");
+
+function pick(id: string) {
+  const c = choices.value.find((x) => x.id === id);
+  if (c && !c.on) emit("update:value", c.value);
+}
+
 const pickerValue = computed(() => {
   const c = current.value;
   if (!c || c.relative || (!c.start && !c.end)) return null;
@@ -91,18 +95,13 @@ function setRange(v: unknown) {
 
 <style lang="scss">
 .vc-search-bar-editor {
-  &__dot {
-    @apply tw-shrink-0 tw-rounded-full;
-    width: 14px;
-    height: 14px;
-    border: 1px solid var(--neutrals-400);
-    background: var(--additional-50);
+  &__radio {
+    .vc-radio-button__label {
+      @apply tw-flex-1 tw-min-w-0;
+    }
   }
   &__radio--on {
     color: var(--primary-700);
-    .vc-search-bar-editor__dot {
-      border: 4px solid var(--primary-600);
-    }
   }
 }
 </style>

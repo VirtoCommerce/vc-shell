@@ -26,17 +26,19 @@
       role="group"
       :aria-label="field.label"
     >
-      <button
+      <VcButton
         v-for="p in presets"
         :key="p.label"
-        type="button"
         class="vc-search-bar-editor__preset"
         :class="{ 'vc-search-bar-editor__preset--on': same(p.value, current) }"
+        variant="secondary"
+        size="2xs"
+        :selected="same(p.value, current)"
         :aria-pressed="same(p.value, current)"
         @click="pick(p.value)"
       >
         {{ p.label }}
-      </button>
+      </VcButton>
     </div>
     <div class="vc-search-bar-editor__foot">
       <span class="vc-search-bar-editor__note">{{ $t(presets.length ? `${N}NOTE_PRESETS` : `${N}NOTE`) }}</span>
@@ -123,22 +125,6 @@ function pick(v: NumberValue) {
   }
   &__presets {
     @apply tw-flex tw-flex-wrap tw-gap-1;
-  }
-  &__preset {
-    @apply tw-inline-flex tw-items-center tw-rounded-full tw-px-2.5;
-    height: 24px;
-    font-size: 12px;
-    border: 1px solid var(--neutrals-300);
-    background: var(--additional-50);
-    color: var(--neutrals-700);
-    &:hover {
-      background: var(--neutrals-100);
-    }
-  }
-  &__preset--on {
-    border-color: var(--primary-300);
-    background: var(--primary-50);
-    color: var(--primary-700);
   }
   &__foot {
     @apply tw-flex tw-items-center tw-justify-between tw-gap-2;

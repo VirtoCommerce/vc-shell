@@ -11,14 +11,15 @@
       :placeholder="$t('COMPONENTS.ORGANISMS.VC_SEARCH_BAR.VIEWS.NAME_PLACEHOLDER')"
       :aria-label="label"
     />
-    <button
+    <VcButton
       v-if="cancelable"
-      type="button"
-      class="vc-search-bar__view-text-btn vc-search-bar__view-text-btn--muted"
+      class="vc-search-bar__view-cancel"
+      variant="ghost"
+      size="sm"
       @click="emit('cancel')"
     >
       {{ $t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.VIEWS.CANCEL") }}
-    </button>
+    </VcButton>
     <VcButton
       size="sm"
       :disabled="!draft.trim()"
@@ -74,20 +75,8 @@ function commit() {
       @apply tw-flex-1 tw-min-w-0;
     }
   }
-  &__view-text-btn {
-    @apply tw-inline-flex tw-items-center tw-shrink-0 tw-rounded tw-px-2 tw-font-medium;
-    height: 28px;
-    font-size: 12.5px;
-    color: var(--primary-700);
-    &:hover:not(:disabled) {
-      background: var(--primary-50);
-    }
-    &--muted {
-      color: var(--neutrals-600);
-      &:hover:not(:disabled) {
-        background: var(--neutrals-100);
-      }
-    }
+  &__view-cancel {
+    --button-ghost-text-color: var(--neutrals-600);
   }
 }
 </style>

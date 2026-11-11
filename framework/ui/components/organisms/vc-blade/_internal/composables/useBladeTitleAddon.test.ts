@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 import { h } from "vue";
-import { createBladeViewSelectorRegistry } from "./useBladeViewSelector";
+import { createBladeTitleAddonRegistry } from "./useBladeTitleAddon";
 
-describe("createBladeViewSelectorRegistry", () => {
+describe("createBladeTitleAddonRegistry", () => {
   it("unregister removes it", () => {
-    const { registry, render } = createBladeViewSelectorRegistry();
+    const { registry, render } = createBladeTitleAddonRegistry();
     const fn = () => h("div");
     const off = registry.register(fn);
     expect(render.value).toBe(fn);
@@ -14,7 +14,7 @@ describe("createBladeViewSelectorRegistry", () => {
 
   it("a second registration is ignored with a warning", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
-    const { registry, render } = createBladeViewSelectorRegistry();
+    const { registry, render } = createBladeTitleAddonRegistry();
     const first = () => h("div");
     const second = () => h("span");
     registry.register(first);

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { mount } from "@vue/test-utils";
 import { computed, defineComponent, h, nextTick, ref, type VNode } from "vue";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
-import { BladeViewSelectorKey, IsMobileKey } from "@framework/injection-keys";
+import { BladeTitleAddonKey, IsMobileKey } from "@framework/injection-keys";
 import { registerExternalSearchFilters, unregisterExternalSearchFilters } from "@core/services/search-filters-service";
 import VcSearchBar from "./VcSearchBar.vue";
 import type { SearchBarChange, SearchBarField } from "./types";
@@ -70,7 +70,7 @@ describe("VcSearchBar views and URL", () => {
       render = r;
       return unregister;
     });
-    wrapper = mountBar({}, { [BladeViewSelectorKey as symbol]: { register } });
+    wrapper = mountBar({}, { [BladeTitleAddonKey as symbol]: { register } });
     expect(register).toHaveBeenCalledTimes(1);
     expect(render?.().type).toMatchObject({ name: "ViewSelector" });
     expect(wrapper.find(".vc-search-bar__view-selector").exists()).toBe(false);
@@ -78,7 +78,7 @@ describe("VcSearchBar views and URL", () => {
     expect(unregister).toHaveBeenCalledTimes(1);
 
     // another bar holds the header
-    wrapper = mountBar({}, { [BladeViewSelectorKey as symbol]: { register: () => null } });
+    wrapper = mountBar({}, { [BladeTitleAddonKey as symbol]: { register: () => null } });
     expect(wrapper.find(".vc-search-bar__row .vc-search-bar__view-selector").exists()).toBe(true);
     wrapper.unmount();
 
@@ -88,7 +88,7 @@ describe("VcSearchBar views and URL", () => {
 
   it("a phone neither registers nor shows a selector", () => {
     const register = vi.fn(() => vi.fn());
-    wrapper = mountBar({}, { [BladeViewSelectorKey as symbol]: { register }, [IsMobileKey as symbol]: ref(true) });
+    wrapper = mountBar({}, { [BladeTitleAddonKey as symbol]: { register }, [IsMobileKey as symbol]: ref(true) });
     expect(register).not.toHaveBeenCalled();
     expect(wrapper.find(".vc-search-bar__view-selector").exists()).toBe(false);
   });

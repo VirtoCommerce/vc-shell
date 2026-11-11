@@ -101,9 +101,9 @@ export const BladeFormKey: InjectionKey<BladeFormInjection> = Symbol("BladeForm"
 // Blade loading state (skeleton mode for child components)
 export const BladeLoadingKey: InjectionKey<Ref<boolean>> = Symbol("BladeLoading");
 
-// Blade header view selector (a search bar registers its saved-view selector to show next to the title)
-export interface BladeViewSelectorRegistry {
+// Blade title addon (one component registered to render next to the blade title)
+export interface BladeTitleAddonRegistry {
   /** Returns an unregister function, or null when rejected (the first registration wins). */
   register(render: () => VNode): (() => void) | null;
 }
-export const BladeViewSelectorKey: InjectionKey<BladeViewSelectorRegistry> = Symbol("BladeViewSelector");
+export const BladeTitleAddonKey: InjectionKey<BladeTitleAddonRegistry> = Symbol("BladeTitleAddon");

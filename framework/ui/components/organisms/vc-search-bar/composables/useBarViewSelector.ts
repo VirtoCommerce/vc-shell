@@ -1,6 +1,6 @@
 import { h, inject, onScopeDispose, ref, watch, type Ref } from "vue";
 import { useEventListener } from "@vueuse/core";
-import { BladeViewSelectorKey } from "@framework/injection-keys";
+import { BladeTitleAddonKey } from "@framework/injection-keys";
 import { BladeStackKey } from "@core/blade-navigation/types";
 import { isTextInputFocused } from "@core/composables/useKeyboardShortcuts";
 import ViewSelector from "../components/ViewSelector.vue";
@@ -14,9 +14,9 @@ export interface UseBarViewSelectorOptions {
   disabled: () => boolean;
 }
 
-/** Puts the view selector into the enclosing blade's header; `inHeader` is false without a blade or when another bar holds it */
+/** Puts the view selector into the enclosing blade's title addon slot; `inHeader` is false without a blade or when another bar holds it */
 export function useBarViewSelector(o: UseBarViewSelectorOptions): { inHeader: Ref<boolean> } {
-  const registry = inject(BladeViewSelectorKey, null);
+  const registry = inject(BladeTitleAddonKey, null);
   const inHeader = ref(false);
   let unregister: (() => void) | null = null;
 

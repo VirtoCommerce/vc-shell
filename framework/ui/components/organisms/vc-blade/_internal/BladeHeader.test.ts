@@ -70,22 +70,22 @@ function factory(
   });
 }
 
-describe("BladeHeader view selector", () => {
-  const selector = () => h("div", { class: "test-view-selector" });
+describe("BladeHeader title addon", () => {
+  const addon = () => h("div", { class: "test-title-addon" });
 
-  it("renders a registered view selector next to the title", () => {
-    const wrapper = factory({ title: "Orders", viewSelector: selector });
+  it("renders a registered addon next to the title", () => {
+    const wrapper = factory({ title: "Orders", titleAddon: addon });
     const row = wrapper.find(".vc-blade-header__title-row");
     expect(row.find(".vc-blade-header__title").exists()).toBe(true);
-    expect(row.find(".test-view-selector").exists()).toBe(true);
+    expect(row.find(".test-title-addon").exists()).toBe(true);
   });
 
-  it("renders nothing without a registered selector", () => {
-    const wrapper = factory({ title: "Orders", viewSelector: null });
-    expect(wrapper.find(".test-view-selector").exists()).toBe(false);
+  it("renders nothing without a registered addon", () => {
+    const wrapper = factory({ title: "Orders", titleAddon: null });
+    expect(wrapper.find(".test-title-addon").exists()).toBe(false);
   });
 
-  it("keeps the released title markup without a registered selector", () => {
+  it("keeps the released title markup without a registered addon", () => {
     const wrapper = factory({ title: "Orders", subtitle: "All orders" });
     const content = wrapper.find(".vc-blade-header__content");
     expect(wrapper.find(".vc-blade-header__title-row").exists()).toBe(false);
@@ -93,29 +93,16 @@ describe("BladeHeader view selector", () => {
     expect(children).toEqual(["vc-blade-header__title", "vc-blade-header__subtitle"]);
   });
 
-  it("keeps the released title markup on mobile even with a selector", () => {
+  it("renders a registered addon on mobile too (the addon decides where it shows)", () => {
     const wrapper = mount(BladeHeader, {
-      props: { title: "Orders", viewSelector: selector },
+      props: { title: "Orders", titleAddon: addon },
       global: {
         provide: { [IsMobileKey as symbol]: ref(true), [IsDesktopKey as symbol]: ref(false) },
         stubs: { teleport: true },
         mocks: { $t: (key: string) => key },
       },
     });
-    const title = wrapper.find(".vc-blade-header__title");
-    expect(title.element.parentElement?.classList.contains("vc-blade-header__content")).toBe(true);
-  });
-
-  it("nothing is rendered on mobile", () => {
-    const wrapper = mount(BladeHeader, {
-      props: { title: "Orders", viewSelector: selector },
-      global: {
-        provide: { [IsMobileKey as symbol]: ref(true), [IsDesktopKey as symbol]: ref(false) },
-        stubs: { teleport: true },
-        mocks: { $t: (key: string) => key },
-      },
-    });
-    expect(wrapper.find(".test-view-selector").exists()).toBe(false);
+    expect(wrapper.find(".vc-blade-header__title-row .test-title-addon").exists()).toBe(true);
   });
 });
 

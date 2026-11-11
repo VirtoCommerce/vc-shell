@@ -78,7 +78,7 @@
           class="vc-blade-header__content"
         >
           <div
-            v-if="viewSelector && !isMobile"
+            v-if="titleAddon"
             class="vc-blade-header__title-row"
           >
             <div
@@ -90,7 +90,7 @@
             >
               {{ title }}
             </div>
-            <component :is="viewSelector" />
+            <component :is="titleAddon" />
           </div>
           <div
             v-else
@@ -149,8 +149,8 @@ export interface Props {
   titleId?: string;
   /** When true, shows skeleton placeholders for icon/title/subtitle while keeping controls usable */
   loading?: boolean;
-  /** Render function registered by a view selector (e.g. a search bar) to show next to the title */
-  viewSelector?: (() => VNode) | null;
+  /** Render function registered through BladeTitleAddonKey, shown next to the title */
+  titleAddon?: (() => VNode) | null;
 }
 const props = defineProps<Props>();
 

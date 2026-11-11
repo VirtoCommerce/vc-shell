@@ -285,7 +285,7 @@
           "ACTIVE": "{count} aktiv",
           "TOGGLES": "Schalter",
           "ANY": "Alle",
-          "RESULTS": "Ergebnisse · sofort angewendet",
+          "RESULTS": "Ergebnis · sofort angewendet | Ergebnisse · sofort angewendet",
           "APPLIED": "Sofort angewendet",
           "CLEAR": "Filter löschen"
         },

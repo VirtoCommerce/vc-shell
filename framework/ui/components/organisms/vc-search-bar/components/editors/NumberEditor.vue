@@ -1,9 +1,10 @@
 <template>
-  <div
-    class="vc-search-bar-editor"
-    @keydown.enter.prevent="apply"
-  >
-    <div class="vc-search-bar-editor__range">
+  <div class="vc-search-bar-editor">
+    <!-- Enter applies from the inputs only: on a preset it is that preset's click -->
+    <div
+      class="vc-search-bar-editor__range"
+      @keydown.enter.prevent="apply"
+    >
       <VcInput
         v-model="from"
         size="small"

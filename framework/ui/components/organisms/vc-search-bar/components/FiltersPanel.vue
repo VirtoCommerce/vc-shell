@@ -77,7 +77,7 @@
       <div class="vc-search-bar__panel-foot">
         <span class="vc-search-bar__panel-status">
           <template v-if="resultCount !== undefined">
-            <strong>{{ resultCount }}</strong> {{ $t(`${K}PANEL.RESULTS`, { count: resultCount }) }}
+            <strong>{{ resultCount }}</strong> {{ $t(`${K}PANEL.RESULTS`, resultCount) }}
           </template>
           <template v-else>{{ $t(`${K}PANEL.APPLIED`) }}</template>
         </span>
@@ -118,6 +118,8 @@ const props = defineProps<{
   resultCount?: number;
   /** Phone sheet: the body only, with bigger rows */
   touch?: boolean;
+  /** Field ids in the order they were applied; the first one starts expanded */
+  order?: string[];
 }>();
 const emit = defineEmits<{
   set: [id: string, value: SearchBarValue];
@@ -133,7 +135,9 @@ const toggles = computed(() => props.fields.filter((f) => f.kind === "toggle"));
 const others = computed(() => props.fields.filter((f) => f.kind !== "toggle"));
 const active = computed(() => props.fields.filter((f) => isSet(f.id)).length);
 // Read once: the accordion keeps its own open rows afterwards
-const firstOpen = (others.value.find((f) => isSet(f.id)) ?? others.value[0])?.id;
+const firstOpen =
+  (props.order ?? []).find((id) => isSet(id) && others.value.some((f) => f.id === id)) ??
+  (others.value.find((f) => isSet(f.id)) ?? others.value[0])?.id;
 
 const toggleCount = (id: string) => props.counts?.[id]?.true;
 const setToggle = (id: string, on: unknown) => (on ? emit("set", id, true) : emit("clear-field", id));

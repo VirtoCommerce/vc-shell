@@ -1,6 +1,9 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { mount, type VueWrapper } from "@vue/test-utils";
 import { defineComponent, h, nextTick } from "vue";
+import { createI18n } from "vue-i18n";
+import en from "../../../../../locales/en.json";
+import de from "../../../../../locales/de.json";
 import FiltersPanel from "./FiltersPanel.vue";
 import FieldAccordion from "./FieldAccordion.vue";
 import { normalizeFields } from "../lib/fields";
@@ -114,6 +117,12 @@ describe("FiltersPanel", () => {
     expect(expanded(w)).toEqual(["Created"]);
   });
 
+  it("the first field in applied order starts expanded when the order is given", () => {
+    const values = { total: { op: "gte", min: 1 }, created: { relative: "7d" } };
+    const w = mountPanel({ state: { search: "", values }, order: ["total", "created"] });
+    expect(expanded(w)).toEqual(["Total"]);
+  });
+
   it("applies at once: a switch sets or clears its toggle, an editor sets its field", async () => {
     const w = mountPanel();
     await w.get(".switch-stub").setValue(true);
@@ -157,10 +166,22 @@ describe("FiltersPanel", () => {
     expect(mountPanel().find(".vc-search-bar__panel-active").exists()).toBe(false);
   });
 
-  it("the footer shows the result count when given", () => {
-    const w = mountPanel({ resultCount: 42 });
-    expect(w.get(".vc-search-bar__panel-status").text()).toBe(`42 ${P}RESULTS:42`);
-    expect(mountPanel().get(".vc-search-bar__panel-status").text()).toBe(`${P}APPLIED`);
+  it("the footer shows the result count when given, in singular and plural", () => {
+    const status = (locale: "en" | "de", resultCount?: number) => {
+      const i18n = createI18n({ legacy: false, locale, messages: { en, de } });
+      const w = mount(FiltersPanel, {
+        props: { fields, state: { search: "", values: {} }, views: makeViews().views, resultCount },
+        // the setup file mocks $t for every mount; this test needs the real plural rules
+        global: { stubs: global.stubs, plugins: [i18n], mocks: { $t: i18n.global.t } },
+      });
+      wrappers.push(w);
+      return w.get(".vc-search-bar__panel-status").text();
+    };
+    expect(status("en", 1)).toBe("1 result · applied instantly");
+    expect(status("en", 2)).toBe("2 results · applied instantly");
+    expect(status("de", 1)).toBe("1 Ergebnis · sofort angewendet");
+    expect(status("de", 2)).toBe("2 Ergebnisse · sofort angewendet");
+    expect(status("en")).toBe("Applied instantly");
   });
 
   it("Clear filters is disabled with nothing set and clears all otherwise", async () => {

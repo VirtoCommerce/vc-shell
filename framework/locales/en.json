@@ -285,7 +285,7 @@
           "ACTIVE": "{count} active",
           "TOGGLES": "Toggles",
           "ANY": "Any",
-          "RESULTS": "results · applied instantly",
+          "RESULTS": "result · applied instantly | results · applied instantly",
           "APPLIED": "Applied instantly",
           "CLEAR": "Clear filters"
         },

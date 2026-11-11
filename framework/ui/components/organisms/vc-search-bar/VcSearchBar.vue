@@ -134,6 +134,7 @@
         :views="views"
         :counts="counts"
         :result-count="resultCount"
+        :order="order"
         :touch="isMobile"
         @set="setValue"
         @clear-field="clearValue"

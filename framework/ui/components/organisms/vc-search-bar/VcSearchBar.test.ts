@@ -172,6 +172,15 @@ describe("VcSearchBar", () => {
       });
     });
 
+    it("the panel expands the field applied first, not the first in the field list", async () => {
+      wrapper = mountBar();
+      await wrapper.setProps({ modelValue: { search: "", values: { store: "x" } } });
+      await wrapper.setProps({ modelValue: { search: "", values: { store: "x", status: ["a"] } } });
+      await wrapper.get(".vc-search-bar__filters-main").trigger("click");
+      const open = [...document.body.querySelectorAll(".vc-search-bar__acc-toggle[aria-expanded='true']")];
+      expect(open.map((b) => b.querySelector(".vc-search-bar__acc-label")?.textContent)).toEqual(["Store"]);
+    });
+
     it("the panel shows the result count and Clear filters switches to the system view", async () => {
       wrapper = mountBar({ resultCount: 12, modelValue: { search: "q", values: { overdue: true } } });
       await wrapper.get(".vc-search-bar__filters-main").trigger("click");

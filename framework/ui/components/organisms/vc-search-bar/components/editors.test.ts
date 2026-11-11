@@ -143,6 +143,22 @@ describe("NumberEditor", () => {
     await w.setProps({ value: { op: "lte", max: 100 } });
     expect(w.get(PRESET).attributes("aria-pressed")).toBe("true");
   });
+
+  it("Enter on a preset does not apply the typed range", async () => {
+    const withPresets = normalizeField({
+      id: "total",
+      label: "Total",
+      filter: { number: true, presets: [{ label: "Under 100", value: { op: "lte", max: 100 } }] },
+    });
+    const w = mount(NumberEditor, { props: { field: withPresets, value: undefined }, global });
+    await inputs(w)[0].setValue("5");
+    const preset = w.get(PRESET);
+    await preset.trigger("keydown", { key: "Enter" });
+    expect(w.emitted("update:value")).toBeUndefined();
+    // the browser turns Enter on a button into its click
+    await preset.trigger("click");
+    expect(w.emitted("update:value")).toEqual([[{ op: "lte", max: 100 }]]);
+  });
 });
 
 describe("SelectEditor", () => {

@@ -60,3 +60,16 @@ describe("filters", () => {
     expect(decodeQueryState("offers", { offers_filters: ["a:1"] } as never)).toEqual({});
   });
 });
+
+describe("view", () => {
+  it("encodes under `${ns}_view` and clears with an empty string", () => {
+    expect(encodeQueryState("offers", { view: "overdue" })).toEqual({ offers_view: "overdue" });
+    expect(encodeQueryState("offers", { view: undefined })).toEqual({ offers_view: "" });
+  });
+
+  it("decodes a non-empty string and ignores empty or array values", () => {
+    expect(decodeQueryState("offers", { offers_view: "overdue" })).toEqual({ view: "overdue" });
+    expect(decodeQueryState("offers", { offers_view: "" })).toEqual({});
+    expect(decodeQueryState("offers", { offers_view: ["a"] } as never)).toEqual({});
+  });
+});

@@ -103,6 +103,15 @@ export interface SearchBarChange {
   state: SearchBarState;
 }
 
+/** A named set of filter values; the search text is not part of it */
+export interface SearchBarView {
+  id: string;
+  name: string;
+  values: Record<string, SearchBarValue>;
+  /** The view the bar opens on when the URL names none (first one wins) */
+  default?: boolean;
+}
+
 export interface SearchBarPreset {
   id: string;
   name: string;

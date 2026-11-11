@@ -218,6 +218,9 @@
           "YOURS": "yours",
           "PINNED": "Pinned"
         },
+        "VIEWS": {
+          "ALL": "All"
+        },
         "OPERATOR": {
           "ANY": "Is any of",
           "NOT": "Is not"

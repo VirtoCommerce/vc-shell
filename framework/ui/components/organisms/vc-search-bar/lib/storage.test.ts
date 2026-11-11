@@ -1,8 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createLocalPresetStore, mergeModulePresets, type StoredPreset } from "./storage";
+import {
+  createLocalPresetStore,
+  createLocalViewStore,
+  mergeModulePresets,
+  type StoredPreset,
+  type StoredView,
+} from "./storage";
 
 const K = "t1";
-const RAW = "VC_SEARCHBAR_T1";
+const RAW = "VC_SEARCHBAR_T1_PRESETS";
+const VIEWS_RAW = "VC_SEARCHBAR_T1";
 const user = (id: string): StoredPreset => ({
   id,
   name: id,
@@ -123,5 +130,75 @@ describe("mergeModulePresets", () => {
   it("drops module presets removed from code, keeps user presets in order after module ones", () => {
     const r = mergeModulePresets([m("b"), m("a")], [user("u2"), stored("gone"), stored("a"), user("u1")]);
     expect(r.map((p) => p.id)).toEqual(["b", "a", "u2", "u1"]);
+  });
+});
+
+describe("view store", () => {
+  const view = (id: string, extra: Partial<StoredView> = {}): StoredView => ({
+    id,
+    name: id,
+    values: { a: ["x"] },
+    scope: "user",
+    ...extra,
+  });
+
+  it("round trips views as a v2 entry and replaces by id", () => {
+    const s = createLocalViewStore(K);
+    s.save(view("u1"));
+    s.save(view("m1", { scope: "module" }));
+    s.save(view("u1", { name: "renamed" }));
+    expect(s.list().map((v) => [v.id, v.name])).toEqual([
+      ["u1", "renamed"],
+      ["m1", "m1"],
+    ]);
+    expect(JSON.parse(localStorage.getItem(VIEWS_RAW)!)).toMatchObject({ v: 2, views: [{ id: "u1" }, { id: "m1" }] });
+    s.remove("u1");
+    expect(
+      createLocalViewStore(K)
+        .list()
+        .map((v) => v.id),
+    ).toEqual(["m1"]);
+  });
+
+  it("ignores v1 preset data, malformed JSON and malformed views", () => {
+    localStorage.setItem(VIEWS_RAW, JSON.stringify({ v: 1, presets: [view("p")] }));
+    expect(createLocalViewStore(K).list()).toEqual([]);
+    localStorage.setItem(VIEWS_RAW, "{nope");
+    expect(createLocalViewStore(K).list()).toEqual([]);
+    localStorage.setItem(
+      VIEWS_RAW,
+      JSON.stringify({ v: 2, views: [null, {}, { id: 1 }, view("ok"), view("s", { scope: "system" as never })] }),
+    );
+    expect(
+      createLocalViewStore(K)
+        .list()
+        .map((v) => v.id),
+    ).toEqual(["ok"]);
+  });
+
+  it("does not clobber presets and is not clobbered by them", async () => {
+    const views = createLocalViewStore(K);
+    views.save(view("v"));
+    await createLocalPresetStore(K).save(user("p"));
+    expect(
+      createLocalViewStore(K)
+        .list()
+        .map((v) => v.id),
+    ).toEqual(["v"]);
+    expect((await createLocalPresetStore(K).list()).map((p) => p.id)).toEqual(["p"]);
+  });
+
+  it("keeps views in memory when storage fails", () => {
+    vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new Error("quota");
+    });
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new Error("quota");
+    });
+    const s = createLocalViewStore(K);
+    s.save(view("v"));
+    expect(s.list().map((v) => v.id)).toEqual(["v"]);
+    s.remove("v");
+    expect(s.list()).toEqual([]);
   });
 });

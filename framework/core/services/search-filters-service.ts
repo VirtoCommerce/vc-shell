@@ -1,5 +1,5 @@
 import { shallowReactive } from "vue";
-import type { SearchBarField, SearchBarPreset } from "@core/types/search-bar";
+import type { SearchBarField, SearchBarPreset, SearchBarView } from "@core/types/search-bar";
 
 export interface IExternalSearchFiltersRegistration {
   id: string;
@@ -8,6 +8,7 @@ export interface IExternalSearchFiltersRegistration {
   priority?: number;
   fields: SearchBarField[];
   presets?: SearchBarPreset[];
+  views?: SearchBarView[];
 }
 
 const DEFAULT_PRIORITY = 100;
@@ -16,7 +17,7 @@ const DEFAULT_PRIORITY = 100;
 const externalSearchFilters = shallowReactive(new Map<string, IExternalSearchFiltersRegistration>());
 
 /**
- * Registers search bar fields and presets for the listed blades.
+ * Registers search bar fields and views for the listed blades.
  * Registering an existing id replaces it.
  */
 export function registerExternalSearchFilters(registration: IExternalSearchFiltersRegistration): void {

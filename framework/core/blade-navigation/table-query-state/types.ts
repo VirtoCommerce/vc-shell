@@ -10,6 +10,8 @@ export interface TableQueryPatch {
   page?: number;
   /** Applied search-bar filters in the bar's compact format. `undefined`/"" clears it. */
   filters?: string;
+  /** Id of the search bar's current view. `undefined`/"" clears it. */
+  view?: string;
 }
 
 /**

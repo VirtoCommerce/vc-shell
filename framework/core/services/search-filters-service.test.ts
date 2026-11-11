@@ -52,4 +52,10 @@ describe("search-filters-service", () => {
     registerExternalSearchFilters({ id: "late", targetBlades: ["orders"], fields: [] });
     expect(list.value).toEqual(["late"]);
   });
+
+  it("keeps the views of a registration", () => {
+    const views = [{ id: "v", name: "V", values: { x: "1" }, default: true }];
+    registerExternalSearchFilters({ id: "a", targetBlades: ["orders"], fields: [field("x")], views });
+    expect(getExternalSearchFilters("orders")[0].views).toEqual(views);
+  });
 });

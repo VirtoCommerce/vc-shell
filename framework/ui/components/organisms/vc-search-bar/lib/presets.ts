@@ -1,25 +1,13 @@
 import type { SearchBarPreset, SearchBarValue } from "../types";
 import type { BarField } from "./fields";
 import { isEmptyValue, pillLabel } from "./values";
+import { sameValue as same } from "./views";
+
+export { sameValues } from "./views";
 
 type Values = Record<string, SearchBarValue>;
 
 const MAX_NAME_LENGTH = 40;
-
-function canonical(v: unknown): string {
-  if (Array.isArray(v)) return JSON.stringify(v.map(canonical).sort());
-  if (typeof v === "object" && v !== null) {
-    const o = v as Record<string, unknown>;
-    return JSON.stringify(
-      Object.keys(o)
-        .sort()
-        .map((k) => [k, canonical(o[k])]),
-    );
-  }
-  return JSON.stringify(v ?? null);
-}
-
-const same = (a: unknown, b: unknown) => canonical(a) === canonical(b);
 
 /** Preset fields that exist in `fields` and carry a value */
 function presetEntries(fields: BarField[], preset: SearchBarPreset) {
@@ -111,17 +99,6 @@ export function applyPresetSearch(preset: SearchBarPreset, search: string): stri
 /** Search text after removing the preset: cleared only when it equals the preset's search */
 export function removePresetSearch(preset: SearchBarPreset, search: string): string {
   return preset.search && preset.search === search ? "" : search;
-}
-
-export function sameValues(fields: BarField[], a: Values, b: Values): boolean {
-  return fields.every((f) => {
-    const x = a[f.id];
-    const y = b[f.id];
-    const ex = isEmptyValue(x);
-    const ey = isEmptyValue(y);
-    if (ex || ey) return ex === ey;
-    return same(x, y);
-  });
 }
 
 export function suggestPresetName(fields: BarField[], values: Values, t: (k: string) => string): string {

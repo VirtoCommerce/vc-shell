@@ -218,6 +218,9 @@
           "YOURS": "eigene",
           "PINNED": "Angeheftet"
         },
+        "VIEWS": {
+          "ALL": "Alle"
+        },
         "OPERATOR": {
           "ANY": "Ist einer von",
           "NOT": "Ist nicht"

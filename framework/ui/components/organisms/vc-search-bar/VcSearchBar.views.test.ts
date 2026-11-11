@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { mount } from "@vue/test-utils";
-import { computed, defineComponent, h, ref, type VNode } from "vue";
+import { computed, defineComponent, h, nextTick, ref, type VNode } from "vue";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import { BladeViewSelectorKey, IsMobileKey } from "@framework/injection-keys";
 import { registerExternalSearchFilters, unregisterExternalSearchFilters } from "@core/services/search-filters-service";
@@ -143,5 +143,49 @@ describe("external filters", () => {
     w = mountIn();
     await w.get(".vc-search-bar__view-btn").trigger("click");
     expect(document.body.textContent).toContain("Top rated");
+  });
+});
+
+describe("VcSearchBar exposed controls (driven by the table's footer and empty state)", () => {
+  let w: ReturnType<typeof mountBar> | undefined;
+  type Exposed = { clearAll(): void; clearFilters(): void; removeFilter(id: string): void };
+  const api = () => w!.vm as unknown as Exposed;
+  const views = [{ id: "late", name: "Late", values: { overdue: true } }];
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => {
+    w?.unmount();
+    w = undefined;
+    vi.useRealTimers();
+    localStorage.clear();
+  });
+
+  it("clearAll clears the filters and the search in one change and selects the system view", async () => {
+    const url = fakeQueryState({ orders: { filters: "overdue:1;status:a", view: "late" } });
+    w = mountBar({ storageKey: "orders", views, search: "acme" }, url.provide);
+    const before = (w.emitted("change") ?? []).length;
+    api().clearAll();
+    const changes = w.emitted("change") as SearchBarChange[][];
+    expect(changes).toHaveLength(before + 1);
+    expect(lastChange(w)).toMatchObject({ search: "", filters: {} });
+    expect(w.emitted("update:search")).toEqual([[""]]);
+    await nextTick();
+    expect(url.store.orders).toMatchObject({ filters: "", view: undefined });
+  });
+
+  it("clearAll without search text emits no search update", () => {
+    const url = fakeQueryState({ orders: { filters: "overdue:1" } });
+    w = mountBar({ storageKey: "orders" }, url.provide);
+    api().clearAll();
+    expect(lastChange(w)).toMatchObject({ search: "", filters: {} });
+    expect(w.emitted("update:search")).toBeUndefined();
+  });
+
+  it("clearFilters keeps the search; removeFilter drops one field", () => {
+    const url = fakeQueryState({ orders: { filters: "overdue:1;status:a" } });
+    w = mountBar({ storageKey: "orders", search: "acme" }, url.provide);
+    api().removeFilter("overdue");
+    expect(lastChange(w)).toMatchObject({ search: "acme", filters: { status: ["a"] } });
+    api().clearFilters();
+    expect(lastChange(w)).toMatchObject({ search: "acme", filters: {} });
   });
 });

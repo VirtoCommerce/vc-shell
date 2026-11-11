@@ -1001,7 +1001,7 @@ For filter UI not covered by built-in types, use the `#filter` slot on VcColumn:
 
 ### Global Filters
 
-Filters not tied to a specific column -- displayed as pills in the table's search bar:
+Filters not tied to a specific column -- displayed in a separate filter panel:
 
 ```vue
 <VcDataTable
@@ -1030,7 +1030,7 @@ Filters not tied to a specific column -- displayed as pills in the table's searc
 </VcDataTable>
 ```
 
-Each filter becomes a pill under the search ("Category", "Date Range"). Clicking a pill opens its editor; a set pill reads "Category: Electronics" and has a remove button, and "Clear all" resets every filter. Date ranges are sent split into their two fields (`fromDate`, `toDate`), the same flat payload as before.
+A filter icon button appears in the toolbar. Clicking it opens the global filter panel. With [`search-bar`](#search-bar-opt-in) the same filters become chips and a Filters panel in the search bar; the `@filter` payload is the same.
 
 ### Combining Column and Global Filters
 
@@ -1069,52 +1069,62 @@ function onSearch(value: string) {
 }
 ```
 
-The table renders a search header above the rows when `searchable` or `global-filters` is set, or when the `search-header-actions` slot is used. The header holds `VcSearchBar` and takes its background and bottom border from `--table-header-bg` and `--table-header-border`. Content of the `search-header-actions` slot gets its own left-aligned row above the bar, so view toggles or a legacy filters button never share a line with the search and presets. Without the slot there is no actions row.
+The search bar appears above the table. When `global-filters` are also set, the filter button renders beside the search input. Content of the `search-header-actions` slot renders in the same toolbar row.
 
-The bar sits on one row. In a narrow table (under 640px) or on a phone the search folds into a button; `collapse-search` overrides that: `true` always shows the button, `false` always shows the field.
+### Search bar (opt-in)
+
+Set `search-bar` to replace the search header with `VcSearchBar`: the search, applied filters as chips, a Filters panel, saved views, a filter status in the footer and an empty state that names what filtered the rows out. Without `search-bar` the table renders the classic header described above; the default may change in the next major version.
 
 ```vue
-<VcDataTable :items="products" searchable :global-filters="filters" @search="onSearch" @filter="onFilter">
+<VcDataTable :items="orders" :total-count="totalCount" :pagination="pagination" state-key="orders-list" searchable search-bar :global-filters="orderFilters" :search-views="orderViews" :unfiltered-count="allOrdersCount" @filter="onFilter" @search="onSearch">
   <template #search-header-actions>
-    <VcButton icon="lucide-layout-grid" variant="outline" size="sm">Grid</VcButton>
-    <VcButton icon="lucide-list" variant="outline" size="sm">List</VcButton>
+    <VcButton icon="lucide-download" variant="outline" size="sm">Export</VcButton>
   </template>
-  <VcColumn id="name" field="name" title="Name" />
+  <VcColumn id="number" field="number" title="Number" />
 </VcDataTable>
 ```
 
-Typing emits `update:searchValue` at once and one debounced `search` per pause. The table owns the search text: `searchValue` from the parent shows in the bar, and the search text is not remembered between visits.
+```ts
+const orderViews: SearchBarView[] = [
+  { id: "open", name: "Open orders", values: { status: ["New", "Processing"] }, default: true },
+  { id: "paid", name: "Paid", values: { status: ["Paid"] } },
+];
+```
 
-### Presets and filters in the URL
+- **Header.** The bar sits in a header with the table's `--table-header-bg` and `--table-header-border`. Content of the `search-header-actions` slot gets its own row above the bar. Without the slot there is no actions row.
+- **Search.** Typing emits `update:searchValue` at once and one debounced `search` per pause, as with the classic header. The table owns the search text: `searchValue` from the parent shows in the bar.
+- **Filters.** `global-filters` become the bar's fields. The `@filter` payload is the same flat object, merged with column filters; date ranges are split into their two fields. Column filters stay outside the bar: they are not counted, not shown as chips and not cleared by the bar.
+- **Wide bar layout.** `search-bar-variant="inline"` (default) shows applied filters as chips in the row; `"summary"` shows the applied field names on the Filters button instead.
+- **Counts.** `filter-counts` gives a result count per option value, per filter id (`{ status: { Paid: 12 } }`); the Filters panel shows them when given.
+- **Views.** `search-views` are views from code; one may be the `default` the list opens on. The view selector sits next to the blade title. With a `state-key`, users save their own views in `localStorage` under `VC_SEARCHBAR_<STATE-KEY>`, separate from the column layout, also when `state-storage` is `"session"`. The search text is not part of a view.
+- **Footer status.** Next to the range text the footer reads `filtered from 120 · 2 filters + search · Clear all` while bar filters or search are applied. "filtered from M" appears only when `unfiltered-count` is set; a footer under 520px shows just the filter part and "Clear all". "Clear all" clears the bar's filters and the search and selects the "All" view; column filters stay. The status shows only with `pagination`; on a phone the summary line under the bar shows it instead.
+- **Empty state.** When the result is empty because of bar filters or search, the table names the reason ("No results match “acme” with 2 filters"), lists the applied filters as removable tags, and offers "Clear search" and "Clear filters". The `not-found` slot and `not-found-state` win over it.
 
-With a `state-key`, the bar also offers presets ("Save as preset" after setting filters, chips next to the search). Presets are stored in `localStorage` under `VC_SEARCHBAR_<STATE-KEY>`, separate from the column layout, also when `state-storage` is `"session"`.
+### Filters and the view in the URL
 
-The applied filters are kept in the blade URL under `<state-key>_filters`, next to `<state-key>_sort`, `_search` and `_page` (see [URL query persistence](#url-query-persistence)). A copied link opens the screen with the same filters, and a reload keeps them. When the table opens with filters in the URL, it emits `@filter` once after the screen's own `onMounted`, so load your data from `@filter` as usual. Nothing is emitted when the URL holds no filters.
+With `search-bar` and a `state-key`, the applied filters are kept in the blade URL under `<state-key>_filters` and the current view under `<state-key>_view`, next to `<state-key>_sort`, `_search` and `_page` (see [URL query persistence](#url-query-persistence)). A copied link opens the screen with the same filters and view, and a reload keeps them. When the table opens with filters in the URL (or a default view), it emits `@filter` once after the screen's own `onMounted`, so load your data from `@filter` as usual. Nothing is emitted when there is nothing to apply.
 
 - The value is compact and readable, for example `?orders_filters=status:Paid,New;created:7d;total:>=100`. The full format is in the VcSearchBar docs, "Filters in the URL".
 - Relative dates stay relative: `created:7d` always means the last 7 days from the day the link is opened.
-- An Advanced query is stored as `~` followed by the query text.
 - The search words are not part of `_filters`; `useTableSearch` keeps them in `_search`.
 - A blade without a URL, a table outside a blade, or a table without `state-key` remembers no filters.
 
-```vue
-<VcDataTable :items="orders" state-key="orders-list" searchable :global-filters="orderFilters" @filter="onFilter" @search="onSearch">
-  ...
-</VcDataTable>
-```
-
 ### Filters from other modules (`searchName`)
 
-Modules can add fields and presets to a list with `registerExternalSearchFilters({ id, targetBlades, fields })`. By default the table's bar answers to the blade's name; set `search-name` to address it by another name (a table outside a blade, or two tables in one blade).
+With `search-bar`, modules can add fields and views to a list with `registerExternalSearchFilters({ id, targetBlades, fields, views })`. By default the table's bar answers to the blade's name; set `search-name` to address it by another name (a table outside a blade, or two tables in one blade). A table without `search-bar` ignores these registrations.
 
-### Your own bar or a bar elsewhere
+### VcTableAdapter
 
-The table default covers search, pills and presets. For the condition builder, the Advanced query or full control over the state, leave `searchable` and `global-filters` off and put your own `VcSearchBar` into the `#header` slot; load data from the bar's `v-model` or `@change` instead of the table's events:
+Legacy `VcTableAdapter` screens keep the classic header. Pass `search-bar` to the adapter to get the bar: the legacy filters button and `search-header-actions` stay in the row above it, and with no `global-filters` the bar shows only the search.
+
+### Your own bar
+
+For full control over the bar's state, leave `searchable` and `global-filters` off and put your own `VcSearchBar` into the `#header` slot; load data from the bar's `v-model` or `@change` instead of the table's events:
 
 ```vue
 <VcDataTable :items="orders" :loading="loading">
   <template #header>
-    <VcSearchBar v-model="query" :fields="orderFields" builder advanced storage-key="orders-list" @change="load" />
+    <VcSearchBar v-model="query" :fields="orderFields" storage-key="orders-list" @change="load" />
   </template>
   ...
 </VcDataTable>
@@ -1174,7 +1184,7 @@ async function loadNextPage() {
 !!! tip "Use unique state keys"
 Every table in your application must have a distinct `state-key`. Two tables sharing the same key will silently overwrite each other's persisted column widths, order, and hidden/shown column lists.
 
-Persist column widths, column order, and column visibility across page reloads. Column layout is stored in `localStorage`/`sessionStorage` (keyed by `state-key`). Sort, search, and the current page are NOT persisted by the table itself -- use the state composables with a matching `stateKey` instead (see [URL query persistence](#url-query-persistence) below). Selection, column filters, and other transient state are session-scoped and are deliberately excluded from any persistence. The search bar keeps its presets and the applied filters under the same key (see [Presets and filters in the URL](#presets-and-filters-in-the-url)):
+Persist column widths, column order, and column visibility across page reloads. Column layout is stored in `localStorage`/`sessionStorage` (keyed by `state-key`). Sort, search, and the current page are NOT persisted by the table itself -- use the state composables with a matching `stateKey` instead (see [URL query persistence](#url-query-persistence) below). Selection, column filters, and other transient state are session-scoped and are deliberately excluded from any persistence. With `search-bar`, the bar keeps saved views and the applied filters under the same key (see [Filters and the view in the URL](#filters-and-the-view-in-the-url)):
 
 ```vue
 <VcDataTable :items="products" state-key="product-list">
@@ -1216,8 +1226,8 @@ Sort, search, and the current page are owned by the state composables, not by `V
 To persist query state to the blade URL, use `useDataTableSort`, `useTableSearch`, and `useDataTablePagination` with a matching `stateKey`. Each composable restores its slice from the URL on creation and persists changes via `router.replace` (no history entries added).
 
 - **Namespacing:** URL keys are prefixed with the `stateKey` value -- e.g. `?offers_list_sort=name:DESC&offers_list_search=foo&offers_list_page=2`. Use the same string for all three composables on a given page.
-- **Keys:** `<stateKey>_sort` (`field:ASC` / `field:DESC`), `<stateKey>_search`, `<stateKey>_page` (1-based). The table's search bar adds `<stateKey>_filters` on its own when the table has the same `state-key` (see [Presets and filters in the URL](#presets-and-filters-in-the-url)).
-- **Scope:** sort, search, page and the bar's applied filters. Column layout still uses localStorage/sessionStorage; column filters and selection are not persisted.
+- **Keys:** `<stateKey>_sort` (`field:ASC` / `field:DESC`), `<stateKey>_search`, `<stateKey>_page` (1-based). With `search-bar`, the table's bar adds `<stateKey>_filters` and `<stateKey>_view` on its own when the table has the same `state-key` (see [Filters and the view in the URL](#filters-and-the-view-in-the-url)).
+- **Scope:** sort, search, page and, with `search-bar`, the bar's filters and view. Column layout still uses localStorage/sessionStorage; column filters and selection are not persisted.
 
 Canonical list-page pattern:
 
@@ -1676,27 +1686,38 @@ function onRowRemove(event: { data: Product; index: number; cancel: () => void }
 
 ### Search
 
-| Prop                | Type      | Default       | Description                                                                                                         |
-| ------------------- | --------- | ------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `searchable`        | `boolean` | `false`       | Show search bar.                                                                                                    |
-| `searchValue`       | `string`  | --            | Search input value. Use with `v-model:searchValue`.                                                                 |
-| `searchPlaceholder` | `string`  | `"Search..."` | Placeholder text.                                                                                                   |
-| `searchDebounce`    | `number`  | `300`         | Debounce delay in ms.                                                                                               |
-| `searchName`        | `string`  | --            | Bar name for external filters. Defaults to the blade's name.                                                        |
-| `collapseSearch`    | `boolean` | --            | Hide the search behind a button. Default: automatic, hidden in a narrow bar or on a phone. `false` keeps the field. |
+| Prop                | Type      | Default       | Description                                         |
+| ------------------- | --------- | ------------- | --------------------------------------------------- |
+| `searchable`        | `boolean` | `false`       | Show search bar.                                    |
+| `searchValue`       | `string`  | --            | Search input value. Use with `v-model:searchValue`. |
+| `searchPlaceholder` | `string`  | `"Search..."` | Placeholder text.                                   |
+| `searchDebounce`    | `number`  | `300`         | Debounce delay in ms.                               |
+
+### Opt-in Search Bar
+
+These props apply only with `searchBar`.
+
+| Prop               | Type                                     | Default    | Description                                                                         |
+| ------------------ | ---------------------------------------- | ---------- | ----------------------------------------------------------------------------------- |
+| `searchBar`        | `boolean`                                | `false`    | Show `VcSearchBar` instead of the classic search header.                            |
+| `searchBarVariant` | `"inline" \| "summary"`                  | `"inline"` | Wide bar: chips in the row, or the applied field names on the Filters button.       |
+| `searchViews`      | `SearchBarView[]`                        | --         | Views from code; one may be the `default`.                                          |
+| `searchName`       | `string`                                 | --         | Bar name for external filters. Defaults to the blade's name.                        |
+| `filterCounts`     | `Record<string, Record<string, number>>` | --         | Result count per option value, per filter id.                                       |
+| `unfilteredCount`  | `number`                                 | --         | Rows without the bar's filters and search; the footer status reads "filtered from". |
 
 ### Filters
 
-| Prop            | Type                   | Default | Description                               |
-| --------------- | ---------------------- | ------- | ----------------------------------------- |
-| `globalFilters` | `GlobalFilterConfig[]` | --      | Filters shown as pills in the search bar. |
+| Prop            | Type                   | Default | Description                                                      |
+| --------------- | ---------------------- | ------- | ---------------------------------------------------------------- |
+| `globalFilters` | `GlobalFilterConfig[]` | --      | Global filter panel configuration (bar fields with `searchBar`). |
 
 ### State Persistence
 
-| Prop           | Type                   | Default   | Description                                                                                                              |
-| -------------- | ---------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `stateKey`     | `string`               | --        | Key for persisting state; also enables the search bar's presets and its filters in the URL. Omit to disable persistence. |
-| `stateStorage` | `"local" \| "session"` | `"local"` | Storage backend.                                                                                                         |
+| Prop           | Type                   | Default   | Description                                                                                                          |
+| -------------- | ---------------------- | --------- | -------------------------------------------------------------------------------------------------------------------- |
+| `stateKey`     | `string`               | --        | Key for persisting state; with `searchBar` also the key of saved views and URL filters. Omit to disable persistence. |
+| `stateStorage` | `"local" \| "session"` | `"local"` | Storage backend.                                                                                                     |
 
 ### Empty States
 
@@ -1804,20 +1825,20 @@ function onRowRemove(event: { data: Product; index: number; cancel: () => void }
 
 ## VcDataTable Slots Reference
 
-| Slot                    | Props                                                           | Description                                                  |
-| ----------------------- | --------------------------------------------------------------- | ------------------------------------------------------------ |
-| `default`               | --                                                              | VcColumn declarations (required).                            |
-| `header`                | --                                                              | Custom header content above the table.                       |
-| `footer`                | --                                                              | Custom footer content below the table body.                  |
-| `search-header-actions` | --                                                              | Extra buttons in their own row above the search bar.         |
-| `selection-banner`      | `{ count, totalCount, isSelectAll, selectAll, clearSelection }` | Custom selection banner.                                     |
-| `expansion`             | `{ data: T, index: number }`                                    | Content rendered below an expanded row (desktop and mobile). |
-| `empty`                 | --                                                              | Custom empty state (no items, no search).                    |
-| `not-found`             | --                                                              | Custom not-found state (no items + active search/filters).   |
-| `loading`               | --                                                              | Custom loading state.                                        |
-| `groupheader`           | `{ data: T, index: number }`                                    | Custom row group header.                                     |
-| `groupfooter`           | `{ data: T, index: number }`                                    | Custom row group footer.                                     |
-| `pagination`            | `{ pages, currentPage, onPageClick }`                           | Custom pagination replacing built-in VcPagination.           |
+| Slot                    | Props                                                           | Description                                                                                                |
+| ----------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `default`               | --                                                              | VcColumn declarations (required).                                                                          |
+| `header`                | --                                                              | Custom header content above the table.                                                                     |
+| `footer`                | --                                                              | Custom footer content below the table body.                                                                |
+| `search-header-actions` | --                                                              | Extra buttons in the search toolbar (beside filter icon); in their own row above the bar with `searchBar`. |
+| `selection-banner`      | `{ count, totalCount, isSelectAll, selectAll, clearSelection }` | Custom selection banner.                                                                                   |
+| `expansion`             | `{ data: T, index: number }`                                    | Content rendered below an expanded row (desktop and mobile).                                               |
+| `empty`                 | --                                                              | Custom empty state (no items, no search).                                                                  |
+| `not-found`             | --                                                              | Custom not-found state (no items + active search/filters).                                                 |
+| `loading`               | --                                                              | Custom loading state.                                                                                      |
+| `groupheader`           | `{ data: T, index: number }`                                    | Custom row group header.                                                                                   |
+| `groupfooter`           | `{ data: T, index: number }`                                    | Custom row group footer.                                                                                   |
+| `pagination`            | `{ pages, currentPage, onPageClick }`                           | Custom pagination replacing built-in VcPagination.                                                         |
 
 ---
 

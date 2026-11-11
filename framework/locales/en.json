@@ -306,6 +306,24 @@
           "ONLY_LABEL": "Only {label}"
         }
       },
+      "VC_DATA_TABLE": {
+        "STATUS": {
+          "FILTERED_FROM": "filtered from {count}",
+          "FILTERS": "{count} filter | {count} filters",
+          "FILTERS_AND_SEARCH": "{count} filter + search | {count} filters + search",
+          "SEARCH": "search",
+          "CLEAR_ALL": "Clear all"
+        },
+        "NO_RESULTS": {
+          "TITLE_SEARCH_FILTERS": "No results match “{query}” with {count} filter | No results match “{query}” with {count} filters",
+          "TITLE_SEARCH": "No results match “{query}”",
+          "TITLE_FILTERS": "No results match {count} filter | No results match {count} filters",
+          "HINT_FILTERS": "Remove a filter below or clear them all.",
+          "HINT_SEARCH": "Check the spelling or try another keyword.",
+          "CLEAR_SEARCH": "Clear search",
+          "CLEAR_FILTERS": "Clear filters"
+        }
+      },
       "VC_DYNAMIC_PROPERTY": {
         "ADD": "Add value",
         "VALUE_TYPE": {

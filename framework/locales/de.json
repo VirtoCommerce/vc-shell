@@ -306,6 +306,24 @@
           "ONLY_LABEL": "Nur {label}"
         }
       },
+      "VC_DATA_TABLE": {
+        "STATUS": {
+          "FILTERED_FROM": "gefiltert aus {count}",
+          "FILTERS": "{count} Filter | {count} Filter",
+          "FILTERS_AND_SEARCH": "{count} Filter + Suche | {count} Filter + Suche",
+          "SEARCH": "Suche",
+          "CLEAR_ALL": "Alle löschen"
+        },
+        "NO_RESULTS": {
+          "TITLE_SEARCH_FILTERS": "Keine Ergebnisse für „{query}“ mit {count} Filter | Keine Ergebnisse für „{query}“ mit {count} Filtern",
+          "TITLE_SEARCH": "Keine Ergebnisse für „{query}“",
+          "TITLE_FILTERS": "Keine Ergebnisse mit {count} Filter | Keine Ergebnisse mit {count} Filtern",
+          "HINT_FILTERS": "Entfernen Sie unten einen Filter oder löschen Sie alle.",
+          "HINT_SEARCH": "Prüfen Sie die Schreibweise oder versuchen Sie ein anderes Stichwort.",
+          "CLEAR_SEARCH": "Suche löschen",
+          "CLEAR_FILTERS": "Filter löschen"
+        }
+      },
       "VC_DYNAMIC_PROPERTY": {
         "ADD": "Wert hinzufügen",
         "VALUE_TYPE": {

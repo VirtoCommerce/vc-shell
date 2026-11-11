@@ -139,7 +139,7 @@ export type {
   FilterValue,
   GlobalFilterConfig,
 } from "@core/types/search-bar";
-import type { ColumnFilterConfig, FilterValue, GlobalFilterConfig } from "@core/types/search-bar";
+import type { ColumnFilterConfig, FilterValue, GlobalFilterConfig, SearchBarView } from "@core/types/search-bar";
 
 /**
  * VcColumn Props Interface — declarative column definition for VcDataTable.
@@ -388,7 +388,7 @@ export interface VcDataTableProps<T = any> {
   scrollHeight?: string;
 
   // === State ===
-  /** Key for persisting table state (column widths, order, hidden columns); also enables the search bar's saved views and remembered filters */
+  /** Key for persisting table state (column widths, order, sort, filters) to storage; with `searchBar` also the key of its saved views and URL filters */
   stateKey?: string;
   /** Storage type for state persistence: `"local"` (localStorage) or `"session"` (sessionStorage) */
   stateStorage?: "session" | "local";
@@ -492,7 +492,7 @@ export interface VcDataTableExtendedProps<T = any> extends VcDataTableProps<T> {
   infiniteScroll?: boolean;
   /** Distance in px from bottom to trigger load-more (default: 100) */
   infiniteScrollDistance?: number;
-  /** Global filter configurations shown as pills in the search bar */
+  /** Global filter configurations shown in a separate panel (as chips and a Filters panel with `searchBar`) */
   globalFilters?: GlobalFilterConfig[];
   /**
    * Show column visibility switcher in the toolbar.
@@ -509,8 +509,22 @@ export interface VcDataTableExtendedProps<T = any> extends VcDataTableProps<T> {
   searchPlaceholder?: string;
   /** Debounce delay in ms for the search emit (default: 300) */
   searchDebounce?: number;
+  /**
+   * Show VcSearchBar instead of the classic search header (default `false`): filters as chips, a Filters
+   * panel, saved views, a filter status in the footer and a reason-based empty state.
+   * The `searchBar*`, `searchViews`, `searchName`, `filterCounts` and `unfilteredCount` props apply only with it.
+   */
+  searchBar?: boolean;
+  /** Wide search bar: chips in the row (`inline`, default) or the applied field names on the Filters button (`summary`) */
+  searchBarVariant?: "inline" | "summary";
+  /** Views from code shown in the search bar's view selector; one may be the `default` */
+  searchViews?: SearchBarView[];
   /** Search bar name for external filters (`registerExternalSearchFilters` targets); defaults to the blade's name */
   searchName?: string;
+  /** Result count per option value, per global filter id (shown in the search bar's Filters panel) */
+  filterCounts?: Record<string, Record<string, number>>;
+  /** Rows without the search bar's filters and search: the footer status reads "filtered from M" */
+  unfilteredCount?: number;
   /**
    * When `true` (default), all visible columns are shown.
    * When `false`, only columns with `alwaysVisible` are displayed —

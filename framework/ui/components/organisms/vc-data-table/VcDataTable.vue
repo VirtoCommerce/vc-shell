@@ -13,9 +13,9 @@
       <slot name="header" />
     </div>
 
-    <!-- Search header: custom actions row above the bar (search, global filters as chips, views) -->
+    <!-- Search bar (opt-in): custom actions row above the bar (search, filters as chips, views) -->
     <div
-      v-if="searchable || globalFilters?.length || $slots['search-header-actions']"
+      v-if="searchBar && (searchable || globalFilters?.length || $slots['search-header-actions'])"
       class="vc-data-table__search-header"
     >
       <div
@@ -26,6 +26,8 @@
         <slot name="search-header-actions" />
       </div>
       <VcSearchBar
+        ref="searchBarRef"
+        v-model="barState"
         :fields="globalFilters"
         :search="internalSearchValue"
         :placeholder="searchPlaceholder"
@@ -33,10 +35,48 @@
         :storage-key="stateKey"
         :name="searchName"
         :searchable="searchable"
+        :variant="searchBarVariant"
+        :views="searchViews"
+        :counts="filterCounts"
+        :result-count="barResultCount"
+        :unfiltered-count="unfilteredCount"
         @update:search="handleSearchInput"
         @change="handleSearchBarChange"
       />
     </div>
+
+    <!-- Search bar + Global Filters + Column Switcher (combined toolbar) -->
+    <TableSearchHeader
+      v-else-if="searchable || globalFilters?.length || $slots['search-header-actions']"
+      :searchable="searchable"
+      :model-value="internalSearchValue"
+      :placeholder="searchPlaceholder"
+      @update:model-value="handleSearchInput"
+    >
+      <template #actions>
+        <GlobalFiltersButton
+          v-if="globalFilters?.length"
+          ref="globalFiltersButtonRef"
+          :active-count="globalActiveFilterCount"
+          @click="showGlobalFiltersPanel = !showGlobalFiltersPanel"
+        />
+        <!-- Custom actions from parent (e.g. adapter's filter button) -->
+        <slot name="search-header-actions" />
+      </template>
+    </TableSearchHeader>
+
+    <!-- Global Filters Panel (separate, teleported to body) -->
+    <GlobalFiltersPanel
+      v-if="!searchBar && globalFilters?.length"
+      :filters="globalFilters"
+      :model-value="globalFilterValues"
+      :show="showGlobalFiltersPanel"
+      :anchor-ref="globalFiltersButtonEl"
+      @update:model-value="globalFilterValues = $event"
+      @update:show="showGlobalFiltersPanel = $event"
+      @apply="handleGlobalFilterApply"
+      @clear="handleGlobalFilterClear"
+    />
 
     <!-- Column Switcher Panel (separate, teleported to body) -->
     <TableColumnSwitcher
@@ -184,12 +224,21 @@
             />
           </template>
           <template
-            v-if="$slots['not-found'] || $slots.empty"
+            v-if="$slots['not-found'] || $slots.empty || showNoResults"
             #empty
           >
             <slot
               v-if="isNotFoundState && $slots['not-found']"
               name="not-found"
+            />
+            <TableNoResults
+              v-else-if="showNoResults"
+              :search="barSearch"
+              :fields="barFields"
+              :values="barState?.values ?? {}"
+              @remove="removeBarFilter"
+              @clear-search="clearBarSearch"
+              @clear-filters="clearBarFilters"
             />
             <slot
               v-else
@@ -306,6 +355,15 @@
             v-if="isNotFoundState && $slots['not-found']"
             name="not-found"
           />
+          <TableNoResults
+            v-else-if="showNoResults"
+            :search="barSearch"
+            :fields="barFields"
+            :values="barState?.values ?? {}"
+            @remove="removeBarFilter"
+            @clear-search="clearBarSearch"
+            @clear-filters="clearBarFilters"
+          />
           <slot
             v-else-if="$slots.empty"
             name="empty"
@@ -336,7 +394,25 @@
       ref="paginationRef"
       class="vc-data-table__pagination"
     >
-      <span class="vc-data-table__page-info">{{ paginationRangeText }}</span>
+      <div
+        v-if="showFilterStatus"
+        ref="pageSummaryRef"
+        class="vc-data-table__page-summary"
+      >
+        <span class="vc-data-table__page-info">{{ paginationRangeText }}</span>
+        <TableFilterStatus
+          :filter-count="barFilterCount"
+          :search="barSearch !== ''"
+          :unfiltered-count="unfilteredCount"
+          :narrow="footerNarrow"
+          @clear-all="clearBarAll"
+        />
+      </div>
+      <span
+        v-else
+        class="vc-data-table__page-info"
+        >{{ paginationRangeText }}</span
+      >
       <!-- Pagination controls -->
       <slot
         name="pagination"
@@ -388,14 +464,20 @@ import {
   TableRowActions,
   DataTableHeader,
   DataTableBody,
+  GlobalFiltersButton,
+  GlobalFiltersPanel,
   TableColumnSwitcher,
   DataTableMobileView,
   TableAddRowButton,
+  TableSearchHeader,
   TableSelectAllBar,
   TableCheckbox,
 } from "@ui/components/organisms/vc-data-table/components";
 import { VcPagination } from "@ui/components/molecules";
-import { VcSearchBar, type SearchBarChange } from "@ui/components/organisms/vc-search-bar";
+import { VcSearchBar, type SearchBarChange, type SearchBarState } from "@ui/components/organisms/vc-search-bar";
+import TableFilterStatus from "@ui/components/organisms/vc-data-table/components/TableFilterStatus.vue";
+import TableNoResults from "@ui/components/organisms/vc-data-table/components/TableNoResults.vue";
+import { isEmptyValue } from "@ui/components/organisms/vc-search-bar/lib/values";
 import { useDataTableOrchestrator } from "@ui/components/organisms/vc-data-table/composables/useDataTableOrchestrator";
 import { ColumnCollector, type ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
 import {
@@ -475,6 +557,7 @@ const props = withDefaults(defineProps<VcDataTableExtendedProps<T> & { fitMode?:
   notFoundState: undefined,
   searchDebounce: 300,
   activeItemId: undefined,
+  searchBar: false,
 });
 
 // Emits
@@ -645,7 +728,8 @@ const isNotFoundState = computed(
   () =>
     displayItems.value.length === 0 &&
     !props.loading &&
-    (internalSearchValue.value !== "" || hasActiveFilters.value || hasGlobalFilters.value),
+    // bar filters count only with the opt-in bar (v2.11.0 global filters never did)
+    (internalSearchValue.value !== "" || hasActiveFilters.value || barFilterCount.value > 0),
 );
 
 /** Resolved title/description/icon/action for the current empty-like state */
@@ -1073,8 +1157,28 @@ const handleRowMouseEnter = (_index: number) => {};
 const handleRowMouseLeave = () => {};
 
 // ============================================================================
-// Column Switcher + Search Bar UI State (component-owned)
+// Global Filter UI State (UI-level state, component-owned)
 // ============================================================================
+
+const showGlobalFiltersPanel = ref(false);
+const globalFilterValues = ref<Record<string, unknown>>({});
+const globalFiltersButtonRef = ref<InstanceType<typeof GlobalFiltersButton> | null>(null);
+
+// floating-ui VirtualElement so the anchor resolves lazily on every position update.
+// `$el` is not reactive: when VcButton's `v-if="!bladeLoading"` swaps the DOM root,
+// a `computed(() => ref.value?.$el)` holds a stale detached node. Reading `$el`
+// inside getBoundingClientRect() picks up the live element.
+const globalFiltersButtonEl = computed<VirtualElement | null>(() => {
+  const inst = globalFiltersButtonRef.value;
+  if (!inst) return null;
+  return {
+    getBoundingClientRect: () =>
+      (inst as unknown as { $el?: HTMLElement }).$el?.getBoundingClientRect() ?? new DOMRect(),
+    get contextElement() {
+      return (inst as unknown as { $el?: HTMLElement }).$el;
+    },
+  };
+});
 
 // Column switcher state
 const showColumnSwitcherPanel = ref(false);
@@ -1091,12 +1195,44 @@ const columnSwitcherButtonEl = computed<VirtualElement | null>(() => {
   };
 });
 
-// The bar owns the global filter values; its flat filters merge with column filters in one @filter.
+// Computed: count of active global filters
+const globalActiveFilterCount = computed(() => {
+  let count = 0;
+  for (const val of Object.values(globalFilterValues.value)) {
+    if (val === null || val === undefined || val === "") continue;
+    if (Array.isArray(val) && val.length === 0) continue;
+    if (typeof val === "object" && !Array.isArray(val)) {
+      const range = val as { start?: string; end?: string };
+      if (range.start || range.end) count++;
+      continue;
+    }
+    count++;
+  }
+  return count;
+});
+
+const handleGlobalFilterApply = (payload: Record<string, unknown>) => {
+  globalFilterPayload.value = payload;
+  emitFilterPayload();
+};
+
+const handleGlobalFilterClear = () => {
+  globalFilterPayload.value = null;
+  globalFilterValues.value = {};
+  emitFilterPayload();
+};
+
+// ============================================================================
+// Search Bar (opt-in `searchBar`): the bar owns the global filter values
+// ============================================================================
+
+// The bar's flat filters merge with column filters in one @filter.
 // Restored state arrives during the bar's setup, before the screen's own onMounted load: hold that
 // @filter until the screen has mounted, so the restored filters land after its initial request.
 let tableMounted = false;
 let restoredFilterPending = false;
 const handleSearchBarChange = (change: SearchBarChange) => {
+  barState.value = change.state;
   // A change can carry a search text the table has not seen; typing never differs here (update:search came first)
   if (change.search !== internalSearchValue.value) handleSearchInput(change.search);
   globalFilterPayload.value = change.filters;
@@ -1113,8 +1249,28 @@ onMounted(() => {
   });
 });
 
-// Bar filters count for the not-found state (the flat payload holds set values only)
-const hasGlobalFilters = computed(() => Object.keys(globalFilterPayload.value ?? {}).length > 0);
+const searchBarRef = ref<InstanceType<typeof VcSearchBar> | null>(null);
+/** The bar's state: v-model, plus its changes (filters restored from the URL arrive only as a change) */
+const barState = ref<SearchBarState>();
+const barResultCount = computed(() => props.totalCount ?? props.items.length);
+/** Bar fields with a value (column filters are not the bar's) */
+const barFilterCount = computed(() =>
+  props.searchBar ? Object.values(barState.value?.values ?? {}).filter((v) => !isEmptyValue(v)).length : 0,
+);
+const barSearch = computed(() => (props.searchBar ? internalSearchValue.value : ""));
+const barFiltered = computed(() => barFilterCount.value > 0 || barSearch.value !== "");
+const barFields = computed(() => searchBarRef.value?.fields ?? []);
+
+/** Footer "Clear all": bar filters and search, back to the system view; column filters stay */
+const clearBarAll = () => searchBarRef.value?.clearAll();
+const clearBarFilters = () => searchBarRef.value?.clearFilters();
+const removeBarFilter = (id: string) => searchBarRef.value?.removeFilter(id);
+const clearBarSearch = () => handleSearchInput("");
+
+/** The reason-based empty state; a not-found slot or `notFoundState` wins */
+const showNoResults = computed(
+  () => isNotFoundState.value && barFiltered.value && !props.notFoundState && !slots["not-found"],
+);
 
 // ============================================================================
 // Row Props Builder (for DataTableRow component)
@@ -1172,14 +1328,26 @@ const getRowProps = (item: T, index: number) => ({
 
 const { width: paginationWidth } = useElementSize(paginationRef);
 
+/** Filter status next to the range text; a phone has the bar's own summary line instead */
+const showFilterStatus = computed(() => barFiltered.value && !isMobileView.value);
+/** A narrow footer drops "filtered from M" from the status */
+const FOOTER_NARROW_WIDTH = 520;
+const footerNarrow = computed(() => paginationWidth.value > 0 && paginationWidth.value < FOOTER_NARROW_WIDTH);
+const pageSummaryRef = ref<HTMLElement | null>(null);
+const { width: pageSummaryWidth } = useElementSize(pageSummaryRef);
+
 /** Pagination item width (29px) + gap (8px) = 37px per button */
 const PAGINATION_ITEM_SLOT = 37;
 /** Approximate width of the page-info text + padding */
 const PAGINATION_BASE_WIDTH = 140;
+/** The range text with the filter status takes its measured width */
+const paginationBaseWidth = computed(() =>
+  showFilterStatus.value ? Math.max(PAGINATION_BASE_WIDTH, pageSummaryWidth.value + 32) : PAGINATION_BASE_WIDTH,
+);
 
 const paginationMaxPages = computed(() => {
   if (!props.pagination || paginationWidth.value === 0) return 5;
-  const available = paginationWidth.value - PAGINATION_BASE_WIDTH;
+  const available = paginationWidth.value - paginationBaseWidth.value;
   // prev + next buttons always shown = 2 slots
   const slotsForPages = Math.floor((available - 2 * PAGINATION_ITEM_SLOT) / PAGINATION_ITEM_SLOT);
   if (slotsForPages >= 7) return 5; // enough room for 5 pages + first/last
@@ -1189,7 +1357,7 @@ const paginationMaxPages = computed(() => {
 
 const paginationShowFirstLast = computed(() => {
   if (!props.pagination || paginationWidth.value === 0) return true;
-  const available = paginationWidth.value - PAGINATION_BASE_WIDTH;
+  const available = paginationWidth.value - paginationBaseWidth.value;
   // Need room for: first + prev + at least 1 page + next + last = 5 slots minimum
   return available >= 5 * PAGINATION_ITEM_SLOT;
 });
@@ -1364,6 +1532,11 @@ onBeforeUnmount(() => {
   &__pagination {
     @apply tw-flex-shrink-0 tw-flex tw-justify-between tw-items-center tw-px-4 tw-py-[11px] tw-border-t;
     border-color: var(--table-border-color, var(--neutrals-200));
+  }
+
+  // range text + the bar's filter status
+  &__page-summary {
+    @apply tw-flex tw-items-center tw-gap-2 tw-min-w-0 tw-whitespace-nowrap;
   }
 
   &__page-info {

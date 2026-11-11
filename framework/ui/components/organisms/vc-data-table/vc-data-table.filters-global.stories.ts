@@ -119,9 +119,9 @@ export const GlobalFilters: Story = {
       <div class="tw-mb-4 tw-p-4 tw-bg-gradient-to-r tw-from-accent-50 tw-to-info-50 tw-rounded-lg">
         <p class="tw-font-semibold tw-text-lg tw-mb-2">Global Filters</p>
         <p class="tw-text-neutrals-600 tw-text-sm tw-mb-3">
-          The <code class="tw-bg-additional-50 tw-px-1 tw-rounded">globalFilters</code> prop renders
-          the filters as pills in the search bar above the table. Click a pill to edit it: text, select,
-          multi-select and date-range filters. The <code class="tw-bg-additional-50 tw-px-1 tw-rounded">@filter</code> event
+          The <code class="tw-bg-additional-50 tw-px-1 tw-rounded">globalFilters</code> prop renders a
+          "Filters" button above the table. Click it to open a panel with text, select, multi-select
+          and date-range filters. The <code class="tw-bg-additional-50 tw-px-1 tw-rounded">@filter</code> event
           emits a single flat payload merging both column and global filter values.
         </p>
 
@@ -144,7 +144,7 @@ export const GlobalFilters: Story = {
 
       <div class="tw-mb-3 tw-p-2 tw-bg-neutrals-100 tw-rounded tw-text-xs tw-font-mono tw-h-16 tw-overflow-hidden">
         <div v-for="(log, i) in filterLog" :key="i" class="tw-text-neutrals-600 tw-truncate">{{ log }}</div>
-        <div v-if="!filterLog.length" class="tw-text-neutrals-400">No filters applied yet — click a filter pill above the table</div>
+        <div v-if="!filterLog.length" class="tw-text-neutrals-400">No filters applied yet — click the "Filters" button above the table</div>
       </div>
 
       <VcDataTable
@@ -194,8 +194,8 @@ GlobalFilters.parameters = {
   docs: {
     description: {
       story:
-        "Global filters rendered via the `globalFilters` prop as pills in the search bar above the table. " +
-        "Pill editors support text, single/multi select, and date range filters. " +
+        "Global filters rendered via the `globalFilters` prop. A 'Filters' button appears above the table. " +
+        "The panel supports text, single/multi select, and date range filters. " +
         "The @filter event emits a flat object combining both column and global filter values.",
     },
   },
@@ -294,7 +294,7 @@ export const GlobalAndColumnFiltersCombined: Story = {
       <div class="tw-mb-4 tw-p-4 tw-bg-gradient-to-r tw-from-warning-50 tw-to-warning-100 tw-rounded-lg">
         <p class="tw-font-semibold tw-text-lg tw-mb-2">Global + Column Filters Combined</p>
         <p class="tw-text-neutrals-600 tw-text-sm tw-mb-3">
-          Both <code class="tw-bg-additional-50 tw-px-1 tw-rounded">globalFilters</code> (pills above the table) and
+          Both <code class="tw-bg-additional-50 tw-px-1 tw-rounded">globalFilters</code> (button above table) and
           column-level <code class="tw-bg-additional-50 tw-px-1 tw-rounded">filter</code> props (icons in headers)
           work together. The <code class="tw-bg-additional-50 tw-px-1 tw-rounded">@filter</code> event merges
           both payloads into a single flat object for the backend.
@@ -302,7 +302,7 @@ export const GlobalAndColumnFiltersCombined: Story = {
 
         <div class="tw-grid tw-grid-cols-2 tw-gap-4 tw-text-sm">
           <div>
-            <p class="tw-font-medium tw-mb-1">Global Filters (pills):</p>
+            <p class="tw-font-medium tw-mb-1">Global Filters (button panel):</p>
             <ul class="tw-list-disc tw-list-inside tw-text-neutrals-600">
               <li>Quick Search (text)</li>
               <li>Created Date (date range)</li>
@@ -323,7 +323,7 @@ export const GlobalAndColumnFiltersCombined: Story = {
 
       <div class="tw-mb-3 tw-p-2 tw-bg-neutrals-100 tw-rounded tw-text-xs tw-font-mono tw-h-12 tw-overflow-hidden">
         <div v-for="(log, i) in filterLog" :key="i" class="tw-text-neutrals-600 tw-truncate">{{ log }}</div>
-        <div v-if="!filterLog.length" class="tw-text-neutrals-400">Try both: click column filter icons and the filter pills</div>
+        <div v-if="!filterLog.length" class="tw-text-neutrals-400">Try both: click column filter icons and the "Filters" button</div>
       </div>
 
       <VcDataTable
@@ -398,8 +398,9 @@ const barFilters: GlobalFilterConfig[] = [
 // Hidden from the sidebar and docs, still run by the story tests
 const TEST_ONLY = ["!dev", "!autodocs", "test"];
 
-// `filters` is the initial `<stateKey>_filters` value of the simulated blade URL
-const barTable = (stateKey: string, opts: { filters?: string } = {}) => ({
+// `filters` is the initial `<stateKey>_filters` value of the simulated blade URL; `status` adds
+// pagination and an unfiltered total, so the footer shows the filter status
+const barTable = (stateKey: string, opts: { filters?: string; status?: boolean } = {}) => ({
   components: { VcDataTable, VcColumn },
   setup() {
     // Stand-in for the blade's URL query service, with the real namespaced serialization
@@ -416,13 +417,24 @@ const barTable = (stateKey: string, opts: { filters?: string } = {}) => ({
       filterLog.value.push(JSON.stringify(filters));
       products.value = mockProducts.filter((p) => !filters.status || p.status === filters.status);
     };
-    return { products, filterLog, onFilter, stateKey, barFilters, queryString };
+    const pagination = opts.status ? { currentPage: 1, pages: 1 } : undefined;
+    return { products, filterLog, onFilter, stateKey, barFilters, queryString, pagination, total: mockProducts.length };
   },
   template: `
     <div style="height: 520px" class="tw-overflow-hidden">
       <pre data-testid="filter-log" class="tw-text-xs tw-mb-2">{{ filterLog.length }} filter event(s) {{ filterLog.at(-1) ?? "" }}</pre>
       <pre data-testid="url-query" class="tw-text-xs tw-mb-2">URL: {{ queryString }}</pre>
-      <VcDataTable :items="products" :state-key="stateKey" searchable :global-filters="barFilters" @filter="onFilter">
+      <VcDataTable
+        :items="products"
+        :state-key="stateKey"
+        searchable
+        search-bar
+        :global-filters="barFilters"
+        :pagination="pagination"
+        :total-count="pagination ? products.length : undefined"
+        :unfiltered-count="pagination ? total : undefined"
+        @filter="onFilter"
+      >
         <VcColumn id="name" field="name" title="Product Name" />
         <VcColumn id="status" field="status" title="Status" />
         <VcColumn id="createdAt" field="createdAt" title="Created Date" type="date" />
@@ -431,12 +443,13 @@ const barTable = (stateKey: string, opts: { filters?: string } = {}) => ({
 });
 
 /**
- * The applied filters live in the blade URL under `<stateKey>_filters`, next to the table's sort, search and page,
- * so a link to the screen opens with the same filters. On open the bar restores them and the table emits one `@filter`.
+ * With `searchBar`, the applied filters live in the blade URL under `<stateKey>_filters`, next to the table's sort,
+ * search and page, so a link to the screen opens with the same filters. On open the bar restores them and the table
+ * emits one `@filter`. The footer shows the filter status, and an empty result names the filters that caused it.
  * This story simulates the blade URL; the line above the table shows it.
  */
 export const BarFiltersInUrl: Story = {
-  render: () => barTable(barKey("url"), { filters: "status:Low Stock;created:30d" }),
+  render: () => barTable(barKey("url"), { filters: "status:Low Stock;created:30d", status: true }),
 };
 
 /** Test: the filters from the URL show as chips, the table emits them once, a change is written back. */

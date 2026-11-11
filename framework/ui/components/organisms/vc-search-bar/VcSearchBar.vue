@@ -357,6 +357,16 @@ function clearFilters() {
   views.clearToSystem();
 }
 
+/** The table's "Clear all": filters and search in one change, back to the system view */
+function clearAll() {
+  // the pending "" is taken by the view's commit, so the change carries the cleared search
+  if (searchText.value) onSearchInput("");
+  clearFilters();
+}
+
+// The table drives the bar from its footer status and its empty state
+defineExpose({ fields, clearAll, clearFilters, removeFilter });
+
 function onTypedChip(c: { fieldId: string; value: unknown; rest: string }) {
   // the commit below carries the rest of the text in the same change
   onSearchInput(c.rest);

@@ -1,6 +1,7 @@
 /**
- * VcDataTable header = VcSearchBar. Real orchestrator and real bar, so the
- * @filter payload (global + column merge) and the search timing are the shipped ones.
+ * VcDataTable header: the v2.11.0 search header by default, VcSearchBar with `searchBar`.
+ * Real orchestrator, real header and real bar, so the @filter payload (global + column merge)
+ * and the search timing are the shipped ones.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { mount, type VueWrapper } from "@vue/test-utils";
@@ -41,9 +42,6 @@ vi.mock("@ui/components/organisms/vc-data-table/components", async (importOrigin
       inheritAttrs: false,
       template: "<div class='mock-body'>{{ emptyTitle }}</div>",
     }),
-    GlobalFiltersButton: dc({ name: "GlobalFiltersButton", template: "<button class='mock-gf-btn'>Filters</button>" }),
-    GlobalFiltersPanel: dc({ name: "GlobalFiltersPanel", template: "<div class='mock-gf-panel' />" }),
-    TableSearchHeader: dc({ name: "TableSearchHeader", template: "<div class='mock-search-header' />" }),
     TableColumnSwitcher: dc({ name: "TableColumnSwitcher", template: "<div />" }),
     TableSelectAllBar: dc({ name: "TableSelectAllBar", template: "<div />" }),
   };
@@ -120,7 +118,7 @@ describe("VcDataTable search bar header", () => {
   const withUrl = () => ({ ...global, provide: { ...global.provide, ...url.provide } });
   const mountTable = (props: Record<string, unknown> = {}, slots: Record<string, string> = {}) => {
     wrapper = mount(VcDataTable as never, {
-      props: { items: [], stateKey: "orders", ...props },
+      props: { items: [], stateKey: "orders", searchBar: true, ...props },
       slots,
       global: withUrl(),
       attachTo: document.body,
@@ -145,9 +143,9 @@ describe("VcDataTable search bar header", () => {
     const w = mountTable({ searchable: true, globalFilters });
     expect(w.find(".vc-search-bar").exists()).toBe(true);
     expect(w.find(".vc-search-bar__filters-btn").exists()).toBe(true);
-    expect(w.find(".mock-search-header").exists()).toBe(false);
-    expect(w.find(".mock-gf-btn").exists()).toBe(false);
-    expect(w.find(".mock-gf-panel").exists()).toBe(false);
+    expect(w.find(".vc-table-search-header").exists()).toBe(false);
+    expect(w.findComponent({ name: "GlobalFiltersButton" }).exists()).toBe(false);
+    expect(w.findComponent({ name: "GlobalFiltersPanel" }).exists()).toBe(false);
   });
 
   it("a search-only table shows no Filters button and no view selector", () => {
@@ -303,6 +301,7 @@ describe("VcDataTable search bar header", () => {
             h(VcDataTable as never, {
               items: [],
               stateKey: "orders",
+              searchBar: true,
               globalFilters,
               onFilter: (e: { filters: Record<string, unknown> }) => log.push(`filter ${JSON.stringify(e.filters)}`),
             });
@@ -345,7 +344,7 @@ describe("VcDataTable search bar header", () => {
         JSON.stringify({ v: 1, presets: [], applied: { search: "", values: { status: ["Paid"] } } }),
       );
       wrapper = mount(VcDataTable as never, {
-        props: { items: [], stateKey: "orders", globalFilters },
+        props: { items: [], stateKey: "orders", searchBar: true, globalFilters },
         global,
         attachTo: document.body,
       });
@@ -388,6 +387,24 @@ describe("VcDataTable search bar header", () => {
     expect(filterEvents().at(-1)![0].filters).toEqual({ name: "Acme" });
   });
 
+  it("passes the result count, the unfiltered count, views, counts and the variant to the bar", () => {
+    const views = [{ id: "paid", name: "Paid", values: { status: ["Paid"] } }];
+    const counts = { status: { Paid: 3 } };
+    const w = mountTable({
+      searchable: true,
+      globalFilters,
+      items: [{ id: 1 }, { id: 2 }],
+      unfilteredCount: 40,
+      searchViews: views,
+      filterCounts: counts,
+      searchBarVariant: "summary",
+    });
+    const bar = w.findComponent({ name: "VcSearchBar" });
+    expect(bar.props()).toMatchObject({ resultCount: 2, unfilteredCount: 40, views, counts, variant: "summary" });
+    w.setProps({ totalCount: 120 });
+    return nextTick().then(() => expect(bar.props("resultCount")).toBe(120));
+  });
+
   it("shows the not-found state when only bar filters are set", async () => {
     url.query.orders_filters = "status:New";
     const w = mountTable({ searchable: true, globalFilters });
@@ -401,19 +418,118 @@ describe("VcDataTable search bar header", () => {
   });
 });
 
-describe("VcTableAdapter in the search bar", () => {
-  it("renders the legacy filters button in the header's actions row as the only filter UI", () => {
-    const w = mount(VcTableAdapter as never, {
-      props: { items: [], columns: [{ id: "name", title: "Name" }], stateKey: "adapter" },
+describe("VcDataTable without searchBar (the v2.11.0 search header)", () => {
+  let wrapper: VueWrapper | undefined;
+  const mountTable = (props: Record<string, unknown> = {}, slots: Record<string, string> = {}) => {
+    const url = urlQueryState({ orders_filters: "status:Paid" });
+    wrapper = mount(VcDataTable as never, {
+      props: { items: [], stateKey: "orders", ...props },
+      slots,
+      global: { ...global, provide: { ...global.provide, ...url.provide } },
+      attachTo: document.body,
+    });
+    return wrapper;
+  };
+  afterEach(() => {
+    wrapper?.unmount();
+    wrapper = undefined;
+  });
+
+  it("renders TableSearchHeader with the old classes and no bar", () => {
+    const w = mountTable({ searchable: true, globalFilters });
+    expect(w.find(".vc-table-search-header .vc-table-search-header__toolbar").exists()).toBe(true);
+    expect(w.find(".vc-search-bar").exists()).toBe(false);
+    expect(w.find(".vc-data-table__search-header").exists()).toBe(false);
+  });
+
+  it("renders GlobalFiltersButton for globalFilters and the panel", () => {
+    const w = mountTable({ searchable: true, globalFilters });
+    expect(w.find(".vc-table-search-header__actions .vc-global-filters-button__label").exists()).toBe(true);
+    expect(w.findComponent({ name: "GlobalFiltersPanel" }).exists()).toBe(true);
+  });
+
+  it("renders search-header-actions in the same header row as the filters button", () => {
+    const w = mountTable(
+      { searchable: true, globalFilters },
+      { "search-header-actions": "<button class='custom-action'>Export</button>" },
+    );
+    const actions = w.find(".vc-table-search-header__toolbar > .vc-table-search-header__actions");
+    expect(actions.find(".custom-action").exists()).toBe(true);
+    expect(actions.find(".vc-global-filters-button__label").exists()).toBe(true);
+  });
+
+  it("ignores the URL filters and an external registration targeting the blade", async () => {
+    registerExternalSearchFilters({
+      id: "ext-default",
+      targetBlades: ["orders"],
+      fields: [{ id: "rating", label: "Rating", filter: { toggle: true } }],
+    });
+    try {
+      const w = mountTable({ searchable: true, searchName: "orders" });
+      await nextTick();
+      expect(w.text()).not.toContain("Rating");
+      expect(w.find(".vc-search-bar").exists()).toBe(false);
+      expect(w.findComponent({ name: "GlobalFiltersButton" }).exists()).toBe(false);
+      expect(w.emitted("filter")).toBeUndefined();
+    } finally {
+      unregisterExternalSearchFilters("ext-default");
+    }
+  });
+
+  it("emits the panel's payload merged with column filters, as in v2.11.0", async () => {
+    const w = mountTable({ searchable: true, globalFilters });
+    const apply = headerAttrs.current.onFilterApply as (col: unknown, payload: Record<string, unknown>) => void;
+    apply({ id: "name", props: { id: "name", filter: true } }, { name: "Acme" });
+    w.findComponent({ name: "GlobalFiltersPanel" }).vm.$emit("apply", { status: ["New"] });
+    const events = w.emitted("filter") as FilterEvent[];
+    expect(events.at(-1)![0].filters).toEqual({ name: "Acme", status: ["New"] });
+    w.findComponent({ name: "GlobalFiltersPanel" }).vm.$emit("clear");
+    expect((w.emitted("filter") as FilterEvent[]).at(-1)![0].filters).toEqual({ name: "Acme" });
+  });
+
+  it("typing in the old header emits update:searchValue and a debounced search", async () => {
+    vi.useFakeTimers();
+    try {
+      const w = mountTable({ searchable: true, searchDebounce: 300 });
+      await w.find(".vc-table-search-header input").setValue("abc");
+      expect(w.emitted("update:searchValue")).toEqual([["abc"]]);
+      vi.advanceTimersByTime(300);
+      expect(w.emitted("search")).toEqual([["abc"]]);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
+
+describe("VcTableAdapter and the search bar", () => {
+  const mountAdapter = (props: Record<string, unknown> = {}) =>
+    mount(VcTableAdapter as never, {
+      props: { items: [], columns: [{ id: "name", title: "Name" }], stateKey: "adapter", ...props },
       slots: { filters: "<div>legacy filters</div>" },
       global,
       attachTo: document.body,
     });
-    expect(w.find(".vc-data-table__search-header-actions .mock-gf-btn").exists()).toBe(true);
-    expect(w.find(".vc-search-bar .mock-gf-btn").exists()).toBe(false);
-    expect(w.findAll(".mock-gf-btn")).toHaveLength(1);
-    expect(w.findAll(".vc-search-bar__chip")).toHaveLength(0);
+
+  it("keeps the old search header without searchBar", () => {
+    const w = mountAdapter();
+    expect(w.find(".vc-table-search-header__actions .vc-global-filters-button__label").exists()).toBe(true);
+    expect(w.find(".vc-search-bar").exists()).toBe(false);
+    w.unmount();
+  });
+
+  it("with searchBar and no fields: only the search, the legacy button above it, no status", () => {
+    const w = mountAdapter({
+      searchBar: true,
+      pages: 2,
+      totalCount: 40,
+      activeFilterCount: 2,
+    });
+    expect(w.find(".vc-data-table__search-header-actions .vc-global-filters-button__label").exists()).toBe(true);
+    expect(w.find(".vc-search-bar .vc-global-filters-button__label").exists()).toBe(false);
+    expect(w.find(SEARCH).exists()).toBe(true);
+    expect(w.find(".vc-search-bar__divider").exists()).toBe(false);
     expect(w.find(".vc-search-bar__filters-btn").exists()).toBe(false);
+    expect(w.find(".vc-data-table__filter-status").exists()).toBe(false);
     w.unmount();
   });
 });

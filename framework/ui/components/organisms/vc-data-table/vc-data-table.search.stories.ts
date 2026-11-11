@@ -226,7 +226,7 @@ SearchWithGlobalFilters.parameters = {
  * Shown when `items` is empty and there is no active search or filters.
  */
 
-/** Custom `#search-header-actions` get their own left-aligned row above the search bar, inside the table's header. */
+/** With `searchBar`, custom `#search-header-actions` get their own left-aligned row above the search bar, inside the table's header. */
 export const SearchWithHeaderActions: Story = {
   render: () => ({
     components: { VcDataTable, VcColumn, VcButton },
@@ -248,7 +248,7 @@ export const SearchWithHeaderActions: Story = {
     },
     template: `
     <div style="height: 520px" class="tw-overflow-hidden">
-      <VcDataTable :items="products" searchable :global-filters="globalFilters" @filter="handleFilter">
+      <VcDataTable :items="products" searchable search-bar :global-filters="globalFilters" @filter="handleFilter">
         <template #search-header-actions>
           <VcButton icon="lucide-list" size="sm" variant="outline" :selected="view === 'list'" :aria-pressed="view === 'list'" @click="view = 'list'">List</VcButton>
           <VcButton icon="lucide-layout-grid" size="sm" variant="outline" :selected="view === 'grid'" :aria-pressed="view === 'grid'" @click="view = 'grid'">Grid</VcButton>

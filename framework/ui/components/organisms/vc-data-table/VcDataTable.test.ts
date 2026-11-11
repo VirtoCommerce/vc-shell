@@ -319,14 +319,20 @@ describe("VcDataTable", () => {
     expect(wrapper.find(".vc-data-table__header").exists()).toBe(false);
   });
 
-  it("renders the search bar when searchable is true", () => {
+  it("renders search header when searchable is true", () => {
     const wrapper = mountTable({ searchable: true });
-    expect(wrapper.find(".mock-search-bar").exists()).toBe(true);
+    expect(wrapper.find(".mock-search-header").exists()).toBe(true);
   });
 
-  it("does not render the search bar when searchable is false and no filters", () => {
+  it("does not render search header when searchable is false and no filters", () => {
     const wrapper = mountTable({ searchable: false });
-    expect(wrapper.find(".mock-search-bar").exists()).toBe(false);
+    expect(wrapper.find(".mock-search-header").exists()).toBe(false);
+  });
+
+  it("renders the search bar instead of the search header with searchBar", () => {
+    const wrapper = mountTable({ searchable: true, searchBar: true });
+    expect(wrapper.find(".mock-search-bar").exists()).toBe(true);
+    expect(wrapper.find(".mock-search-header").exists()).toBe(false);
   });
 
   it("renders desktop Table component when not mobile", () => {

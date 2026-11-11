@@ -29,6 +29,7 @@
       :modified="effectiveModified"
       :title-id="bladeTitleId"
       :loading="showSkeleton"
+      :view-selector="viewSelector"
       @close="handleClose"
       @expand="handleExpand"
       @collapse="handleCollapse"
@@ -147,8 +148,9 @@ import BladeToolbar from "@ui/components/organisms/vc-blade/_internal/BladeToolb
 import BladeStatusBanners from "@ui/components/organisms/vc-blade/_internal/BladeStatusBanners.vue";
 import { VcButton } from "@ui/components/atoms/vc-button";
 import { VcBreadcrumbs } from "@ui/components/molecules/vc-breadcrumbs";
-import { BladeBackButtonKey, BladeFormKey, BladeLoadingKey } from "@framework/injection-keys";
+import { BladeBackButtonKey, BladeFormKey, BladeLoadingKey, BladeViewSelectorKey } from "@framework/injection-keys";
 import WidgetContainer from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainer.vue";
+import { createBladeViewSelectorRegistry } from "@ui/components/organisms/vc-blade/_internal/composables/useBladeViewSelector";
 import { useBlade } from "../../../../core/composables";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { BladeDescriptorKey, BladeMaximizedKey, BladeRenderingStateKey } from "@core/blade-navigation/types";
@@ -250,6 +252,9 @@ const showSkeleton = computed(() => Boolean(props.loading) && !hasLoadedOnce.val
 const showBusyOverlay = computed(() => Boolean(props.loading) && hasLoadedOnce.value);
 
 provide(BladeLoadingKey, showSkeleton);
+
+const { registry: viewSelectorRegistry, render: viewSelector } = createBladeViewSelectorRegistry();
+provide(BladeViewSelectorKey, viewSelectorRegistry);
 
 const _slots = defineSlots<{
   actions(): void;

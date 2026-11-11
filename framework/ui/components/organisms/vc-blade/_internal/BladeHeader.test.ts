@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import { computed, nextTick, ref } from "vue";
+import { computed, h, nextTick, ref } from "vue";
 import { BladeDescriptorKey, BladeRenderingStateKey } from "@core/blade-navigation/types";
 import { IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
 import type { BladeDescriptor, BladeRenderingState } from "@core/blade-navigation/types";
@@ -69,6 +69,34 @@ function factory(
     },
   });
 }
+
+describe("BladeHeader view selector", () => {
+  const selector = () => h("div", { class: "test-view-selector" });
+
+  it("renders a registered view selector next to the title", () => {
+    const wrapper = factory({ title: "Orders", viewSelector: selector });
+    const row = wrapper.find(".vc-blade-header__title-row");
+    expect(row.find(".vc-blade-header__title").exists()).toBe(true);
+    expect(row.find(".test-view-selector").exists()).toBe(true);
+  });
+
+  it("renders nothing without a registered selector", () => {
+    const wrapper = factory({ title: "Orders", viewSelector: null });
+    expect(wrapper.find(".test-view-selector").exists()).toBe(false);
+  });
+
+  it("nothing is rendered on mobile", () => {
+    const wrapper = mount(BladeHeader, {
+      props: { title: "Orders", viewSelector: selector },
+      global: {
+        provide: { [IsMobileKey as symbol]: ref(true), [IsDesktopKey as symbol]: ref(false) },
+        stubs: { teleport: true },
+        mocks: { $t: (key: string) => key },
+      },
+    });
+    expect(wrapper.find(".test-view-selector").exists()).toBe(false);
+  });
+});
 
 describe("BladeHeader", () => {
   it("renders with vc-blade-header class", () => {

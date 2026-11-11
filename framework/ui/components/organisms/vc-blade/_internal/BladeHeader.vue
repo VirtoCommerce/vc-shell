@@ -77,14 +77,20 @@
           v-else
           class="vc-blade-header__content"
         >
-          <div
-            :id="titleId"
-            class="vc-blade-header__title"
-            :class="{
-              'vc-blade-header__title-no-subtitle': !subtitle,
-            }"
-          >
-            {{ title }}
+          <div class="vc-blade-header__title-row">
+            <div
+              :id="titleId"
+              class="vc-blade-header__title"
+              :class="{
+                'vc-blade-header__title-no-subtitle': !subtitle,
+              }"
+            >
+              {{ title }}
+            </div>
+            <component
+              :is="viewSelector"
+              v-if="viewSelector && !isMobile"
+            />
           </div>
           <div
             v-if="subtitle"
@@ -117,7 +123,7 @@
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 import { HeaderControls } from "@ui/components/shared/header-controls";
-import { ref, inject } from "vue";
+import { ref, inject, type VNode } from "vue";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { shift } from "@floating-ui/vue";
 import { BladeRenderingStateKey } from "@core/blade-navigation/types";
@@ -133,6 +139,8 @@ export interface Props {
   titleId?: string;
   /** When true, shows skeleton placeholders for icon/title/subtitle while keeping controls usable */
   loading?: boolean;
+  /** Render function registered by a view selector (e.g. a search bar) to show next to the title */
+  viewSelector?: (() => VNode) | null;
 }
 const props = defineProps<Props>();
 
@@ -206,6 +214,10 @@ function onClose(): void {
 
     .vc-blade-header__content {
       @apply tw-w-full tw-min-w-0;
+    }
+
+    .vc-blade-header__title-row {
+      @apply tw-flex tw-items-center tw-gap-2 tw-min-w-0;
     }
 
     .vc-blade-header__actions {

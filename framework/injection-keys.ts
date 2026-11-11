@@ -1,4 +1,4 @@
-import { InjectionKey, ComputedRef, type Component, type Ref } from "vue";
+import { InjectionKey, ComputedRef, type Component, type Ref, type VNode } from "vue";
 import { BladeDataKey } from "@core/blade-navigation/types";
 import type { BladeRoutesRecord } from "@core/blade-navigation/types";
 import type { NotificationStore } from "@core/notifications/store";
@@ -100,3 +100,10 @@ export const BladeFormKey: InjectionKey<BladeFormInjection> = Symbol("BladeForm"
 
 // Blade loading state (skeleton mode for child components)
 export const BladeLoadingKey: InjectionKey<Ref<boolean>> = Symbol("BladeLoading");
+
+// Blade header view selector (a search bar registers its saved-view selector to show next to the title)
+export interface BladeViewSelectorRegistry {
+  /** Returns an unregister function. The first registration wins. */
+  register(render: () => VNode): () => void;
+}
+export const BladeViewSelectorKey: InjectionKey<BladeViewSelectorRegistry> = Symbol("BladeViewSelector");

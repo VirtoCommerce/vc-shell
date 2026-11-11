@@ -219,7 +219,22 @@
           "PINNED": "Angeheftet"
         },
         "VIEWS": {
-          "ALL": "Alle"
+          "ALL": "Alle",
+          "SELECTOR": "Ansicht: {name}",
+          "SAVED_VIEWS": "Gespeicherte Ansichten",
+          "MODIFIED": "Geändert",
+          "OPTIONS": "Optionen für {name}",
+          "SAVE_CHANGES": "Änderungen an „{name}“ speichern",
+          "SAVE_AS_NEW": "Als neue Ansicht speichern…",
+          "REVERT": "Auf „{name}“ zurücksetzen",
+          "RENAME": "Umbenennen",
+          "DELETE": "Löschen",
+          "NEW_NAME": "Neuer Name",
+          "UNSAVED": "Ungespeicherte Filter",
+          "SAVE": "Speichern",
+          "SAVE_AS_VIEW": "Als Ansicht speichern…",
+          "NAME_PLACEHOLDER": "Name der Ansicht",
+          "CANCEL": "Abbrechen"
         },
         "OPERATOR": {
           "ANY": "Ist einer von",

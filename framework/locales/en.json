@@ -219,7 +219,22 @@
           "PINNED": "Pinned"
         },
         "VIEWS": {
-          "ALL": "All"
+          "ALL": "All",
+          "SELECTOR": "View: {name}",
+          "SAVED_VIEWS": "Saved views",
+          "MODIFIED": "Modified",
+          "OPTIONS": "{name} options",
+          "SAVE_CHANGES": "Save changes to “{name}”",
+          "SAVE_AS_NEW": "Save as new view…",
+          "REVERT": "Revert to “{name}”",
+          "RENAME": "Rename",
+          "DELETE": "Delete",
+          "NEW_NAME": "New name",
+          "UNSAVED": "Unsaved filters",
+          "SAVE": "Save",
+          "SAVE_AS_VIEW": "Save as view…",
+          "NAME_PLACEHOLDER": "View name",
+          "CANCEL": "Cancel"
         },
         "OPERATOR": {
           "ANY": "Is any of",

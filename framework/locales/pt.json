@@ -1,0 +1,664 @@
+{
+  "CORE": {
+    "ERRORS": {
+      "SESSION_EXPIRED": "Acesso negado: a sessão expirou ou não possui as permissões necessárias.\nEntre novamente ou fale com o administrador para obter ajuda.",
+      "NETWORK_UNAVAILABLE": "Rede indisponível. Verifique a conexão.",
+      "SESSION_CHECK_FAILED": "Não foi possível verificar sua sessão. Tente novamente."
+    },
+    "THEMES": {
+      "LIGHT": "Claro",
+      "DARK": "Escuro"
+    },
+    "NOTIFICATIONS": {
+      "CLEAR_ALL": "Limpar tudo"
+    }
+  },
+  "SHELL": {
+    "NAVIGATION_ARIA_LABEL": "Navegação principal",
+    "SIDEBAR": {
+      "SEARCH_PLACEHOLDER": "Pesquisar palavra-chave"
+    },
+    "USER": {
+      "ROLE": {
+        "ADMINISTRATOR": "Administrador"
+      }
+    },
+    "ACCOUNT": {
+      "SETTINGS": "Configurações",
+      "CHANGE_PASSWORD": "Alterar senha",
+      "PROFILE": "Perfil",
+      "LOGOUT": "Sair"
+    }
+  },
+  "COMPONENTS": {
+    "CONTROLS": {
+      "CLEAR": "Limpar",
+      "CLEAR_ALL": "Limpar tudo",
+      "CLOSE": "Fechar",
+      "TOGGLE_DROPDOWN": "Mostrar/ocultar lista",
+      "SEARCH_OPTIONS": "Pesquisar opções",
+      "SELECT_OPTION": "Selecionar opção",
+      "CLEAR_SELECTION": "Limpar seleção",
+      "COPY_TO_CLIPBOARD": "Copiar para a área de transferência",
+      "DELETE_ITEM": "Excluir item",
+      "SHOW_PASSWORD": "Mostrar senha",
+      "HIDE_PASSWORD": "Ocultar senha"
+    },
+    "ATOMS": {
+      "VC_IMAGE": {
+        "LABEL": "Imagem"
+      },
+      "VC_BANNER": {
+        "SHOW_MORE": "Mostrar mais",
+        "SHOW_LESS": "Mostrar menos"
+      },
+      "VC_SCROLLABLE_CONTAINER": {
+        "LABEL": "Conteúdo rolável"
+      },
+      "VC_VIDEO": {
+        "NO_SOURCE": "Nenhuma fonte de vídeo"
+      }
+    },
+    "MOLECULES": {
+      "VC_SELECT": {
+        "CLICK_TO_SELECT": "Clique para selecionar...",
+        "LOADING": "Carregando...",
+        "LOADING_MORE": "Carregando mais...",
+        "NO_OPTIONS": "Nenhuma opção"
+      },
+      "VC_FILE_UPLOAD": {
+        "DRAG_HERE": "Arraste e solte o arquivo aqui ou",
+        "BROWSE": "procure nos seus arquivos",
+        "TAP_TO_UPLOAD": "Toque para selecionar arquivos",
+        "UPLOADING": "Enviando..."
+      },
+      "VC_INPUT": {
+        "DATE_PLACEHOLDER": "Selecionar data",
+        "DATE_TIME_PLACEHOLDER": "Selecionar data e hora"
+      },
+      "VC_PAGINATION": {
+        "JUMP": "Ir para a página:",
+        "LABEL": "Paginação",
+        "FIRST": "Primeira página",
+        "PREVIOUS": "Página anterior",
+        "NEXT": "Próxima página",
+        "LAST": "Última página",
+        "PAGE": "Página {page}"
+      },
+      "VC_MULTIVALUE": {
+        "ADD": "Adicionar"
+      },
+      "VC_BREADCRUMBS": {
+        "BACK": "Voltar",
+        "LABEL": "Trilha de navegação",
+        "SHOW_MORE": "Mostrar a trilha completa"
+      },
+      "VC_COLOR_INPUT": {
+        "CLEAR": "Limpar cor"
+      },
+      "VC_DATE_PICKER": {
+        "CLEAR": "Limpar data",
+        "ARIA": {
+          "TOGGLE_OVERLAY": "Mostrar ou ocultar o seletor",
+          "MENU": "Menu do seletor de data",
+          "INPUT": "Campo de data",
+          "OPEN_TIME_PICKER": "Abrir o seletor de hora",
+          "CLOSE_TIME_PICKER": "Fechar o seletor de hora",
+          "INCREMENT": "Aumentar {unit}",
+          "DECREMENT": "Diminuir {unit}",
+          "OPEN_TIME_OVERLAY": "Escolher {unit}",
+          "AM_PM": "Alternar AM/PM",
+          "OPEN_YEARS": "Escolher um ano",
+          "OPEN_MONTHS": "Escolher um mês",
+          "NEXT_MONTH": "Próximo mês",
+          "PREV_MONTH": "Mês anterior",
+          "NEXT_YEAR": "Próximo ano",
+          "PREV_YEAR": "Ano anterior",
+          "CALENDAR_ICON": "Abrir calendário",
+          "TIME_PICKER": "Seletor de hora",
+          "MONTH_PICKER": "Seletor de mês",
+          "MONTH_PICKER_OVERLAY": "Lista de meses",
+          "YEAR_PICKER": "Seletor de ano",
+          "YEAR_PICKER_OVERLAY": "Lista de anos",
+          "TIME_OVERLAY": "Seletor de {unit}",
+          "UNITS": {
+            "hours": "horas",
+            "minutes": "minutos",
+            "seconds": "segundos"
+          }
+        }
+      },
+      "VC_SLIDER": {
+        "PREVIOUS": "Slide anterior",
+        "NEXT": "Próximo slide"
+      },
+      "VC_TOAST": {
+        "DISMISS": "Fechar notificação"
+      },
+      "VC_EDITOR": {
+        "TOOLBAR": {
+          "LABEL": "Formatação de texto",
+          "BOLD": "Negrito",
+          "ITALIC": "Itálico",
+          "UNDERLINE": "Sublinhado",
+          "STRIKETHROUGH": "Tachado",
+          "HEADING_1": "Título 1",
+          "HEADING_2": "Título 2",
+          "HEADING_3": "Título 3",
+          "BULLET_LIST": "Lista com marcadores",
+          "NUMBERED_LIST": "Lista numerada",
+          "BLOCKQUOTE": "Citação",
+          "INSERT_LINK": "Inserir link",
+          "INSERT_IMAGE": "Inserir imagem",
+          "INSERT_TABLE": "Inserir tabela",
+          "DELETE_TABLE": "Excluir tabela",
+          "ADD_COLUMN_BEFORE": "Inserir coluna antes",
+          "ADD_COLUMN_AFTER": "Inserir coluna depois",
+          "ADD_ROW_BEFORE": "Inserir linha antes",
+          "ADD_ROW_AFTER": "Inserir linha depois",
+          "DELETE_COLUMN": "Excluir coluna",
+          "DELETE_ROW": "Excluir linha"
+        },
+        "FONT_SIZE": "Tamanho da fonte",
+        "VIEW": {
+          "PREVIEW": "Visualizar",
+          "SPLIT": "Visualização lado a lado",
+          "SOURCE": "Código-fonte"
+        }
+      }
+    },
+    "ORGANISMS": {
+      "VC_DYNAMIC_PROPERTY": {
+        "ADD": "Adicionar valor",
+        "VALUE_TYPE": {
+          "COLOR": {
+            "PLACEHOLDER": "Código da cor",
+            "NAME": "Nome da cor"
+          }
+        }
+      },
+      "VC_GALLERY": {
+        "INTERNAL": {
+          "VC_GALLERY_ITEM": {
+            "FULLSCREEN": "Tela cheia",
+            "EDIT": "Editar",
+            "DELETE": "Excluir"
+          },
+          "VC_GALLERY_PREVIEW": {
+            "COPY_IMAGE_LINK": "copiar link da imagem"
+          },
+          "VC_GALLERY_FILMSTRIP": {
+            "PREVIOUS": "Imagens anteriores",
+            "NEXT": "Próximas imagens"
+          }
+        },
+        "GALLERY_IS_EMPTY": "A galeria está vazia",
+        "DROP_TO_UPLOAD": "Solte para enviar",
+        "DRAG_IMAGES_HERE": "Arraste imagens para cá ou",
+        "BROWSE_IMAGES": "procure nos seus arquivos",
+        "UPLOAD": "Enviar",
+        "OR_DROP_HERE": "ou solte aqui",
+        "SHOW_ALL": "Expandir ({count})",
+        "COLLAPSE": "Recolher"
+      },
+      "VC_APP": {
+        "NOTIFICATIONS": "Notificações",
+        "OPEN_MENU": "Abrir menu",
+        "CLOSE_MENU": "Fechar menu",
+        "INTERNAL": {
+          "VC_APP_BAR": {
+            "BACK": "Voltar"
+          },
+          "MOBILE_LAYOUT": {
+            "TAB_MENU": "Menu",
+            "TAB_HUB": "Hub"
+          },
+          "APP_HUB": {
+            "SEARCH_PLACEHOLDER": "Pesquisar aplicações e widgets",
+            "APPLICATIONS": "Aplicações",
+            "WIDGETS": "Widgets",
+            "NO_APPLICATIONS": "Nenhuma aplicação encontrada",
+            "NO_WIDGETS": "Nenhum widget encontrado",
+            "LIST_VIEW": "Visualização em lista",
+            "TILE_VIEW": "Visualização em blocos"
+          }
+        }
+      },
+      "BLADE_NAVIGATION": {
+        "ARIA_LABEL": "Navegação entre painéis"
+      },
+      "VC_BLADE": {
+        "SEE_DETAILS": "Ver detalhes",
+        "UNSAVED_CHANGES": "Há alterações não salvas",
+        "ERROR_POPUP": {
+          "TITLE": "Detalhes do erro",
+          "COPY_ERROR": "copiar conteúdo",
+          "CLOSE": "fechar"
+        },
+        "MORE": "Mais",
+        "TOOLBAR": "Ações da barra de ferramentas",
+        "CLOSE_MENU": "Fechar menu",
+        "PANEL": "Painel",
+        "WIDGETS": {
+          "ALERTS_TITLE": "{title}: requer atenção",
+          "OPEN": "Abrir",
+          "ALERTS_COUNT": "Alertas que requerem atenção: {count}",
+          "MORE_WIDGETS": "Mais widgets",
+          "MORE_WIDGETS_ALERTS": "Mais widgets, alertas que requerem atenção: {count}",
+          "CUSTOMIZE": "Personalizar",
+          "DONE": "Concluído",
+          "RESET": "Redefinir",
+          "NOT_ON_BLADE": "Widgets ocultos",
+          "ON_BLADE": "No painel · até {max}",
+          "ALL_ON_BLADE": "Arraste um widget para cá para ocultá-lo",
+          "STRIP_EMPTY": "Arraste um widget para cá para mostrá-lo",
+          "REMOVE": "Remover {title} do painel",
+          "ADD": "Adicionar {title} ao painel",
+          "REORDER": "Reordenar {title}"
+        }
+      },
+      "VC_BLADE_HEADER": {
+        "UNSAVED_CHANGES": "Há alterações não salvas",
+        "NO_CHANGES": "Nenhuma alteração não salva",
+        "CLOSE": "Fechar",
+        "MAXIMIZE": "Maximizar",
+        "RESTORE": "Restaurar"
+      },
+      "VC_TABLE": {
+        "SELECT_ROW": "Selecionar linha",
+        "SELECT_ALL_ROWS": "Selecionar todas as linhas",
+        "EXPAND_ROW": "Mostrar/ocultar detalhes da linha",
+        "CURRENT_PAGE_SELECTED": "Todos os itens desta página estão selecionados.",
+        "SELECT_ALL": "Selecionar todos os itens",
+        "ALL_SELECTED": "Todos os itens estão selecionados.",
+        "ALL_SELECTED_COUNT": "Todos os {count} itens selecionados",
+        "SELECT_ALL_COUNT": "Selecionar todos os {count} itens",
+        "CANCEL": "Limpar seleção",
+        "ALL_ACTIONS": "Todas as ações",
+        "MORE": "Mais",
+        "ALL_FILTERS": "Filtros",
+        "SEARCH": "Pesquisar...",
+        "EMPTY": "A lista está vazia.",
+        "EMPTY_TITLE": "Sem dados",
+        "EMPTY_DESCRIPTION": "Nenhum item para exibir",
+        "NOT_FOUND": "Nada encontrado.",
+        "NOT_FOUND_TITLE": "Nenhum resultado encontrado",
+        "NOT_FOUND_DESCRIPTION": "Tente ajustar a pesquisa ou os filtros",
+        "TOTALS": "Totais:",
+        "ACTIONS": "Ações",
+        "NOT_SET": "Não definido",
+        "SELECTED": "Selecionado",
+        "SELECT_ALL_TRUNCATED": "Selecionar tudo",
+        "PULL_TO_REFRESH": "Puxe para atualizar",
+        "RELEASE_TO_REFRESH": "Solte para atualizar",
+        "REFRESHING": "Atualizando...",
+        "ADD_ROW": "Adicionar linha",
+        "LOADING": "Carregando...",
+        "PAGE_INFO": "Página {current} de {total}",
+        "COLUMN_FILTER": {
+          "APPLY": "Aplicar",
+          "CLEAR": "Limpar",
+          "FROM": "De",
+          "TO": "Até",
+          "TITLE": "Filtrar coluna"
+        },
+        "GLOBAL_FILTERS": {
+          "BUTTON": "Filtros",
+          "TITLE": "Filtros"
+        },
+        "COLUMN_SWITCHER": {
+          "BUTTON": "Colunas",
+          "TITLE": "Mostrar/ocultar colunas",
+          "SHOW_ALL": "Mostrar todas",
+          "RESET": "Redefinir"
+        },
+        "OF": "de",
+        "PAGE": "Página"
+      },
+      "VC_POPUP": {
+        "OK": "OK",
+        "CONFIRM": "Confirmar",
+        "CANCEL": "Cancelar",
+        "CLOSE": "Fechar",
+        "TITLE": {
+          "CONFIRMATION": "Confirmação",
+          "ERROR": "Erro",
+          "INFO": "Informação"
+        }
+      }
+    },
+    "THEME_SELECTOR": {
+      "THEME_CHANGED": " tema",
+      "THEME_SELECTOR": "Tema"
+    },
+    "CHANGE_PASSWORD": {
+      "TITLE": "Alterar senha",
+      "TITLE_FORCED": "Senha expirada",
+      "SUBTITLE_FORCED": "Defina uma nova senha",
+      "FORCED": {
+        "LABEL": "A sua senha expirou. É necessário alterá-la para continuar a usar o sistema."
+      },
+      "CURRENT_PASSWORD": {
+        "LABEL": "Senha atual",
+        "PLACEHOLDER": "Insira a senha"
+      },
+      "NEW_PASSWORD": {
+        "LABEL": "Nova senha",
+        "PLACEHOLDER": "Insira a senha"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Confirmar senha",
+        "PLACEHOLDER": "Confirme a senha"
+      },
+      "CANCEL": "Cancelar",
+      "SAVE": "Atualizar",
+      "ERRORS": {
+        "Repeat-password": "As senhas não coincidem",
+        "Equal-passwords": "A nova senha não pode ser igual à anterior",
+        "Invalid-token": "O token é inválido ou expirou",
+        "Password-too-weak": "A nova senha não cumpre uma ou mais políticas de segurança de senha:",
+        "PasswordTooShort": "Senha muito curta",
+        "PasswordRequiresUniqueChars": "A senha deve conter caracteres diferentes",
+        "PasswordRequiresLower": "A senha deve conter pelo menos uma letra minúscula ('a'-'z')",
+        "PasswordRequiresUpper": "A senha deve conter pelo menos uma letra maiúscula ('A'-'Z')",
+        "PasswordRequiresDigit": "A senha deve conter pelo menos um dígito ('0'-'9')",
+        "PasswordRequiresNonAlphanumeric": "A senha deve conter pelo menos um caractere não alfanumérico",
+        "Incorrect password.": "A senha inserida está incorreta",
+        "You have used this password in the past. Choose another one.": "Esta senha já foi usada anteriormente. Escolha outra."
+      }
+    },
+    "APP_HUB": {
+      "TITLE": "Aplicações"
+    },
+    "NOTIFICATION_DROPDOWN": {
+      "TITLE": "Notificações",
+      "EMPTY": "Ainda não há notificações"
+    },
+    "LANGUAGE_SELECTOR": {
+      "TITLE": "Idioma"
+    },
+    "FILTERS": {
+      "APPLY": "Aplicar filtros",
+      "RESET": "Redefinir"
+    }
+  },
+  "INVITATION": {
+    "TITLE": "Convite recebido!",
+    "SUBTITLE": "Defina uma senha para a sua conta",
+    "FIELDS": {
+      "EMAIL": {
+        "LABEL": "E-mail"
+      },
+      "PASSWORD": {
+        "LABEL": "Nova senha",
+        "PLACEHOLDER": "Insira a senha"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Confirmar senha",
+        "PLACEHOLDER": "Confirme a senha"
+      }
+    },
+    "ACCEPT_INVITATION": "Ativar",
+    "ERRORS": {
+      "Repeat-password": "As senhas não coincidem",
+      "Invalid-token": "O token é inválido ou expirou",
+      "Password-too-weak": "A nova senha não cumpre uma ou mais políticas de segurança de senha:",
+      "PasswordTooShort": "Senha muito curta",
+      "PasswordRequiresUniqueChars": "A senha deve conter caracteres diferentes",
+      "PasswordRequiresLower": "A senha deve conter pelo menos uma letra minúscula ('a'-'z')",
+      "PasswordRequiresUpper": "A senha deve conter pelo menos uma letra maiúscula ('A'-'Z')",
+      "PasswordRequiresDigit": "A senha deve conter pelo menos um dígito ('0'-'9')",
+      "PasswordRequiresNonAlphanumeric": "A senha deve conter pelo menos um caractere não alfanumérico",
+      "recentPasswordUsed": "Esta senha já foi usada anteriormente. Escolha outra."
+    }
+  },
+  "LOGIN": {
+    "TITLE": "Boas-vindas",
+    "SUBTITLE": "Entre na sua conta para continuar",
+    "FIELDS": {
+      "LOGIN": {
+        "LABEL": "E-mail",
+        "PLACEHOLDER": "Insira o seu e-mail"
+      },
+      "PASSWORD": {
+        "LABEL": "Senha",
+        "PLACEHOLDER": "Insira a sua senha"
+      },
+      "REMEMBER_ME": {
+        "LABEL": "Lembrar de mim"
+      },
+      "FORGOT_PASSWORD": {
+        "TITLE": "Recuperar senha",
+        "LABEL": "E-mail",
+        "PLACEHOLDER": "Insira o seu e-mail"
+      }
+    },
+    "FORGOT_PASSWORD_BUTTON": "Esqueceu a senha?",
+    "BUTTON": "Entrar",
+    "OR": "ou",
+    "FORGOT_BUTTON": "Enviar",
+    "BACK_BUTTON": "Voltar",
+    "BUTTON_OK": "OK",
+    "RESET_EMAIL_TEXT": "Enviaremos um e-mail com instruções para redefinir a sua senha.",
+    "RESET_EMAIL_SENT": "Foi enviado um e-mail com instruções.",
+    "SSO_NO_PROVIDERS_ERROR": "A autenticação SSO não está configurada. Fale com o seu administrador.",
+    "ERRORS": {
+      "INVALID_CREDENTIALS": "O login ou a senha estão incorretos.",
+      "AUTH_WITH_CODE": "Erro de autenticação (código: {code}).",
+      "AUTH_GENERIC": "Erro de autenticação: {detail}"
+    }
+  },
+  "FORGOT_PASSWORD": {
+    "TITLE": "Redefinir a senha",
+    "SUBTITLE": "Insira o seu e-mail e enviaremos um link de redefinição",
+    "FIELDS": {
+      "EMAIL": {
+        "LABEL": "E-mail",
+        "PLACEHOLDER": "Insira o seu endereço de e-mail"
+      }
+    },
+    "SEND_BUTTON": "Enviar link",
+    "BACK_TO_LOGIN": "Voltar ao login",
+    "SUCCESS_TITLE": "Verifique o seu e-mail",
+    "SUCCESS_TEXT": "Enviamos um link de redefinição para {email}"
+  },
+  "PASSWORDRESET": {
+    "TITLE": "Definir nova senha",
+    "SUBTITLE": "Insira a nova senha abaixo",
+    "FIELDS": {
+      "PASSWORD": {
+        "LABEL": "Nova senha",
+        "PLACEHOLDER": "Insira a senha"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Confirmar senha",
+        "PLACEHOLDER": "Confirme a senha"
+      }
+    },
+    "SAVE_PASSWORD": "Salvar",
+    "ERRORS": {
+      "Repeat-password": "As senhas não coincidem",
+      "Invalid-token": "O token é inválido ou expirou",
+      "Password-too-weak": "A nova senha não cumpre uma ou mais políticas de segurança de senha:",
+      "PasswordTooShort": "Senha muito curta",
+      "PasswordRequiresUniqueChars": "A senha deve conter caracteres diferentes",
+      "PasswordRequiresLower": "A senha deve conter pelo menos uma letra minúscula ('a'-'z')",
+      "PasswordRequiresUpper": "A senha deve conter pelo menos uma letra maiúscula ('A'-'Z')",
+      "PasswordRequiresDigit": "A senha deve conter pelo menos um dígito ('0'-'9')",
+      "PasswordRequiresNonAlphanumeric": "A senha deve conter pelo menos um caractere não alfanumérico",
+      "recentPasswordUsed": "Esta senha já foi usada anteriormente. Escolha outra."
+    }
+  },
+  "ASSETS_MANAGER": {
+    "TITLE": "Recursos",
+    "TOOLBAR": {
+      "SAVE": "Salvar",
+      "REFRESH": "Atualizar",
+      "ADD": "Adicionar",
+      "DELETE": "Excluir selecionados"
+    },
+    "EMPTY": {
+      "NO_ASSETS": "Nenhum recurso",
+      "UPLOAD_ASSETS": "Arraste e solte recursos aqui ou clique em 'Enviar'",
+      "UPLOAD": "Enviar"
+    },
+    "TABLE": {
+      "HEADER": {
+        "IMAGE": "Imagem",
+        "NAME": "Nome",
+        "SIZE": "Tamanho",
+        "SORT_ORDER": "Ordem de classificação",
+        "CREATED_DATE": "Data de criação"
+      },
+      "ACTIONS": {
+        "DELETE": "Excluir",
+        "EDIT": "Editar"
+      }
+    }
+  },
+  "ASSETS": {
+    "PAGES": {
+      "DETAILS": {
+        "SUBTITLE": "Edição de recurso",
+        "TOOLBAR": {
+          "SAVE": "Salvar",
+          "DELETE": "Excluir"
+        },
+        "FIELDS": {
+          "SIZE": "Tamanho",
+          "CREATED_DATE": "Data de criação",
+          "URL": "URL",
+          "COPY": "Copiar link",
+          "NAME": {
+            "TITLE": "Nome do recurso",
+            "PLACEHOLDER": "Insira o nome do recurso"
+          },
+          "ALT": {
+            "TITLE": "Texto alternativo da imagem",
+            "PLACEHOLDER": "Insira o texto alternativo da imagem",
+            "TOOLTIP": "Este texto será exibido se a imagem estiver desativada ou não for carregada na página"
+          },
+          "DESCRIPTION": {
+            "TITLE": "Meta descrição",
+            "PLACEHOLDER": "Insira a meta descrição"
+          }
+        }
+      }
+    }
+  },
+  "messages": {
+    "_default": "O campo {field} não é válido",
+    "alpha": "O campo {field} só pode conter letras",
+    "alpha_num": "O campo {field} só pode conter caracteres alfanuméricos",
+    "alpha_dash": "O campo {field} só pode conter caracteres alfanuméricos, hífens e sublinhados",
+    "alpha_spaces": "O campo {field} só pode conter letras e espaços",
+    "between": "O campo {field} deve estar entre 0:{min} e 1:{max}",
+    "confirmed": "A confirmação do campo {field} não corresponde",
+    "digits": "O campo {field} deve ser numérico e conter exatamente 0:{length} dígitos",
+    "dimensions": "O campo {field} deve ter 0:{width} por 1:{height} pixels",
+    "email": "O campo {field} deve ser um e-mail válido",
+    "not_one_of": "O campo {field} não tem um valor válido",
+    "ext": "O campo {field} não é um arquivo válido",
+    "image": "O campo {field} deve ser uma imagem",
+    "integer": "O campo {field} deve ser um número inteiro",
+    "length": "O campo {field} deve ter 0:{length} de comprimento",
+    "max_value": "O campo {field} deve ser igual ou inferior a 0:{max}",
+    "max": "O campo {field} não pode ter mais de 0:{length} caracteres",
+    "mimes": "O campo {field} deve ter um tipo de arquivo válido",
+    "min_value": "O campo {field} deve ser igual ou superior a 0:{min}",
+    "min": "O campo {field} deve ter pelo menos 0:{length} caracteres",
+    "numeric": "O campo {field} só pode conter números",
+    "one_of": "O campo {field} não tem um valor válido",
+    "regex": "O formato do campo {field} é inválido",
+    "required_if": "O campo {field} é obrigatório",
+    "required": "O campo {field} é obrigatório",
+    "size": "O tamanho do campo {field} deve ser inferior a 0:{size} KB",
+    "url": "O campo {field} não é uma URL válida",
+    "min_dimensions": {
+      "error": "As dimensões da imagem devem ser maiores que {height}*{width}",
+      "not_image_error": "O arquivo não é uma imagem"
+    },
+    "file_weight": "O tamanho do arquivo deve ser no máximo {size} KB",
+    "before": "A data de término deve ser anterior à data de início",
+    "after": "A data de término deve ser posterior à data de início",
+    "bigint": "Número não suportado"
+  },
+  "PERMISSION_MESSAGES": {
+    "ACCESS_RESTRICTED": "Acesso restrito"
+  },
+  "AI_AGENT": {
+    "LOADING": "Carregando Virto OZ..."
+  },
+  "VC_SCHEDULER": {
+    "AGENDA": "Agenda",
+    "ALL_DAY": "Dia inteiro",
+    "CANCEL": "Cancelar",
+    "CLOSE": "Fechar",
+    "COLOR": "Cor",
+    "COLOR_DEFAULT": "Cor padrão",
+    "COLOR_CUSTOM": "Cor personalizada",
+    "COLOR_BLUE": "Azul",
+    "COLOR_GREEN": "Verde",
+    "COLOR_AMBER": "Âmbar",
+    "COLOR_RED": "Vermelho",
+    "COLOR_PURPLE": "Roxo",
+    "COLOR_PINK": "Rosa",
+    "COLOR_TEAL": "Azul-petróleo",
+    "COLOR_SLATE": "Ardósia",
+    "DAY": "Dia",
+    "DAY_N_OF_M": "Dia {n} de {total}",
+    "DELETE": "Excluir",
+    "DELETE_CONFIRM_BODY": "Excluir \"{title}\"? Esta ação não pode ser desfeita.",
+    "DELETE_CONFIRM_TITLE": "Excluir evento",
+    "EDIT": "Editar",
+    "EDIT_EVENT": "Editar evento",
+    "EMPTY": "Nenhum evento neste período",
+    "EMPTY_HINT": "Ainda não há eventos. Clique em um dia para adicionar um.",
+    "END": "Fim",
+    "LOADING": "Carregando eventos…",
+    "MORE": "+{count} mais",
+    "MORE_EVENTS": "Mais eventos",
+    "MONTH": "Mês",
+    "MORE_OPTIONS": "Mais opções",
+    "NEW_EVENT": "Novo evento",
+    "NEXT": "Próximo",
+    "PREVIOUS": "Anterior",
+    "RECUR_SCOPE_ALL": "Todos os eventos",
+    "RECUR_SCOPE_BODY_DELETE": "Este evento faz parte de uma série recorrente. Deseja excluir apenas este evento ou todos os eventos da série?",
+    "RECUR_SCOPE_BODY_EDIT": "Este evento faz parte de uma série recorrente. Deseja editar apenas este evento ou todos os eventos da série?",
+    "RECUR_SCOPE_THIS": "Este evento",
+    "RECUR_SCOPE_TITLE": "Evento recorrente",
+    "REPEAT": "Repetir",
+    "REPEAT_DAILY": "Diariamente",
+    "REPEAT_END": "Termina",
+    "REPEAT_END_COUNT": "Após",
+    "REPEAT_END_NEVER": "Nunca",
+    "REPEAT_END_UNTIL": "Na data",
+    "REPEAT_EVERY": "Repetir a cada",
+    "REPEAT_UNIT_DAYS": "dia(s)",
+    "REPEAT_UNIT_WEEKS": "semana(s)",
+    "REPEAT_UNIT_MONTHS": "mês(es)",
+    "REPEAT_UNIT_YEARS": "ano(s)",
+    "REPEAT_MONTHLY": "Mensalmente",
+    "REPEAT_NONE": "Não se repete",
+    "REPEAT_OCCURRENCES": "ocorrência(s)",
+    "REPEAT_ON": "Repetir em",
+    "REPEAT_WEEKLY": "Semanalmente",
+    "REPEAT_YEARLY": "Anualmente",
+    "SAVE": "Salvar",
+    "START": "Início",
+    "TIMELINE": "Linha do tempo",
+    "TIMELINE_DAY": "Linha do tempo: dia",
+    "TIMELINE_WEEK": "Linha do tempo: semana",
+    "TITLE": "Título",
+    "TODAY": "Hoje",
+    "WEEK": "Semana",
+    "WORK_WEEK": "Semana útil",
+    "ZOOM_IN": "Ampliar",
+    "ZOOM_OUT": "Reduzir",
+    "EVENT_DETAILS": "Detalhes do evento"
+  },
+  "common": {
+    "no_options": "Nenhuma opção"
+  }
+}

@@ -1,0 +1,664 @@
+{
+  "CORE": {
+    "ERRORS": {
+      "SESSION_EXPIRED": "Pääsy estetty: istuntosi on vanhentunut tai sinulla ei ole tarvittavia käyttöoikeuksia.\nKirjaudu sisään uudelleen tai pyydä apua järjestelmänvalvojalta.",
+      "NETWORK_UNAVAILABLE": "Verkko ei ole käytettävissä. Tarkista yhteys.",
+      "SESSION_CHECK_FAILED": "Istuntoa ei voitu tarkistaa. Yritä uudelleen."
+    },
+    "THEMES": {
+      "LIGHT": "Vaalea",
+      "DARK": "Tumma"
+    },
+    "NOTIFICATIONS": {
+      "CLEAR_ALL": "Tyhjennä kaikki"
+    }
+  },
+  "SHELL": {
+    "NAVIGATION_ARIA_LABEL": "Päänavigointi",
+    "SIDEBAR": {
+      "SEARCH_PLACEHOLDER": "Hae hakusanalla"
+    },
+    "USER": {
+      "ROLE": {
+        "ADMINISTRATOR": "Järjestelmänvalvoja"
+      }
+    },
+    "ACCOUNT": {
+      "SETTINGS": "Asetukset",
+      "CHANGE_PASSWORD": "Vaihda salasana",
+      "PROFILE": "Profiili",
+      "LOGOUT": "Kirjaudu ulos"
+    }
+  },
+  "COMPONENTS": {
+    "CONTROLS": {
+      "CLEAR": "Tyhjennä",
+      "CLEAR_ALL": "Tyhjennä kaikki",
+      "CLOSE": "Sulje",
+      "TOGGLE_DROPDOWN": "Avaa tai sulje pudotusvalikko",
+      "SEARCH_OPTIONS": "Hae vaihtoehtoja",
+      "SELECT_OPTION": "Valitse vaihtoehto",
+      "CLEAR_SELECTION": "Tyhjennä valinta",
+      "COPY_TO_CLIPBOARD": "Kopioi leikepöydälle",
+      "DELETE_ITEM": "Poista kohde",
+      "SHOW_PASSWORD": "Näytä salasana",
+      "HIDE_PASSWORD": "Piilota salasana"
+    },
+    "ATOMS": {
+      "VC_IMAGE": {
+        "LABEL": "Kuva"
+      },
+      "VC_BANNER": {
+        "SHOW_MORE": "Näytä lisää",
+        "SHOW_LESS": "Näytä vähemmän"
+      },
+      "VC_SCROLLABLE_CONTAINER": {
+        "LABEL": "Vieritettävä sisältö"
+      },
+      "VC_VIDEO": {
+        "NO_SOURCE": "Ei videolähdettä"
+      }
+    },
+    "MOLECULES": {
+      "VC_SELECT": {
+        "CLICK_TO_SELECT": "Valitse napsauttamalla...",
+        "LOADING": "Ladataan...",
+        "LOADING_MORE": "Ladataan lisää...",
+        "NO_OPTIONS": "Ei vaihtoehtoja"
+      },
+      "VC_FILE_UPLOAD": {
+        "DRAG_HERE": "Vedä ja pudota tiedosto tähän tai",
+        "BROWSE": "selaa tiedostoja",
+        "TAP_TO_UPLOAD": "Valitse tiedostot napauttamalla",
+        "UPLOADING": "Ladataan palvelimelle..."
+      },
+      "VC_INPUT": {
+        "DATE_PLACEHOLDER": "Valitse päivämäärä",
+        "DATE_TIME_PLACEHOLDER": "Valitse päivämäärä ja aika"
+      },
+      "VC_PAGINATION": {
+        "JUMP": "Siirry sivulle:",
+        "LABEL": "Sivutus",
+        "FIRST": "Ensimmäinen sivu",
+        "PREVIOUS": "Edellinen sivu",
+        "NEXT": "Seuraava sivu",
+        "LAST": "Viimeinen sivu",
+        "PAGE": "Sivu {page}"
+      },
+      "VC_MULTIVALUE": {
+        "ADD": "Lisää"
+      },
+      "VC_BREADCRUMBS": {
+        "BACK": "Takaisin",
+        "LABEL": "Murupolku",
+        "SHOW_MORE": "Näytä koko murupolku"
+      },
+      "VC_COLOR_INPUT": {
+        "CLEAR": "Tyhjennä väri"
+      },
+      "VC_DATE_PICKER": {
+        "CLEAR": "Tyhjennä päivämäärä",
+        "ARIA": {
+          "TOGGLE_OVERLAY": "Näytä tai piilota valitsin",
+          "MENU": "Päivämäärävalitsimen valikko",
+          "INPUT": "Päivämääräkenttä",
+          "OPEN_TIME_PICKER": "Avaa ajan valitsin",
+          "CLOSE_TIME_PICKER": "Sulje ajan valitsin",
+          "INCREMENT": "Kasvata: {unit}",
+          "DECREMENT": "Pienennä: {unit}",
+          "OPEN_TIME_OVERLAY": "Valitse: {unit}",
+          "AM_PM": "Vaihda AM/PM",
+          "OPEN_YEARS": "Valitse vuosi",
+          "OPEN_MONTHS": "Valitse kuukausi",
+          "NEXT_MONTH": "Seuraava kuukausi",
+          "PREV_MONTH": "Edellinen kuukausi",
+          "NEXT_YEAR": "Seuraava vuosi",
+          "PREV_YEAR": "Edellinen vuosi",
+          "CALENDAR_ICON": "Avaa kalenteri",
+          "TIME_PICKER": "Ajan valitsin",
+          "MONTH_PICKER": "Kuukauden valitsin",
+          "MONTH_PICKER_OVERLAY": "Kuukausiluettelo",
+          "YEAR_PICKER": "Vuoden valitsin",
+          "YEAR_PICKER_OVERLAY": "Vuosiluettelo",
+          "TIME_OVERLAY": "Valitsin: {unit}",
+          "UNITS": {
+            "hours": "tunnit",
+            "minutes": "minuutit",
+            "seconds": "sekunnit"
+          }
+        }
+      },
+      "VC_SLIDER": {
+        "PREVIOUS": "Edellinen dia",
+        "NEXT": "Seuraava dia"
+      },
+      "VC_TOAST": {
+        "DISMISS": "Sulje ilmoitus"
+      },
+      "VC_EDITOR": {
+        "TOOLBAR": {
+          "LABEL": "Tekstin muotoilu",
+          "BOLD": "Lihavointi",
+          "ITALIC": "Kursivointi",
+          "UNDERLINE": "Alleviivaus",
+          "STRIKETHROUGH": "Yliviivaus",
+          "HEADING_1": "Otsikko 1",
+          "HEADING_2": "Otsikko 2",
+          "HEADING_3": "Otsikko 3",
+          "BULLET_LIST": "Luettelomerkit",
+          "NUMBERED_LIST": "Numeroitu luettelo",
+          "BLOCKQUOTE": "Lainaus",
+          "INSERT_LINK": "Lisää linkki",
+          "INSERT_IMAGE": "Lisää kuva",
+          "INSERT_TABLE": "Lisää taulukko",
+          "DELETE_TABLE": "Poista taulukko",
+          "ADD_COLUMN_BEFORE": "Lisää sarake ennen",
+          "ADD_COLUMN_AFTER": "Lisää sarake jälkeen",
+          "ADD_ROW_BEFORE": "Lisää rivi yläpuolelle",
+          "ADD_ROW_AFTER": "Lisää rivi alapuolelle",
+          "DELETE_COLUMN": "Poista sarake",
+          "DELETE_ROW": "Poista rivi"
+        },
+        "FONT_SIZE": "Fonttikoko",
+        "VIEW": {
+          "PREVIEW": "Esikatselu",
+          "SPLIT": "Rinnakkaisnäkymä",
+          "SOURCE": "Lähdekoodi"
+        }
+      }
+    },
+    "ORGANISMS": {
+      "VC_DYNAMIC_PROPERTY": {
+        "ADD": "Lisää arvo",
+        "VALUE_TYPE": {
+          "COLOR": {
+            "PLACEHOLDER": "Värikoodi",
+            "NAME": "Värin nimi"
+          }
+        }
+      },
+      "VC_GALLERY": {
+        "INTERNAL": {
+          "VC_GALLERY_ITEM": {
+            "FULLSCREEN": "Koko näyttö",
+            "EDIT": "Muokkaa",
+            "DELETE": "Poista"
+          },
+          "VC_GALLERY_PREVIEW": {
+            "COPY_IMAGE_LINK": "kopioi kuvan linkki"
+          },
+          "VC_GALLERY_FILMSTRIP": {
+            "PREVIOUS": "Edelliset kuvat",
+            "NEXT": "Seuraavat kuvat"
+          }
+        },
+        "GALLERY_IS_EMPTY": "Galleria on tyhjä",
+        "DROP_TO_UPLOAD": "Lataa pudottamalla",
+        "DRAG_IMAGES_HERE": "Vedä kuvat tähän tai",
+        "BROWSE_IMAGES": "selaa tiedostoja",
+        "UPLOAD": "Lataa",
+        "OR_DROP_HERE": "tai pudota tähän",
+        "SHOW_ALL": "Laajenna ({count})",
+        "COLLAPSE": "Tiivistä"
+      },
+      "VC_APP": {
+        "NOTIFICATIONS": "Ilmoitukset",
+        "OPEN_MENU": "Avaa valikko",
+        "CLOSE_MENU": "Sulje valikko",
+        "INTERNAL": {
+          "VC_APP_BAR": {
+            "BACK": "Takaisin"
+          },
+          "MOBILE_LAYOUT": {
+            "TAB_MENU": "Valikko",
+            "TAB_HUB": "Keskus"
+          },
+          "APP_HUB": {
+            "SEARCH_PLACEHOLDER": "Hae sovelluksia ja pienoisohjelmia",
+            "APPLICATIONS": "Sovellukset",
+            "WIDGETS": "Pienoisohjelmat",
+            "NO_APPLICATIONS": "Sovelluksia ei löytynyt",
+            "NO_WIDGETS": "Pienoisohjelmia ei löytynyt",
+            "LIST_VIEW": "Luettelonäkymä",
+            "TILE_VIEW": "Ruutunäkymä"
+          }
+        }
+      },
+      "BLADE_NAVIGATION": {
+        "ARIA_LABEL": "Paneelien navigointi"
+      },
+      "VC_BLADE": {
+        "SEE_DETAILS": "Näytä tiedot",
+        "UNSAVED_CHANGES": "Tallentamattomia muutoksia",
+        "ERROR_POPUP": {
+          "TITLE": "Virheen tiedot",
+          "COPY_ERROR": "kopioi sisältö",
+          "CLOSE": "sulje"
+        },
+        "MORE": "Lisää",
+        "TOOLBAR": "Työkalurivin toiminnot",
+        "CLOSE_MENU": "Sulje valikko",
+        "PANEL": "Paneeli",
+        "WIDGETS": {
+          "ALERTS_TITLE": "{title}: vaatii huomiota",
+          "OPEN": "Avaa",
+          "ALERTS_COUNT": "Huomiota vaativat hälytykset: {count}",
+          "MORE_WIDGETS": "Lisää pienoisohjelmia",
+          "MORE_WIDGETS_ALERTS": "Lisää pienoisohjelmia, huomiota vaativat hälytykset: {count}",
+          "CUSTOMIZE": "Mukauta",
+          "DONE": "Valmis",
+          "RESET": "Nollaa",
+          "NOT_ON_BLADE": "Piilotetut pienoisohjelmat",
+          "ON_BLADE": "Paneelissa · enintään {max}",
+          "ALL_ON_BLADE": "Piilota pienoisohjelma vetämällä se tähän",
+          "STRIP_EMPTY": "Näytä pienoisohjelma vetämällä se tähän",
+          "REMOVE": "Poista {title} paneelista",
+          "ADD": "Lisää {title} paneeliin",
+          "REORDER": "Siirrä {title}"
+        }
+      },
+      "VC_BLADE_HEADER": {
+        "UNSAVED_CHANGES": "Tallentamattomia muutoksia",
+        "NO_CHANGES": "Ei tallentamattomia muutoksia",
+        "CLOSE": "Sulje",
+        "MAXIMIZE": "Suurenna",
+        "RESTORE": "Palauta"
+      },
+      "VC_TABLE": {
+        "SELECT_ROW": "Valitse rivi",
+        "SELECT_ALL_ROWS": "Valitse kaikki rivit",
+        "EXPAND_ROW": "Näytä tai piilota rivin tiedot",
+        "CURRENT_PAGE_SELECTED": "Kaikki tämän sivun kohteet on valittu.",
+        "SELECT_ALL": "Valitse kaikki kohteet",
+        "ALL_SELECTED": "Kaikki kohteet on valittu.",
+        "ALL_SELECTED_COUNT": "Kaikki {count} kohdetta valittu",
+        "SELECT_ALL_COUNT": "Valitse kaikki {count} kohdetta",
+        "CANCEL": "Tyhjennä valinta",
+        "ALL_ACTIONS": "Kaikki toiminnot",
+        "MORE": "Lisää",
+        "ALL_FILTERS": "Suodattimet",
+        "SEARCH": "Hae...",
+        "EMPTY": "Luettelo on tyhjä.",
+        "EMPTY_TITLE": "Ei tietoja",
+        "EMPTY_DESCRIPTION": "Ei näytettäviä kohteita",
+        "NOT_FOUND": "Mitään ei löytynyt.",
+        "NOT_FOUND_TITLE": "Tuloksia ei löytynyt",
+        "NOT_FOUND_DESCRIPTION": "Muuta hakua tai suodattimia",
+        "TOTALS": "Yhteensä:",
+        "ACTIONS": "Toimet",
+        "NOT_SET": "Ei asetettu",
+        "SELECTED": "Valittu",
+        "SELECT_ALL_TRUNCATED": "Valitse kaikki",
+        "PULL_TO_REFRESH": "Päivitä vetämällä",
+        "RELEASE_TO_REFRESH": "Päivitä vapauttamalla",
+        "REFRESHING": "Päivitetään...",
+        "ADD_ROW": "Lisää rivi",
+        "LOADING": "Ladataan...",
+        "PAGE_INFO": "Sivu {current}/{total}",
+        "COLUMN_FILTER": {
+          "APPLY": "Käytä",
+          "CLEAR": "Tyhjennä",
+          "FROM": "Alkaen",
+          "TO": "Asti",
+          "TITLE": "Suodata sarake"
+        },
+        "GLOBAL_FILTERS": {
+          "BUTTON": "Suodattimet",
+          "TITLE": "Suodattimet"
+        },
+        "COLUMN_SWITCHER": {
+          "BUTTON": "Sarakkeet",
+          "TITLE": "Näytä/piilota sarakkeet",
+          "SHOW_ALL": "Näytä kaikki",
+          "RESET": "Nollaa"
+        },
+        "OF": "/",
+        "PAGE": "Sivu"
+      },
+      "VC_POPUP": {
+        "OK": "OK",
+        "CONFIRM": "Vahvista",
+        "CANCEL": "Peruuta",
+        "CLOSE": "Sulje",
+        "TITLE": {
+          "CONFIRMATION": "Vahvistus",
+          "ERROR": "Virhe",
+          "INFO": "Tietoa"
+        }
+      }
+    },
+    "THEME_SELECTOR": {
+      "THEME_CHANGED": " teema",
+      "THEME_SELECTOR": "Teema"
+    },
+    "CHANGE_PASSWORD": {
+      "TITLE": "Vaihda salasana",
+      "TITLE_FORCED": "Salasana on vanhentunut",
+      "SUBTITLE_FORCED": "Aseta uusi salasana",
+      "FORCED": {
+        "LABEL": "Salasanasi on vanhentunut. Sinun on vaihdettava salasana, jotta voit jatkaa hallintasovelluksen käyttöä."
+      },
+      "CURRENT_PASSWORD": {
+        "LABEL": "Nykyinen salasana",
+        "PLACEHOLDER": "Anna salasana"
+      },
+      "NEW_PASSWORD": {
+        "LABEL": "Uusi salasana",
+        "PLACEHOLDER": "Anna salasana"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Vahvista salasana",
+        "PLACEHOLDER": "Vahvista salasana"
+      },
+      "CANCEL": "Peruuta",
+      "SAVE": "Päivitä",
+      "ERRORS": {
+        "Repeat-password": "Salasanat eivät täsmää",
+        "Equal-passwords": "Uusi salasana ei saa olla sama kuin vanha",
+        "Invalid-token": "Tunnus on virheellinen tai vanhentunut",
+        "Password-too-weak": "Uusi salasana ei täytä yhtä tai useampaa salasanan suojauskäytäntöä:",
+        "PasswordTooShort": "Salasana on liian lyhyt",
+        "PasswordRequiresUniqueChars": "Salasanassa on käytettävä eri merkkejä",
+        "PasswordRequiresLower": "Salasanassa on oltava vähintään yksi pieni kirjain ('a'-'z')",
+        "PasswordRequiresUpper": "Salasanassa on oltava vähintään yksi iso kirjain ('A'-'Z')",
+        "PasswordRequiresDigit": "Salasanassa on oltava vähintään yksi numero ('0'-'9')",
+        "PasswordRequiresNonAlphanumeric": "Salasanassa on oltava vähintään yksi erikoismerkki",
+        "Incorrect password.": "Annoit väärän salasanan",
+        "You have used this password in the past. Choose another one.": "Olet käyttänyt tätä salasanaa aiemmin. Valitse toinen."
+      }
+    },
+    "APP_HUB": {
+      "TITLE": "Sovellukset"
+    },
+    "NOTIFICATION_DROPDOWN": {
+      "TITLE": "Ilmoitukset",
+      "EMPTY": "Ei vielä ilmoituksia"
+    },
+    "LANGUAGE_SELECTOR": {
+      "TITLE": "Kieli"
+    },
+    "FILTERS": {
+      "APPLY": "Käytä suodattimia",
+      "RESET": "Nollaa"
+    }
+  },
+  "INVITATION": {
+    "TITLE": "Sinut on kutsuttu!",
+    "SUBTITLE": "Aseta tilillesi salasana",
+    "FIELDS": {
+      "EMAIL": {
+        "LABEL": "Sähköposti"
+      },
+      "PASSWORD": {
+        "LABEL": "Uusi salasana",
+        "PLACEHOLDER": "Anna salasana"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Vahvista salasana",
+        "PLACEHOLDER": "Vahvista salasana"
+      }
+    },
+    "ACCEPT_INVITATION": "Aktivoi",
+    "ERRORS": {
+      "Repeat-password": "Salasanat eivät täsmää",
+      "Invalid-token": "Tunnus on virheellinen tai vanhentunut",
+      "Password-too-weak": "Uusi salasana ei täytä yhtä tai useampaa salasanan suojauskäytäntöä:",
+      "PasswordTooShort": "Salasana on liian lyhyt",
+      "PasswordRequiresUniqueChars": "Salasanassa on käytettävä eri merkkejä",
+      "PasswordRequiresLower": "Salasanassa on oltava vähintään yksi pieni kirjain ('a'-'z')",
+      "PasswordRequiresUpper": "Salasanassa on oltava vähintään yksi iso kirjain ('A'-'Z')",
+      "PasswordRequiresDigit": "Salasanassa on oltava vähintään yksi numero ('0'-'9')",
+      "PasswordRequiresNonAlphanumeric": "Salasanassa on oltava vähintään yksi erikoismerkki",
+      "recentPasswordUsed": "Olet käyttänyt tätä salasanaa aiemmin. Valitse toinen."
+    }
+  },
+  "LOGIN": {
+    "TITLE": "Tervetuloa takaisin",
+    "SUBTITLE": "Jatka kirjautumalla tilillesi",
+    "FIELDS": {
+      "LOGIN": {
+        "LABEL": "Sähköposti",
+        "PLACEHOLDER": "Anna sähköpostiosoitteesi"
+      },
+      "PASSWORD": {
+        "LABEL": "Salasana",
+        "PLACEHOLDER": "Anna salasanasi"
+      },
+      "REMEMBER_ME": {
+        "LABEL": "Muista minut"
+      },
+      "FORGOT_PASSWORD": {
+        "TITLE": "Unohtunut salasana",
+        "LABEL": "Sähköposti",
+        "PLACEHOLDER": "Anna sähköpostiosoitteesi"
+      }
+    },
+    "FORGOT_PASSWORD_BUTTON": "Unohditko salasanan?",
+    "BUTTON": "Kirjaudu sisään",
+    "OR": "tai",
+    "FORGOT_BUTTON": "Lähetä",
+    "BACK_BUTTON": "Takaisin",
+    "BUTTON_OK": "OK",
+    "RESET_EMAIL_TEXT": "Lähetämme sinulle sähköpostiviestin, jossa on ohjeet salasanan palauttamiseen.",
+    "RESET_EMAIL_SENT": "Ohjeet sisältävä sähköpostiviesti on lähetetty sinulle.",
+    "SSO_NO_PROVIDERS_ERROR": "SSO-todennusta ei ole määritetty. Ota yhteyttä järjestelmänvalvojaan.",
+    "ERRORS": {
+      "INVALID_CREDENTIALS": "Käyttäjätunnus tai salasana on väärä.",
+      "AUTH_WITH_CODE": "Todennusvirhe (koodi: {code}).",
+      "AUTH_GENERIC": "Todennusvirhe: {detail}"
+    }
+  },
+  "FORGOT_PASSWORD": {
+    "TITLE": "Palauta salasana",
+    "SUBTITLE": "Anna sähköpostiosoitteesi, niin lähetämme sinulle palautuslinkin",
+    "FIELDS": {
+      "EMAIL": {
+        "LABEL": "Sähköposti",
+        "PLACEHOLDER": "Anna sähköpostiosoitteesi"
+      }
+    },
+    "SEND_BUTTON": "Lähetä palautuslinkki",
+    "BACK_TO_LOGIN": "Takaisin kirjautumiseen",
+    "SUCCESS_TITLE": "Tarkista sähköpostisi",
+    "SUCCESS_TEXT": "Lähetimme palautuslinkin osoitteeseen {email}"
+  },
+  "PASSWORDRESET": {
+    "TITLE": "Aseta uusi salasana",
+    "SUBTITLE": "Anna uusi salasana alle",
+    "FIELDS": {
+      "PASSWORD": {
+        "LABEL": "Uusi salasana",
+        "PLACEHOLDER": "Anna salasana"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Vahvista salasana",
+        "PLACEHOLDER": "Vahvista salasana"
+      }
+    },
+    "SAVE_PASSWORD": "Tallenna",
+    "ERRORS": {
+      "Repeat-password": "Salasanat eivät täsmää",
+      "Invalid-token": "Tunnus on virheellinen tai vanhentunut",
+      "Password-too-weak": "Uusi salasana ei täytä yhtä tai useampaa salasanan suojauskäytäntöä:",
+      "PasswordTooShort": "Salasana on liian lyhyt",
+      "PasswordRequiresUniqueChars": "Salasanassa on käytettävä eri merkkejä",
+      "PasswordRequiresLower": "Salasanassa on oltava vähintään yksi pieni kirjain ('a'-'z')",
+      "PasswordRequiresUpper": "Salasanassa on oltava vähintään yksi iso kirjain ('A'-'Z')",
+      "PasswordRequiresDigit": "Salasanassa on oltava vähintään yksi numero ('0'-'9')",
+      "PasswordRequiresNonAlphanumeric": "Salasanassa on oltava vähintään yksi erikoismerkki",
+      "recentPasswordUsed": "Olet käyttänyt tätä salasanaa aiemmin. Valitse toinen."
+    }
+  },
+  "ASSETS_MANAGER": {
+    "TITLE": "Resurssit",
+    "TOOLBAR": {
+      "SAVE": "Tallenna",
+      "REFRESH": "Päivitä",
+      "ADD": "Lisää",
+      "DELETE": "Poista valitut"
+    },
+    "EMPTY": {
+      "NO_ASSETS": "Ei resursseja",
+      "UPLOAD_ASSETS": "Vedä ja pudota resurssit tähän tai napsauta Lataa-painiketta",
+      "UPLOAD": "Lataa"
+    },
+    "TABLE": {
+      "HEADER": {
+        "IMAGE": "Kuva",
+        "NAME": "Nimi",
+        "SIZE": "Koko",
+        "SORT_ORDER": "Lajittelujärjestys",
+        "CREATED_DATE": "Luontipäivä"
+      },
+      "ACTIONS": {
+        "DELETE": "Poista",
+        "EDIT": "Muokkaa"
+      }
+    }
+  },
+  "ASSETS": {
+    "PAGES": {
+      "DETAILS": {
+        "SUBTITLE": "Resurssin muokkaus",
+        "TOOLBAR": {
+          "SAVE": "Tallenna",
+          "DELETE": "Poista"
+        },
+        "FIELDS": {
+          "SIZE": "Koko",
+          "CREATED_DATE": "Luontipäivä",
+          "URL": "URL",
+          "COPY": "Kopioi linkki",
+          "NAME": {
+            "TITLE": "Resurssin nimi",
+            "PLACEHOLDER": "Anna resurssin nimi"
+          },
+          "ALT": {
+            "TITLE": "Kuvan vaihtoehtoinen teksti",
+            "PLACEHOLDER": "Anna kuvan vaihtoehtoinen teksti",
+            "TOOLTIP": "Tämä teksti näytetään, jos sivun kuva on poistettu käytöstä tai sitä ei ole ladattu"
+          },
+          "DESCRIPTION": {
+            "TITLE": "Metakuvaus",
+            "PLACEHOLDER": "Anna metakuvaus"
+          }
+        }
+      }
+    }
+  },
+  "messages": {
+    "_default": "{field} ei ole kelvollinen",
+    "alpha": "Kenttä {field} voi sisältää vain kirjaimia",
+    "alpha_num": "Kenttä {field} voi sisältää vain kirjaimia ja numeroita",
+    "alpha_dash": "Kenttä {field} voi sisältää kirjaimia, numeroita, yhdysmerkkejä ja alaviivoja",
+    "alpha_spaces": "Kenttä {field} voi sisältää vain kirjaimia ja välilyöntejä",
+    "between": "Kentän {field} arvon on oltava välillä 0:{min}–1:{max}",
+    "confirmed": "Kentän {field} vahvistus ei täsmää",
+    "digits": "Kentän {field} on oltava numeerinen ja sisällettävä tasan 0:{length} numeroa",
+    "dimensions": "Kentän {field} on oltava 0:{width} × 1:{height} pikseliä",
+    "email": "Kentän {field} on oltava kelvollinen sähköpostiosoite",
+    "not_one_of": "Kentän {field} arvo ei ole kelvollinen",
+    "ext": "Kenttä {field} ei ole kelvollinen tiedosto",
+    "image": "Kentän {field} on oltava kuva",
+    "integer": "Kentän {field} on oltava kokonaisluku",
+    "length": "Kentän {field} pituuden on oltava 0:{length}",
+    "max_value": "Kentän {field} arvon on oltava enintään 0:{max}",
+    "max": "Kenttä {field} voi sisältää enintään 0:{length} merkkiä",
+    "mimes": "Kentän {field} tiedostotyypin on oltava kelvollinen",
+    "min_value": "Kentän {field} arvon on oltava vähintään 0:{min}",
+    "min": "Kentän {field} on sisällettävä vähintään 0:{length} merkkiä",
+    "numeric": "Kenttä {field} voi sisältää vain numeroita",
+    "one_of": "Kentän {field} arvo ei ole kelvollinen",
+    "regex": "Kentän {field} muoto on virheellinen",
+    "required_if": "Kenttä {field} on pakollinen",
+    "required": "Kenttä {field} on pakollinen",
+    "size": "Kentän {field} koon on oltava alle 0:{size} kt",
+    "url": "Kenttä {field} ei ole kelvollinen URL",
+    "min_dimensions": {
+      "error": "Kuvan mittojen on oltava suuremmat kuin {height}*{width}",
+      "not_image_error": "Tiedosto ei ole kuva"
+    },
+    "file_weight": "Tiedoston koko voi olla enintään {size} kt",
+    "before": "Päättymispäivän on oltava ennen alkamispäivää",
+    "after": "Päättymispäivän on oltava alkamispäivän jälkeen",
+    "bigint": "Lukua ei tueta"
+  },
+  "PERMISSION_MESSAGES": {
+    "ACCESS_RESTRICTED": "Pääsy rajoitettu"
+  },
+  "AI_AGENT": {
+    "LOADING": "Ladataan Virto OZ..."
+  },
+  "VC_SCHEDULER": {
+    "AGENDA": "Esityslista",
+    "ALL_DAY": "Koko päivä",
+    "CANCEL": "Peruuta",
+    "CLOSE": "Sulje",
+    "COLOR": "Väri",
+    "COLOR_DEFAULT": "Oletusväri",
+    "COLOR_CUSTOM": "Mukautettu väri",
+    "COLOR_BLUE": "Sininen",
+    "COLOR_GREEN": "Vihreä",
+    "COLOR_AMBER": "Meripihka",
+    "COLOR_RED": "Punainen",
+    "COLOR_PURPLE": "Violetti",
+    "COLOR_PINK": "Vaaleanpunainen",
+    "COLOR_TEAL": "Sinivihreä",
+    "COLOR_SLATE": "Liuskeenharmaa",
+    "DAY": "Päivä",
+    "DAY_N_OF_M": "Päivä {n}/{total}",
+    "DELETE": "Poista",
+    "DELETE_CONFIRM_BODY": "Poistetaanko ”{title}”? Toimintoa ei voi kumota.",
+    "DELETE_CONFIRM_TITLE": "Poista tapahtuma",
+    "EDIT": "Muokkaa",
+    "EDIT_EVENT": "Muokkaa tapahtumaa",
+    "EMPTY": "Ei tapahtumia tällä aikavälillä",
+    "EMPTY_HINT": "Ei vielä tapahtumia. Lisää tapahtuma napsauttamalla päivää.",
+    "END": "Loppu",
+    "LOADING": "Ladataan tapahtumia…",
+    "MORE": "+{count} lisää",
+    "MORE_EVENTS": "Lisää tapahtumia",
+    "MONTH": "Kuukausi",
+    "MORE_OPTIONS": "Lisää vaihtoehtoja",
+    "NEW_EVENT": "Uusi tapahtuma",
+    "NEXT": "Seuraava",
+    "PREVIOUS": "Edellinen",
+    "RECUR_SCOPE_ALL": "Kaikki tapahtumat",
+    "RECUR_SCOPE_BODY_DELETE": "Tämä tapahtuma kuuluu toistuvaan sarjaan. Haluatko poistaa vain tämän tapahtuman vai kaikki sarjan tapahtumat?",
+    "RECUR_SCOPE_BODY_EDIT": "Tämä tapahtuma kuuluu toistuvaan sarjaan. Haluatko muokata vain tätä tapahtumaa vai kaikkia sarjan tapahtumia?",
+    "RECUR_SCOPE_THIS": "Tämä tapahtuma",
+    "RECUR_SCOPE_TITLE": "Toistuva tapahtuma",
+    "REPEAT": "Toista",
+    "REPEAT_DAILY": "Päivittäin",
+    "REPEAT_END": "Päättyy",
+    "REPEAT_END_COUNT": "Kertojen jälkeen",
+    "REPEAT_END_NEVER": "Ei koskaan",
+    "REPEAT_END_UNTIL": "Päivämääränä",
+    "REPEAT_EVERY": "Toista joka",
+    "REPEAT_UNIT_DAYS": "päivä(ä)",
+    "REPEAT_UNIT_WEEKS": "viikko(a)",
+    "REPEAT_UNIT_MONTHS": "kuukausi(a)",
+    "REPEAT_UNIT_YEARS": "vuosi(a)",
+    "REPEAT_MONTHLY": "Kuukausittain",
+    "REPEAT_NONE": "Ei toistoa",
+    "REPEAT_OCCURRENCES": "kerta(a)",
+    "REPEAT_ON": "Toista",
+    "REPEAT_WEEKLY": "Viikoittain",
+    "REPEAT_YEARLY": "Vuosittain",
+    "SAVE": "Tallenna",
+    "START": "Alku",
+    "TIMELINE": "Aikajana",
+    "TIMELINE_DAY": "Aikajana: päivä",
+    "TIMELINE_WEEK": "Aikajana: viikko",
+    "TITLE": "Otsikko",
+    "TODAY": "Tänään",
+    "WEEK": "Viikko",
+    "WORK_WEEK": "Työviikko",
+    "ZOOM_IN": "Lähennä",
+    "ZOOM_OUT": "Loitonna",
+    "EVENT_DETAILS": "Tapahtuman tiedot"
+  },
+  "common": {
+    "no_options": "Ei vaihtoehtoja"
+  }
+}

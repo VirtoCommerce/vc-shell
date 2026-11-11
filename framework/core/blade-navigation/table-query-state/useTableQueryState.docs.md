@@ -74,7 +74,7 @@ watch([sortExpression, searchValue, currentPage], debounce(load, 300));
 | -------- | ----------------------- | ------------------------------------------------------------------------------------------------------ |
 | `read`   | `() => TableQueryPatch` | Reads the restored `{ sort?, search?, page? }` from the URL. Returns `{}` when no service is available |
 
-`TableQueryPatch`: `{ sort?: string; search?: string; page?: number; filters?: string }` — `sort` is a `"field:ASC"` / `"field:DESC"` expression, `page` is 1-based. `filters` (`<stateKey>_filters`) is written and read by the table's search bar in its own compact format; a page does not need to seed anything from it, because the table emits `@filter` with the restored filters after mount.
+`TableQueryPatch`: `{ sort?: string; search?: string; page?: number; filters?: string; view?: string }` — `sort` is a `"field:ASC"` / `"field:DESC"` expression, `page` is 1-based. `filters` (`<stateKey>_filters`) is written and read by the table's search bar in its own compact format; a page does not need to seed anything from it, because the table emits `@filter` with the restored filters after mount. `view` (`<stateKey>_view`) is the id of the bar's current view, also written by the bar.
 
 ## Details
 

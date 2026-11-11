@@ -1111,7 +1111,7 @@ With `search-bar` and a `state-key`, the applied filters are kept in the blade U
 
 ### Filters from other modules (`searchName`)
 
-With `search-bar`, modules can add fields and views to a list with `registerExternalSearchFilters({ id, targetBlades, fields, views })`. By default the table's bar answers to the blade's name; set `search-name` to address it by another name (a table outside a blade, or two tables in one blade). A table without `search-bar` ignores these registrations.
+With `search-bar`, modules can add fields and views to a list with `registerExternalSearchFilters({ id, targetBlades, fields, views })`. By default the table's bar answers to the blade's name; set `search-name` to address it by another name (a table outside a blade, or two tables in one blade). A table without `search-bar` ignores these registrations. Registered fields show the bar even on a table without `searchable` and `global-filters`.
 
 ### VcTableAdapter
 

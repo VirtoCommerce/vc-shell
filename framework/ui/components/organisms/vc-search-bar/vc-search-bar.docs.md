@@ -216,11 +216,11 @@ The value is short and readable: fields are separated by `;`, each one is `id:va
 | Text                 | `name:Acme`                                                  |
 | Custom editor        | the value as JSON                                            |
 
-Relative dates stay relative: a link with `created:7d` opened next week shows that week's last 7 days. A `;`, `,`, `:` or `\` inside a value is escaped with `\`. Unknown field ids and malformed parts are skipped.
+Relative dates stay relative: a link with `created:7d` opened next week shows that week's last 7 days. A `;`, `,`, `:` or `\` inside a value is escaped with `\`. Malformed parts are skipped. A part for a field the bar does not have yet stays in the URL and applies when the field appears.
 
 ## On a Phone
 
-- The bar is the search and a 36px Filters icon button with a count badge. A summary line under it reads "N results · View\* · filtered from M · K filters · Clear all" ("N items" when nothing is filtered).
+- The bar is the search and a 36px Filters icon button with a count badge. A summary line under it reads "N results · View\* · filtered from M · K filters · Clear all" ("N items" when nothing is filtered). The view shows when it is not the system view or when its values were changed ("All\*"). The search has no `/` hint.
 - The Filters button opens a bottom sheet: "Clear" on the left, "Filters" with the count, "Done" on the right; the views as chips with the unsaved row; the same fields as the desktop panel with larger rows; and a full-width "Show N results" button ("No matching results" at 0).
 - A chip editor and the view menu are not used on a phone; everything goes through the sheet.
 
@@ -247,7 +247,7 @@ unregisterExternalSearchFilters("reviews-rating");
 - `targetBlades` lists blade names, compared case-insensitively. A bar answers to the name of the blade it sits in.
 - Set the `name` prop to address a bar by another name: a bar outside a blade, or two bars in one blade. On `VcDataTable` the same prop is `search-name`.
 - Contributed fields and views come after the screen's own, ordered by `priority` (lower first, default 100). Registering an existing `id` replaces it. The registry is reactive: a module that loads after the blade opened still reaches it.
-- A contributed field that registers late has no value restored from the URL: its value is dropped on mount.
+- A field that registers late (a contributed one, or `fields` loaded after mount) still gets its value from the URL: that part of the URL is kept until the field arrives, then applies as one `change`.
 
 ## Phrase Output
 

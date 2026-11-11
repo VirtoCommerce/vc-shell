@@ -59,7 +59,7 @@ export const PopoverStub = defineComponent({
 
 export const InputStub = defineComponent({
   name: "VcInput",
-  props: { modelValue: String, placeholder: String },
+  props: { modelValue: String, placeholder: String, size: String },
   emits: ["update:modelValue"],
   setup:
     (props, { emit }) =>

@@ -156,6 +156,22 @@ describe("ViewSelector", () => {
     expect(byText(w, `${K}SAVE_AS_NEW`)).toBeDefined();
     expect(w.find(".popover-stub").exists()).toBe(true);
     expect(views.all.value).toHaveLength(2);
+    await nextTick();
+    expect(document.activeElement).toBe(byText(w, `${K}SAVE_AS_NEW`)!.element);
+  });
+
+  it("cancelling a rename returns focus to the view's options button", async () => {
+    const { views, setValues } = makeViews();
+    setValues({ urgent: true });
+    views.saveAs("Mine");
+    const w = mountSelector(views);
+    await open(w);
+    await w.get(".vc-search-bar__view-more").trigger("click");
+    await byText(w, `${K}RENAME`)!.trigger("click");
+    await w.get(".vc-search-bar__view-row input").trigger("keydown", { key: "Escape" });
+    expect(w.find(".popover-stub").exists()).toBe(true);
+    await nextTick();
+    expect(document.activeElement).toBe(w.get(".vc-search-bar__view-more").element);
   });
 
   it("offers Rename and Delete only on user views", async () => {

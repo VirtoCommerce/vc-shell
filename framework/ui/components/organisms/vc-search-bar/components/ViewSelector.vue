@@ -39,7 +39,10 @@
       :aria-label="$t(`${K}SAVED_VIEWS`)"
       @close="close"
     >
-      <div class="vc-search-bar__views-menu">
+      <div
+        ref="menu"
+        class="vc-search-bar__views-menu"
+      >
         <div
           class="vc-search-bar__views-title"
           aria-hidden="true"
@@ -57,7 +60,7 @@
               :label="$t(`${K}NEW_NAME`)"
               :initial="v.name"
               @save="(name) => act(() => views.rename(v.id, name))"
-              @cancel="renaming = null"
+              @cancel="cancelRename(v.id)"
             />
             <div
               v-else
@@ -86,6 +89,7 @@
                 v-if="v.scope === 'user'"
                 type="button"
                 class="vc-search-bar__view-more"
+                :data-view-id="v.id"
                 :aria-label="$t(`${K}OPTIONS`, { name: v.name })"
                 :aria-expanded="optionsFor === v.id"
                 @click="optionsFor = optionsFor === v.id ? null : v.id"
@@ -132,12 +136,12 @@
             v-if="naming"
             :label="$t(`${K}NAME_PLACEHOLDER`)"
             @save="(name) => act(() => views.saveAs(name))"
-            @cancel="naming = false"
+            @cancel="cancelNaming"
           />
           <button
             v-else
             type="button"
-            class="vc-search-bar__views-action"
+            class="vc-search-bar__views-action vc-search-bar__views-save-as"
             @click="naming = true"
           >
             {{ $t(`${K}SAVE_AS_NEW`) }}
@@ -174,6 +178,7 @@ const props = defineProps<{
 const K = "COMPONENTS.ORGANISMS.VC_SEARCH_BAR.VIEWS.";
 
 const trigger = ref<HTMLButtonElement>();
+const menu = ref<HTMLElement>();
 const open = ref(false);
 const naming = ref(false);
 const renaming = ref<string | null>(null);
@@ -193,6 +198,23 @@ function close() {
   renaming.value = null;
   optionsFor.value = null;
   void nextTick(() => trigger.value?.focus());
+}
+
+/** The name field unmounts on cancel; focus goes back to the control that opened it */
+function refocus(find: (menu: HTMLElement) => HTMLElement | null | undefined) {
+  void nextTick(() => menu.value && find(menu.value)?.focus());
+}
+
+function cancelRename(id: string) {
+  renaming.value = null;
+  refocus((m) =>
+    [...m.querySelectorAll<HTMLElement>(".vc-search-bar__view-more")].find((b) => b.dataset.viewId === id),
+  );
+}
+
+function cancelNaming() {
+  naming.value = false;
+  refocus((m) => m.querySelector<HTMLElement>(".vc-search-bar__views-save-as"));
 }
 
 function startRename(id: string) {

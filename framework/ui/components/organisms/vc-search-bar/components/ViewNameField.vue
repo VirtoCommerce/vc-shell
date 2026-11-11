@@ -2,7 +2,7 @@
   <div
     ref="root"
     class="vc-search-bar__view-name-field"
-    @keydown.enter.prevent="commit"
+    @keydown.enter="onEnter"
     @keydown.esc.stop.prevent="emit('cancel')"
   >
     <VcInput
@@ -52,6 +52,13 @@ onMounted(() => {
   input?.focus();
   input?.select();
 });
+
+// Enter on the buttons keeps its native click
+function onEnter(e: KeyboardEvent) {
+  if (!(e.target instanceof HTMLInputElement)) return;
+  e.preventDefault();
+  commit();
+}
 
 function commit() {
   const name = draft.value.trim();

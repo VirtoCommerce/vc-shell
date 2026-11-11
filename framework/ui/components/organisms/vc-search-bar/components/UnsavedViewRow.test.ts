@@ -97,6 +97,24 @@ describe("UnsavedViewRow", () => {
     expect(views.all.value).toHaveLength(2);
   });
 
+  it("Enter on Cancel cancels", async () => {
+    const { views, setValues } = makeViews();
+    setValues({ urgent: true });
+    const w = mountRow(views);
+    await byText(w, `${K}SAVE_AS_VIEW`)!.trigger("click");
+    await w.get(`${ROW} input`).setValue("Urgent");
+    const cancel = byText(w, `${K}CANCEL`)!;
+    const enter = new KeyboardEvent("keydown", { key: "Enter", bubbles: true, cancelable: true });
+    cancel.element.dispatchEvent(enter);
+    await nextTick();
+    expect(views.all.value).toHaveLength(2);
+    // Left alone, so the browser turns it into the button's click
+    expect(enter.defaultPrevented).toBe(false);
+    await cancel.trigger("click");
+    expect(views.all.value).toHaveLength(2);
+    expect(w.find(`${ROW} input`).exists()).toBe(false);
+  });
+
   it("touch marks the row for bigger hit targets", async () => {
     const { views, setValues } = makeViews();
     setValues({ urgent: true });

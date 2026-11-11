@@ -44,7 +44,7 @@ afterEach(() => scopes.splice(0).forEach((s) => s.stop()));
 
 function setup(
   o: {
-    moduleViews?: SearchBarView[];
+    moduleViews?: SearchBarView[] | (() => SearchBarView[]);
     state?: SearchBarState;
     queryState?: ITableQueryStateService;
     storageKey?: string;
@@ -59,7 +59,8 @@ function setup(
   const api = scope.run(() =>
     useViews({
       storageKey: () => ("storageKey" in o ? o.storageKey : "orders"),
-      moduleViews: () => o.moduleViews ?? MODULE,
+      moduleViews:
+        typeof o.moduleViews === "function" ? o.moduleViews : () => (o.moduleViews as SearchBarView[]) ?? MODULE,
       fields: () => fields,
       state,
       apply,
@@ -113,6 +114,7 @@ describe("useViews", () => {
     expect(apply).not.toHaveBeenCalled();
     expect(state.value.values).toEqual({ status: ["new"] });
     expect(api.modified.value).toBe(true);
+    expect(service.write).not.toHaveBeenCalledWith("orders", { view: undefined });
   });
 
   it("saveAs creates a user view that becomes current and is persisted", () => {
@@ -209,11 +211,69 @@ describe("useViews", () => {
     expect(store.orders.view).toBe("paid");
     api.clearToSystem();
     await nextTick();
-    expect(store.orders).toHaveProperty("view", undefined);
+    // with a default view a missing key would reopen it, so the system view is named
+    expect(store.orders.view).toBe(SYSTEM_VIEW_ID);
     const writes = service.write.mock.calls.length;
     api.clearToSystem();
     await nextTick();
     expect(service.write.mock.calls.length).toBe(writes);
+  });
+
+  it("without a default view the system view clears the URL key", async () => {
+    const { service, store } = fakeQueryState();
+    const { api } = setup({ queryState: service, moduleViews: [MODULE[0]] });
+    await nextTick();
+    expect(service.write).not.toHaveBeenCalled();
+    api.select("paid");
+    await nextTick();
+    expect(store.orders.view).toBe("paid");
+    api.clearToSystem();
+    await nextTick();
+    expect(store.orders).toHaveProperty("view", undefined);
+  });
+
+  it("keeps the system view across a reload when a default view exists", async () => {
+    const { service } = fakeQueryState();
+    const first = setup({ queryState: service });
+    first.api.clearToSystem();
+    await nextTick();
+    const reloaded = setup({ queryState: service });
+    expect(reloaded.api.current.value.id).toBe(SYSTEM_VIEW_ID);
+    expect(reloaded.apply).not.toHaveBeenCalled();
+  });
+
+  it("keeps the system view with URL filters across a reload when a default view exists", async () => {
+    const { service, store } = fakeQueryState();
+    const first = setup({ queryState: service });
+    first.api.clearToSystem();
+    await nextTick();
+    store.orders.filters = "status:new";
+    const reloaded = setup({ queryState: service, state: { search: "", values: { status: ["new"] } } });
+    expect(reloaded.api.current.value.id).toBe(SYSTEM_VIEW_ID);
+    expect(reloaded.apply).not.toHaveBeenCalled();
+    expect(reloaded.api.modified.value).toBe(true);
+  });
+
+  it("a URL view id registered after setup becomes current and stays in the URL", async () => {
+    const { service, store } = fakeQueryState({ orders: { filters: "status:new", view: "x" } });
+    const views = ref<SearchBarView[]>([MODULE[0]]);
+    const { api, apply } = setup({
+      queryState: service,
+      moduleViews: () => views.value,
+      state: { search: "", values: { status: ["new"] } },
+    });
+    await nextTick();
+    expect(api.current.value.id).toBe(SYSTEM_VIEW_ID);
+    expect(api.modified.value).toBe(true);
+    expect(store.orders.view).toBe("x");
+    expect(service.write).not.toHaveBeenCalled();
+    views.value = [MODULE[0], { id: "x", name: "X", values: { status: ["new"] } }];
+    await nextTick();
+    expect(api.current.value.id).toBe("x");
+    expect(api.modified.value).toBe(false);
+    expect(store.orders.view).toBe("x");
+    expect(service.write).not.toHaveBeenCalled();
+    expect(apply).not.toHaveBeenCalled();
   });
 
   it("works without a storage key: views live in memory and nothing is written", () => {

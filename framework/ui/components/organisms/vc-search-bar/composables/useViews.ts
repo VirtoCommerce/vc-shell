@@ -103,25 +103,29 @@ export function useViews(o: UseViewsOptions): ViewsApi {
     return stored.value.find((v) => v.id === id && v.scope === "user" && find(id)?.scope === "user");
   }
 
-  // Initial view: the URL's (an unknown id falls back to system, filters from the URL stay);
-  // else the module default, applied only when the URL brings no filters; else system
+  // Initial view: the URL's (an id not registered yet shows as system until it arrives, filters
+  // from the URL stay); else the module default, applied only when the URL brings no filters; else system
   const k = urlKey();
   const url = k ? o.queryState!.read(k) : {};
   let written = url.view;
   const fallback = moduleViews.value.find((v) => v.default);
   if (url.view) {
-    currentId.value = find(url.view) ? url.view : SYSTEM_VIEW_ID;
+    currentId.value = url.view;
   } else if (fallback) {
     currentId.value = fallback.id;
     if (!url.filters) applyValues(fallback.values);
   }
 
+  // A missing key opens the default view, so with one the system view is written explicitly
+  const hasDefault = computed(() => moduleViews.value.some((v) => v.default));
+
   watch(
-    () => current.value.id,
-    (id) => {
+    () => [currentId.value, !!find(currentId.value), hasDefault.value] as const,
+    ([id, found, withDefault]) => {
       const target = urlKey();
-      if (!target) return;
-      const view = id === SYSTEM_VIEW_ID ? undefined : id;
+      // An unresolved id stays in the URL: its registration may still arrive
+      if (!target || !found) return;
+      const view = id === SYSTEM_VIEW_ID && !withDefault ? undefined : id;
       if (view === written) return;
       written = view;
       o.queryState!.write(target, { view });

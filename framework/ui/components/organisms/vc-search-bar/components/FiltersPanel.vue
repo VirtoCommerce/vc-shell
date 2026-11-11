@@ -387,10 +387,10 @@ function clearAll() {
   &__sheet-foot {
     @apply tw-shrink-0 tw-p-3;
     border-top: 1px solid var(--neutrals-200);
-    // over the button's own size
+    // over the button's own size: its height comes from the size variable
     .vc-search-bar__sheet-show {
+      --button-default-height: 48px;
       @apply tw-w-full;
-      height: 48px;
       border-radius: 16px;
     }
   }

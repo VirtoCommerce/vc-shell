@@ -53,7 +53,8 @@ const hostProps = computed<Record<string, unknown>>(() =>
         maxWidth: props.width ?? "360px",
         // a fixed-width panel lays out and scrolls its own body
         ...(props.width ? { contentScrollable: false, maxHeight: 640 } : {}),
-        ...(props.label ? { role: "dialog", ariaLabel: props.label } : {}),
+        // a titled popover (a chip editor, "+N") is a dialog named by its title
+        ...(props.label || props.title ? { role: "dialog", ariaLabel: props.label ?? props.title } : {}),
       },
 );
 </script>

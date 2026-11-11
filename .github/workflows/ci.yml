@@ -184,6 +184,17 @@ jobs:
       # 25-minute job means the tests never get to run. The system libraries
       # live outside the cached directory, so they are installed either way --
       # `install-deps` alone is seconds, the browser download is not.
+      #
+      # The runner's apt list puts the Azure Ubuntu mirror first. When its name
+      # stops resolving, apt fails every package instead of moving on to the
+      # next mirror, and the job dies before a single story runs. Dropping that
+      # mirror leaves archive.ubuntu.com, which is slower but reachable.
+      - name: Skip the Azure apt mirror
+        run: |
+          if [ -f /etc/apt/apt-mirrors.txt ]; then
+            sudo sed -i '/azure\.archive\.ubuntu\.com/d' /etc/apt/apt-mirrors.txt
+          fi
+
       - name: Install Chromium and system deps
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: yarn playwright install --with-deps chromium

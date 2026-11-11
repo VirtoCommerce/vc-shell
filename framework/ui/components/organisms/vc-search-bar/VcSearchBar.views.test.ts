@@ -6,6 +6,11 @@ import { BladeTitleAddonKey, IsMobileKey } from "@framework/injection-keys";
 import { registerExternalSearchFilters, unregisterExternalSearchFilters } from "@core/services/search-filters-service";
 import VcSearchBar from "./VcSearchBar.vue";
 import type { SearchBarChange, SearchBarField } from "./types";
+import {
+  createSearchBarController,
+  SearchBarControllerScope,
+  type SearchBarController,
+} from "./composables/useSearchBarController";
 import { CHIP, fakeQueryState, fields, global, lastChange, mountBar } from "./bar.test-helpers";
 
 describe("VcSearchBar views and URL", () => {
@@ -146,14 +151,25 @@ describe("external filters", () => {
   });
 });
 
-describe("VcSearchBar exposed controls (driven by the table's footer and empty state)", () => {
+describe("VcSearchBar driven through its controller (the table's footer and empty state)", () => {
+  let host: ReturnType<typeof mount> | undefined;
+  let controller: SearchBarController;
   let w: ReturnType<typeof mountBar> | undefined;
-  type Exposed = { clearAll(): void; clearFilters(): void; removeFilter(id: string): void };
-  const api = () => w!.vm as unknown as Exposed;
   const views = [{ id: "late", name: "Late", values: { overdue: true } }];
+  const api = () => controller;
+  const mountBar = (props: Record<string, unknown>, provide: Record<symbol, unknown>) => {
+    controller = createSearchBarController();
+    const c = controller;
+    const Host = defineComponent({
+      setup: () => () => h(SearchBarControllerScope, { controller: c }, () => h(VcSearchBar, { fields, ...props })),
+    });
+    host = mount(Host, { global: { ...global, provide }, attachTo: document.body });
+    return host.findComponent(VcSearchBar);
+  };
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => {
-    w?.unmount();
+    host?.unmount();
+    host = undefined;
     w = undefined;
     vi.useRealTimers();
     localStorage.clear();

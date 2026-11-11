@@ -146,8 +146,6 @@ While modified, the view menu offers "Save changes to “X”" (not for "All"; f
 | `update:search`     | `string`          | Every keystroke, undebounced                                                             |
 | `search`            | `string`          | The debounced search text                                                                |
 
-The component exposes `clearAll()` (filters, search and the "All" view), `clearFilters()` and `removeFilter(id)`.
-
 ## Fields
 
 A field is `{ id, label, filter, key?, operators? }`. `filter` selects the kind; the existing `ColumnFilterConfig` shapes keep working.

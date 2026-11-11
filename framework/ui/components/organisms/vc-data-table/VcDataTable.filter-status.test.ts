@@ -162,6 +162,8 @@ describe("VcDataTable search bar: footer status and empty state", () => {
 
       query = {};
       const w2 = mountTable({ searchValue: "acme", items: [{ id: 1 }], totalCount: 1 });
+      // the bar reports its status once it has mounted
+      await nextTick();
       expect(w2.find(STATUS).text()).toContain(`${T}.STATUS.SEARCH`);
     });
 

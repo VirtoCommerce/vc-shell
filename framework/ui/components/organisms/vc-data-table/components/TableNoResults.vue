@@ -1,16 +1,16 @@
 <template>
   <TableEmpty
     class="vc-data-table__no-results"
-    :icon="tags.length ? 'lucide-funnel-x' : 'lucide-search-x'"
+    :icon="appliedFields.length ? 'lucide-funnel-x' : 'lucide-search-x'"
   >
     <div class="vc-table-composition__empty-title">{{ title }}</div>
     <div class="vc-table-composition__empty-description">{{ hint }}</div>
     <ul
-      v-if="tags.length"
+      v-if="appliedFields.length"
       class="vc-data-table__no-results-tags"
     >
       <li
-        v-for="tag in tags"
+        v-for="tag in appliedFields"
         :key="tag.id"
         class="vc-data-table__no-results-tag"
       >
@@ -38,7 +38,7 @@
         {{ $t(`${K}.CLEAR_SEARCH`) }}
       </VcButton>
       <VcButton
-        v-if="tags.length"
+        v-if="appliedFields.length"
         variant="outline"
         size="sm"
         @click="emit('clear-filters')"
@@ -54,17 +54,13 @@ import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { VcIcon, VcButton } from "@ui/components/atoms";
 import TableEmpty from "@ui/components/organisms/vc-data-table/components/TableEmpty.vue";
-import type { SearchBarValue } from "@core/types/search-bar";
-import type { BarField } from "@ui/components/organisms/vc-search-bar/lib/fields";
-import { chipLabel, isEmptyValue } from "@ui/components/organisms/vc-search-bar/lib/values";
+import type { SearchBarAppliedField } from "@ui/components/organisms/vc-search-bar/composables/useSearchBarController";
 
 const props = defineProps<{
   /** The bar's search text */
   search: string;
-  /** The bar's fields (its own and external ones) */
-  fields: BarField[];
-  /** The bar's filter values */
-  values: Record<string, SearchBarValue>;
+  /** The bar's fields with a value */
+  appliedFields: SearchBarAppliedField[];
 }>();
 
 const emit = defineEmits<{
@@ -77,24 +73,14 @@ const emit = defineEmits<{
 const K = "COMPONENTS.ORGANISMS.VC_DATA_TABLE.NO_RESULTS";
 const { t } = useI18n({ useScope: "global" });
 
-const tags = computed(() =>
-  props.fields
-    .filter((f) => !isEmptyValue(props.values[f.id]))
-    .map((f) => ({
-      id: f.id,
-      label: f.label,
-      text: f.kind === "toggle" ? f.label : `${f.label}: ${chipLabel(f, props.values[f.id], t).title}`,
-    })),
-);
-
 const title = computed(() => {
-  const n = tags.value.length;
+  const n = props.appliedFields.length;
   if (props.search && n) return t(`${K}.TITLE_SEARCH_FILTERS`, { query: props.search, count: n }, n);
   if (props.search) return t(`${K}.TITLE_SEARCH`, { query: props.search });
   return t(`${K}.TITLE_FILTERS`, { count: n }, n);
 });
 
-const hint = computed(() => t(tags.value.length ? `${K}.HINT_FILTERS` : `${K}.HINT_SEARCH`));
+const hint = computed(() => t(props.appliedFields.length ? `${K}.HINT_FILTERS` : `${K}.HINT_SEARCH`));
 </script>
 
 <style lang="scss">

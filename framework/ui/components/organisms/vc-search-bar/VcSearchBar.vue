@@ -176,6 +176,7 @@ import { useBarMode } from "./composables/useBarMode";
 import { useChipOverflow } from "./composables/useChipOverflow";
 import { useViews } from "./composables/useViews";
 import { useBarViewSelector, useSlashFocus } from "./composables/useBarViewSelector";
+import { useSearchBarControllerSource } from "./composables/useSearchBarController";
 
 defineOptions({ name: "VcSearchBar" });
 
@@ -368,8 +369,8 @@ function clearAll() {
   clearFilters();
 }
 
-// The table drives the bar from its footer status and its empty state
-defineExpose({ fields, clearAll, clearFilters, removeFilter });
+// A host (the table) reads the bar's status and drives it from its footer and empty state
+useSearchBarControllerSource({ fields, state, searchText, t, clearAll, clearFilters, removeFilter });
 
 function onTypedChip(c: { fieldId: string; value: unknown; rest: string }) {
   // the commit below carries the rest of the text in the same change

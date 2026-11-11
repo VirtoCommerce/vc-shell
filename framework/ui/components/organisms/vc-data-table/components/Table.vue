@@ -97,6 +97,15 @@ provide(TableContextKey, context);
     // Each row sits alone in its row wrapper, so count the wrappers.
     .vc-data-table__row-wrapper:nth-child(even) > .vc-table-composition__row {
       background-color: var(--table-row-bg-even);
+
+      // The stripe selector outranks the row's own hover/selected rules, so restate them here.
+      &.vc-table-composition__row--clickable:hover:not(.vc-table-composition__row--selected) {
+        background-color: var(--table-row-bg-hover);
+      }
+
+      &.vc-table-composition__row--selected {
+        background-color: var(--table-row-bg-selected);
+      }
     }
   }
 

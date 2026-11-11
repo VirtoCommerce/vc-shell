@@ -75,7 +75,6 @@ const OrdersListBlade = defineComponent({
           :search-bar-variant="variant"
           :global-filters="fields"
           :search-views="views"
-          :filter-counts="counts"
           :total-count="total"
           :unfiltered-count="unfiltered"
           :pagination="pagination"

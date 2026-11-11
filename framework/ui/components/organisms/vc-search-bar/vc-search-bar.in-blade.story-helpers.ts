@@ -98,42 +98,24 @@ function matchesTotal(total: number, v: NumberValue): boolean {
   return (v.min === undefined || total >= v.min) && (v.max === undefined || total <= v.max);
 }
 
-/** The flat `@filter` payload and the search applied to one order; `skip` leaves one field out (for its facet counts) */
-export function matchesOrder(o: Order, f: Filters, search: string, skip?: string): boolean {
+/** The flat `@filter` payload and the search applied to one order */
+export function matchesOrder(o: Order, f: Filters, search: string): boolean {
   const status = f.status as string[] | { not: string[] } | undefined;
-  if (skip !== "status" && status) {
+  if (status) {
     if (Array.isArray(status) ? status.length && !status.includes(o.status) : status.not.includes(o.status))
       return false;
   }
-  if (skip !== "customer" && f.customer && o.customer !== f.customer) return false;
+  if (f.customer && o.customer !== f.customer) return false;
   if (f.createdFrom && o.created < (f.createdFrom as string)) return false;
   if (f.createdTo && o.created > (f.createdTo as string)) return false;
   if (f.total && !matchesTotal(o.total, f.total as NumberValue)) return false;
-  if (skip !== "overdue" && f.overdue && !o.overdue) return false;
-  if (skip !== "unpaid" && f.unpaid && !o.unpaid) return false;
+  if (f.overdue && !o.overdue) return false;
+  if (f.unpaid && !o.unpaid) return false;
   const q = search.trim().toLowerCase();
   return !q || o.number.toLowerCase().includes(q) || o.customer.toLowerCase().includes(q);
 }
 
-/** Counts per option for the Filters panel: each field counted against every other applied filter */
-export function facetCounts(f: Filters, search: string): Record<string, Record<string, number>> {
-  const count = (skip: string, key: (o: Order) => string | false) => {
-    const out: Record<string, number> = {};
-    for (const o of ORDERS) {
-      const k = key(o);
-      if (k !== false && matchesOrder(o, f, search, skip)) out[k] = (out[k] ?? 0) + 1;
-    }
-    return out;
-  };
-  return {
-    status: count("status", (o) => o.status),
-    customer: count("customer", (o) => o.customer),
-    overdue: count("overdue", (o) => o.overdue && "true"),
-    unpaid: count("unpaid", (o) => o.unpaid && "true"),
-  };
-}
-
-/** Local filtering, search, facet counts and paging, the way a list blade loads them from @filter and @search */
+/** Local filtering, search and paging, the way a list blade loads them from @filter and @search */
 export function useOrdersQuery(pageSize = 10) {
   const filters = ref<Filters>({});
   const search = ref("");
@@ -141,10 +123,8 @@ export function useOrdersQuery(pageSize = 10) {
   const result = computed(() => ORDERS.filter((o) => matchesOrder(o, filters.value, search.value)));
   const pages = computed(() => Math.ceil(result.value.length / pageSize));
   const items = computed(() => result.value.slice((page.value - 1) * pageSize, page.value * pageSize));
-  const counts = computed(() => facetCounts(filters.value, search.value));
   return {
     items,
-    counts,
     search,
     total: computed(() => result.value.length),
     unfiltered: ORDERS.length,

@@ -15,7 +15,7 @@ export function createBladeViewSelectorRegistry(): {
             "[VcBlade] A view selector is already registered in this blade header; the second one is ignored.",
           );
         }
-        return () => {};
+        return null;
       }
       render.value = fn;
       return () => {

@@ -216,10 +216,6 @@ function onClose(): void {
       @apply tw-w-full tw-min-w-0;
     }
 
-    .vc-blade-header__title-row {
-      @apply tw-flex tw-items-center tw-gap-2 tw-min-w-0;
-    }
-
     .vc-blade-header__actions {
       @apply tw-flex tw-items-center tw-gap-1 tw-overflow-x-auto tw-max-w-full;
     }
@@ -265,8 +261,16 @@ function onClose(): void {
     @apply tw-overflow-hidden;
   }
 
+  &__title-row {
+    @apply tw-flex tw-items-center tw-gap-2 tw-min-w-0;
+
+    > :not(.vc-blade-header__title) {
+      @apply tw-shrink-0;
+    }
+  }
+
   &__title {
-    @apply tw-text-[color:var(--blade-header-title-color)] tw-text-xl/[23px] tw-truncate;
+    @apply tw-min-w-0 tw-text-[color:var(--blade-header-title-color)] tw-text-xl/[23px] tw-truncate;
   }
 
   &__title-no-subtitle {

@@ -103,7 +103,7 @@ export const BladeLoadingKey: InjectionKey<Ref<boolean>> = Symbol("BladeLoading"
 
 // Blade header view selector (a search bar registers its saved-view selector to show next to the title)
 export interface BladeViewSelectorRegistry {
-  /** Returns an unregister function. The first registration wins. */
-  register(render: () => VNode): () => void;
+  /** Returns an unregister function, or null when rejected (the first registration wins). */
+  register(render: () => VNode): (() => void) | null;
 }
 export const BladeViewSelectorKey: InjectionKey<BladeViewSelectorRegistry> = Symbol("BladeViewSelector");

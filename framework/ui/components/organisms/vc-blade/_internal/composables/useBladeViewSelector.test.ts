@@ -8,7 +8,7 @@ describe("createBladeViewSelectorRegistry", () => {
     const fn = () => h("div");
     const off = registry.register(fn);
     expect(render.value).toBe(fn);
-    off();
+    off?.();
     expect(render.value).toBeNull();
   });
 
@@ -21,7 +21,7 @@ describe("createBladeViewSelectorRegistry", () => {
     const off = registry.register(second);
     expect(render.value).toBe(first);
     expect(warn).toHaveBeenCalledTimes(1);
-    off();
+    expect(off).toBeNull();
     expect(render.value).toBe(first);
     warn.mockRestore();
   });

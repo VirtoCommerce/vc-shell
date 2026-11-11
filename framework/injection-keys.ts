@@ -1,4 +1,4 @@
-import { InjectionKey, ComputedRef, type Component, type Ref, type VNode } from "vue";
+import { InjectionKey, ComputedRef, type Component, type Ref } from "vue";
 import { BladeDataKey } from "@core/blade-navigation/types";
 import type { BladeRoutesRecord } from "@core/blade-navigation/types";
 import type { NotificationStore } from "@core/notifications/store";
@@ -100,10 +100,3 @@ export const BladeFormKey: InjectionKey<BladeFormInjection> = Symbol("BladeForm"
 
 // Blade loading state (skeleton mode for child components)
 export const BladeLoadingKey: InjectionKey<Ref<boolean>> = Symbol("BladeLoading");
-
-// Blade title addon (one component registered to render next to the blade title)
-export interface BladeTitleAddonRegistry {
-  /** Returns an unregister function, or null when rejected (the first registration wins). */
-  register(render: () => VNode): (() => void) | null;
-}
-export const BladeTitleAddonKey: InjectionKey<BladeTitleAddonRegistry> = Symbol("BladeTitleAddon");

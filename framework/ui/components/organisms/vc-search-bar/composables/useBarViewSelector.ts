@@ -1,6 +1,6 @@
 import { h, inject, onScopeDispose, ref, watch, type Ref } from "vue";
 import { useEventListener } from "@vueuse/core";
-import { BladeTitleAddonKey } from "@framework/injection-keys";
+import { BladeTitleAddonKey } from "@ui/components/organisms/vc-blade/_internal/composables/useBladeTitleAddon";
 import { BladeStackKey } from "@core/blade-navigation/types";
 import { isTextInputFocused } from "@core/composables/useKeyboardShortcuts";
 import ViewSelector from "../components/ViewSelector.vue";

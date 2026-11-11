@@ -1,5 +1,11 @@
-import { shallowRef, type ShallowRef, type VNode } from "vue";
-import type { BladeTitleAddonRegistry } from "@framework/injection-keys";
+import { shallowRef, type InjectionKey, type ShallowRef, type VNode } from "vue";
+
+/** One component registered to render next to the blade title. Internal: not part of the public API */
+export interface BladeTitleAddonRegistry {
+  /** Returns an unregister function, or null when rejected (the first registration wins). */
+  register(render: () => VNode): (() => void) | null;
+}
+export const BladeTitleAddonKey: InjectionKey<BladeTitleAddonRegistry> = Symbol("BladeTitleAddon");
 
 export function createBladeTitleAddonRegistry(): {
   registry: BladeTitleAddonRegistry;

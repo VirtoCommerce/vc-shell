@@ -77,7 +77,10 @@
           v-else
           class="vc-blade-header__content"
         >
-          <div class="vc-blade-header__title-row">
+          <div
+            v-if="viewSelector && !isMobile"
+            class="vc-blade-header__title-row"
+          >
             <div
               :id="titleId"
               class="vc-blade-header__title"
@@ -87,10 +90,17 @@
             >
               {{ title }}
             </div>
-            <component
-              :is="viewSelector"
-              v-if="viewSelector && !isMobile"
-            />
+            <component :is="viewSelector" />
+          </div>
+          <div
+            v-else
+            :id="titleId"
+            class="vc-blade-header__title"
+            :class="{
+              'vc-blade-header__title-no-subtitle': !subtitle,
+            }"
+          >
+            {{ title }}
           </div>
           <div
             v-if="subtitle"
@@ -264,13 +274,17 @@ function onClose(): void {
   &__title-row {
     @apply tw-flex tw-items-center tw-gap-2 tw-min-w-0;
 
+    > .vc-blade-header__title {
+      @apply tw-min-w-0;
+    }
+
     > :not(.vc-blade-header__title) {
       @apply tw-shrink-0;
     }
   }
 
   &__title {
-    @apply tw-min-w-0 tw-text-[color:var(--blade-header-title-color)] tw-text-xl/[23px] tw-truncate;
+    @apply tw-text-[color:var(--blade-header-title-color)] tw-text-xl/[23px] tw-truncate;
   }
 
   &__title-no-subtitle {

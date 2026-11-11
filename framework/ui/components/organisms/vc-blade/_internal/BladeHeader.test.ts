@@ -85,6 +85,27 @@ describe("BladeHeader view selector", () => {
     expect(wrapper.find(".test-view-selector").exists()).toBe(false);
   });
 
+  it("keeps the released title markup without a registered selector", () => {
+    const wrapper = factory({ title: "Orders", subtitle: "All orders" });
+    const content = wrapper.find(".vc-blade-header__content");
+    expect(wrapper.find(".vc-blade-header__title-row").exists()).toBe(false);
+    const children = Array.from(content.element.children).map((el) => el.className);
+    expect(children).toEqual(["vc-blade-header__title", "vc-blade-header__subtitle"]);
+  });
+
+  it("keeps the released title markup on mobile even with a selector", () => {
+    const wrapper = mount(BladeHeader, {
+      props: { title: "Orders", viewSelector: selector },
+      global: {
+        provide: { [IsMobileKey as symbol]: ref(true), [IsDesktopKey as symbol]: ref(false) },
+        stubs: { teleport: true },
+        mocks: { $t: (key: string) => key },
+      },
+    });
+    const title = wrapper.find(".vc-blade-header__title");
+    expect(title.element.parentElement?.classList.contains("vc-blade-header__content")).toBe(true);
+  });
+
   it("nothing is rendered on mobile", () => {
     const wrapper = mount(BladeHeader, {
       props: { title: "Orders", viewSelector: selector },

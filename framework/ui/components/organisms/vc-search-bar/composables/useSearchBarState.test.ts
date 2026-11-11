@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach, vi } from "vitest";
-import { effectScope, ref, type EffectScope } from "vue";
+import { effectScope, ref, unref, type EffectScope, type Ref } from "vue";
 import { registerExternalSearchFilters, unregisterExternalSearchFilters } from "@core/services/search-filters-service";
 import type { ITableQueryStateService, TableQueryPatch } from "@core/blade-navigation/table-query-state";
 import { useSearchBarState } from "./useSearchBarState";
@@ -33,7 +33,7 @@ function fakeQueryState(initial: Record<string, TableQueryPatch> = {}) {
 
 function setup(
   o: {
-    fields?: SearchBarField[];
+    fields?: SearchBarField[] | Ref<SearchBarField[]>;
     target?: string;
     storageKey?: string;
     model?: SearchBarState;
@@ -46,7 +46,7 @@ function setup(
   scopes.push(scope);
   const api = scope.run(() =>
     useSearchBarState({
-      fields: () => o.fields ?? [text("name")],
+      fields: () => unref(o.fields) ?? [text("name")],
       target: () => o.target,
       storageKey: () => o.storageKey,
       queryState: o.queryState,
@@ -111,6 +111,60 @@ describe("useSearchBarState", () => {
       expect(api.state.value).toEqual({ search: "ext", values: { name: "a" } });
       expect(changes).toEqual([]);
       expect(service.write).toHaveBeenLastCalledWith("k", { filters: "name:a" });
+    });
+
+    it("keeps URL filters of fields that arrive later and applies them with one change", () => {
+      const { service } = fakeQueryState({ k: { filters: "name:a;late:x" } });
+      const fields = ref<SearchBarField[]>([text("name")]);
+      const { api, changes } = setup({ fields, storageKey: "k", queryState: service });
+      expect(api.state.value.values).toEqual({ name: "a" });
+      expect(changes).toHaveLength(1);
+      fields.value = [text("name"), text("late")];
+      expect(api.state.value.values).toEqual({ name: "a", late: "x" });
+      expect(changes).toHaveLength(2);
+      expect(changes[1].filters).toEqual({ name: "a", late: "x" });
+    });
+
+    it("async fields: the URL stays as is until they arrive, then their filters apply", () => {
+      const { service, store } = fakeQueryState({ k: { filters: "late:x" } });
+      const fields = ref<SearchBarField[]>([]);
+      const { api, changes } = setup({ fields, storageKey: "k", queryState: service });
+      expect(changes).toEqual([]);
+      expect(service.write).not.toHaveBeenCalled();
+      fields.value = [text("late")];
+      expect(api.state.value.values).toEqual({ late: "x" });
+      expect(changes).toHaveLength(1);
+      expect(changes[0].filters).toEqual({ late: "x" });
+      expect(store.k.filters).toBe("late:x");
+    });
+
+    it("a change made before the fields arrive keeps their URL part", () => {
+      const { service } = fakeQueryState({ k: { filters: "late:x" } });
+      const fields = ref<SearchBarField[]>([text("name")]);
+      const { api } = setup({ fields, storageKey: "k", queryState: service });
+      api.setValue("name", "b");
+      expect(service.write).toHaveBeenLastCalledWith("k", { filters: "name:b;late:x" });
+      fields.value = [text("name"), text("late")];
+      expect(api.state.value.values).toEqual({ name: "b", late: "x" });
+    });
+
+    it("an external registration that arrives later applies its URL filters", () => {
+      const { service } = fakeQueryState({ k: { filters: "x:1" } });
+      const { api, changes } = setup({ target: "orders", storageKey: "k", queryState: service });
+      expect(changes).toEqual([]);
+      registerExternalSearchFilters({ id: "ext", targetBlades: ["orders"], fields: [text("x")] });
+      expect(api.state.value.values).toEqual({ x: "1" });
+      expect(changes).toHaveLength(1);
+    });
+
+    it("clearAll drops URL filters still waiting for their fields", () => {
+      const { service, store } = fakeQueryState({ k: { filters: "name:a;late:x" } });
+      const fields = ref<SearchBarField[]>([text("name")]);
+      const { api } = setup({ fields, storageKey: "k", queryState: service });
+      api.clearAll();
+      expect(store.k.filters).toBe("");
+      fields.value = [text("name"), text("late")];
+      expect(api.state.value.values).toEqual({});
     });
 
     it("without a key nothing is read or written", () => {

@@ -54,7 +54,7 @@ const props = defineProps<{
   /** Filters or a search applied: "N results" instead of "N items" */
   filtered: boolean;
   filterCount: number;
-  /** The current view; none for the system view */
+  /** The current view; none for the unmodified system view */
   viewName?: string;
   modified?: boolean;
   disabled?: boolean;

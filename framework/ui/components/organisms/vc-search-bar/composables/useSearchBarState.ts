@@ -4,7 +4,7 @@ import type { ITableQueryStateService } from "@core/blade-navigation/table-query
 import type { SearchBarChange, SearchBarField, SearchBarState, SearchBarValue, SearchBarView } from "../types";
 import { normalizeFields, type BarField } from "../lib/fields";
 import { cloneValue, isEmptyValue, toFlatFilters } from "../lib/values";
-import { stateToUrl, urlToState } from "../lib/urlState";
+import { stateToUrl, unknownSegments, urlToState } from "../lib/urlState";
 import { stateToPhrase } from "../phrase/convert";
 
 export interface UseSearchBarStateOptions {
@@ -56,6 +56,9 @@ export function useSearchBarState(opts: UseSearchBarStateOptions): UseSearchBarS
   // The applied filters live in the URL next to the table's sort/search/page; the search words are not part of them
   const urlKey = (): string | undefined => (opts.queryState ? opts.storageKey() || undefined : undefined);
   let written: string | undefined;
+  // URL segments of fields not registered yet (async globalFilters, a late external registration):
+  // they stay in the URL and apply when their fields arrive
+  let unresolved: string[] = [];
 
   let restored = false;
   const base = (): SearchBarState => {
@@ -63,7 +66,7 @@ export function useSearchBarState(opts: UseSearchBarStateOptions): UseSearchBarS
     const key = urlKey();
     if (!key) return emptyState();
     written = opts.queryState!.read(key).filters ?? "";
-    // Values are filtered by the fields known now: values of fields that register later are dropped
+    unresolved = unknownSegments(fields.value, written);
     const fromUrl = urlToState(fields.value, written);
     if (!fromUrl) return emptyState();
     restored = true;
@@ -93,7 +96,7 @@ export function useSearchBarState(opts: UseSearchBarStateOptions): UseSearchBarS
   function persist(s: SearchBarState): void {
     const key = urlKey();
     if (!key) return;
-    const filters = stateToUrl(fields.value, s);
+    const filters = [stateToUrl(fields.value, s), ...unresolved].filter(Boolean).join(";");
     if (filters === written) return;
     written = filters;
     opts.queryState!.write(key, { filters });
@@ -129,13 +132,22 @@ export function useSearchBarState(opts: UseSearchBarStateOptions): UseSearchBarS
     return { search: state.value.search, values: state.value.values };
   };
 
+  /** The waiting URL values whose fields are registered now; they win over the current ones */
+  function takeArrived(): SearchBarState | null {
+    if (!unresolved.length || state.value.query) return null;
+    const arrived = urlToState(fields.value, unresolved.join(";"));
+    unresolved = unknownSegments(fields.value, unresolved.join(";"));
+    return arrived;
+  }
+
   watch(
     () => fields.value.map((f) => f.id),
     (ids) => {
       const known = new Set(ids);
       const kept = Object.entries(state.value.values).filter(([id]) => known.has(id));
-      if (kept.length === Object.keys(state.value.values).length) return;
-      commit({ ...state.value, values: Object.fromEntries(kept) });
+      const arrived = takeArrived();
+      if (kept.length === Object.keys(state.value.values).length && !arrived) return;
+      commit({ ...state.value, values: { ...Object.fromEntries(kept), ...arrived?.values } });
     },
     { flush: "sync" },
   );
@@ -179,12 +191,17 @@ export function useSearchBarState(opts: UseSearchBarStateOptions): UseSearchBarS
       const { [id]: _removed, ...rest } = state.value.values;
       commit({ ...withoutQuery(), values: rest });
     },
-    clearAll: () => commit(emptyState()),
+    clearAll() {
+      unresolved = [];
+      commit(emptyState());
+    },
     applyState(s) {
+      unresolved = [];
       flushSearch();
       commit({ search: s.search, values: { ...s.values }, ...(s.query ? { query: s.query } : {}) });
     },
     setQuery(q) {
+      unresolved = [];
       flushSearch();
       commit({ search: state.value.search, values: {}, ...(q ? { query: q } : {}) });
     },

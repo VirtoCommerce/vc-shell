@@ -175,3 +175,13 @@ export function urlToState(fields: BarField[], raw: string): SearchBarState | nu
   }
   return Object.keys(values).length ? { search: "", values } : null;
 }
+
+/** Segments of a URL value whose field id is not among `fields` (kept escaped, as written) */
+export function unknownSegments(fields: BarField[], raw: string): string[] {
+  if (!raw || raw.startsWith(QUERY_MARK)) return [];
+  const known = new Set(fields.map((f) => f.id));
+  return splitUnescaped(raw, ";").filter((segment) => {
+    const parts = splitUnescaped(segment.startsWith("!") ? segment.slice(1) : segment, ":");
+    return parts.length === 2 && parts[0] !== "" && !known.has(unescape(parts[0]));
+  });
+}

@@ -28,7 +28,7 @@
       @blur="focused = false"
     />
     <kbd
-      v-if="!modelValue && !focused && !disabled"
+      v-if="!hideHint && !modelValue && !focused && !disabled"
       class="vc-search-bar__search-hint"
       aria-hidden="true"
       >/</kbd
@@ -92,6 +92,8 @@ const props = defineProps<{
   fields: BarField[];
   placeholder?: string;
   disabled?: boolean;
+  /** No `/` key hint (a phone has no keyboard shortcut) */
+  hideHint?: boolean;
 }>();
 
 const emit = defineEmits<{

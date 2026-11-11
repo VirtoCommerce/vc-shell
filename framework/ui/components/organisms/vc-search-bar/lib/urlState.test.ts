@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { normalizeFields } from "./fields";
-import { stateToUrl, urlToState } from "./urlState";
+import { stateToUrl, unknownSegments, urlToState } from "./urlState";
 import type { SearchBarField, SearchBarState, SearchBarValue } from "../types";
 
 const fields = normalizeFields([
@@ -157,5 +157,17 @@ describe("urlToState on bad input", () => {
 
   it("keeps an option value it does not know as text", () => {
     expect(urlToState(fields, "status:Later")).toEqual(state({ status: ["Later"] }));
+  });
+});
+
+describe("unknownSegments", () => {
+  it("returns the segments of unknown fields as written", () => {
+    expect(unknownSegments(fields, "name:a;!late:x\\;y;other:1")).toEqual(["!late:x\\;y", "other:1"]);
+  });
+
+  it("ignores queries, empty values and malformed segments", () => {
+    expect(unknownSegments(fields, "~late:x")).toEqual([]);
+    expect(unknownSegments(fields, "")).toEqual([]);
+    expect(unknownSegments(fields, "late;:x")).toEqual([]);
   });
 });

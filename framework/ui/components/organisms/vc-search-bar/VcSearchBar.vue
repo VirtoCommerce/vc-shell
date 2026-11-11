@@ -22,6 +22,7 @@
           :fields="fields"
           :placeholder="placeholder"
           :disabled="disabled"
+          :hide-hint="isMobile"
           @update:model-value="onSearchInput"
           @chip="onTypedChip"
           @backspace-empty="removeLast"
@@ -73,7 +74,9 @@
       :unfiltered-count="unfilteredCount"
       :filtered="chipFields.length > 0 || !!state.search"
       :filter-count="chipFields.length"
-      :view-name="views.current.value.scope === 'system' ? undefined : views.current.value.name"
+      :view-name="
+        views.current.value.scope === 'system' && !views.modified.value ? undefined : views.current.value.name
+      "
       :modified="views.modified.value"
       :disabled="disabled"
       @clear="clearFilters"

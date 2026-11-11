@@ -5,7 +5,7 @@
   >
     <VcIcon
       icon="lucide-search"
-      size="s"
+      :custom-size="16"
       class="vc-search-bar__search-icon"
     />
     <input

@@ -104,16 +104,17 @@ export function useViews(o: UseViewsOptions): ViewsApi {
   }
 
   // Initial view: the URL's (an id not registered yet shows as system until it arrives, filters
-  // from the URL stay); else the module default, applied only when the URL brings no filters; else system
+  // from the URL stay); else the module default, applied only when the bar starts with no values; else system
   const k = urlKey();
   const url = k ? o.queryState!.read(k) : {};
   let written = url.view;
   const fallback = moduleViews.value.find((v) => v.default);
   if (url.view) {
     currentId.value = url.view;
-  } else if (fallback) {
+  } else if (fallback && !url.filters && Object.values(o.state.value.values).every(isEmptyValue)) {
+    // values the bar starts with (v-model or URL) win; the system view then reads modified
     currentId.value = fallback.id;
-    if (!url.filters) applyValues(fallback.values);
+    applyValues(fallback.values);
   }
 
   // A missing key opens the default view, so with one the system view is written explicitly

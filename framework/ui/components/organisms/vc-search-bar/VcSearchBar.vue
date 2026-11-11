@@ -260,7 +260,8 @@ useSlashFocus({
 const root = ref<HTMLElement>();
 const main = ref<HTMLElement>();
 const measure = ref<HTMLElement>();
-const { mode } = useBarMode(root);
+// the mode by the bar's own width (padding included); the chip budget by the row's content width
+const { mode } = useBarMode(root, "border-box");
 const { width: mainWidth } = useBarMode(main);
 const buttonMode = computed(() => (isMobile.value ? "narrow" : mode.value));
 const chipsInRow = computed(() => !isMobile.value && mode.value === "wide" && props.variant === "inline");

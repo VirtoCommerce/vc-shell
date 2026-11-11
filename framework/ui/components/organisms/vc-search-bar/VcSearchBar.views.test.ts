@@ -41,6 +41,18 @@ describe("VcSearchBar views and URL", () => {
     expect(lastChange(wrapper).filters).toEqual({ status: ["a"] });
   });
 
+  it("a non-empty initial v-model wins over the default view", () => {
+    const views = [{ id: "late", name: "Late", values: { overdue: true }, default: true }];
+    const url = fakeQueryState();
+    wrapper = mountBar(
+      { storageKey: "orders", views, modelValue: { search: "", values: { status: ["a"] } } },
+      url.provide,
+    );
+    expect(wrapper.emitted("change")).toBeUndefined();
+    expect(wrapper.get(".vc-search-bar__view-btn-name").text()).toBe("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.VIEWS.ALL");
+    expect(wrapper.find(".vc-search-bar__view-badge").exists()).toBe(true);
+  });
+
   it("Clear all switches to the system view", async () => {
     const views = [{ id: "late", name: "Late", values: { overdue: true }, default: true }];
     const url = fakeQueryState();

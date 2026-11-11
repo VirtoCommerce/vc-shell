@@ -58,10 +58,12 @@ export function fakeResizeObserver() {
       disconnect() {}
     },
   );
-  return async (width: number) => {
+  /** `content` defaults to `width`: the bar's padding is left out unless given */
+  return async (width: number, content = width) => {
     await nextTick();
+    const entry = { contentRect: { width: content }, borderBoxSize: [{ inlineSize: width }] };
     for (const o of observers)
-      if (o.el?.isConnected) o.cb([{ contentRect: { width } } as ResizeObserverEntry], o as unknown as ResizeObserver);
+      if (o.el?.isConnected) o.cb([entry as unknown as ResizeObserverEntry], o as unknown as ResizeObserver);
     // the chip overflow measures after the next render
     await nextTick();
     await nextTick();

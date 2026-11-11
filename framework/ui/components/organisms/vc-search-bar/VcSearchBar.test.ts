@@ -91,6 +91,13 @@ describe("VcSearchBar", () => {
       expect(wrapper.find(".vc-search-bar__filters-badge").exists()).toBe(false);
     });
 
+    it("the mode follows the bar's border box: 720px with its padding is wide", async () => {
+      const resize = fakeResizeObserver();
+      wrapper = mountBar({ modelValue: { search: "", values: { status: ["a"] } } });
+      await resize(720, 688);
+      expect(wrapper.findAll(CHIP)).toHaveLength(1);
+    });
+
     it("summary variant shows field names on the Filters button instead of chips", async () => {
       const resize = fakeResizeObserver();
       wrapper = mountBar({
@@ -138,6 +145,17 @@ describe("VcSearchBar", () => {
       expect(wrapper.find(".vc-search-bar__filters-btn").exists()).toBe(false);
       expect(wrapper.find(".vc-search-bar__divider").exists()).toBe(false);
       expect(wrapper.find(".vc-search-bar__view-selector").exists()).toBe(false);
+    });
+
+    it("the search icon and the funnel are 16px", () => {
+      wrapper = mountBar();
+      const size = (icon: string) =>
+        wrapper!
+          .findAllComponents({ name: "VcIcon" })
+          .find((c) => c.props("icon") === icon)
+          ?.props("customSize");
+      expect(size("lucide-search")).toBe(16);
+      expect(size("lucide-funnel")).toBe(16);
     });
 
     it("hides the search input when searchable is false", () => {

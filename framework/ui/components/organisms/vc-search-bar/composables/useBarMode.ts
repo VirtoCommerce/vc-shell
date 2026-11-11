@@ -12,8 +12,14 @@ export function modeForWidth(w: number): BarMode {
   return "narrow";
 }
 
-/** The width of `el` (content box, ResizeObserver) and its mode; wide until the first measurement */
-export function useBarMode(el: Ref<HTMLElement | undefined>): { mode: ComputedRef<BarMode>; width: Ref<number> } {
+/**
+ * The width of `el` (content box, or with "border-box" the padding included) and its mode;
+ * wide until the first measurement
+ */
+export function useBarMode(
+  el: Ref<HTMLElement | undefined>,
+  box: "content-box" | "border-box" = "content-box",
+): { mode: ComputedRef<BarMode>; width: Ref<number> } {
   const width = ref(Infinity);
   let observer: ResizeObserver | undefined;
 
@@ -25,9 +31,13 @@ export function useBarMode(el: Ref<HTMLElement | undefined>): { mode: ComputedRe
       if (!node || typeof ResizeObserver === "undefined") return;
       observer = new ResizeObserver((entries) => {
         const entry = entries[entries.length - 1];
-        if (entry) width.value = entry.contentRect.width;
+        if (!entry) return;
+        width.value =
+          box === "border-box"
+            ? (entry.borderBoxSize?.[0]?.inlineSize ?? node.getBoundingClientRect().width)
+            : entry.contentRect.width;
       });
-      observer.observe(node);
+      observer.observe(node, { box });
     },
     { immediate: true },
   );

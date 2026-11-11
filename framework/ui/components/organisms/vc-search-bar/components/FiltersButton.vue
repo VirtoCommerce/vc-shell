@@ -21,7 +21,7 @@
     >
       <VcIcon
         icon="lucide-funnel"
-        size="s"
+        :custom-size="16"
       />
       <span
         v-if="showNames"

@@ -97,7 +97,8 @@ describe("useViews", () => {
     const filtersOnly = fakeQueryState({ orders: { filters: "status:new" } });
     const a = setup({ queryState: filtersOnly.service, state: { search: "", values: { status: ["new"] } } });
     expect(a.apply).not.toHaveBeenCalled();
-    expect(a.api.current.value.id).toBe("urgent");
+    // no view named: the system view, modified
+    expect(a.api.current.value.id).toBe("all");
     expect(a.api.modified.value).toBe(true);
 
     const named = fakeQueryState({ orders: { filters: "status:paid", view: "paid" } });
@@ -105,6 +106,22 @@ describe("useViews", () => {
     expect(b.apply).not.toHaveBeenCalled();
     expect(b.api.current.value.id).toBe("paid");
     expect(b.api.modified.value).toBe(false);
+  });
+
+  it("initial values win over the default view: no apply, system view, modified", () => {
+    const { service } = fakeQueryState();
+    const { api, state, apply } = setup({ queryState: service, state: { search: "", values: { status: ["new"] } } });
+    expect(apply).not.toHaveBeenCalled();
+    expect(state.value.values).toEqual({ status: ["new"] });
+    expect(api.current.value.id).toBe("all");
+    expect(api.modified.value).toBe(true);
+  });
+
+  it("an empty initial state with an empty URL still opens on the default view", () => {
+    const { service } = fakeQueryState();
+    const { api, apply } = setup({ queryState: service, state: { search: "q", values: { status: [] } } });
+    expect(apply).toHaveBeenCalledTimes(1);
+    expect(api.current.value.id).toBe("urgent");
   });
 
   it("unknown URL view id: system view, URL filters kept, no throw", () => {

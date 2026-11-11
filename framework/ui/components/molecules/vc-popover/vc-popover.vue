@@ -63,7 +63,7 @@
  * scrollable content, optional footer.
  */
 import { ref, computed, watch, onBeforeUnmount, nextTick } from "vue";
-import { offset, flip, shift, size, type Placement, type ReferenceElement } from "@floating-ui/vue";
+import { offset as offsetMiddleware, flip, shift, size, type Placement, type ReferenceElement } from "@floating-ui/vue";
 import { VcIcon } from "@ui/components/atoms";
 import { useFloatingPosition, useTeleportTarget } from "@ui/composables";
 import { panelAnchorRegistry } from "@ui/components/molecules/vc-popover/panel-anchor-registry";
@@ -85,6 +85,8 @@ interface Props {
   maxWidth?: string;
   /** Max panel height in pixels (clamped by viewport available height) */
   maxHeight?: number;
+  /** Gap between the anchor and the panel, in pixels */
+  offset?: number;
   /** Enable internal content scrolling for the panel body */
   contentScrollable?: boolean;
   /** Close when clicking outside */
@@ -110,6 +112,7 @@ const props = withDefaults(defineProps<Props>(), {
   width: "280px",
   maxWidth: "400px",
   maxHeight: 350,
+  offset: 4,
   contentScrollable: true,
   closeOnClickOutside: true,
   closeOnEscape: true,
@@ -139,7 +142,7 @@ const { floatingStyle } = useFloatingPosition(anchorRefAsRef, floatingRef, {
   strategy: "fixed",
   placement: computed(() => props.placement),
   middleware: computed(() => [
-    offset(4),
+    offsetMiddleware(props.offset),
     flip(),
     shift({ padding: 16 }),
     size({

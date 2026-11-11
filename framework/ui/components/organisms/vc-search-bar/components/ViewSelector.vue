@@ -320,10 +320,10 @@ function act(run: () => void) {
     @apply tw-shrink-0;
     color: var(--neutrals-500);
   }
+  // the actions under a plain full-width rule
   &__views-modified {
-    @apply tw-flex tw-flex-col tw-gap-0.5 tw-p-1 tw-mt-1;
-    border: 1px solid var(--neutrals-200);
-    border-radius: 6px;
+    @apply tw-flex tw-flex-col tw-gap-0.5 tw-pt-1 tw-mt-1;
+    border-top: 1px solid var(--neutrals-200);
   }
 }
 </style>

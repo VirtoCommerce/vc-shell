@@ -279,7 +279,18 @@ describe("MenuHost", () => {
   });
   const SidebarStub = defineComponent({
     name: "VcSidebar",
-    props: ["modelValue", "position", "size", "draggable", "dragHandle", "closeButton", "inset", "title", "ariaLabel"],
+    props: [
+      "modelValue",
+      "position",
+      "size",
+      "height",
+      "draggable",
+      "dragHandle",
+      "closeButton",
+      "inset",
+      "title",
+      "ariaLabel",
+    ],
     emits: ["update:modelValue"],
     setup:
       (props, { slots }) =>
@@ -337,7 +348,6 @@ describe("MenuHost", () => {
     expect(sb.props()).toMatchObject({
       modelValue: true,
       position: "bottom",
-      size: "lg",
       ariaLabel: "Filters",
       draggable: true,
       dragHandle: true,
@@ -346,6 +356,16 @@ describe("MenuHost", () => {
       title: "T",
     });
     expect(w.find(".content").exists()).toBe(true);
+  });
+
+  it("a sheet keeps VcSidebar's own size; a fitted one (the Filters panel) takes its content's height", async () => {
+    const plain = mountHost({ sheet: true });
+    await flushPromises();
+    expect(plain.findComponent(SidebarStub).props("size")).toBeUndefined();
+    expect(plain.findComponent(SidebarStub).props("height")).toBeUndefined();
+    const fitted = mountHost({ sheet: true, fit: true });
+    await flushPromises();
+    expect(fitted.findComponent(SidebarStub).props("height")).toBe("auto");
   });
 
   it("emits close from either host", async () => {

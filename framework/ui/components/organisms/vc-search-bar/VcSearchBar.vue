@@ -338,7 +338,7 @@ const menuTitle = computed(() => {
 const panelHost = computed(() => {
   if (shown.value.list !== "filters" || shown.value.field) return {};
   const label = t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.FILTERS");
-  return isMobile.value ? { label } : { width: "360px", placement: "bottom-end" as const, fit: true, label };
+  return isMobile.value ? { fit: true, label } : { width: "360px", placement: "bottom-end" as const, fit: true, label };
 });
 
 // A menu whose anchor left the row (the "+N" button once every chip fits, a chip in a narrower mode) closes
@@ -448,5 +448,10 @@ function onTypedChip(c: { fieldId: string; value: unknown; rest: string }) {
 // the prototype's 13px rows: sm sets 12px with !important, so this matches it on specificity
 .vc-button.vc-button-ghost.vc-button--sm.vc-search-bar__menu-row {
   font-size: 13px #{!important};
+
+  // the title truncates: a 16px line box would clip the descenders of 13px text
+  .vc-button__title {
+    line-height: 20px;
+  }
 }
 </style>

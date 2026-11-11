@@ -65,8 +65,8 @@ const hostProps = computed<Record<string, unknown>>(() =>
     ? {
         modelValue: shown.value,
         position: "bottom",
-        // header, views, fields and footer need the room
-        size: "lg",
+        // a fitted sheet (the Filters panel) takes its content's height, capped below
+        ...(props.fit ? { height: "auto" } : {}),
         draggable: true,
         dragHandle: true,
         closeButton: false,

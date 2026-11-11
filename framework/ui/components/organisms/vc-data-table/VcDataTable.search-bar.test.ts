@@ -7,6 +7,7 @@ import { mount, type VueWrapper } from "@vue/test-utils";
 import { defineComponent, h, nextTick, onMounted, ref } from "vue";
 import VcDataTable from "./VcDataTable.vue";
 import { registerExternalSearchFilters, unregisterExternalSearchFilters } from "@core/services/search-filters-service";
+import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import {
   global,
   globalFilters,
@@ -112,6 +113,42 @@ describe("VcDataTable search bar header", () => {
   it("renders no bar without searchable, globalFilters or header actions", () => {
     const w = mountTable();
     expect(w.find(".vc-search-bar").exists()).toBe(false);
+  });
+
+  it("renders the bar for a searchName alone: its fields may come from an external registration", () => {
+    registerExternalSearchFilters({
+      id: "ext-only",
+      targetBlades: ["OrdersList"],
+      fields: [{ id: "x", label: "X", filter: true }],
+    });
+    try {
+      const w = mountTable({ searchName: "OrdersList" });
+      expect(w.find(".vc-search-bar").exists()).toBe(true);
+      expect(w.find(".vc-search-bar__filters-btn").exists()).toBe(true);
+    } finally {
+      unregisterExternalSearchFilters("ext-only");
+    }
+  });
+
+  it("renders the bar for fields registered under the blade's name", () => {
+    registerExternalSearchFilters({
+      id: "ext-blade",
+      targetBlades: ["OrdersBlade"],
+      fields: [{ id: "x", label: "X", filter: true }],
+    });
+    try {
+      wrapper = mount(VcDataTable as never, {
+        props: { items: [], stateKey: "orders", searchBar: true },
+        global: {
+          ...withUrl(),
+          provide: { ...withUrl().provide, [BladeDescriptorKey as symbol]: ref({ id: "b1", name: "OrdersBlade" }) },
+        },
+        attachTo: document.body,
+      });
+      expect(wrapper.find(".vc-search-bar__filters-btn").exists()).toBe(true);
+    } finally {
+      unregisterExternalSearchFilters("ext-blade");
+    }
   });
 
   it("wraps the bar in the table's own search header", () => {

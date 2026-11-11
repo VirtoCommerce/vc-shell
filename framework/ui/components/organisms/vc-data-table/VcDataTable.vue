@@ -15,7 +15,9 @@
 
     <!-- Search bar (opt-in): custom actions row above the bar (search, filters as chips, views) -->
     <div
-      v-if="searchBar && (searchable || globalFilters?.length || $slots['search-header-actions'])"
+      v-if="
+        searchBar && (searchable || globalFilters?.length || hasExternalBarFields || $slots['search-header-actions'])
+      "
       class="vc-data-table__search-header"
     >
       <div
@@ -447,6 +449,7 @@ import {
   ref,
   computed,
   provide,
+  inject,
   watch,
   watchEffect,
   nextTick,
@@ -499,6 +502,8 @@ import type {
   PersistedStateV2,
 } from "@ui/components/organisms/vc-data-table/types";
 import { vLoading } from "@core/directives";
+import { getExternalSearchFilters } from "@core/services/search-filters-service";
+import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import type { VirtualElement } from "@floating-ui/vue";
 
 const props = withDefaults(defineProps<VcDataTableExtendedProps<T> & { fitMode?: TableFitMode }>(), {
@@ -1231,11 +1236,16 @@ const handleGlobalFilterClear = () => {
 // @filter until the screen has mounted, so the restored filters land after its initial request.
 let tableMounted = false;
 let restoredFilterPending = false;
+// A change with the bar's filters unchanged (a search cleared with them) is no new @filter
+let lastBarFilters = "{}";
 const handleSearchBarChange = (change: SearchBarChange) => {
   barState.value = change.state;
   // A change can carry a search text the table has not seen; typing never differs here (update:search came first)
   if (change.search !== internalSearchValue.value) handleSearchInput(change.search);
   globalFilterPayload.value = change.filters;
+  const filtersKey = JSON.stringify(change.filters);
+  if (filtersKey === lastBarFilters) return;
+  lastBarFilters = filtersKey;
   if (tableMounted) emitFilterPayload();
   else restoredFilterPending = true;
 };
@@ -1250,6 +1260,12 @@ onMounted(() => {
 });
 
 const searchBarRef = ref<InstanceType<typeof VcSearchBar> | null>(null);
+const bladeDescriptor = inject(BladeDescriptorKey, undefined);
+/** Fields registered by other modules for the bar's name (searchName, else the blade's) mount the bar too */
+const hasExternalBarFields = computed(() => {
+  const target = props.searchBar ? (props.searchName ?? bladeDescriptor?.value?.name) : undefined;
+  return !!target && getExternalSearchFilters(target).some((r) => r.fields.length > 0);
+});
 /** The bar's state: v-model, plus its changes (filters restored from the URL arrive only as a change) */
 const barState = ref<SearchBarState>();
 const barResultCount = computed(() => props.totalCount ?? props.items.length);

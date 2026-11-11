@@ -191,6 +191,17 @@ describe("VcDataTable search bar: footer status and empty state", () => {
       expect(w.find(STATUS).exists()).toBe(false);
     });
 
+    it("Clear all with only a search clears it without another filter event", async () => {
+      const w = mountTable({ searchValue: "acme", items: [{ id: 1 }], totalCount: 1 });
+      await nextTick();
+      const before = (w.emitted("filter") ?? []).length;
+      await w.find(`${STATUS} button`).trigger("click");
+      expect(w.emitted("update:searchValue")!.at(-1)).toEqual([""]);
+      await new Promise((r) => setTimeout(r, 0));
+      expect(w.emitted("search")!.at(-1)).toEqual([""]);
+      expect((w.emitted("filter") ?? []).length).toBe(before);
+    });
+
     it("Clear all clears bar filters and search, keeps column filters, selects the system view", async () => {
       query.orders_filters = "status:Paid";
       query.orders_view = "paid";

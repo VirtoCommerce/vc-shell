@@ -114,6 +114,28 @@ describe("ViewSelector", () => {
     expect(views.modified.value).toBe(false);
   });
 
+  it("the modified actions and the options carry leading icons", async () => {
+    const { views, setValues } = makeViews();
+    views.select("paid");
+    setValues({ urgent: true });
+    const w = mountSelector(views);
+    await open(w);
+    const iconOf = (text: string) =>
+      w
+        .findAllComponents({ name: "VcIcon" })
+        .find((c) => c.element.closest("button")?.textContent?.trim() === text)
+        ?.props("icon");
+    expect(iconOf(`${K}SAVE_CHANGES:Paid`)).toBe("lucide-check");
+    expect(iconOf(`${K}SAVE_AS_NEW`)).toBe("lucide-bookmark");
+    expect(iconOf(`${K}REVERT:Paid`)).toBe("lucide-rotate-ccw");
+
+    views.saveAs("Mine");
+    await nextTick();
+    await w.get(".vc-search-bar__view-more").trigger("click");
+    expect(iconOf(`${K}RENAME`)).toBe("lucide-pencil");
+    expect(iconOf(`${K}DELETE`)).toBe("lucide-trash-2");
+  });
+
   it("the system view offers no Save changes", async () => {
     const { views, setValues } = makeViews();
     setValues({ urgent: true });

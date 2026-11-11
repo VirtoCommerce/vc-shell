@@ -20,6 +20,7 @@
           ref="searchInput"
           :model-value="searchText"
           :fields="fields"
+          :values="state.values"
           :placeholder="placeholder"
           :disabled="disabled"
           :hide-hint="isMobile"

@@ -179,7 +179,7 @@
         "SUGGEST": {
           "BY": "Filter by {field}",
           "BY_FIELD": "Filter by field",
-          "ENTER": "↵ to add"
+          "ADD": "to add"
         },
         "PHONE": {
           "CLEAR": "Clear",
@@ -219,6 +219,7 @@
           "SAVE_CHANGES": "Save changes to “{name}”",
           "SAVE_AS_NEW": "Save as new view…",
           "REVERT": "Revert to “{name}”",
+          "REVERT_SHORT": "Revert",
           "RENAME": "Rename",
           "DELETE": "Delete",
           "NEW_NAME": "New name",

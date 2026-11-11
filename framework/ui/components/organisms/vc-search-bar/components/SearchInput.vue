@@ -50,7 +50,19 @@
       v-if="open"
       class="vc-search-bar__suggest"
     >
-      <div class="vc-search-bar__suggest-title">{{ $t(...title) }}</div>
+      <div class="vc-search-bar__suggest-head">
+        <span class="vc-search-bar__suggest-title">{{ $t(...title) }}</span>
+        <kbd
+          class="vc-search-bar__suggest-key"
+          aria-hidden="true"
+        >
+          <VcIcon
+            icon="lucide-corner-down-left"
+            :custom-size="10"
+          />
+          {{ $t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.SUGGEST.ADD") }}
+        </kbd>
+      </div>
       <ul
         :id="listId"
         role="listbox"
@@ -67,15 +79,20 @@
           :aria-selected="i === active"
           @mousedown.prevent="pick(s)"
         >
-          {{ s.labelKey ? $t(s.labelKey) : s.label }}
+          <span class="vc-search-bar__suggest-label">{{ s.labelKey ? $t(s.labelKey) : s.label }}</span>
           <span
             v-if="s.kind === 'value'"
             class="vc-search-bar__suggest-token"
             >{{ s.text.trim() }}</span
           >
+          <VcIcon
+            v-if="s.selected"
+            icon="lucide-check"
+            size="s"
+            class="vc-search-bar__suggest-check"
+          />
         </li>
       </ul>
-      <div class="vc-search-bar__suggest-foot">{{ $t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.SUGGEST.ENTER") }}</div>
     </div>
   </div>
 </template>
@@ -90,6 +107,8 @@ import { chipFromTyped, getSuggestions, type Suggestion } from "../composables/u
 const props = defineProps<{
   modelValue: string;
   fields: BarField[];
+  /** Current filter values by field id, to mark the suggested values already applied */
+  values?: Record<string, unknown>;
   placeholder?: string;
   disabled?: boolean;
   /** No `/` key hint (a phone has no keyboard shortcut) */
@@ -113,7 +132,7 @@ const focused = ref(false);
 const dismissed = ref(false);
 const active = ref(0);
 
-const suggestions = computed(() => getSuggestions(props.modelValue, props.fields));
+const suggestions = computed(() => getSuggestions(props.modelValue, props.fields, props.values));
 const open = computed(() => focused.value && !dismissed.value && suggestions.value.items.length > 0);
 // key and params for $t: "Filter by Status" after `status:`, else "Filter by field"
 const title = computed<[string, Record<string, string>]>(() => {
@@ -243,14 +262,28 @@ defineExpose({ focus: () => input.value?.focus() });
       0 0 0 1px var(--neutrals-200),
       0 8px 24px rgb(0 0 0 / 12%);
   }
-  &__suggest-title,
-  &__suggest-foot {
-    @apply tw-px-3 tw-py-1;
-    font-size: 11px;
-    color: var(--neutrals-500);
+  &__suggest-head {
+    @apply tw-flex tw-items-center tw-justify-between tw-gap-3 tw-px-3 tw-py-1;
   }
   &__suggest-title {
     @apply tw-uppercase tw-font-semibold;
+    font-size: 11px;
+    color: var(--neutrals-400);
+  }
+  &__suggest-key {
+    @apply tw-inline-flex tw-items-center tw-gap-1 tw-rounded tw-px-1 tw-shrink-0;
+    height: 18px;
+    font-size: 11px;
+    font-family: inherit;
+    color: var(--neutrals-500);
+    border: 1px solid var(--neutrals-300);
+  }
+  &__suggest-label {
+    @apply tw-flex-1 tw-truncate;
+  }
+  &__suggest-check {
+    @apply tw-shrink-0;
+    color: var(--primary-600);
   }
   &__suggest-item {
     @apply tw-flex tw-items-center tw-justify-between tw-gap-3 tw-px-3 tw-cursor-pointer;

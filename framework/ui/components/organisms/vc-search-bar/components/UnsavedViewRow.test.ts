@@ -115,6 +115,20 @@ describe("UnsavedViewRow", () => {
     expect(w.find(`${ROW} input`).exists()).toBe(false);
   });
 
+  it("the revert icon is 14px, 16px and labelled with touch", async () => {
+    const { views, setValues } = makeViews();
+    setValues({ urgent: true });
+    const revert = (w: VueWrapper) => w.get(".vc-search-bar__unsaved-revert");
+    const icon = (w: VueWrapper) => revert(w).getComponent({ name: "VcIcon" });
+    const desktop = mountRow(views, false);
+    expect(icon(desktop).props("icon")).toBe("lucide-rotate-ccw");
+    expect(icon(desktop).props("customSize")).toBe(14);
+    expect(revert(desktop).text()).toBe("");
+    const touch = mountRow(views, true);
+    expect(icon(touch).props("customSize")).toBe(16);
+    expect(revert(touch).text()).toBe(`${K}REVERT_SHORT`);
+  });
+
   it("touch marks the row for bigger hit targets", async () => {
     const { views, setValues } = makeViews();
     setValues({ urgent: true });

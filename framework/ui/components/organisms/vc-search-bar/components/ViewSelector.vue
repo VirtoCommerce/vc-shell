@@ -108,14 +108,24 @@
                 type="button"
                 @click="startRename(v.id)"
               >
-                {{ $t(`${K}RENAME`) }}
+                <VcIcon
+                  icon="lucide-pencil"
+                  size="s"
+                  class="vc-search-bar__row-icon"
+                />
+                <span class="vc-search-bar__row-text">{{ $t(`${K}RENAME`) }}</span>
               </button>
               <button
                 type="button"
                 class="vc-search-bar__view-options-danger"
                 @click="act(() => views.remove(v.id))"
               >
-                {{ $t(`${K}DELETE`) }}
+                <VcIcon
+                  icon="lucide-trash-2"
+                  size="s"
+                  class="vc-search-bar__row-icon"
+                />
+                <span class="vc-search-bar__row-text">{{ $t(`${K}DELETE`) }}</span>
               </button>
             </div>
           </li>
@@ -130,7 +140,12 @@
             class="vc-search-bar__views-action"
             @click="act(views.saveChanges)"
           >
-            {{ $t(`${K}SAVE_CHANGES`, { name: current.name }) }}
+            <VcIcon
+              icon="lucide-check"
+              size="s"
+              class="vc-search-bar__row-icon"
+            />
+            <span class="vc-search-bar__row-text">{{ $t(`${K}SAVE_CHANGES`, { name: current.name }) }}</span>
           </button>
           <ViewNameField
             v-if="naming"
@@ -144,14 +159,24 @@
             class="vc-search-bar__views-action vc-search-bar__views-save-as"
             @click="naming = true"
           >
-            {{ $t(`${K}SAVE_AS_NEW`) }}
+            <VcIcon
+              icon="lucide-bookmark"
+              size="s"
+              class="vc-search-bar__row-icon"
+            />
+            <span class="vc-search-bar__row-text">{{ $t(`${K}SAVE_AS_NEW`) }}</span>
           </button>
           <button
             type="button"
             class="vc-search-bar__views-action"
             @click="act(views.revert)"
           >
-            {{ $t(`${K}REVERT`, { name: current.name }) }}
+            <VcIcon
+              icon="lucide-rotate-ccw"
+              size="s"
+              class="vc-search-bar__row-icon"
+            />
+            <span class="vc-search-bar__row-text">{{ $t(`${K}REVERT`, { name: current.name }) }}</span>
           </button>
         </div>
       </div>
@@ -314,8 +339,8 @@ function act(run: () => void) {
   &__view-options {
     @apply tw-flex tw-flex-col tw-ms-6 tw-mb-1;
     button {
-      @apply tw-text-start tw-px-2 tw-rounded;
-      height: 28px;
+      @apply tw-flex tw-items-center tw-gap-2 tw-text-start tw-px-2 tw-rounded tw-min-w-0;
+      height: 32px;
       font-size: 13px;
       &:hover {
         background: var(--neutrals-100);
@@ -324,6 +349,16 @@ function act(run: () => void) {
   }
   &__view-options-danger {
     color: var(--danger-600, var(--danger-500));
+    .vc-search-bar__row-icon {
+      color: inherit;
+    }
+  }
+  &__row-icon {
+    @apply tw-shrink-0;
+    color: var(--neutrals-500);
+  }
+  &__row-text {
+    @apply tw-truncate;
   }
   &__views-modified {
     @apply tw-flex tw-flex-col tw-gap-0.5 tw-p-1 tw-mt-1;
@@ -331,7 +366,7 @@ function act(run: () => void) {
     border-radius: 6px;
   }
   &__views-action {
-    @apply tw-text-start tw-px-2 tw-rounded tw-truncate;
+    @apply tw-flex tw-items-center tw-gap-2 tw-text-start tw-px-2 tw-rounded tw-min-w-0;
     height: 32px;
     font-size: 13px;
     &:hover {

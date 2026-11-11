@@ -9,6 +9,8 @@ export interface Suggestion {
   labelKey?: string;
   /** Replaces the word being typed */
   text: string;
+  /** The field already holds this value */
+  selected?: boolean;
 }
 
 const TYPABLE = new Set(["select", "multiselect", "toggle", "dateRange"]);
@@ -18,7 +20,15 @@ const lower = (s: unknown) => String(s).toLowerCase();
 const typable = (fields: BarField[]) => fields.filter((f) => TYPABLE.has(f.kind));
 const byKey = (fields: BarField[], key: string) => typable(fields).find((f) => lower(f.key) === lower(key));
 
-function valueSuggestions(f: BarField, typed: string): Suggestion[] {
+function isSelected(f: BarField, token: string, current: unknown): boolean {
+  if (f.kind === "toggle") return current === true;
+  if (f.kind === "dateRange")
+    return typeof current === "object" && current !== null && (current as { relative?: unknown }).relative === token;
+  if (f.kind === "multiselect") return Array.isArray(current) && current.some((x) => String(x) === token);
+  return current !== undefined && String(current) === token;
+}
+
+function valueSuggestions(f: BarField, typed: string, current: unknown): Suggestion[] {
   const v = lower(typed);
   const item = (token: string, label: string, labelKey?: string): Suggestion => ({
     kind: "value",
@@ -26,6 +36,7 @@ function valueSuggestions(f: BarField, typed: string): Suggestion[] {
     label,
     labelKey,
     text: `${lower(f.key)}:${token} `,
+    selected: isSelected(f, token, current),
   });
   if (f.kind === "toggle") return ON.startsWith(v) ? [item(ON, ON)] : [];
   if (f.kind === "dateRange")
@@ -40,12 +51,16 @@ function valueSuggestions(f: BarField, typed: string): Suggestion[] {
 }
 
 /** Suggestions for the word at the end of `query`: values after `field:`, fields after 2+ letters */
-export function getSuggestions(query: string, fields: BarField[]): { items: Suggestion[]; explicit: boolean } {
+export function getSuggestions(
+  query: string,
+  fields: BarField[],
+  values: Record<string, unknown> = {},
+): { items: Suggestion[]; explicit: boolean } {
   const word = /(\S+)$/.exec(query)?.[1] ?? "";
   const colon = word.indexOf(":");
   if (colon > 0) {
     const field = byKey(fields, word.slice(0, colon));
-    return { items: field ? valueSuggestions(field, word.slice(colon + 1)) : [], explicit: true };
+    return { items: field ? valueSuggestions(field, word.slice(colon + 1), values[field.id]) : [], explicit: true };
   }
   if (word.length < 2) return { items: [], explicit: false };
   const w = lower(word);

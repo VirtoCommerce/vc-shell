@@ -265,6 +265,32 @@ describe("VcSearchBar", () => {
       expect((input.element as HTMLInputElement).value).toBe("");
     });
 
+    it("the suggestions header carries the add hint; the value already selected gets a check", async () => {
+      wrapper = mountBar({ modelValue: { search: "", values: { status: ["a"] } } });
+      const input = wrapper.get(SEARCH);
+      await input.trigger("focus");
+      await input.setValue("status:");
+      expect(wrapper.find(".vc-search-bar__suggest-foot").exists()).toBe(false);
+      const head = wrapper.get(".vc-search-bar__suggest-head");
+      expect(head.get(".vc-search-bar__suggest-title").text()).toContain("Status");
+      expect(head.get(".vc-search-bar__suggest-key").text()).toContain(
+        "COMPONENTS.ORGANISMS.VC_SEARCH_BAR.SUGGEST.ADD",
+      );
+      const iconProps = (root: string) =>
+        wrapper!
+          .findAllComponents({ name: "VcIcon" })
+          .filter((c) => c.element.closest(root))
+          .map((c) => c.props("icon"));
+      expect(iconProps(".vc-search-bar__suggest-key")).toEqual(["lucide-corner-down-left"]);
+      expect(iconProps(".vc-search-bar__suggest-item")).toEqual(["lucide-check"]);
+
+      await input.setValue("overdue:");
+      expect(iconProps(".vc-search-bar__suggest-item")).toEqual([]);
+      await wrapper.setProps({ modelValue: { search: "", values: { overdue: true } } });
+      await input.setValue("overdue:");
+      expect(iconProps(".vc-search-bar__suggest-item")).toEqual(["lucide-check"]);
+    });
+
     it("Backspace in an empty search clears the last chip", async () => {
       wrapper = mountBar();
       await setThree();

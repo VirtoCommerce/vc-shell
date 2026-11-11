@@ -1,9 +1,8 @@
 import { nextTick, onMounted, provide, ref } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { expect, userEvent, waitFor, within } from "storybook/test";
 import { IsMobileKey } from "@framework/injection-keys";
 import { VcSearchBar } from "./index";
-import type { SearchBarField, SearchBarPreset, SearchBarState } from "./types";
+import type { SearchBarField, SearchBarState, SearchBarView } from "./types";
 import { minHeight, mouseSwipe } from "./vc-search-bar.story-helpers";
 
 const STATUSES = ["New", "Processing", "Paid", "Shipped", "Cancelled"];
@@ -74,13 +73,6 @@ const meta = {
       control: "boolean",
       table: { type: { summary: "boolean" }, defaultValue: { summary: "true" }, category: "State" },
     },
-    collapseSearch: {
-      description:
-        "Hide the search behind a button. Unset: automatic, a button in a bar under 640px or on a phone; `false` keeps the field",
-      control: "select",
-      options: [undefined, true, false],
-      table: { type: { summary: "boolean" }, defaultValue: { summary: "undefined" }, category: "Appearance" },
-    },
     disabled: {
       description: "Disable the input and the pills",
       control: "boolean",
@@ -92,7 +84,8 @@ const meta = {
       table: { type: { summary: "string" }, category: "Config" },
     },
     storageKey: {
-      description: "Key of the saved presets and of the applied filters in the blade URL (`<key>_filters`)",
+      description:
+        "Key of the saved views and of the applied filters and view in the blade URL (`<key>_filters`, `<key>_view`)",
       control: "text",
       table: { type: { summary: "string" }, category: "Config" },
     },
@@ -193,16 +186,13 @@ export const PinnedAndOptional: Story = {
   }),
 };
 
-// Hidden from the sidebar and docs, still run by the story tests
-const TEST_ONLY = ["!dev", "!autodocs", "test"];
-
-const presets: SearchBarPreset[] = [
+const views: SearchBarView[] = [
   { id: "new", name: "New orders", values: { status: ["New"] } },
   { id: "paid", name: "Paid", values: { status: ["Paid"] } },
   { id: "overdue", name: "Overdue", values: { overdue: true } },
 ];
 
-// A busy list: four set filters and presets, more than a narrow bar holds
+// A busy list: four set filters, more than a narrow bar holds
 const busyValues: SearchBarState["values"] = {
   status: ["New", "Paid"],
   created: { relative: "7d" },
@@ -221,64 +211,10 @@ const inWidth =
     template: '<div :style="{ width }"><VcSearchBar v-bind="args" v-model="state" /></div>',
   });
 
-/**
- * A bar under 640px, as in a narrow blade: the search folds into a button, only set filters show,
- * and the row is cut at the edge. Hover it (or Tab into it) and after a short pause it unfolds over the content below.
- */
+/** A bar under 720px, as in a narrow blade: no chips, the Filters button holds the count and clears all. */
 export const NarrowBlade: Story = {
-  args: { fields: allKinds, presets },
+  args: { fields: allKinds, views },
   render: inWidth("560px"),
-};
-
-/** `collapseSearch: true`: the search is a button at any width; it widens into the field on click. */
-export const SearchAlwaysButton: Story = {
-  args: { fields: allKinds, presets, collapseSearch: true },
-  render: inWidth("900px", { status: ["New"] }),
-};
-
-/** `collapseSearch: false`: the field stays even in a narrow bar. */
-export const SearchAlwaysField: Story = {
-  args: { fields: allKinds, presets, collapseSearch: false },
-  render: inWidth("560px"),
-};
-
-/** Interaction test: the search button opens the field; it folds back on leaving it empty, and stays with text. */
-export const SearchButtonTest: Story = {
-  name: "Search button (test)",
-  tags: TEST_ONLY,
-  args: SearchAlwaysButton.args,
-  render: inWidth("900px", { status: ["New"] }),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole("button", { name: "Search" }));
-    const input = await canvas.findByRole("textbox", { name: "Search" });
-    await waitFor(() => expect(input).toHaveFocus());
-    await userEvent.tab();
-    await expect(await canvas.findByRole("button", { name: "Search" })).toBeInTheDocument();
-    await userEvent.click(canvas.getByRole("button", { name: "Search" }));
-    await userEvent.type(await canvas.findByRole("textbox", { name: "Search" }), "acme");
-    await userEvent.tab();
-    await expect(canvas.getByRole("textbox", { name: "Search" })).toHaveValue("acme");
-    await expect(canvas.queryByRole("button", { name: "Search" })).toBeNull();
-  },
-};
-
-/** Interaction test: the clipped row unfolds after the hover pause and folds when the pointer leaves. */
-export const NarrowBladeRevealTest: Story = {
-  name: "Narrow blade reveal (test)",
-  tags: TEST_ONLY,
-  args: NarrowBlade.args,
-  render: inWidth("560px"),
-  play: async ({ canvasElement }) => {
-    const row = canvasElement.querySelector<HTMLElement>(".vc-search-bar__row")!;
-    await waitFor(() => expect(row).toHaveClass("vc-search-bar__row--clipped"));
-    await userEvent.hover(row);
-    await expect(row).not.toHaveClass("vc-search-bar__row--open");
-    await new Promise((r) => setTimeout(r, 450));
-    await expect(row).toHaveClass("vc-search-bar__row--open");
-    await userEvent.unhover(row);
-    await waitFor(() => expect(row).not.toHaveClass("vc-search-bar__row--open"));
-  },
 };
 
 // a mouse drag swipes the filters row (Storybook has no touch emulation)
@@ -306,60 +242,16 @@ const phone =
       '<div ref="root" style="width: 360px; max-width: 100%; min-height: 560px"><VcSearchBar v-bind="args" v-model="state" /></div>',
   });
 
-/**
- * On a phone the bar is one row: the search button, the set filters with "+ Filter" in a row that swipes
- * sideways (the edges fade while there is more), and the presets button. The search opens over the row.
- */
+/** On a phone the bar is the search and an icon Filters button with the count. */
 export const Phone: Story = {
-  args: { fields: allKinds, presets },
+  args: { fields: allKinds, views },
   decorators: PHONE,
   render: phone(),
 };
 
-/**
- * A filter on a phone edits in a bottom sheet with Done; "+ Filter" and the presets button open sheets too.
- * Here the Status filter is open.
- */
+/** On a phone the Filters button opens the field list in a bottom sheet; a field edits there with Done. */
 export const PhoneFiltersSheet: Story = {
-  args: { fields: allKinds, presets, storageKey: "story-search-bar-phone" },
+  args: { fields: allKinds, views, storageKey: "story-search-bar-phone" },
   decorators: PHONE,
-  render: phone('[data-field-id="status"] .vc-search-bar__pill-main'),
-};
-
-/** Interaction test for the phone row and its sheets, hidden from the sidebar and docs. */
-export const PhoneFiltersSheetTest: Story = {
-  name: "Phone filters sheet (test)",
-  tags: TEST_ONLY,
-  args: PhoneFiltersSheet.args,
-  render: phone(),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const body = within(canvasElement.ownerDocument.body);
-    // the pill opens its editor in a sheet
-    await userEvent.click(canvas.getByRole("button", { name: /^Status:/ }));
-    const status = within(await body.findByRole("dialog", { name: "Status" }));
-    await userEvent.click(await status.findByRole("checkbox", { name: /^Shipped/ }));
-    await userEvent.click(status.getByRole("button", { name: "Done" }));
-    await waitFor(() => expect(body.queryByRole("dialog", { name: "Status" })).toBeNull());
-    await expect(canvas.getByRole("button", { name: /^Status:/ })).toHaveTextContent("New, Paid +1");
-    // "+ Filter" lists the rest; a toggle applies at once
-    await userEvent.click(canvas.getByRole("button", { name: "Add filter" }));
-    const add = within(await body.findByRole("dialog", { name: "Add filter" }));
-    await userEvent.click(add.getByRole("button", { name: "Overdue" }));
-    await waitFor(() => expect(body.queryByRole("dialog", { name: "Add filter" })).toBeNull());
-    await expect(canvas.getByRole("button", { name: "Overdue" })).toHaveAttribute("aria-pressed", "true");
-    await userEvent.click(canvas.getByRole("button", { name: "Remove Customer filter" }));
-    await expect(canvas.queryByRole("button", { name: /^Customer:/ })).toBeNull();
-    // the search opens over the row
-    await userEvent.click(canvas.getByRole("button", { name: "Search" }));
-    await expect(await canvas.findByRole("textbox", { name: "Search" })).toBeInTheDocument();
-    // the presets button slides out with the widening search, then leaves the accessibility tree
-    await waitFor(() => expect(canvas.queryByRole("button", { name: "Presets" })).toBeNull());
-    await userEvent.tab();
-    // the presets button opens all presets and Save as preset
-    await userEvent.click(await canvas.findByRole("button", { name: "Presets" }));
-    const sheet = within(await body.findByRole("dialog", { name: "Presets" }));
-    await expect(sheet.getByRole("button", { name: /^New orders from the module/ })).toBeInTheDocument();
-    await expect(sheet.getByRole("button", { name: "Save as preset" })).toBeInTheDocument();
-  },
+  render: phone(".vc-search-bar__filters-main"),
 };

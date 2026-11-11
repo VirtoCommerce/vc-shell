@@ -126,6 +126,24 @@ export function pillLabel(field: BarField, value: SearchBarValue, t: (k: string)
   }
 }
 
+/** A chip's value: several values read "First +N"; `title` lists them all. "Is not" comes first */
+export function chipLabel(
+  field: BarField,
+  value: SearchBarValue,
+  t: (k: string) => string,
+): { text: string; title: string } {
+  const not = isNot(value);
+  const items = not ? value.not : Array.isArray(value) ? value : undefined;
+  const prefix = not ? `${t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.OPERATOR.NOT")} ` : "";
+  if (!items || field.kind === "custom") {
+    const label = prefix + pillLabel(field, value, t);
+    return { text: label, title: label };
+  }
+  const labels = items.map((i) => optionLabel(field, i));
+  const more = labels.length > 1 ? ` +${labels.length - 1}` : "";
+  return { text: `${prefix}${labels[0] ?? ""}${more}`, title: prefix + labels.join(", ") };
+}
+
 export type NumberOp = NumberValue["op"];
 
 const finite = (s: string | number | null | undefined): number | undefined => {

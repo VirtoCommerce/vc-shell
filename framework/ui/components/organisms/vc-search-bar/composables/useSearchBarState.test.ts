@@ -163,10 +163,10 @@ describe("useSearchBarState", () => {
       id: "ext",
       targetBlades: ["orders"],
       fields: [text("x")],
-      presets: [{ id: "p", name: "P", values: {} }],
+      views: [{ id: "p", name: "P", values: {} }],
     });
     expect(api.fields.value.map((f) => f.id)).toEqual(["name", "x"]);
-    expect(api.externalPresets.value.map((p) => p.id)).toEqual(["p"]);
+    expect(api.externalViews.value.map((p) => p.id)).toEqual(["p"]);
     api.setValue("x", "1");
     const before = changes.length;
     unregisterExternalSearchFilters("ext");
@@ -215,5 +215,18 @@ describe("useSearchBarState", () => {
     api.applyState({ search: "s", values: { b: "1" } });
     expect(api.visibleFields.value.map((f) => f.id)).toEqual(["a", "b"]);
     expect(api.state.value.search).toBe("s");
+  });
+
+  it("order lists the set fields in the order they were set", () => {
+    const { api } = setup({ fields: [text("a"), text("b"), text("c")], model: { search: "", values: { c: "1" } } });
+    expect(api.order.value).toEqual(["c"]);
+    api.setValue("a", "1");
+    api.setValue("b", "1");
+    api.setValue("a", "2");
+    expect(api.order.value).toEqual(["c", "a", "b"]);
+    api.clearValue("a");
+    expect(api.order.value).toEqual(["c", "b"]);
+    api.setValue("a", "3");
+    expect(api.order.value).toEqual(["c", "b", "a"]);
   });
 });

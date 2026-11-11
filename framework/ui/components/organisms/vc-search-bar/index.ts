@@ -3,7 +3,6 @@ export type {
   SearchBarField,
   SearchBarState,
   SearchBarChange,
-  SearchBarPreset,
   SearchBarView,
   SearchBarValue,
   NumberValue,

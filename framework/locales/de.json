@@ -171,11 +171,17 @@
       "VC_SEARCH_BAR": {
         "SEARCH_PLACEHOLDER": "Suchen",
         "FILTERS": "Filter",
-        "ADD_FILTER": "Filter",
-        "CLEAR_ALL": "Alle löschen",
         "REMOVE_FILTER": "Filter {label} entfernen",
+        "CLEAR_SEARCH": "Suche löschen",
+        "CLEAR_FILTERS": "Alle Filter löschen",
+        "FILTERS_APPLIED": "Filter, {count} aktiv",
+        "MORE_FILTERS": "{count} weitere Filter",
+        "SUGGEST": {
+          "BY": "Nach {field} filtern",
+          "BY_FIELD": "Nach Feld filtern",
+          "ENTER": "↵ zum Hinzufügen"
+        },
         "MOBILE": {
-          "ADD": "Filter hinzufügen",
           "DONE": "Fertig"
         },
         "DATE": {
@@ -192,31 +198,6 @@
           "VALUE": "Wert",
           "MIN": "Von",
           "MAX": "Bis"
-        },
-        "PRESETS": {
-          "LABEL": "Vorlagen",
-          "ALL": "Alle Vorlagen",
-          "ALL_COUNT": "Alle Vorlagen (+{count})",
-          "EMPTY": "Noch keine Vorlagen. Filter setzen und als Vorlage speichern.",
-          "SAVE_AS": "Als Vorlage speichern",
-          "SAVE": "Speichern",
-          "NAME": "Name der Vorlage",
-          "NEW_NAME": "Neuer Name",
-          "CANCEL": "Speichern abbrechen",
-          "OPTIONS": "Optionen für {name}",
-          "RENAME": "Umbenennen",
-          "UPDATE": "Mit aktuellen Filtern aktualisieren",
-          "UPDATE_NONE": "Zuerst Filter setzen",
-          "UPDATE_SAME": "Stimmt bereits überein",
-          "PIN": "An die Leiste anheften",
-          "UNPIN": "Von der Leiste lösen",
-          "RESTORE": "Standard wiederherstellen",
-          "DELETE": "Löschen",
-          "HIDE": "Ausblenden",
-          "SHOW_HIDDEN": "{count} ausgeblendete anzeigen",
-          "FROM_MODULE": "vom Modul",
-          "YOURS": "eigene",
-          "PINNED": "Angeheftet"
         },
         "VIEWS": {
           "ALL": "Alle",
@@ -274,9 +255,6 @@
           "WILL_APPLY": "Wird angewendet:",
           "SEARCH_CHIP": "Suche: {text}",
           "NOTE": "Bedingungen sind nicht verfügbar: {reason} Anwenden sendet die Abfrage unverändert, angezeigt als ein Filter „Abfrage“.",
-          "PILL": "Abfrage: {text}",
-          "PILL_OPEN": "Abfrage bearbeiten: {text}",
-          "PILL_REMOVE": "Abfrage entfernen",
           "DATE_TODAY": "heute",
           "DATE_LAST_7": "letzte 7 Tage",
           "DATE_LAST_30": "letzte 30 Tage",

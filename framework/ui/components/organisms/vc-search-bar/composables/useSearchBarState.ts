@@ -1,7 +1,7 @@
 import { computed, ref, watch, type ComputedRef, type Ref } from "vue";
 import { getExternalSearchFilters } from "@core/services/search-filters-service";
 import type { ITableQueryStateService } from "@core/blade-navigation/table-query-state";
-import type { SearchBarChange, SearchBarField, SearchBarPreset, SearchBarState, SearchBarValue } from "../types";
+import type { SearchBarChange, SearchBarField, SearchBarState, SearchBarValue, SearchBarView } from "../types";
 import { normalizeFields, type BarField } from "../lib/fields";
 import { cloneValue, isEmptyValue, toFlatFilters } from "../lib/values";
 import { stateToUrl, urlToState } from "../lib/urlState";
@@ -24,8 +24,10 @@ export interface UseSearchBarStateOptions {
 
 export interface UseSearchBarState {
   fields: ComputedRef<BarField[]>;
-  externalPresets: ComputedRef<SearchBarPreset[]>;
+  externalViews: ComputedRef<SearchBarView[]>;
   state: Ref<SearchBarState>;
+  /** Ids of the set fields in the order they were set */
+  order: Ref<string[]>;
   setSearch(v: string): void;
   /** Writes the pending typed text into the state; the filter commit that follows emits it */
   flushSearch(): void;
@@ -47,7 +49,7 @@ export function useSearchBarState(opts: UseSearchBarStateOptions): UseSearchBarS
 
   // own fields first, then external by priority; normalizeFields keeps the first on an id clash
   const fields = computed(() => normalizeFields([...opts.fields(), ...registrations.value.flatMap((r) => r.fields)]));
-  const externalPresets = computed(() => registrations.value.flatMap((r) => r.presets ?? []));
+  const externalViews = computed(() => registrations.value.flatMap((r) => r.views ?? []));
 
   const isNonEmpty = (s: SearchBarState) =>
     !!s.search || !!s.query || Object.values(s.values).some((v) => !isEmptyValue(v));
@@ -75,6 +77,19 @@ export function useSearchBarState(opts: UseSearchBarStateOptions): UseSearchBarS
   };
 
   const state = ref<SearchBarState>(initial());
+
+  // A field joins the end when it gets a value and leaves when it is cleared
+  const order = ref<string[]>([]);
+  watch(
+    () => state.value.values,
+    (values) => {
+      const set = Object.keys(values).filter((id) => !isEmptyValue(values[id]));
+      const kept = order.value.filter((id) => set.includes(id));
+      const next = [...kept, ...set.filter((id) => !kept.includes(id))];
+      if (next.join("\u0000") !== order.value.join("\u0000")) order.value = next;
+    },
+    { flush: "sync", immediate: true },
+  );
 
   function persist(s: SearchBarState): void {
     const key = urlKey();
@@ -155,8 +170,9 @@ export function useSearchBarState(opts: UseSearchBarStateOptions): UseSearchBarS
 
   return {
     fields,
-    externalPresets,
+    externalViews,
     state,
+    order,
     setSearch: (v) => commit({ search: v, values: state.value.values }),
     flushSearch,
     setValue: (id, v) => commit({ ...withoutQuery(), values: { ...state.value.values, [id]: v } }),

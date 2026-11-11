@@ -171,11 +171,17 @@
       "VC_SEARCH_BAR": {
         "SEARCH_PLACEHOLDER": "Search",
         "FILTERS": "Filters",
-        "ADD_FILTER": "Filter",
-        "CLEAR_ALL": "Clear all",
         "REMOVE_FILTER": "Remove {label} filter",
+        "CLEAR_SEARCH": "Clear search",
+        "CLEAR_FILTERS": "Clear all filters",
+        "FILTERS_APPLIED": "Filters, {count} applied",
+        "MORE_FILTERS": "{count} more filters",
+        "SUGGEST": {
+          "BY": "Filter by {field}",
+          "BY_FIELD": "Filter by field",
+          "ENTER": "↵ to add"
+        },
         "MOBILE": {
-          "ADD": "Add filter",
           "DONE": "Done"
         },
         "DATE": {
@@ -192,31 +198,6 @@
           "VALUE": "Value",
           "MIN": "From",
           "MAX": "To"
-        },
-        "PRESETS": {
-          "LABEL": "Presets",
-          "ALL": "All presets",
-          "ALL_COUNT": "All presets (+{count})",
-          "EMPTY": "No presets yet. Set some filters, then save them as a preset.",
-          "SAVE_AS": "Save as preset",
-          "SAVE": "Save",
-          "NAME": "Preset name",
-          "NEW_NAME": "New name",
-          "CANCEL": "Cancel saving",
-          "OPTIONS": "{name} options",
-          "RENAME": "Rename",
-          "UPDATE": "Update with current filters",
-          "UPDATE_NONE": "Set some filters first",
-          "UPDATE_SAME": "Already matches",
-          "PIN": "Pin to the bar",
-          "UNPIN": "Unpin from the bar",
-          "RESTORE": "Restore default",
-          "DELETE": "Delete",
-          "HIDE": "Hide",
-          "SHOW_HIDDEN": "Show {count} hidden",
-          "FROM_MODULE": "from the module",
-          "YOURS": "yours",
-          "PINNED": "Pinned"
         },
         "VIEWS": {
           "ALL": "All",
@@ -274,9 +255,6 @@
           "WILL_APPLY": "Will apply:",
           "SEARCH_CHIP": "Search: {text}",
           "NOTE": "Conditions are unavailable: {reason} Apply sends the query as is, shown as one \"Query\" filter.",
-          "PILL": "Query: {text}",
-          "PILL_OPEN": "Edit query: {text}",
-          "PILL_REMOVE": "Remove query",
           "DATE_TODAY": "today",
           "DATE_LAST_7": "last 7 days",
           "DATE_LAST_30": "last 30 days",

@@ -100,6 +100,12 @@ const global = {
 
 type FilterEvent = { filters: Record<string, unknown> }[];
 
+const SEARCH = ".vc-search-bar__search-input";
+const menuItem = (label: string) =>
+  [...document.body.querySelectorAll<HTMLElement>(".vc-search-bar__menu-item")].find((b) =>
+    b.textContent?.includes(label),
+  )!;
+
 /** The blade's URL query service over a plain query record, with the real namespaced serialization */
 function urlQueryState(query: Record<string, string> = {}) {
   const service: ITableQueryStateService = {
@@ -136,24 +142,25 @@ describe("VcDataTable search bar header", () => {
     localStorage.clear();
   });
 
-  it("renders the bar with pills instead of the old header, button and panel", () => {
+  it("renders the bar with its Filters button instead of the old header, button and panel", () => {
     const w = mountTable({ searchable: true, globalFilters });
     expect(w.find(".vc-search-bar").exists()).toBe(true);
-    expect(w.findAll(".vc-search-bar__pill")).toHaveLength(2);
+    expect(w.find(".vc-search-bar__filters-btn").exists()).toBe(true);
     expect(w.find(".mock-search-header").exists()).toBe(false);
     expect(w.find(".mock-gf-btn").exists()).toBe(false);
     expect(w.find(".mock-gf-panel").exists()).toBe(false);
   });
 
-  it("a search-only table with a stateKey shows no preset tray", () => {
+  it("a search-only table shows no Filters button and no view selector", () => {
     const w = mountTable({ searchable: true });
     expect(w.find(".vc-search-bar").exists()).toBe(true);
-    expect(w.find(".vc-search-bar__presets").exists()).toBe(false);
+    expect(w.find(".vc-search-bar__filters-btn").exists()).toBe(false);
+    expect(w.find(".vc-search-bar__view-selector").exists()).toBe(false);
   });
 
-  it("shows the preset tray with globalFilters and a stateKey", () => {
+  it("outside a blade the bar shows the view selector in its row", () => {
     const w = mountTable({ searchable: true, globalFilters });
-    expect(w.find(".vc-search-bar__presets").exists()).toBe(true);
+    expect(w.find(".vc-search-bar__row .vc-search-bar__view-selector").exists()).toBe(true);
   });
 
   it("renders no bar without searchable, globalFilters or header actions", () => {
@@ -193,20 +200,12 @@ describe("VcDataTable search bar header", () => {
   it("renders the header for the actions slot alone", () => {
     const w = mountTable({}, { "search-header-actions": "<button class='custom-action'>Export</button>" });
     expect(w.find(".vc-data-table__search-header-actions .custom-action").exists()).toBe(true);
-    expect(w.find(".vc-search-bar .input-stub").exists()).toBe(false);
+    expect(w.find(SEARCH).exists()).toBe(false);
   });
 
   it("passes the placeholder to the bar", () => {
     const w = mountTable({ searchable: true, searchPlaceholder: "Find orders" });
     expect(w.findComponent({ name: "VcSearchBar" }).props("placeholder")).toBe("Find orders");
-  });
-
-  it("passes collapseSearch to the bar", () => {
-    const set = mountTable({ searchable: true, collapseSearch: true });
-    expect(set.findComponent({ name: "VcSearchBar" }).props("collapseSearch")).toBe(true);
-    set.unmount();
-    const unset = mountTable({ searchable: true });
-    expect(unset.findComponent({ name: "VcSearchBar" }).props("collapseSearch")).toBeUndefined();
   });
 
   it("passes searchName to the bar's name", () => {
@@ -216,8 +215,8 @@ describe("VcDataTable search bar header", () => {
 
   it("typing emits update:searchValue at once and a single search per pause, no filter", async () => {
     const w = mountTable({ searchable: true, globalFilters, searchDebounce: 300 });
-    await w.find(".input-stub").setValue("a");
-    await w.find(".input-stub").setValue("ab");
+    await w.find(SEARCH).setValue("a");
+    await w.find(SEARCH).setValue("ab");
     expect(w.emitted("update:searchValue")).toEqual([["a"], ["ab"]]);
     expect(w.emitted("search")).toBeUndefined();
     vi.advanceTimersByTime(300);
@@ -231,85 +230,53 @@ describe("VcDataTable search bar header", () => {
       { id: "overdue", label: "Overdue", filter: { toggle: true } },
     ] as GlobalFilterConfig[];
     const w = mountTable({ searchable: true, globalFilters: toggleFilters, searchDebounce: 300 });
-    const input = w.find(".input-stub");
+    await w.find(".vc-search-bar__filters-main").trigger("click");
+    const input = w.find(SEARCH);
     (input.element as HTMLInputElement).value = "abc";
     // The click lands before the table re-renders, so the bar has not seen the echoed search yet
     void input.trigger("input");
-    await w.find(".vc-search-bar__pill--toggle").trigger("click");
+    menuItem("Overdue").click();
+    await nextTick();
     vi.advanceTimersByTime(1000);
     await nextTick();
-    expect((w.find(".input-stub").element as HTMLInputElement).value).toBe("abc");
+    expect((w.find(SEARCH).element as HTMLInputElement).value).toBe("abc");
     expect(filterEvents().at(-1)![0].filters).toEqual({ overdue: true });
     expect(w.emitted("update:searchValue")).toEqual([["abc"]]);
     expect(w.emitted("search")).toEqual([["abc"]]);
   });
 
-  it("a preset clicked within the search pause keeps the typed text", async () => {
+  it("a view picked within the search pause keeps the typed text", async () => {
     registerExternalSearchFilters({
-      id: "preset-plain",
+      id: "view-plain",
       targetBlades: ["orders"],
       fields: [],
-      presets: [{ id: "paid", name: "Paid", values: { status: ["Paid"] } }],
+      views: [{ id: "paid", name: "Paid", values: { status: ["Paid"] } }],
     });
     try {
       const w = mountTable({ searchable: true, globalFilters, searchName: "orders", searchDebounce: 300 });
-      const input = w.find(".input-stub");
+      await w.find(".vc-search-bar__view-btn").trigger("click");
+      const input = w.find(SEARCH);
       (input.element as HTMLInputElement).value = "abc";
       void input.trigger("input");
-      await w.find(".vc-search-bar__preset-main").trigger("click");
+      [...document.body.querySelectorAll<HTMLElement>(".vc-search-bar__view-item")]
+        .find((b) => b.textContent?.includes("Paid"))!
+        .click();
       vi.advanceTimersByTime(1000);
       await nextTick();
-      expect((w.find(".input-stub").element as HTMLInputElement).value).toBe("abc");
+      expect((w.find(SEARCH).element as HTMLInputElement).value).toBe("abc");
       expect(filterEvents().at(-1)![0].filters).toEqual({ status: ["Paid"] });
       expect(w.emitted("update:searchValue")).toEqual([["abc"]]);
       expect(w.emitted("search")).toEqual([["abc"]]);
     } finally {
-      unregisterExternalSearchFilters("preset-plain");
+      unregisterExternalSearchFilters("view-plain");
     }
-  });
-
-  describe("a preset with a search text", () => {
-    beforeEach(() =>
-      registerExternalSearchFilters({
-        id: "preset-search",
-        targetBlades: ["orders"],
-        fields: [],
-        presets: [{ id: "big", name: "Big", values: { status: ["Paid"] }, search: "acme" }],
-      }),
-    );
-    afterEach(() => unregisterExternalSearchFilters("preset-search"));
-    const chip = () => wrapper!.find(".vc-search-bar__preset-main");
-
-    it("applying it emits update:searchValue and one debounced search; clicking it again clears both", async () => {
-      const w = mountTable({ searchable: true, globalFilters, searchName: "orders", searchDebounce: 300 });
-      await chip().trigger("click");
-      expect(w.emitted("update:searchValue")).toEqual([["acme"]]);
-      expect((w.find(".input-stub").element as HTMLInputElement).value).toBe("acme");
-      vi.advanceTimersByTime(300);
-      expect(w.emitted("search")).toEqual([["acme"]]);
-      expect(filterEvents().at(-1)![0].filters).toEqual({ status: ["Paid"] });
-
-      await chip().trigger("click");
-      expect(w.emitted("update:searchValue")).toEqual([["acme"], [""]]);
-      vi.advanceTimersByTime(300);
-      expect(w.emitted("search")).toEqual([["acme"], [""]]);
-    });
-
-    it("typing still emits one update:searchValue per keystroke and one search", async () => {
-      const w = mountTable({ searchable: true, globalFilters, searchName: "orders", searchDebounce: 300 });
-      await w.find(".input-stub").setValue("a");
-      await w.find(".input-stub").setValue("ab");
-      vi.advanceTimersByTime(300);
-      expect(w.emitted("update:searchValue")).toEqual([["a"], ["ab"]]);
-      expect(w.emitted("search")).toEqual([["ab"]]);
-    });
   });
 
   it("searchValue from the parent shows in the bar input", async () => {
     const w = mountTable({ searchable: true, searchValue: "abc" });
-    expect((w.find(".input-stub").element as HTMLInputElement).value).toBe("abc");
+    expect((w.find(SEARCH).element as HTMLInputElement).value).toBe("abc");
     await w.setProps({ searchValue: "xyz" });
-    expect((w.find(".input-stub").element as HTMLInputElement).value).toBe("xyz");
+    expect((w.find(SEARCH).element as HTMLInputElement).value).toBe("xyz");
     expect(w.emitted("search")).toBeUndefined();
     expect(w.emitted("update:searchValue")).toBeUndefined();
   });
@@ -364,11 +331,11 @@ describe("VcDataTable search bar header", () => {
       url.query.orders_filters = "status:Paid;created:2026-01-01..2026-01-31";
       const w = mountTable({ searchable: true, globalFilters, searchDebounce: 0 });
       await nextTick();
-      await w.find(".input-stub").setValue("words");
+      await w.find(SEARCH).setValue("words");
       vi.advanceTimersByTime(10);
-      await w.find(".vc-search-bar__pill-x").trigger("click");
+      await w.find(".vc-search-bar__chip-x").trigger("click");
       expect(url.query.orders_filters).toBe("created:2026-01-01..2026-01-31");
-      await w.find(".vc-search-bar__clear").trigger("click");
+      await w.find(".vc-search-bar__filters-x").trigger("click");
       expect(url.query.orders_filters).toBe("");
       expect(Object.values(url.query).some((v) => v.includes("words"))).toBe(false);
     });
@@ -402,10 +369,10 @@ describe("VcDataTable search bar header", () => {
     });
   });
 
-  it("removing a pill emits filter with the same flat shape (date range split)", async () => {
+  it("removing a chip emits filter with the same flat shape (date range split)", async () => {
     url.query.orders_filters = "status:Paid;created:2026-01-01..2026-01-31";
     const w = mountTable({ searchable: true, globalFilters });
-    await w.find(".vc-search-bar__pill-x").trigger("click");
+    await w.find(".vc-search-bar__chip-x").trigger("click");
     const last = filterEvents().at(-1)![0];
     expect(last.filters).toEqual({ startDate: "2026-01-01", endDate: "2026-01-31" });
     expect(url.query.orders_filters).toBe("created:2026-01-01..2026-01-31");
@@ -418,7 +385,7 @@ describe("VcDataTable search bar header", () => {
     apply({ id: "name", props: { id: "name", filter: true } }, { name: "Acme" });
     expect(filterEvents().at(-1)![0].filters).toEqual({ name: "Acme", status: ["New"] });
 
-    await w.find(".vc-search-bar__clear").trigger("click");
+    await w.find(".vc-search-bar__filters-x").trigger("click");
     expect(filterEvents().at(-1)![0].filters).toEqual({ name: "Acme" });
   });
 
@@ -446,7 +413,8 @@ describe("VcTableAdapter in the search bar", () => {
     expect(w.find(".vc-data-table__search-header-actions .mock-gf-btn").exists()).toBe(true);
     expect(w.find(".vc-search-bar .mock-gf-btn").exists()).toBe(false);
     expect(w.findAll(".mock-gf-btn")).toHaveLength(1);
-    expect(w.findAll(".vc-search-bar__pill")).toHaveLength(0);
+    expect(w.findAll(".vc-search-bar__chip")).toHaveLength(0);
+    expect(w.find(".vc-search-bar__filters-btn").exists()).toBe(false);
     w.unmount();
   });
 });

@@ -111,12 +111,3 @@ export interface SearchBarView {
   /** The view the bar opens on when the URL names none (first one wins) */
   default?: boolean;
 }
-
-export interface SearchBarPreset {
-  id: string;
-  name: string;
-  values: Record<string, SearchBarValue>;
-  search?: string;
-  pinned?: boolean;
-  version?: number;
-}

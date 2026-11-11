@@ -1,5 +1,5 @@
 import { shallowReactive } from "vue";
-import type { SearchBarField, SearchBarPreset, SearchBarView } from "@core/types/search-bar";
+import type { SearchBarField, SearchBarView } from "@core/types/search-bar";
 
 export interface IExternalSearchFiltersRegistration {
   id: string;
@@ -7,7 +7,6 @@ export interface IExternalSearchFiltersRegistration {
   /** Lower runs first. Default 100. */
   priority?: number;
   fields: SearchBarField[];
-  presets?: SearchBarPreset[];
   views?: SearchBarView[];
 }
 

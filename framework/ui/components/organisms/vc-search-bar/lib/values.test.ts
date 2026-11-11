@@ -1,6 +1,14 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { reactive } from "vue";
-import { cloneValue, isEmptyValue, pickerToRange, resolveRelative, toFlatFilters, pillLabel } from "./values";
+import {
+  cloneValue,
+  isEmptyValue,
+  pickerToRange,
+  resolveRelative,
+  toFlatFilters,
+  pillLabel,
+  chipLabel,
+} from "./values";
 import { normalizeFields } from "./fields";
 import type { SearchBarField } from "../types";
 
@@ -91,6 +99,24 @@ describe("toFlatFilters", () => {
       cust: { x: 1 },
     });
     expect(toFlatFilters(bar, { vip: false }, today)).toEqual({});
+  });
+});
+
+describe("chipLabel", () => {
+  it("shows the first value and +N, the title lists all", () => {
+    expect(chipLabel(byId("status"), ["Paid", "New", "Void"], t)).toEqual({
+      text: "Paid +2",
+      title: "Paid, New, Void",
+    });
+    expect(chipLabel(byId("status"), ["Paid"], t)).toEqual({ text: "Paid", title: "Paid" });
+  });
+  it("puts Is not first", () => {
+    const not = "COMPONENTS.ORGANISMS.VC_SEARCH_BAR.OPERATOR.NOT";
+    expect(chipLabel(byId("status"), { not: ["New", "Void"] }, t).text).toBe(`${not} New +1`);
+  });
+  it("uses the field's own label for single values", () => {
+    expect(chipLabel(byId("cust"), "x", t)).toEqual({ text: "C:x", title: "C:x" });
+    expect(chipLabel(byId("total"), { op: "gte", min: 5 }, t).text).toBe("≥ 5");
   });
 });
 

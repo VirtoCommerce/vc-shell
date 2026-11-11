@@ -388,7 +388,7 @@ export interface VcDataTableProps<T = any> {
   scrollHeight?: string;
 
   // === State ===
-  /** Key for persisting table state (column widths, order, hidden columns); also enables the search bar's presets and remembered filters */
+  /** Key for persisting table state (column widths, order, hidden columns); also enables the search bar's saved views and remembered filters */
   stateKey?: string;
   /** Storage type for state persistence: `"local"` (localStorage) or `"session"` (sessionStorage) */
   stateStorage?: "session" | "local";
@@ -507,8 +507,6 @@ export interface VcDataTableExtendedProps<T = any> extends VcDataTableProps<T> {
   searchValue?: string;
   /** Placeholder text for search input */
   searchPlaceholder?: string;
-  /** Hide the search behind a button. Default: automatic, hidden in a narrow bar or on a phone */
-  collapseSearch?: boolean;
   /** Debounce delay in ms for the search emit (default: 300) */
   searchDebounce?: number;
   /** Search bar name for external filters (`registerExternalSearchFilters` targets); defaults to the blade's name */

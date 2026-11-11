@@ -13,7 +13,7 @@
       <slot name="header" />
     </div>
 
-    <!-- Search header: custom actions row above the bar (search, global filters as pills, presets) -->
+    <!-- Search header: custom actions row above the bar (search, global filters as chips, views) -->
     <div
       v-if="searchable || globalFilters?.length || $slots['search-header-actions']"
       class="vc-data-table__search-header"
@@ -33,7 +33,6 @@
         :storage-key="stateKey"
         :name="searchName"
         :searchable="searchable"
-        :collapse-search="collapseSearch"
         @update:search="handleSearchInput"
         @change="handleSearchBarChange"
       />
@@ -472,7 +471,6 @@ const props = withDefaults(defineProps<VcDataTableExtendedProps<T> & { fitMode?:
   searchable: false,
   searchValue: undefined,
   searchPlaceholder: "Search...",
-  collapseSearch: undefined,
   emptyState: undefined,
   notFoundState: undefined,
   searchDebounce: 300,
@@ -1099,7 +1097,7 @@ const columnSwitcherButtonEl = computed<VirtualElement | null>(() => {
 let tableMounted = false;
 let restoredFilterPending = false;
 const handleSearchBarChange = (change: SearchBarChange) => {
-  // A preset can set or clear the search text; typing never differs here (update:search came first)
+  // A change can carry a search text the table has not seen; typing never differs here (update:search came first)
   if (change.search !== internalSearchValue.value) handleSearchInput(change.search);
   globalFilterPayload.value = change.filters;
   if (tableMounted) emitFilterPayload();

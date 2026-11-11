@@ -103,10 +103,11 @@ const showNames = computed(() => !!props.names && props.count > 0 && props.mode 
   &__filters-x {
     --button-default-padding-hor: 8px;
   }
-  // the count: an 18px primary-600 disc
+  // the count: an 18px primary-700 disc with a white number (in the dark theme too, where --additional-50 is a surface)
   &__filters-badge {
     --badge-size-small: 18px;
-    --badge-background-color-primary: var(--primary-600);
+    --badge-background-color-primary: var(--primary-700);
+    --badge-text-color: white;
   }
   // narrow: the count sits on the funnel's corner
   &__filters-btn--icon .vc-search-bar__filters-badge {
@@ -119,5 +120,9 @@ const showNames = computed(() => !!props.names && props.count > 0 && props.mode 
 :root[data-theme="dark"] .vc-search-bar__filters-btn--active {
   --button-tonal-border-color: color-mix(in srgb, var(--primary-500) 60%, transparent);
   --button-tonal-border-color-hover: color-mix(in srgb, var(--primary-500) 60%, transparent);
+}
+// dark: --primary-700 is a light blue there; white text needs the deeper --primary-400
+:root[data-theme="dark"] .vc-search-bar__filters-badge {
+  --badge-background-color-primary: var(--primary-400);
 }
 </style>

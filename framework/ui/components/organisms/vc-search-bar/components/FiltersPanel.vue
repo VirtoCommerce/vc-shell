@@ -312,7 +312,7 @@ function clearAll() {
   }
   &__sheet-head {
     @apply tw-relative tw-flex tw-items-center tw-justify-between tw-shrink-0 tw-px-2;
-    height: 48px;
+    height: 44px;
   }
   &__sheet-clear,
   &__sheet-done {
@@ -329,7 +329,7 @@ function clearAll() {
     @apply tw-absolute tw-inline-flex tw-items-center tw-gap-1.5 tw-font-semibold tw-pointer-events-none;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 15px;
+    font-size: 17px;
     color: var(--neutrals-900);
   }
   &__sheet-count {
@@ -351,15 +351,17 @@ function clearAll() {
     @apply tw-flex tw-gap-2 tw-overflow-x-auto tw-px-3 tw-py-1;
     scrollbar-width: none;
   }
-  // pills; the current view is a solid primary-600 one
+  // pills; the current view is a solid one
   &__view-chip {
     --button-default-padding-hor: 14px;
     --button-border-radius: 9999px;
     @apply tw-shrink-0;
   }
+  // primary-700: white text on it passes AA; white in the dark theme too, where --additional-50 is a surface
   &__view-chip--current {
-    --button-primary-background-color: var(--primary-600);
-    --button-primary-border-color: var(--primary-600);
+    --button-primary-background-color: var(--primary-700);
+    --button-primary-border-color: var(--primary-700);
+    --button-primary-text-color: white;
   }
   &__sheet-foot {
     @apply tw-shrink-0 tw-p-3;
@@ -371,5 +373,10 @@ function clearAll() {
       border-radius: 16px;
     }
   }
+}
+// dark: --primary-700 is a light blue there; white text needs the deeper --primary-400
+:root[data-theme="dark"] .vc-search-bar__view-chip--current {
+  --button-primary-background-color: var(--primary-400);
+  --button-primary-border-color: var(--primary-400);
 }
 </style>

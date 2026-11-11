@@ -82,12 +82,11 @@ const K = "COMPONENTS.ORGANISMS.VC_SEARCH_BAR.";
 const { t } = useI18n({ useScope: "global" });
 const uid = `vc-search-bar-acc-${useId()}`;
 
-const open = ref(new Set<string>(props.initiallyOpen ? [props.initiallyOpen] : []));
-const isOpen = (id: string) => open.value.has(id);
+// One field open at a time: opening another closes it, clicking the open one closes it
+const open = ref<string | undefined>(props.initiallyOpen);
+const isOpen = (id: string) => open.value === id;
 const flip = (id: string) => {
-  const next = new Set(open.value);
-  if (!next.delete(id)) next.add(id);
-  open.value = next;
+  open.value = open.value === id ? undefined : id;
 };
 const bodyId = (id: string) => `${uid}-${id}`;
 

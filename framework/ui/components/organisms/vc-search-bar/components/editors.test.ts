@@ -263,6 +263,7 @@ describe("MenuHost", () => {
       "show",
       "inert",
       "anchorRef",
+      "offset",
       "title",
       "closeOnClickOutside",
       "width",
@@ -312,6 +313,7 @@ describe("MenuHost", () => {
       show: true,
       inert: false,
       anchorRef: anchor,
+      offset: 6,
       title: "T",
       closeOnClickOutside: true,
       width: "280px",
@@ -340,7 +342,7 @@ describe("MenuHost", () => {
       draggable: true,
       dragHandle: true,
       closeButton: false,
-      inset: false,
+      inset: true,
       title: "T",
     });
     expect(w.find(".content").exists()).toBe(true);
@@ -372,16 +374,19 @@ describe("MenuHost", () => {
   });
 
   it.each([
-    ["popover", false, PopoverStub, "show"],
-    ["sheet", true, SidebarStub, "modelValue"],
-  ] as const)("keeps the %s mounted while it closes, then unmounts it", async (_, sheet, stub, flag) => {
+    ["popover", false, PopoverStub, "show", 200],
+    ["sheet", true, SidebarStub, "modelValue", 480],
+  ] as const)("keeps the %s mounted while it closes, then unmounts it", async (_, sheet, stub, flag, leaveMs) => {
     vi.useFakeTimers();
     const w = mountHost({ sheet });
     await flushPromises();
     await w.setProps({ open: false });
     expect(w.findComponent(stub).props(flag)).toBe(false);
     if (!sheet) expect(w.findComponent(stub).props("inert")).toBe(true);
-    vi.advanceTimersByTime(400);
+    vi.advanceTimersByTime(leaveMs - 1);
+    await nextTick();
+    expect(w.findComponent(stub).exists()).toBe(true);
+    vi.advanceTimersByTime(1);
     await nextTick();
     expect(w.findComponent(stub).exists()).toBe(false);
   });

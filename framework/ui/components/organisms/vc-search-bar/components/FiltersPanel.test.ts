@@ -148,14 +148,15 @@ describe("FiltersPanel", () => {
     expect(w.emitted("clear-field")).toEqual([["status"]]);
   });
 
-  it("a header row toggles its editor", async () => {
+  it("a header row opens its editor and closes the open one", async () => {
     const w = mountPanel();
     const toggles = w.findAll(".vc-search-bar__acc-toggle");
+    expect(expanded(w)).toEqual(["Status"]);
     await toggles[1].trigger("click");
-    expect(expanded(w)).toEqual(["Status", "Created"]);
-    await toggles[0].trigger("click");
     expect(expanded(w)).toEqual(["Created"]);
     expect(w.findAll(".vc-search-bar__acc-body")).toHaveLength(1);
+    await toggles[1].trigger("click");
+    expect(expanded(w)).toEqual([]);
   });
 
   it("the header counts the active filters; close emits close", async () => {
@@ -313,6 +314,22 @@ describe("FieldAccordion", () => {
       global,
     });
     expect(expanded(w)).toEqual(["Total"]);
+  });
+
+  it("keeps one field open: opening B closes A, clicking B again closes it", async () => {
+    const list = fields.filter((f) => f.kind !== "toggle");
+    const w = mount(FieldAccordion, {
+      props: { fields: list, state: { search: "", values: {} }, initiallyOpen: list[0].id },
+      global,
+    });
+    const toggles = w.findAll(".vc-search-bar__acc-toggle");
+    expect(expanded(w)).toEqual([list[0].label]);
+    await toggles[1].trigger("click");
+    expect(expanded(w)).toEqual([list[1].label]);
+    expect(toggles[0].attributes("aria-expanded")).toBe("false");
+    await toggles[1].trigger("click");
+    expect(expanded(w)).toEqual([]);
+    expect(w.findAll(".vc-search-bar__acc-body")).toHaveLength(0);
   });
 
   it("an editor that empties its field emits clear-field", async () => {

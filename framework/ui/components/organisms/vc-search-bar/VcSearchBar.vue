@@ -106,7 +106,7 @@
     </div>
 
     <MenuHost
-      v-if="hostOpen"
+      :open="hostOpen"
       :sheet="isMobile"
       :anchor="anchor"
       :title="menuTitle"
@@ -115,18 +115,18 @@
       @close="closeEditor(true)"
     >
       <div
-        v-if="openField"
+        v-if="shown.field"
         class="vc-search-bar__editor"
       >
         <PillEditor
-          :field="openField"
-          :value="state.values[openField.id]"
-          :counts="counts?.[openField.id]"
+          :field="shown.field"
+          :value="state.values[shown.field.id]"
+          :counts="counts?.[shown.field.id]"
           @update:value="onEditorValue"
         />
       </div>
       <FieldAccordion
-        v-else-if="list === 'overflow'"
+        v-else-if="shown.list === 'overflow'"
         :fields="hiddenChips"
         :state="state"
         :counts="counts"
@@ -317,21 +317,21 @@ const names = computed(() => {
   return labels.slice(0, NAMES_SHOWN).join(", ") + (rest > 0 ? ` +${rest}` : "");
 });
 
-const { openId, anchor, list, openField, hostOpen, openEditor, openList, closeEditor } = useBarMenus({
+const { openId, anchor, list, hostOpen, shown, openEditor, openList, closeEditor } = useBarMenus({
   fields: () => fields.value,
 });
 const menuTitle = computed(() => {
-  if (openField.value) return openField.value.label;
-  if (list.value === "overflow")
+  if (shown.value.field) return shown.value.field.label;
+  if (shown.value.list === "overflow")
     return t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.MORE_FILTERS", { count: hiddenChips.value.length });
   // the panel has its own header, the phone sheet too
   return undefined;
 });
 // The Filters panel: on desktop 360px at the end of the Filters button; on a phone the whole sheet
 const panelHost = computed(() => {
-  if (list.value !== "filters" || openField.value) return {};
+  if (shown.value.list !== "filters" || shown.value.field) return {};
   const label = t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.FILTERS");
-  return isMobile.value ? { label } : { width: "360px", placement: "bottom-end" as const, label };
+  return isMobile.value ? { label } : { width: "360px", placement: "bottom-end" as const, fit: true, label };
 });
 
 // A menu whose anchor left the row (the "+N" button once every chip fits, a chip in a narrower mode) closes

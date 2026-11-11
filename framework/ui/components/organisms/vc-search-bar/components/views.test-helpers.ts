@@ -51,10 +51,11 @@ export const PopoverStub = defineComponent({
   name: "VcPopover",
   props: { show: Boolean, anchorRef: { type: Object, default: null }, role: String, ariaLabel: String },
   emits: ["update:show"],
+  // the panel renders only while shown, as VcPopover does
   setup:
-    (_, { slots }) =>
+    (props, { slots }) =>
     () =>
-      h("div", { class: "popover-stub" }, slots.default?.()),
+      props.show ? h("div", { class: "popover-stub" }, slots.default?.()) : null,
 });
 
 export const InputStub = defineComponent({

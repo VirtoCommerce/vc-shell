@@ -1,7 +1,7 @@
 <!-- The Filters panel: a popover on desktop; `touch` is the phone sheet with Clear / Done, the views as chips and a "Show N results" footer -->
 <template>
   <div
-    class="vc-search-bar__panel"
+    class="vc-search-bar__panel vc-search-bar__fit"
     :class="{ 'vc-search-bar__panel--touch': touch }"
   >
     <div
@@ -272,9 +272,9 @@ function clearAll() {
       color: var(--neutrals-800);
     }
   }
+  // the head, the unsaved row and the footer stay in view; the body takes what is left
   &__panel-body {
-    @apply tw-overflow-y-auto tw-py-1;
-    max-height: min(480px, calc(100vh - 240px));
+    @apply tw-flex-auto tw-min-h-0 tw-overflow-y-auto tw-py-1;
   }
   &__panel-section {
     @apply tw-uppercase tw-font-semibold tw-px-3 tw-pt-2 tw-pb-1;
@@ -318,8 +318,6 @@ function clearAll() {
     @apply tw-flex-1;
     .vc-search-bar__panel-body {
       @apply tw-flex-1;
-      max-height: none;
-      min-height: 0;
     }
     .vc-search-bar__toggle,
     .vc-search-bar__acc-row {

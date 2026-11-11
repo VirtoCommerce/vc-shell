@@ -1,4 +1,4 @@
-import { computed, nextTick, onScopeDispose, ref, watch } from "vue";
+import { computed, nextTick, onScopeDispose, ref, shallowRef, watch } from "vue";
 import type { BarField } from "../lib/fields";
 
 /** "filters": every field (the Filters button); "overflow": the fields hidden behind "+N" */
@@ -16,6 +16,15 @@ export function useBarMenus(o: UseBarMenusOptions) {
 
   const openField = computed(() => o.fields().find((f) => f.id === openId.value && f.kind !== "toggle"));
   const hostOpen = computed(() => !!list.value || !!openField.value);
+  // What the host shows: a closing menu keeps it while it animates out
+  const shown = shallowRef<{ field?: BarField; list?: BarList }>({});
+  watch(
+    [openField, list],
+    ([field, kind]) => {
+      if (field || kind) shown.value = { field, list: kind };
+    },
+    { immediate: true },
+  );
 
   function closeEditor(restoreFocus = false) {
     const el = anchor.value;
@@ -59,5 +68,5 @@ export function useBarMenus(o: UseBarMenusOptions) {
   });
   onScopeDispose(() => document.removeEventListener("pointerdown", onOutsidePointerDown));
 
-  return { openId, anchor, list, openField, hostOpen, openEditor, openList, closeEditor };
+  return { openId, anchor, list, openField, hostOpen, shown, openEditor, openList, closeEditor };
 }

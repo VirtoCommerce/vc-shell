@@ -299,7 +299,8 @@ export const OverflowPopoverTest: Story = {
     await userEvent.click(more);
     const body = within(document.body);
     const dialog = await body.findByRole("dialog", { name: `${hidden} more filters` });
-    await expect(dialog).toBeVisible();
+    // the popover fades in
+    await waitFor(() => expect(dialog).toBeVisible());
     await userEvent.keyboard("{Escape}");
     await waitFor(() => expect(body.queryByRole("dialog", { name: /more filters/ })).toBeNull());
   },

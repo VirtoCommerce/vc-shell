@@ -232,14 +232,22 @@ defineExpose({ focus: () => input.value?.focus() });
       color: var(--neutrals-400);
     }
   }
-  &__search-hint {
+  // a key cap: light grey, the glyph centred in a square
+  &__search-hint,
+  &__suggest-key {
     @apply tw-inline-flex tw-items-center tw-justify-center tw-shrink-0 tw-rounded;
-    min-width: 18px;
+    box-sizing: border-box;
     height: 18px;
     font-size: 11px;
     font-family: inherit;
+    line-height: 1;
     color: var(--neutrals-500);
+    background: var(--neutrals-100);
     border: 1px solid var(--neutrals-300);
+  }
+  &__search-hint {
+    width: 18px;
+    padding: 0;
   }
   &__search-clear {
     @apply tw-inline-flex tw-items-center tw-justify-center tw-shrink-0 tw-rounded;
@@ -271,12 +279,7 @@ defineExpose({ focus: () => input.value?.focus() });
     color: var(--neutrals-400);
   }
   &__suggest-key {
-    @apply tw-inline-flex tw-items-center tw-gap-1 tw-rounded tw-px-1 tw-shrink-0;
-    height: 18px;
-    font-size: 11px;
-    font-family: inherit;
-    color: var(--neutrals-500);
-    border: 1px solid var(--neutrals-300);
+    @apply tw-gap-1 tw-px-1;
   }
   &__suggest-label {
     @apply tw-flex-1 tw-truncate;

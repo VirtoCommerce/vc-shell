@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { mount } from "@vue/test-utils";
-import { defineComponent, h } from "vue";
+import { afterEach, describe, it, expect, vi } from "vitest";
+import { flushPromises, mount } from "@vue/test-utils";
+import { defineComponent, h, nextTick, ref } from "vue";
 import DateRangeEditor from "./editors/DateRangeEditor.vue";
 import SelectEditor from "./editors/SelectEditor.vue";
 import NumberEditor from "./editors/NumberEditor.vue";
@@ -241,39 +241,61 @@ describe("SelectEditor", () => {
 });
 
 describe("MenuHost", () => {
+  // Each stub renders its content only while shown, as the real panels do
   const PopoverStub = defineComponent({
     name: "VcPopover",
-    props: ["show", "anchorRef", "title", "closeOnClickOutside", "width", "maxWidth"],
+    props: [
+      "show",
+      "inert",
+      "anchorRef",
+      "title",
+      "closeOnClickOutside",
+      "width",
+      "maxWidth",
+      "contentScrollable",
+      "maxHeight",
+    ],
     emits: ["update:show"],
     setup:
-      (_, { slots }) =>
+      (props, { slots }) =>
       () =>
-        h("div", { class: "popover-stub" }, slots.default?.()),
+        h("div", { class: "popover-stub" }, props.show ? slots.default?.() : undefined),
   });
   const SidebarStub = defineComponent({
     name: "VcSidebar",
     props: ["modelValue", "position", "size", "draggable", "dragHandle", "closeButton", "inset", "title", "ariaLabel"],
     emits: ["update:modelValue"],
     setup:
-      (_, { slots }) =>
+      (props, { slots }) =>
       () =>
-        h("div", { class: "sidebar-stub" }, slots.default?.()),
+        h("div", { class: "sidebar-stub" }, props.modelValue ? slots.default?.() : undefined),
+  });
+  const Content = defineComponent({
+    name: "MenuContent",
+    setup: () => {
+      const n = ref(0);
+      return () => h("button", { class: "content", onClick: () => n.value++ }, `menu ${n.value}`);
+    },
   });
   const mountHost = (props: Record<string, unknown>) =>
     mount(MenuHost, {
-      props,
-      slots: { default: "<span class='content'>menu</span>" },
+      props: { open: true, ...props },
+      slots: { default: () => h(Content) },
       global: { stubs: { VcPopover: PopoverStub, VcSidebar: SidebarStub } },
     });
 
-  it("renders a popover anchored to the element", () => {
+  afterEach(() => vi.useRealTimers());
+
+  it("renders a popover anchored to the element", async () => {
     const anchor = document.createElement("button");
     const w = mountHost({ sheet: false, anchor, title: "T", closeOnOutside: true });
+    await flushPromises();
     const pop = w.findComponent(PopoverStub);
     expect(pop.exists()).toBe(true);
     expect(w.findComponent(SidebarStub).exists()).toBe(false);
     expect(pop.props()).toMatchObject({
       show: true,
+      inert: false,
       anchorRef: anchor,
       title: "T",
       closeOnClickOutside: true,
@@ -283,8 +305,15 @@ describe("MenuHost", () => {
     expect(w.find(".content").exists()).toBe(true);
   });
 
-  it("renders a bottom sheet when sheet", () => {
+  it("caps a fitted popover and leaves the scrolling to its content", async () => {
+    const w = mountHost({ sheet: false, fit: true });
+    await flushPromises();
+    expect(w.findComponent(PopoverStub).props()).toMatchObject({ contentScrollable: false, maxHeight: 640 });
+  });
+
+  it("renders a bottom sheet when sheet", async () => {
     const w = mountHost({ sheet: true, title: "T", label: "Filters" });
+    await flushPromises();
     const sb = w.findComponent(SidebarStub);
     expect(sb.exists()).toBe(true);
     expect(w.findComponent(PopoverStub).exists()).toBe(false);
@@ -304,10 +333,64 @@ describe("MenuHost", () => {
 
   it("emits close from either host", async () => {
     const p = mountHost({ sheet: false });
+    await flushPromises();
     await p.findComponent(PopoverStub).vm.$emit("update:show", false);
     expect(p.emitted("close")).toHaveLength(1);
     const s = mountHost({ sheet: true });
+    await flushPromises();
     await s.findComponent(SidebarStub).vm.$emit("update:modelValue", false);
     expect(s.emitted("close")).toHaveLength(1);
+  });
+
+  it.each([
+    ["popover", false, PopoverStub, "show"],
+    ["sheet", true, SidebarStub, "modelValue"],
+  ] as const)("mounts the %s closed and then opens it, so its enter transition runs", async (_, sheet, stub, flag) => {
+    const w = mountHost({ sheet, open: false });
+    expect(w.findComponent(stub).exists()).toBe(false);
+    const seen: unknown[] = [];
+    await w.setProps({ open: true });
+    seen.push(w.findComponent(stub).props(flag));
+    await flushPromises();
+    seen.push(w.findComponent(stub).props(flag));
+    expect(seen).toEqual([false, true]);
+  });
+
+  it.each([
+    ["popover", false, PopoverStub, "show"],
+    ["sheet", true, SidebarStub, "modelValue"],
+  ] as const)("keeps the %s mounted while it closes, then unmounts it", async (_, sheet, stub, flag) => {
+    vi.useFakeTimers();
+    const w = mountHost({ sheet });
+    await flushPromises();
+    await w.setProps({ open: false });
+    expect(w.findComponent(stub).props(flag)).toBe(false);
+    if (!sheet) expect(w.findComponent(stub).props("inert")).toBe(true);
+    vi.advanceTimersByTime(400);
+    await nextTick();
+    expect(w.findComponent(stub).exists()).toBe(false);
+  });
+
+  it("reopening while closing keeps the host and opens it again", async () => {
+    vi.useFakeTimers();
+    const w = mountHost({ sheet: false });
+    await flushPromises();
+    await w.setProps({ open: false });
+    await w.setProps({ open: true });
+    await flushPromises();
+    vi.advanceTimersByTime(400);
+    await nextTick();
+    expect(w.findComponent(PopoverStub).props("show")).toBe(true);
+  });
+
+  it("starts each opening with fresh content", async () => {
+    const w = mountHost({ sheet: false });
+    await flushPromises();
+    await w.get(".content").trigger("click");
+    expect(w.get(".content").text()).toBe("menu 1");
+    await w.setProps({ open: false });
+    await w.setProps({ open: true });
+    await flushPromises();
+    expect(w.get(".content").text()).toBe("menu 0");
   });
 });

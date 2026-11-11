@@ -32,16 +32,17 @@
       />
     </button>
     <MenuHost
-      v-if="open"
+      :open="open"
       :sheet="false"
       :anchor="trigger"
+      fit
       role="dialog"
       :aria-label="$t(`${K}SAVED_VIEWS`)"
       @close="close"
     >
       <div
         ref="menu"
-        class="vc-search-bar__views-menu"
+        class="vc-search-bar__views-menu vc-search-bar__fit"
       >
         <div
           class="vc-search-bar__views-title"
@@ -212,16 +213,17 @@ const optionsFor = ref<string | null>(null);
 const current = computed(() => props.views.current.value);
 const modified = computed(() => props.views.modified.value);
 
+// A menu opens fresh; a closing one keeps what it showed while it fades out
 function toggle() {
-  if (open.value) close();
-  else open.value = true;
+  if (open.value) return close();
+  naming.value = false;
+  renaming.value = null;
+  optionsFor.value = null;
+  open.value = true;
 }
 
 function close() {
   open.value = false;
-  naming.value = false;
-  renaming.value = null;
-  optionsFor.value = null;
   void nextTick(() => trigger.value?.focus());
 }
 
@@ -298,8 +300,9 @@ function act(run: () => void) {
     letter-spacing: 0.04em;
     color: var(--neutrals-500);
   }
+  // the title and the modified-view actions stay in view; the list scrolls between them
   &__views-list {
-    @apply tw-flex tw-flex-col;
+    @apply tw-flex tw-flex-col tw-min-h-0 tw-overflow-y-auto;
   }
   &__view-line {
     @apply tw-flex tw-items-center;

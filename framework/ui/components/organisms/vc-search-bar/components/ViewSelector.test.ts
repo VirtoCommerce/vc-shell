@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { mount, type VueWrapper } from "@vue/test-utils";
+import { flushPromises, mount, type VueWrapper } from "@vue/test-utils";
 import { nextTick } from "vue";
 import ViewSelector from "./ViewSelector.vue";
 import { K, makeViews, stopViews, viewsGlobal } from "./views.test-helpers";
@@ -21,8 +21,10 @@ const trigger = (w: VueWrapper) => w.get(".vc-search-bar__view-btn");
 const rows = (w: VueWrapper) => w.findAll(".vc-search-bar__view-item");
 const byText = (w: VueWrapper, text: string) => w.findAll("button").find((b) => b.text() === text);
 
+// the host mounts closed, then opens, so its transition runs
 async function open(w: VueWrapper) {
   await trigger(w).trigger("click");
+  await flushPromises();
 }
 
 describe("ViewSelector", () => {
@@ -85,6 +87,22 @@ describe("ViewSelector", () => {
     await nextTick();
     expect(w.find(".popover-stub").exists()).toBe(false);
     expect(document.activeElement).toBe(trigger(w).element);
+  });
+
+  it("reopens fresh: no name field or options left over from the last opening", async () => {
+    const { views, setValues } = makeViews();
+    setValues({ urgent: true });
+    views.saveAs("Mine");
+    setValues({ status: ["new"] });
+    const w = mountSelector(views);
+    await open(w);
+    await w.get(".vc-search-bar__view-more").trigger("click");
+    await byText(w, `${K}SAVE_AS_NEW`)!.trigger("click");
+    await trigger(w).trigger("click");
+    expect(w.find(".popover-stub").exists()).toBe(false);
+    await open(w);
+    expect(w.find(".vc-search-bar__views-modified input").exists()).toBe(false);
+    expect(w.find(".vc-search-bar__view-options").exists()).toBe(false);
   });
 
   it("has no modified section while the filters match the view", async () => {

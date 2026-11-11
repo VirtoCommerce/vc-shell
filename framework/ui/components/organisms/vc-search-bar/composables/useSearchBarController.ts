@@ -34,7 +34,7 @@ export interface SearchBarController {
   removeFilter(id: string): void;
 }
 
-interface ControllerSource {
+export interface ControllerSource {
   search: Ref<string>;
   appliedFields: Ref<SearchBarAppliedField[]>;
   clearAll(): void;
@@ -42,7 +42,8 @@ interface ControllerSource {
   removeFilter(id: string): void;
 }
 
-interface ConnectableController extends SearchBarController {
+/** The controller as the bar sees it: the host only reads the SearchBarController part */
+export interface ConnectableController extends SearchBarController {
   /** Returns a disconnect function, or null when another bar is connected */
   connect(source: ControllerSource): (() => void) | null;
 }
@@ -50,7 +51,7 @@ interface ConnectableController extends SearchBarController {
 const SearchBarControllerKey: InjectionKey<ConnectableController> = Symbol("SearchBarController");
 
 /** Empty until a bar inside a SearchBarControllerScope connects */
-export function createSearchBarController(): SearchBarController {
+export function createSearchBarController(): ConnectableController {
   const source = shallowRef<ControllerSource | null>(null);
   const appliedFields = computed(() => source.value?.appliedFields.value ?? []);
   const search = computed(() => source.value?.search.value ?? "");
@@ -66,7 +67,14 @@ export function createSearchBarController(): SearchBarController {
     clearFilters: () => source.value?.clearFilters(),
     removeFilter: (id) => source.value?.removeFilter(id),
     connect(s) {
-      if (source.value) return null;
+      if (source.value) {
+        if (import.meta.env.DEV) {
+          console.warn(
+            "[VcSearchBar] A search bar is already connected to this controller; the second one is ignored.",
+          );
+        }
+        return null;
+      }
       source.value = s;
       return () => {
         if (source.value === s) source.value = null;
@@ -79,9 +87,9 @@ export function createSearchBarController(): SearchBarController {
 /** Hands the controller to the bar in its slot (only there, not to the host's other content) */
 export const SearchBarControllerScope = defineComponent({
   name: "SearchBarControllerScope",
-  props: { controller: { type: Object as PropType<SearchBarController>, required: true } },
+  props: { controller: { type: Object as PropType<ConnectableController>, required: true } },
   setup(props, { slots }) {
-    provide(SearchBarControllerKey, props.controller as ConnectableController);
+    provide(SearchBarControllerKey, props.controller);
     return () => slots.default?.();
   },
 });

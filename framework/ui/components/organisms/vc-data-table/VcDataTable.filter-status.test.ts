@@ -6,6 +6,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { mount, type VueWrapper } from "@vue/test-utils";
 import { defineComponent, h, nextTick, ref } from "vue";
 import VcDataTable from "./VcDataTable.vue";
+import { VcSearchBar } from "@ui/components/organisms/vc-search-bar";
 import { IsMobileKey } from "@framework/injection-keys";
 import {
   TableQueryStateKey,
@@ -98,7 +99,7 @@ describe("VcDataTable search bar: footer status and empty state", () => {
   let wrapper: VueWrapper | undefined;
   let query: Record<string, string> = {};
 
-  const mountTable = (props: Record<string, unknown> = {}, slots: Record<string, string> = {}) => {
+  const mountTable = (props: Record<string, unknown> = {}, slots: Record<string, unknown> = {}) => {
     const service: ITableQueryStateService = {
       read: (key) => decodeQueryState(key!, query),
       write: (key, patch) => Object.assign(query, encodeQueryState(key!, patch)),
@@ -162,7 +163,7 @@ describe("VcDataTable search bar: footer status and empty state", () => {
 
       query = {};
       const w2 = mountTable({ searchValue: "acme", items: [{ id: 1 }], totalCount: 1 });
-      // the bar reports its status once it has mounted
+      // the search status shows once the bar has mounted, before the next paint
       await nextTick();
       expect(w2.find(STATUS).text()).toContain(`${T}.STATUS.SEARCH`);
     });
@@ -316,6 +317,52 @@ describe("VcDataTable search bar: footer status and empty state", () => {
       expect(w.find(NO_RESULTS).exists()).toBe(false);
       expect(w.find(STATUS).exists()).toBe(false);
       expect(w.find(".mock-body").text()).toBe("COMPONENTS.ORGANISMS.VC_TABLE.NOT_FOUND_TITLE");
+    });
+  });
+
+  describe("the table's own bar drives the status", () => {
+    it("a bar in another slot of the table does not reach the footer or the empty state", async () => {
+      query.orders_filters = "status:Paid";
+      const other = () =>
+        h(VcSearchBar, {
+          class: "other-bar",
+          fields: globalFilters,
+          modelValue: { search: "zzz", values: { status: ["New"], store: "x" } },
+        });
+      const w = mountTable({}, { header: other });
+      await nextTick();
+      expect(w.find(".other-bar").exists()).toBe(true);
+      const empty = w.find(NO_RESULTS);
+      expect(empty.findAll(".vc-data-table__no-results-tag").map((t) => t.find("span").text())).toEqual([
+        "Status: Paid",
+      ]);
+      expect(empty.text()).toContain(`${T}.NO_RESULTS.TITLE_FILTERS:{"count":1}`);
+
+      await w.setProps({ items: [{ id: 1 }], totalCount: 1 });
+      expect(w.find(STATUS).text()).toContain(`${T}.STATUS.FILTERS:{"count":1}`);
+      // its Clear all clears the table's bar, not the other one
+      await w.find(`${STATUS} button`).trigger("click");
+      expect(query.orders_filters).toBe("");
+      expect(w.findAllComponents(VcSearchBar)[0].props("modelValue")).toMatchObject({ search: "zzz" });
+    });
+
+    it("the bar reconnects after it unmounts and mounts again", async () => {
+      query.orders_filters = "status:Paid";
+      const w = mountTable({ items: [{ id: 1 }], totalCount: 1 });
+      await nextTick();
+      expect(w.find(STATUS).text()).toContain(`${T}.STATUS.FILTERS:{"count":1}`);
+
+      await w.setProps({ searchable: false, globalFilters: [] });
+      expect(w.findComponent(VcSearchBar).exists()).toBe(false);
+      expect(w.find(STATUS).exists()).toBe(false);
+
+      await w.setProps({ searchable: true, globalFilters });
+      await nextTick();
+      expect(w.find(STATUS).text()).toContain(`${T}.STATUS.FILTERS:{"count":1}`);
+      await w.find(`${STATUS} button`).trigger("click");
+      expect(lastFilter()).toEqual({});
+      await nextTick();
+      expect(w.find(STATUS).exists()).toBe(false);
     });
   });
 });

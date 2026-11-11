@@ -10,13 +10,16 @@ import {
   type SearchBarController,
 } from "./useSearchBarController";
 
-function mountInScope(props: Record<string, unknown>, provide: Record<symbol, unknown> = {}, bars = 1) {
+/** Each props object mounts one bar inside the same scope */
+function mountInScope(
+  props: Record<string, unknown> | Record<string, unknown>[],
+  provide: Record<symbol, unknown> = {},
+) {
   const controller = createSearchBarController();
+  const bars = Array.isArray(props) ? props : [props];
   const Host = defineComponent({
     setup: () => () =>
-      h(SearchBarControllerScope, { controller }, () =>
-        Array.from({ length: bars }, () => h(VcSearchBar, { fields, ...props })),
-      ),
+      h(SearchBarControllerScope, { controller }, () => bars.map((p) => h(VcSearchBar, { fields, ...p }))),
   });
   const w = mount(Host, { global: { ...global, provide }, attachTo: document.body });
   return { w, controller, bar: () => w.findComponent(VcSearchBar) };
@@ -87,16 +90,21 @@ describe("search bar controller", () => {
     expect(controller.filtered.value).toBe(false);
   });
 
-  it("a second bar is not connected while the first one is", () => {
-    const { w, controller } = mountInScope({ modelValue: { search: "", values: { status: ["a"] } } }, {}, 2);
+  it("a second bar in the scope is not connected while the first one is", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { w, controller } = mountInScope([
+      { modelValue: { search: "", values: { status: ["a"] } } },
+      { modelValue: { search: "other", values: { overdue: true, store: "x" } } },
+    ]);
     unmount = () => w.unmount();
+    expect(controller.appliedFields.value.map((f) => f.id)).toEqual(["status"]);
+    expect(controller.search.value).toBe("");
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0][0]).toContain("already connected");
+    // the second bar's actions do not reach the controller either
+    await w.findAllComponents(VcSearchBar)[1].get(".vc-search-bar__filters-x").trigger("click");
     expect(controller.filterCount.value).toBe(1);
-    const other = createSearchBarController() as unknown as { connect(s: unknown): unknown };
-    const s = { search: { value: "" }, appliedFields: { value: [] } };
-    const off = other.connect(s) as () => void;
-    expect(other.connect(s)).toBeNull();
-    off();
-    expect(other.connect(s)).not.toBeNull();
+    warn.mockRestore();
   });
 
   it("a bar without a controller works as before", async () => {

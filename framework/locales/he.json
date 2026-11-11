@@ -168,6 +168,163 @@
       }
     },
     "ORGANISMS": {
+      "VC_SEARCH_BAR": {
+        "SEARCH_PLACEHOLDER": "חיפוש",
+        "FILTERS": "מסננים",
+        "REMOVE_FILTER": "הסרת המסנן \"{label}\"",
+        "CLEAR_SEARCH": "ניקוי החיפוש",
+        "CLEAR_FILTERS": "ניקוי כל המסננים",
+        "FILTERS_APPLIED": "מסננים, הוחלו: {count}",
+        "MORE_FILTERS": "מסננים נוספים: {count}",
+        "SUGGEST": {
+          "BY": "סינון לפי {field}",
+          "BY_FIELD": "סינון לפי שדה",
+          "ADD": "להוספה"
+        },
+        "PHONE": {
+          "CLEAR": "ניקוי",
+          "DONE": "סיום",
+          "VIEW": "תצוגה",
+          "SHOW": "הצגת תוצאה אחת | הצגת {count} תוצאות",
+          "SHOW_ANY": "הצגת התוצאות",
+          "NO_MATCH": "אין תוצאות תואמות",
+          "RESULTS": "תוצאה אחת | {count} תוצאות",
+          "ITEMS": "פריט אחד | {count} פריטים",
+          "FILTERED_FROM": "מסונן מתוך {count}",
+          "FILTER_COUNT": "מסנן אחד | {count} מסננים",
+          "CLEAR_ALL": "ניקוי הכול"
+        },
+        "DATE": {
+          "TODAY": "היום",
+          "LAST_7": "7 הימים האחרונים",
+          "LAST_30": "30 הימים האחרונים",
+          "CUSTOM_RANGE": "טווח מותאם אישית",
+          "ANY": "כל זמן"
+        },
+        "NUMBER": {
+          "BETWEEN": "בין",
+          "VALUE": "ערך",
+          "MIN": "מ-",
+          "MAX": "עד",
+          "APPLY": "החלה",
+          "NOTE": "טווחים מוחלים בהקשה על Enter",
+          "NOTE_PRESETS": "טווחים מוחלים בהקשה על Enter, ערכים מוגדרים מראש מוחלים מיד"
+        },
+        "VIEWS": {
+          "ALL": "הכול",
+          "SELECTOR": "תצוגה: {name}",
+          "SAVED_VIEWS": "תצוגות שמורות",
+          "MODIFIED": "שונתה",
+          "OPTIONS": "אפשרויות {name}",
+          "SAVE_CHANGES": "שמירת השינויים ב-\"{name}\"",
+          "SAVE_AS_NEW": "שמירה כתצוגה חדשה…",
+          "REVERT": "חזרה אל \"{name}\"",
+          "REVERT_SHORT": "חזרה",
+          "RENAME": "שינוי שם",
+          "DELETE": "מחיקה",
+          "NEW_NAME": "שם חדש",
+          "UNSAVED": "מסננים שלא נשמרו",
+          "SAVE": "שמירה",
+          "SAVE_AS_VIEW": "שמירה כתצוגה…",
+          "NAME_PLACEHOLDER": "שם התצוגה",
+          "CANCEL": "ביטול"
+        },
+        "OPERATOR": {
+          "ANY": "אחד מתוך",
+          "NOT": "אינו"
+        },
+        "BUILDER": {
+          "TITLE": "עריכת מסננים",
+          "TAB_CONDITIONS": "תנאים",
+          "TAB_ADVANCED": "מתקדם",
+          "WHERE": "כאשר",
+          "AND": "וגם",
+          "IS": "הוא",
+          "IS_ON": "בתאריך",
+          "CONTAINS": "מכיל",
+          "ADD": "הוספת תנאי",
+          "EMPTY": "אין עדיין תנאים. יש להוסיף תנאי כדי להתחיל לסנן.",
+          "CLEAR_ALL": "ניקוי הכול",
+          "CANCEL": "ביטול",
+          "APPLY": "החלה",
+          "REMOVE": "הסרת התנאי \"{label}\"",
+          "OPERATOR": "אופרטור",
+          "CHOOSE": "בחירה",
+          "PERIOD": "תקופה",
+          "IS_ANY_OF": "אחד מתוך",
+          "IS_NOT": "אינו"
+        },
+        "ADVANCED": {
+          "LABEL": "שאילתת סינון",
+          "PLACEHOLDER": "יש להקליד שם שדה, למשל status:Paid total:[1000 TO]",
+          "SYNTAX": "תחביר",
+          "SYNTAX_CARD": "תחביר ביטוי החיפוש",
+          "SUGGESTIONS": "הצעות",
+          "FIELDS": "שדות",
+          "WORDS_NOTE": "מילים ללא שדה עוברות לחיפוש.",
+          "DOC_LINK": "מדריך לתחביר ביטוי החיפוש",
+          "INSERT": "הוספת {example}",
+          "WILL_APPLY": "יוחל:",
+          "SEARCH_CHIP": "חיפוש: {text}",
+          "NOTE": "התנאים אינם זמינים: {reason} \"החלה\" שולחת את השאילתה כפי שהיא, ומוצגת כמסנן \"שאילתה\" אחד.",
+          "DATE_TODAY": "היום",
+          "DATE_LAST_7": "7 הימים האחרונים",
+          "DATE_LAST_30": "30 הימים האחרונים",
+          "IS_ON": "בתאריך",
+          "NUM_FROM": "מ-",
+          "NUM_UPTO": "עד",
+          "NUM_BETWEEN": "בין",
+          "EXAMPLE_ANY": "אחד מתוך",
+          "EXAMPLE_NOT": "אינו",
+          "EXAMPLE_BETWEEN": "בין (כולל)",
+          "EXAMPLE_FROM": "מ-; [TO 50] עד; ( ) לא כולל את הגבול",
+          "EXAMPLE_DATES": "תאריכים, YYYY-MM-DD",
+          "EXAMPLE_QUOTES": "מירכאות שומרות מילים עם רווחים יחד",
+          "EXAMPLE_OR": "AND, OR וסוגריים (מוצג כמסנן \"שאילתה\" אחד)",
+          "REASON_PARSE": "הטקסט אינו ביטוי חיפוש תקין.",
+          "REASON_UNKNOWN_FIELD": "הוא משתמש בשדה שאין לו תנאי כאן.",
+          "REASON_OR_BETWEEN_FIELDS": "הוא משתמש ב-OR בין שדות שונים.",
+          "REASON_BRACKETS": "הוא משתמש בסוגריים.",
+          "REASON_EXCLUSIVE_BOUND": "יש בו טווח שאינו כולל את הגבול שלו.",
+          "REASON_FIELD_TWICE": "הוא משתמש באותו שדה יותר מפעם אחת.",
+          "REASON_NOT_ALLOWED": "הוא שולל שדה שאין לו תנאי \"אינו\".",
+          "REASON_CUSTOM_FIELD": "הוא משתמש בשדה עם עורך מותאם אישית.",
+          "REASON_MULTI_VALUE": "הוא מציין כמה ערכים לשדה שמקבל ערך אחד.",
+          "CHIP_NOT": "אינו"
+        },
+        "PANEL": {
+          "ACTIVE": "פעילים: {count}",
+          "TOGGLES": "מתגים",
+          "ANY": "הכול",
+          "RESULTS": "תוצאה · מוחל מיד | תוצאות · מוחל מיד",
+          "APPLIED": "מוחל מיד",
+          "CLEAR": "ניקוי המסננים"
+        },
+        "EDITOR": {
+          "FIND": "חיפוש",
+          "NOTHING_FOUND": "לא נמצא דבר",
+          "ONLY": "רק",
+          "ONLY_LABEL": "רק {label}"
+        }
+      },
+      "VC_DATA_TABLE": {
+        "STATUS": {
+          "FILTERED_FROM": "מסונן מתוך {count}",
+          "FILTERS": "מסנן אחד | {count} מסננים",
+          "FILTERS_AND_SEARCH": "מסנן אחד + חיפוש | {count} מסננים + חיפוש",
+          "SEARCH": "חיפוש",
+          "CLEAR_ALL": "ניקוי הכול"
+        },
+        "NO_RESULTS": {
+          "TITLE_SEARCH_FILTERS": "אין תוצאות התואמות את \"{query}\" עם מסנן אחד | אין תוצאות התואמות את \"{query}\" עם {count} מסננים",
+          "TITLE_SEARCH": "אין תוצאות התואמות את \"{query}\"",
+          "TITLE_FILTERS": "אין תוצאות התואמות מסנן אחד | אין תוצאות התואמות {count} מסננים",
+          "HINT_FILTERS": "יש להסיר מסנן למטה או לנקות את כולם.",
+          "HINT_SEARCH": "יש לבדוק את האיות או לנסות מילת מפתח אחרת.",
+          "CLEAR_SEARCH": "ניקוי החיפוש",
+          "CLEAR_FILTERS": "ניקוי המסננים"
+        }
+      },
       "VC_DYNAMIC_PROPERTY": {
         "ADD": "הוספת ערך",
         "VALUE_TYPE": {

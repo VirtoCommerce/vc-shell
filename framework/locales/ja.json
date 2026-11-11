@@ -168,6 +168,163 @@
       }
     },
     "ORGANISMS": {
+      "VC_SEARCH_BAR": {
+        "SEARCH_PLACEHOLDER": "検索",
+        "FILTERS": "フィルター",
+        "REMOVE_FILTER": "フィルター「{label}」を削除",
+        "CLEAR_SEARCH": "検索をクリア",
+        "CLEAR_FILTERS": "すべてのフィルターをクリア",
+        "FILTERS_APPLIED": "フィルター、{count} 件適用中",
+        "MORE_FILTERS": "ほかに {count} 件のフィルター",
+        "SUGGEST": {
+          "BY": "{field}でフィルター",
+          "BY_FIELD": "フィールドでフィルター",
+          "ADD": "で追加"
+        },
+        "PHONE": {
+          "CLEAR": "クリア",
+          "DONE": "完了",
+          "VIEW": "ビュー",
+          "SHOW": "{count} 件の結果を表示",
+          "SHOW_ANY": "結果を表示",
+          "NO_MATCH": "一致する結果はありません",
+          "RESULTS": "{count} 件の結果",
+          "ITEMS": "{count} 件の項目",
+          "FILTERED_FROM": "{count} 件から絞り込み",
+          "FILTER_COUNT": "{count} 件のフィルター",
+          "CLEAR_ALL": "すべてクリア"
+        },
+        "DATE": {
+          "TODAY": "今日",
+          "LAST_7": "過去 7 日間",
+          "LAST_30": "過去 30 日間",
+          "CUSTOM_RANGE": "期間を指定",
+          "ANY": "すべての期間"
+        },
+        "NUMBER": {
+          "BETWEEN": "範囲",
+          "VALUE": "値",
+          "MIN": "開始",
+          "MAX": "終了",
+          "APPLY": "適用",
+          "NOTE": "範囲は Enter で適用されます",
+          "NOTE_PRESETS": "範囲は Enter で、プリセットはすぐに適用されます"
+        },
+        "VIEWS": {
+          "ALL": "すべて",
+          "SELECTOR": "ビュー: {name}",
+          "SAVED_VIEWS": "保存済みビュー",
+          "MODIFIED": "変更あり",
+          "OPTIONS": "{name} のオプション",
+          "SAVE_CHANGES": "「{name}」への変更を保存",
+          "SAVE_AS_NEW": "新しいビューとして保存…",
+          "REVERT": "「{name}」に戻す",
+          "REVERT_SHORT": "元に戻す",
+          "RENAME": "名前を変更",
+          "DELETE": "削除",
+          "NEW_NAME": "新しい名前",
+          "UNSAVED": "未保存のフィルター",
+          "SAVE": "保存",
+          "SAVE_AS_VIEW": "ビューとして保存…",
+          "NAME_PLACEHOLDER": "ビュー名",
+          "CANCEL": "キャンセル"
+        },
+        "OPERATOR": {
+          "ANY": "いずれかに一致",
+          "NOT": "次と等しくない"
+        },
+        "BUILDER": {
+          "TITLE": "フィルターを編集",
+          "TAB_CONDITIONS": "条件",
+          "TAB_ADVANCED": "詳細",
+          "WHERE": "条件:",
+          "AND": "かつ",
+          "IS": "が次と等しい:",
+          "IS_ON": "が次の期間:",
+          "CONTAINS": "が次を含む:",
+          "ADD": "条件を追加",
+          "EMPTY": "条件はまだありません。条件を追加して絞り込みを始めましょう。",
+          "CLEAR_ALL": "すべてクリア",
+          "CANCEL": "キャンセル",
+          "APPLY": "適用",
+          "REMOVE": "条件「{label}」を削除",
+          "OPERATOR": "演算子",
+          "CHOOSE": "選択",
+          "PERIOD": "期間",
+          "IS_ANY_OF": "がいずれかに一致:",
+          "IS_NOT": "が次と等しくない:"
+        },
+        "ADVANCED": {
+          "LABEL": "フィルタークエリ",
+          "PLACEHOLDER": "フィールド名を入力 (例: status:Paid total:[1000 TO])",
+          "SYNTAX": "構文",
+          "SYNTAX_CARD": "検索フレーズの構文",
+          "SUGGESTIONS": "候補",
+          "FIELDS": "フィールド",
+          "WORDS_NOTE": "フィールドのない語は検索に使われます。",
+          "DOC_LINK": "検索フレーズの構文リファレンス",
+          "INSERT": "{example} を挿入",
+          "WILL_APPLY": "適用される内容:",
+          "SEARCH_CHIP": "検索: {text}",
+          "NOTE": "条件は使用できません: {reason} 「適用」を押すとクエリがそのまま送信され、1 つの「クエリ」フィルターとして表示されます。",
+          "DATE_TODAY": "今日",
+          "DATE_LAST_7": "過去 7 日間",
+          "DATE_LAST_30": "過去 30 日間",
+          "IS_ON": "が次の期間",
+          "NUM_FROM": "以上",
+          "NUM_UPTO": "以下",
+          "NUM_BETWEEN": "範囲内",
+          "EXAMPLE_ANY": "いずれかに一致",
+          "EXAMPLE_NOT": "等しくない",
+          "EXAMPLE_BETWEEN": "範囲内 (境界を含む)",
+          "EXAMPLE_FROM": "以上、[TO 50] は以下、( ) は境界を含まない",
+          "EXAMPLE_DATES": "日付、YYYY-MM-DD",
+          "EXAMPLE_QUOTES": "引用符でスペースを含む語をまとめる",
+          "EXAMPLE_OR": "AND、OR、かっこ (1 つの「クエリ」フィルターとして表示)",
+          "REASON_PARSE": "テキストが有効な検索フレーズではありません。",
+          "REASON_UNKNOWN_FIELD": "ここで条件がないフィールドが使われています。",
+          "REASON_OR_BETWEEN_FIELDS": "異なるフィールド間で OR が使われています。",
+          "REASON_BRACKETS": "かっこが使われています。",
+          "REASON_EXCLUSIVE_BOUND": "境界を含まない範囲があります。",
+          "REASON_FIELD_TWICE": "同じフィールドが複数回使われています。",
+          "REASON_NOT_ALLOWED": "「等しくない」がないフィールドが否定されています。",
+          "REASON_CUSTOM_FIELD": "カスタムエディターを持つフィールドが使われています。",
+          "REASON_MULTI_VALUE": "値が 1 つだけのフィールドに複数の値が指定されています。",
+          "CHIP_NOT": "等しくない"
+        },
+        "PANEL": {
+          "ACTIVE": "{count} 件有効",
+          "TOGGLES": "切り替え",
+          "ANY": "すべて",
+          "RESULTS": "件 · すぐに適用",
+          "APPLIED": "すぐに適用",
+          "CLEAR": "フィルターをクリア"
+        },
+        "EDITOR": {
+          "FIND": "検索",
+          "NOTHING_FOUND": "見つかりませんでした",
+          "ONLY": "のみ",
+          "ONLY_LABEL": "{label} のみ"
+        }
+      },
+      "VC_DATA_TABLE": {
+        "STATUS": {
+          "FILTERED_FROM": "{count} 件から絞り込み",
+          "FILTERS": "{count} 件のフィルター",
+          "FILTERS_AND_SEARCH": "{count} 件のフィルター + 検索",
+          "SEARCH": "検索",
+          "CLEAR_ALL": "すべてクリア"
+        },
+        "NO_RESULTS": {
+          "TITLE_SEARCH_FILTERS": "「{query}」と {count} 件のフィルターに一致する結果はありません",
+          "TITLE_SEARCH": "「{query}」に一致する結果はありません",
+          "TITLE_FILTERS": "{count} 件のフィルターに一致する結果はありません",
+          "HINT_FILTERS": "下のフィルターを削除するか、すべてクリアしてください。",
+          "HINT_SEARCH": "つづりを確認するか、別のキーワードをお試しください。",
+          "CLEAR_SEARCH": "検索をクリア",
+          "CLEAR_FILTERS": "フィルターをクリア"
+        }
+      },
       "VC_DYNAMIC_PROPERTY": {
         "ADD": "値を追加",
         "VALUE_TYPE": {

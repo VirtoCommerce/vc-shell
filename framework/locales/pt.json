@@ -168,6 +168,163 @@
       }
     },
     "ORGANISMS": {
+      "VC_SEARCH_BAR": {
+        "SEARCH_PLACEHOLDER": "Pesquisar",
+        "FILTERS": "Filtros",
+        "REMOVE_FILTER": "Remover o filtro \"{label}\"",
+        "CLEAR_SEARCH": "Limpar pesquisa",
+        "CLEAR_FILTERS": "Limpar todos os filtros",
+        "FILTERS_APPLIED": "Filtros, {count} aplicados",
+        "MORE_FILTERS": "Mais {count} filtros",
+        "SUGGEST": {
+          "BY": "Filtrar por {field}",
+          "BY_FIELD": "Filtrar por campo",
+          "ADD": "para adicionar"
+        },
+        "PHONE": {
+          "CLEAR": "Limpar",
+          "DONE": "Concluído",
+          "VIEW": "Visualização",
+          "SHOW": "Mostrar {count} resultado | Mostrar {count} resultados",
+          "SHOW_ANY": "Mostrar resultados",
+          "NO_MATCH": "Nenhum resultado correspondente",
+          "RESULTS": "{count} resultado | {count} resultados",
+          "ITEMS": "{count} item | {count} itens",
+          "FILTERED_FROM": "filtrados de {count}",
+          "FILTER_COUNT": "{count} filtro | {count} filtros",
+          "CLEAR_ALL": "Limpar tudo"
+        },
+        "DATE": {
+          "TODAY": "Hoje",
+          "LAST_7": "Últimos 7 dias",
+          "LAST_30": "Últimos 30 dias",
+          "CUSTOM_RANGE": "Período personalizado",
+          "ANY": "Qualquer data"
+        },
+        "NUMBER": {
+          "BETWEEN": "Entre",
+          "VALUE": "Valor",
+          "MIN": "De",
+          "MAX": "Até",
+          "APPLY": "Aplicar",
+          "NOTE": "Os intervalos são aplicados ao pressionar Enter",
+          "NOTE_PRESETS": "Os intervalos são aplicados ao pressionar Enter; as predefinições, na hora"
+        },
+        "VIEWS": {
+          "ALL": "Todos",
+          "SELECTOR": "Visualização: {name}",
+          "SAVED_VIEWS": "Visualizações salvas",
+          "MODIFIED": "Modificada",
+          "OPTIONS": "Opções de {name}",
+          "SAVE_CHANGES": "Salvar alterações em \"{name}\"",
+          "SAVE_AS_NEW": "Salvar como nova visualização…",
+          "REVERT": "Voltar para \"{name}\"",
+          "REVERT_SHORT": "Reverter",
+          "RENAME": "Renomear",
+          "DELETE": "Excluir",
+          "NEW_NAME": "Novo nome",
+          "UNSAVED": "Filtros não salvos",
+          "SAVE": "Salvar",
+          "SAVE_AS_VIEW": "Salvar como visualização…",
+          "NAME_PLACEHOLDER": "Nome da visualização",
+          "CANCEL": "Cancelar"
+        },
+        "OPERATOR": {
+          "ANY": "É qualquer um de",
+          "NOT": "Não é"
+        },
+        "BUILDER": {
+          "TITLE": "Editar filtros",
+          "TAB_CONDITIONS": "Condições",
+          "TAB_ADVANCED": "Avançado",
+          "WHERE": "Onde",
+          "AND": "e",
+          "IS": "é",
+          "IS_ON": "é de",
+          "CONTAINS": "contém",
+          "ADD": "Adicionar condição",
+          "EMPTY": "Ainda não há condições. Adicione uma para começar a filtrar.",
+          "CLEAR_ALL": "Limpar tudo",
+          "CANCEL": "Cancelar",
+          "APPLY": "Aplicar",
+          "REMOVE": "Remover a condição \"{label}\"",
+          "OPERATOR": "Operador",
+          "CHOOSE": "Escolher",
+          "PERIOD": "Período",
+          "IS_ANY_OF": "é qualquer um de",
+          "IS_NOT": "não é"
+        },
+        "ADVANCED": {
+          "LABEL": "Consulta de filtro",
+          "PLACEHOLDER": "Digite um nome de campo, por ex. status:Paid total:[1000 TO]",
+          "SYNTAX": "Sintaxe",
+          "SYNTAX_CARD": "Sintaxe da frase de pesquisa",
+          "SUGGESTIONS": "Sugestões",
+          "FIELDS": "Campos",
+          "WORDS_NOTE": "Palavras sem campo vão para a pesquisa.",
+          "DOC_LINK": "Referência da sintaxe da frase de pesquisa",
+          "INSERT": "Inserir {example}",
+          "WILL_APPLY": "Será aplicado:",
+          "SEARCH_CHIP": "Pesquisa: {text}",
+          "NOTE": "As condições não estão disponíveis: {reason} Aplicar envia a consulta como está, exibida como um único filtro \"Consulta\".",
+          "DATE_TODAY": "hoje",
+          "DATE_LAST_7": "últimos 7 dias",
+          "DATE_LAST_30": "últimos 30 dias",
+          "IS_ON": "é de",
+          "NUM_FROM": "de",
+          "NUM_UPTO": "até",
+          "NUM_BETWEEN": "entre",
+          "EXAMPLE_ANY": "é qualquer um de",
+          "EXAMPLE_NOT": "não é",
+          "EXAMPLE_BETWEEN": "entre (inclusive)",
+          "EXAMPLE_FROM": "de; [TO 50] até; ( ) exclui o limite",
+          "EXAMPLE_DATES": "datas, YYYY-MM-DD",
+          "EXAMPLE_QUOTES": "aspas mantêm juntas as palavras com espaços",
+          "EXAMPLE_OR": "AND, OR e parênteses (exibidos como um único filtro \"Consulta\")",
+          "REASON_PARSE": "o texto não é uma frase de pesquisa válida.",
+          "REASON_UNKNOWN_FIELD": "usa um campo que não tem condição aqui.",
+          "REASON_OR_BETWEEN_FIELDS": "usa OR entre campos diferentes.",
+          "REASON_BRACKETS": "usa parênteses.",
+          "REASON_EXCLUSIVE_BOUND": "tem um intervalo que exclui o próprio limite.",
+          "REASON_FIELD_TWICE": "usa o mesmo campo mais de uma vez.",
+          "REASON_NOT_ALLOWED": "nega um campo que não tem \"não é\".",
+          "REASON_CUSTOM_FIELD": "usa um campo com editor personalizado.",
+          "REASON_MULTI_VALUE": "lista vários valores para um campo de valor único.",
+          "CHIP_NOT": "não é"
+        },
+        "PANEL": {
+          "ACTIVE": "Ativos: {count}",
+          "TOGGLES": "Interruptores",
+          "ANY": "Qualquer",
+          "RESULTS": "resultado · aplicado na hora | resultados · aplicados na hora",
+          "APPLIED": "Aplicado na hora",
+          "CLEAR": "Limpar filtros"
+        },
+        "EDITOR": {
+          "FIND": "Localizar",
+          "NOTHING_FOUND": "Nada encontrado",
+          "ONLY": "Somente",
+          "ONLY_LABEL": "Somente {label}"
+        }
+      },
+      "VC_DATA_TABLE": {
+        "STATUS": {
+          "FILTERED_FROM": "filtrados de {count}",
+          "FILTERS": "{count} filtro | {count} filtros",
+          "FILTERS_AND_SEARCH": "{count} filtro + pesquisa | {count} filtros + pesquisa",
+          "SEARCH": "pesquisa",
+          "CLEAR_ALL": "Limpar tudo"
+        },
+        "NO_RESULTS": {
+          "TITLE_SEARCH_FILTERS": "Nenhum resultado para \"{query}\" com {count} filtro | Nenhum resultado para \"{query}\" com {count} filtros",
+          "TITLE_SEARCH": "Nenhum resultado para \"{query}\"",
+          "TITLE_FILTERS": "Nenhum resultado com {count} filtro | Nenhum resultado com {count} filtros",
+          "HINT_FILTERS": "Remova um filtro abaixo ou limpe todos.",
+          "HINT_SEARCH": "Verifique a ortografia ou tente outra palavra-chave.",
+          "CLEAR_SEARCH": "Limpar pesquisa",
+          "CLEAR_FILTERS": "Limpar filtros"
+        }
+      },
       "VC_DYNAMIC_PROPERTY": {
         "ADD": "Adicionar valor",
         "VALUE_TYPE": {

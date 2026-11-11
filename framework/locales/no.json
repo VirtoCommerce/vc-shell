@@ -168,6 +168,163 @@
       }
     },
     "ORGANISMS": {
+      "VC_SEARCH_BAR": {
+        "SEARCH_PLACEHOLDER": "Søk",
+        "FILTERS": "Filtre",
+        "REMOVE_FILTER": "Fjern filteret «{label}»",
+        "CLEAR_SEARCH": "Tøm søket",
+        "CLEAR_FILTERS": "Tøm alle filtre",
+        "FILTERS_APPLIED": "Filtre, {count} i bruk",
+        "MORE_FILTERS": "{count} filtre til",
+        "SUGGEST": {
+          "BY": "Filtrer etter {field}",
+          "BY_FIELD": "Filtrer etter felt",
+          "ADD": "for å legge til"
+        },
+        "PHONE": {
+          "CLEAR": "Tøm",
+          "DONE": "Ferdig",
+          "VIEW": "Visning",
+          "SHOW": "Vis {count} resultat | Vis {count} resultater",
+          "SHOW_ANY": "Vis resultater",
+          "NO_MATCH": "Ingen samsvarende resultater",
+          "RESULTS": "{count} resultat | {count} resultater",
+          "ITEMS": "{count} element | {count} elementer",
+          "FILTERED_FROM": "filtrert fra {count}",
+          "FILTER_COUNT": "{count} filter | {count} filtre",
+          "CLEAR_ALL": "Tøm alle"
+        },
+        "DATE": {
+          "TODAY": "I dag",
+          "LAST_7": "Siste 7 dager",
+          "LAST_30": "Siste 30 dager",
+          "CUSTOM_RANGE": "Egendefinert periode",
+          "ANY": "Når som helst"
+        },
+        "NUMBER": {
+          "BETWEEN": "Mellom",
+          "VALUE": "Verdi",
+          "MIN": "Fra",
+          "MAX": "Til",
+          "APPLY": "Bruk",
+          "NOTE": "Intervaller brukes med Enter",
+          "NOTE_PRESETS": "Intervaller brukes med Enter, forhåndsvalg med en gang"
+        },
+        "VIEWS": {
+          "ALL": "Alle",
+          "SELECTOR": "Visning: {name}",
+          "SAVED_VIEWS": "Lagrede visninger",
+          "MODIFIED": "Endret",
+          "OPTIONS": "Alternativer for {name}",
+          "SAVE_CHANGES": "Lagre endringene i «{name}»",
+          "SAVE_AS_NEW": "Lagre som ny visning…",
+          "REVERT": "Gå tilbake til «{name}»",
+          "REVERT_SHORT": "Gå tilbake",
+          "RENAME": "Gi nytt navn",
+          "DELETE": "Slett",
+          "NEW_NAME": "Nytt navn",
+          "UNSAVED": "Ulagrede filtre",
+          "SAVE": "Lagre",
+          "SAVE_AS_VIEW": "Lagre som visning…",
+          "NAME_PLACEHOLDER": "Navn på visningen",
+          "CANCEL": "Avbryt"
+        },
+        "OPERATOR": {
+          "ANY": "Er en av",
+          "NOT": "Er ikke"
+        },
+        "BUILDER": {
+          "TITLE": "Rediger filtre",
+          "TAB_CONDITIONS": "Betingelser",
+          "TAB_ADVANCED": "Avansert",
+          "WHERE": "Der",
+          "AND": "og",
+          "IS": "er",
+          "IS_ON": "er innenfor",
+          "CONTAINS": "inneholder",
+          "ADD": "Legg til betingelse",
+          "EMPTY": "Ingen betingelser ennå. Legg til en for å begynne å filtrere.",
+          "CLEAR_ALL": "Tøm alle",
+          "CANCEL": "Avbryt",
+          "APPLY": "Bruk",
+          "REMOVE": "Fjern betingelsen «{label}»",
+          "OPERATOR": "Operator",
+          "CHOOSE": "Velg",
+          "PERIOD": "Periode",
+          "IS_ANY_OF": "er en av",
+          "IS_NOT": "er ikke"
+        },
+        "ADVANCED": {
+          "LABEL": "Filterspørring",
+          "PLACEHOLDER": "Skriv et feltnavn, f.eks. status:Paid total:[1000 TO]",
+          "SYNTAX": "Syntaks",
+          "SYNTAX_CARD": "Syntaks for søkefrasen",
+          "SUGGESTIONS": "Forslag",
+          "FIELDS": "Felt",
+          "WORDS_NOTE": "Ord uten felt går til søket.",
+          "DOC_LINK": "Referanse for syntaksen til søkefrasen",
+          "INSERT": "Sett inn {example}",
+          "WILL_APPLY": "Blir brukt:",
+          "SEARCH_CHIP": "Søk: {text}",
+          "NOTE": "Betingelser er ikke tilgjengelige: {reason} Bruk sender spørringen som den er, vist som ett «Spørring»-filter.",
+          "DATE_TODAY": "i dag",
+          "DATE_LAST_7": "siste 7 dager",
+          "DATE_LAST_30": "siste 30 dager",
+          "IS_ON": "er innenfor",
+          "NUM_FROM": "fra",
+          "NUM_UPTO": "opptil",
+          "NUM_BETWEEN": "mellom",
+          "EXAMPLE_ANY": "er en av",
+          "EXAMPLE_NOT": "er ikke",
+          "EXAMPLE_BETWEEN": "mellom (grensene inkludert)",
+          "EXAMPLE_FROM": "fra; [TO 50] opptil; ( ) utelater grensen",
+          "EXAMPLE_DATES": "datoer, YYYY-MM-DD",
+          "EXAMPLE_QUOTES": "anførselstegn holder ord med mellomrom samlet",
+          "EXAMPLE_OR": "AND, OR og parenteser (vises som ett «Spørring»-filter)",
+          "REASON_PARSE": "teksten er ikke en gyldig søkefrase.",
+          "REASON_UNKNOWN_FIELD": "den bruker et felt som ikke har noen betingelse her.",
+          "REASON_OR_BETWEEN_FIELDS": "den bruker OR mellom ulike felt.",
+          "REASON_BRACKETS": "den bruker parenteser.",
+          "REASON_EXCLUSIVE_BOUND": "den har et intervall som utelater grensen sin.",
+          "REASON_FIELD_TWICE": "den bruker samme felt mer enn én gang.",
+          "REASON_NOT_ALLOWED": "den negerer et felt som ikke har «er ikke».",
+          "REASON_CUSTOM_FIELD": "den bruker et felt med egen redigerer.",
+          "REASON_MULTI_VALUE": "den angir flere verdier for et felt med én verdi.",
+          "CHIP_NOT": "er ikke"
+        },
+        "PANEL": {
+          "ACTIVE": "Aktive: {count}",
+          "TOGGLES": "Brytere",
+          "ANY": "Alle",
+          "RESULTS": "resultat · brukes med en gang | resultater · brukes med en gang",
+          "APPLIED": "Brukes med en gang",
+          "CLEAR": "Tøm filtre"
+        },
+        "EDITOR": {
+          "FIND": "Finn",
+          "NOTHING_FOUND": "Ingenting funnet",
+          "ONLY": "Bare",
+          "ONLY_LABEL": "Bare {label}"
+        }
+      },
+      "VC_DATA_TABLE": {
+        "STATUS": {
+          "FILTERED_FROM": "filtrert fra {count}",
+          "FILTERS": "{count} filter | {count} filtre",
+          "FILTERS_AND_SEARCH": "{count} filter + søk | {count} filtre + søk",
+          "SEARCH": "søk",
+          "CLEAR_ALL": "Tøm alle"
+        },
+        "NO_RESULTS": {
+          "TITLE_SEARCH_FILTERS": "Ingen resultater for «{query}» med {count} filter | Ingen resultater for «{query}» med {count} filtre",
+          "TITLE_SEARCH": "Ingen resultater for «{query}»",
+          "TITLE_FILTERS": "Ingen resultater med {count} filter | Ingen resultater med {count} filtre",
+          "HINT_FILTERS": "Fjern et filter nedenfor eller tøm alle.",
+          "HINT_SEARCH": "Sjekk stavemåten eller prøv et annet søkeord.",
+          "CLEAR_SEARCH": "Tøm søket",
+          "CLEAR_FILTERS": "Tøm filtre"
+        }
+      },
       "VC_DYNAMIC_PROPERTY": {
         "ADD": "Legg til verdi",
         "VALUE_TYPE": {

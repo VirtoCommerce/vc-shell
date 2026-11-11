@@ -83,8 +83,6 @@ export interface SearchBarField extends Omit<GlobalFilterConfig, "filter"> {
   filter: ColumnFilterConfig | ToggleFilterConfig | NumberFilterConfig | CustomFilterConfig;
   /** Phrase name, defaults to id */
   key?: string;
-  /** Default true */
-  pinned?: boolean;
   /** Select only, default ["any"] */
   operators?: EnumOperator[];
 }

@@ -36,7 +36,6 @@ export interface UseSearchBarState {
   clearAll(): void;
   applyState(s: SearchBarState): void;
   setQuery(q: string | undefined): void;
-  visibleFields: ComputedRef<BarField[]>;
 }
 
 const emptyState = (): SearchBarState => ({ search: "", values: {} });
@@ -189,7 +188,6 @@ export function useSearchBarState(opts: UseSearchBarStateOptions): UseSearchBarS
       flushSearch();
       commit({ search: state.value.search, values: {}, ...(q ? { query: q } : {}) });
     },
-    visibleFields: computed(() => fields.value.filter((f) => f.pinned || !isEmptyValue(state.value.values[f.id]))),
   };
 }
 

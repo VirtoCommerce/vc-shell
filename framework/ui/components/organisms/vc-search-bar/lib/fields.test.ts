@@ -39,19 +39,17 @@ describe("normalizeField", () => {
   it("applies defaults", () => {
     const f = normalizeField({ id: "s", label: "S", filter: { options } });
     expect(f.key).toBe("s");
-    expect(f.pinned).toBe(true);
     expect(f.operators).toEqual(["any"]);
   });
-  it("respects explicit key, pinned and operators", () => {
+  it("respects explicit key and operators", () => {
     const f = normalizeField({
       id: "s",
       label: "S",
       filter: { options },
       key: "st",
-      pinned: false,
       operators: ["any", "not"],
     });
-    expect([f.key, f.pinned, f.operators]).toEqual(["st", false, ["any", "not"]]);
+    expect([f.key, f.operators]).toEqual(["st", ["any", "not"]]);
   });
   it("normalises the vendor-portal orders config without loss", () => {
     const statuses = ["New", "Pending", "Processing", "Paid", "Shipped", "Cancelled"].map((v) => ({

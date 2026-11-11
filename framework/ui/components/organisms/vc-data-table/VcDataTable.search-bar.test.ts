@@ -1,22 +1,19 @@
 /**
- * VcDataTable header: the v2.11.0 search header by default, VcSearchBar with `searchBar`.
- * Real orchestrator, real header and real bar, so the @filter payload (global + column merge)
- * and the search timing are the shipped ones.
+ * VcDataTable with `searchBar`: the VcSearchBar header. Real orchestrator, real header and real bar,
+ * so the @filter payload (global + column merge) and the search timing are the shipped ones.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { mount, type VueWrapper } from "@vue/test-utils";
 import { defineComponent, h, nextTick, onMounted, ref } from "vue";
 import VcDataTable from "./VcDataTable.vue";
-import VcTableAdapter from "./VcTableAdapter.vue";
-import { IsMobileKey } from "@framework/injection-keys";
-import {
-  TableQueryStateKey,
-  decodeQueryState,
-  encodeQueryState,
-  type ITableQueryStateService,
-} from "@core/blade-navigation/table-query-state";
 import { registerExternalSearchFilters, unregisterExternalSearchFilters } from "@core/services/search-filters-service";
-import type { GlobalFilterConfig } from "./types";
+import {
+  global,
+  globalFilters,
+  SEARCH,
+  urlQueryState,
+  type FilterEvent,
+} from "./VcDataTable.search-header.test-helpers";
 
 const { headerAttrs } = vi.hoisted(() => ({ headerAttrs: { current: {} as Record<string, unknown> } }));
 
@@ -60,57 +57,9 @@ vi.mock("@vueuse/core", async (importOriginal) => ({
   useElementSize: () => ({ width: ref(800), height: ref(600) }),
 }));
 
-const InputStub = defineComponent({
-  name: "VcInput",
-  props: ["modelValue"],
-  emits: ["update:modelValue"],
-  setup:
-    (props, { emit }) =>
-    () =>
-      h("input", {
-        class: "input-stub",
-        value: props.modelValue,
-        onInput: (e: Event) => emit("update:modelValue", (e.target as HTMLInputElement).value),
-      }),
-});
-
-const globalFilters: GlobalFilterConfig[] = [
-  {
-    id: "status",
-    label: "Status",
-    filter: {
-      options: [
-        { value: "New", label: "New" },
-        { value: "Paid", label: "Paid" },
-      ],
-      multiple: true,
-    },
-  },
-  { id: "created", label: "Created", filter: { range: ["startDate", "endDate"] } },
-];
-
-const global = {
-  stubs: { VcInput: InputStub, VcIcon: true },
-  provide: { [IsMobileKey as symbol]: ref(false) },
-  directives: { loading: { mounted() {}, updated() {} } },
-  mocks: { $t: (k: string) => k },
-};
-
-type FilterEvent = { filters: Record<string, unknown> }[];
-
-const SEARCH = ".vc-search-bar__search-input";
 /** The Filters panel's switch of a toggle field */
 const panelSwitch = (label: string) =>
   document.body.querySelector<HTMLInputElement>(`.vc-search-bar__panel input[role='switch'][aria-label='${label}']`)!;
-
-/** The blade's URL query service over a plain query record, with the real namespaced serialization */
-function urlQueryState(query: Record<string, string> = {}) {
-  const service: ITableQueryStateService = {
-    read: (key) => decodeQueryState(key!, query),
-    write: (key, patch) => Object.assign(query, encodeQueryState(key!, patch)),
-  };
-  return { query, provide: { [TableQueryStateKey as symbol]: service } };
-}
 
 describe("VcDataTable search bar header", () => {
   let wrapper: VueWrapper | undefined;
@@ -415,121 +364,5 @@ describe("VcDataTable search bar header", () => {
   it("shows the empty state when nothing is set", () => {
     const w = mountTable({ searchable: true, globalFilters });
     expect(w.find(".mock-body").text()).toBe("COMPONENTS.ORGANISMS.VC_TABLE.EMPTY_TITLE");
-  });
-});
-
-describe("VcDataTable without searchBar (the v2.11.0 search header)", () => {
-  let wrapper: VueWrapper | undefined;
-  const mountTable = (props: Record<string, unknown> = {}, slots: Record<string, string> = {}) => {
-    const url = urlQueryState({ orders_filters: "status:Paid" });
-    wrapper = mount(VcDataTable as never, {
-      props: { items: [], stateKey: "orders", ...props },
-      slots,
-      global: { ...global, provide: { ...global.provide, ...url.provide } },
-      attachTo: document.body,
-    });
-    return wrapper;
-  };
-  afterEach(() => {
-    wrapper?.unmount();
-    wrapper = undefined;
-  });
-
-  it("renders TableSearchHeader with the old classes and no bar", () => {
-    const w = mountTable({ searchable: true, globalFilters });
-    expect(w.find(".vc-table-search-header .vc-table-search-header__toolbar").exists()).toBe(true);
-    expect(w.find(".vc-search-bar").exists()).toBe(false);
-    expect(w.find(".vc-data-table__search-header").exists()).toBe(false);
-  });
-
-  it("renders GlobalFiltersButton for globalFilters and the panel", () => {
-    const w = mountTable({ searchable: true, globalFilters });
-    expect(w.find(".vc-table-search-header__actions .vc-global-filters-button__label").exists()).toBe(true);
-    expect(w.findComponent({ name: "GlobalFiltersPanel" }).exists()).toBe(true);
-  });
-
-  it("renders search-header-actions in the same header row as the filters button", () => {
-    const w = mountTable(
-      { searchable: true, globalFilters },
-      { "search-header-actions": "<button class='custom-action'>Export</button>" },
-    );
-    const actions = w.find(".vc-table-search-header__toolbar > .vc-table-search-header__actions");
-    expect(actions.find(".custom-action").exists()).toBe(true);
-    expect(actions.find(".vc-global-filters-button__label").exists()).toBe(true);
-  });
-
-  it("ignores the URL filters and an external registration targeting the blade", async () => {
-    registerExternalSearchFilters({
-      id: "ext-default",
-      targetBlades: ["orders"],
-      fields: [{ id: "rating", label: "Rating", filter: { toggle: true } }],
-    });
-    try {
-      const w = mountTable({ searchable: true, searchName: "orders" });
-      await nextTick();
-      expect(w.text()).not.toContain("Rating");
-      expect(w.find(".vc-search-bar").exists()).toBe(false);
-      expect(w.findComponent({ name: "GlobalFiltersButton" }).exists()).toBe(false);
-      expect(w.emitted("filter")).toBeUndefined();
-    } finally {
-      unregisterExternalSearchFilters("ext-default");
-    }
-  });
-
-  it("emits the panel's payload merged with column filters, as in v2.11.0", async () => {
-    const w = mountTable({ searchable: true, globalFilters });
-    const apply = headerAttrs.current.onFilterApply as (col: unknown, payload: Record<string, unknown>) => void;
-    apply({ id: "name", props: { id: "name", filter: true } }, { name: "Acme" });
-    w.findComponent({ name: "GlobalFiltersPanel" }).vm.$emit("apply", { status: ["New"] });
-    const events = w.emitted("filter") as FilterEvent[];
-    expect(events.at(-1)![0].filters).toEqual({ name: "Acme", status: ["New"] });
-    w.findComponent({ name: "GlobalFiltersPanel" }).vm.$emit("clear");
-    expect((w.emitted("filter") as FilterEvent[]).at(-1)![0].filters).toEqual({ name: "Acme" });
-  });
-
-  it("typing in the old header emits update:searchValue and a debounced search", async () => {
-    vi.useFakeTimers();
-    try {
-      const w = mountTable({ searchable: true, searchDebounce: 300 });
-      await w.find(".vc-table-search-header input").setValue("abc");
-      expect(w.emitted("update:searchValue")).toEqual([["abc"]]);
-      vi.advanceTimersByTime(300);
-      expect(w.emitted("search")).toEqual([["abc"]]);
-    } finally {
-      vi.useRealTimers();
-    }
-  });
-});
-
-describe("VcTableAdapter and the search bar", () => {
-  const mountAdapter = (props: Record<string, unknown> = {}) =>
-    mount(VcTableAdapter as never, {
-      props: { items: [], columns: [{ id: "name", title: "Name" }], stateKey: "adapter", ...props },
-      slots: { filters: "<div>legacy filters</div>" },
-      global,
-      attachTo: document.body,
-    });
-
-  it("keeps the old search header without searchBar", () => {
-    const w = mountAdapter();
-    expect(w.find(".vc-table-search-header__actions .vc-global-filters-button__label").exists()).toBe(true);
-    expect(w.find(".vc-search-bar").exists()).toBe(false);
-    w.unmount();
-  });
-
-  it("with searchBar and no fields: only the search, the legacy button above it, no status", () => {
-    const w = mountAdapter({
-      searchBar: true,
-      pages: 2,
-      totalCount: 40,
-      activeFilterCount: 2,
-    });
-    expect(w.find(".vc-data-table__search-header-actions .vc-global-filters-button__label").exists()).toBe(true);
-    expect(w.find(".vc-search-bar .vc-global-filters-button__label").exists()).toBe(false);
-    expect(w.find(SEARCH).exists()).toBe(true);
-    expect(w.find(".vc-search-bar__divider").exists()).toBe(false);
-    expect(w.find(".vc-search-bar__filters-btn").exists()).toBe(false);
-    expect(w.find(".vc-data-table__filter-status").exists()).toBe(false);
-    w.unmount();
   });
 });

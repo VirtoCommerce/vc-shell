@@ -7,7 +7,6 @@ export interface BarField {
   label: string;
   kind: FieldKind;
   key: string;
-  pinned: boolean;
   options: FilterOption[];
   operators: EnumOperator[];
   range?: [string, string];
@@ -22,7 +21,6 @@ export function normalizeField(f: SearchBarField): BarField {
     label: f.label,
     kind: "text",
     key: f.key ?? f.id,
-    pinned: f.pinned ?? true,
     options: [],
     operators: f.operators ?? ["any"],
     source: f,

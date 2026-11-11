@@ -209,12 +209,10 @@ describe("useSearchBarState", () => {
     expect(model.value).toEqual({ search: "", values: {} });
   });
 
-  it("applyState replaces state; visibleFields = pinned or non-empty", () => {
-    const { api } = setup({ fields: [text("a"), text("b", { pinned: false })] });
-    expect(api.visibleFields.value.map((f) => f.id)).toEqual(["a"]);
+  it("applyState replaces state", () => {
+    const { api } = setup({ fields: [text("a"), text("b")] });
     api.applyState({ search: "s", values: { b: "1" } });
-    expect(api.visibleFields.value.map((f) => f.id)).toEqual(["a", "b"]);
-    expect(api.state.value.search).toBe("s");
+    expect(api.state.value).toEqual({ search: "s", values: { b: "1" } });
   });
 
   it("order lists the set fields in the order they were set", () => {

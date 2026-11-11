@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { VcButton } from "@ui/components/atoms";
 import { VcDataTable, VcColumn } from "@ui/components/organisms/vc-data-table";
 import type { GlobalFilterConfig } from "@ui/components/organisms/vc-data-table/types";
+import type { SearchBarView } from "@ui/components/organisms/vc-search-bar";
 import { mockProducts } from "./vc-data-table.stories.helpers";
 
 const meta = {
@@ -259,5 +260,113 @@ export const SearchWithHeaderActions: Story = {
       </VcDataTable>
     </div>
   `,
+  }),
+};
+
+// Opt-in bar stories: products filtered on the client, the way a screen loads them from @filter and @search
+const STOCK = ["In Stock", "Low Stock", "Out of Stock", "Discontinued"];
+const stockFilters: GlobalFilterConfig[] = [
+  {
+    id: "status",
+    label: "Status",
+    filter: { options: STOCK.map((s) => ({ value: s, label: s })), multiple: true },
+  },
+  { id: "currency", label: "Currency", filter: { options: ["USD", "EUR"].map((c) => ({ value: c, label: c })) } },
+  { id: "created", label: "Created", filter: { range: ["createdFrom", "createdTo"] } },
+];
+const barKey = (name: string) => `story-table-opt-in-${name}-${Math.random().toString(36).slice(2, 8)}`;
+
+const optInTable = (o: { views: SearchBarView[]; search?: string }) => ({
+  components: { VcDataTable, VcColumn },
+  setup() {
+    const filters = ref<Record<string, unknown>>({});
+    const search = ref(o.search ?? "");
+    const products = computed(() =>
+      mockProducts.filter((p) => {
+        const status = filters.value.status as string[] | undefined;
+        if (status?.length && !status.includes(p.status)) return false;
+        if (filters.value.currency && p.currency !== filters.value.currency) return false;
+        return !search.value || p.name.toLowerCase().includes(search.value.toLowerCase());
+      }),
+    );
+    const onFilter = (e: { filters: Record<string, unknown> }) => (filters.value = e.filters);
+    return {
+      products,
+      search,
+      onFilter,
+      views: o.views,
+      stockFilters,
+      stateKey: barKey("table"),
+      total: mockProducts.length,
+    };
+  },
+  template: `
+    <div style="height: 560px" class="tw-overflow-hidden">
+      <VcDataTable
+        :items="products"
+        :state-key="stateKey"
+        searchable
+        search-bar
+        v-model:search-value="search"
+        :global-filters="stockFilters"
+        :search-views="views"
+        :pagination="{ currentPage: 1, pages: 1 }"
+        :total-count="products.length"
+        :unfiltered-count="total"
+        @filter="onFilter"
+      >
+        <VcColumn id="name" field="name" title="Product Name" />
+        <VcColumn id="status" field="status" title="Status" />
+        <VcColumn id="currency" field="currency" title="Currency" />
+        <VcColumn id="price" field="price" title="Price" type="money" />
+      </VcDataTable>
+    </div>`,
+});
+
+const stockViews: SearchBarView[] = [
+  { id: "available", name: "Available", values: { status: ["In Stock", "Low Stock"] }, default: true },
+  { id: "usd", name: "USD", values: { currency: "USD" } },
+];
+
+/**
+ * `search-bar` turns on VcSearchBar: chips in the row, the Filters panel and views. The footer reads
+ * "filtered from M · K filters · Clear all" next to the range while bar filters or search apply.
+ */
+export const SearchBarOptIn: Story = {
+  render: () => optInTable({ views: stockViews }),
+};
+
+/** An empty result caused by the bar names the reason, lists the filters as removable tags and offers to clear them. */
+export const SearchBarNoResults: Story = {
+  render: () =>
+    optInTable({
+      views: [{ id: "gone", name: "Discontinued", values: { status: ["Discontinued"] }, default: true }],
+      search: "pro",
+    }),
+};
+
+/**
+ * The same table and `#search-header-actions` without and with `search-bar`. Without it the classic header
+ * stays as in v2.11.0: search, the actions and the global filters button in one row. With it the actions get
+ * their own row above the bar.
+ */
+export const SearchHeaderWithAndWithoutBar: Story = {
+  render: () => ({
+    components: { VcDataTable, VcColumn, VcButton },
+    setup: () => ({ products: mockProducts.slice(0, 3), stockFilters, stateKey: barKey("compare") }),
+    template: `
+    <div class="tw-flex tw-flex-col tw-gap-6">
+      <section v-for="bar in [false, true]" :key="String(bar)" style="height: 300px" class="tw-overflow-hidden">
+        <p class="tw-text-sm tw-font-semibold tw-mb-2">{{ bar ? "With search-bar" : "Without search-bar (default)" }}</p>
+        <VcDataTable :items="products" :state-key="stateKey + bar" searchable :search-bar="bar" :global-filters="stockFilters">
+          <template #search-header-actions>
+            <VcButton icon="lucide-download" size="sm" variant="outline">Export</VcButton>
+          </template>
+          <VcColumn id="name" field="name" title="Product Name" />
+          <VcColumn id="status" field="status" title="Status" />
+          <VcColumn id="currency" field="currency" title="Currency" />
+        </VcDataTable>
+      </section>
+    </div>`,
   }),
 };

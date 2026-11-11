@@ -15,7 +15,7 @@
     <template v-else>
       <VcIcon
         icon="lucide-bookmark"
-        size="xs"
+        size="s"
         class="vc-search-bar__unsaved-icon"
       />
       <span class="vc-search-bar__unsaved-label">{{ $t(`${K}UNSAVED`) }}</span>

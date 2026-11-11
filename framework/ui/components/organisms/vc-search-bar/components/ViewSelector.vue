@@ -17,7 +17,7 @@
     >
       <VcIcon
         icon="lucide-bookmark"
-        size="xs"
+        size="s"
         class="vc-search-bar__view-btn-icon"
       />
       <span class="vc-search-bar__view-btn-name">{{ current.name }}</span>
@@ -28,7 +28,7 @@
       >
       <VcIcon
         icon="lucide-chevron-down"
-        size="xs"
+        size="s"
       />
     </button>
     <MenuHost

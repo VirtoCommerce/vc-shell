@@ -20,9 +20,10 @@ const props = defineProps<{
   anchor?: HTMLElement | null;
   title?: string;
   closeOnOutside?: boolean;
-  /** Popover: a fixed width, its placement and the label of a dialog without a title */
+  /** Popover: a fixed width and its placement */
   width?: string;
   placement?: "bottom-start" | "bottom-end";
+  /** The label of a dialog without a title */
   label?: string;
 }>();
 const emit = defineEmits<{ close: [] }>();
@@ -33,12 +34,14 @@ const hostProps = computed<Record<string, unknown>>(() =>
     ? {
         modelValue: true,
         position: "bottom",
-        size: "sm",
+        // header, views, fields and footer need the room
+        size: "lg",
         draggable: true,
         dragHandle: true,
         closeButton: false,
         inset: false,
         title: props.title,
+        ariaLabel: props.label,
       }
     : {
         show: true,

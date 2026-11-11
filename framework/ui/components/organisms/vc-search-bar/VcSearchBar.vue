@@ -67,6 +67,17 @@
         />
       </div>
     </div>
+    <PhoneSummary
+      v-if="isMobile"
+      :result-count="resultCount"
+      :unfiltered-count="unfilteredCount"
+      :filtered="chipFields.length > 0 || !!state.search"
+      :filter-count="chipFields.length"
+      :view-name="views.current.value.scope === 'system' ? undefined : views.current.value.name"
+      :modified="views.modified.value"
+      :disabled="disabled"
+      @clear="clearFilters"
+    />
 
     <!-- every chip and the Filters button, measured to decide how many chips fit -->
     <div
@@ -109,13 +120,6 @@
           :counts="counts?.[openField.id]"
           @update:value="onEditorValue"
         />
-        <VcButton
-          v-if="isMobile"
-          class="vc-search-bar__done"
-          @click="closeEditor(true)"
-        >
-          {{ $t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.MOBILE.DONE") }}
-        </VcButton>
       </div>
       <FieldAccordion
         v-else-if="list === 'overflow'"
@@ -126,7 +130,6 @@
         @set="setValue"
         @clear-field="clearValue"
       />
-      <!-- phone: the current sheet shows the panel body; Task 6 gives the sheet its own header and footer -->
       <FiltersPanel
         v-else
         :fields="fields"
@@ -148,7 +151,6 @@
 <script setup lang="ts">
 import { computed, inject, nextTick, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { VcButton } from "@ui/components/atoms";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import { TableQueryStateKey } from "@core/blade-navigation/table-query-state";
@@ -163,6 +165,7 @@ import FiltersButton from "./components/FiltersButton.vue";
 import FieldAccordion from "./components/FieldAccordion.vue";
 import FiltersPanel from "./components/FiltersPanel.vue";
 import ViewSelector from "./components/ViewSelector.vue";
+import PhoneSummary from "./components/PhoneSummary.vue";
 import { useSearchInput } from "./composables/useSearchInput";
 import { useBarMenus } from "./composables/useBarMenus";
 import { useBarMode } from "./composables/useBarMode";
@@ -197,6 +200,8 @@ const props = withDefaults(
     viewCounts?: Record<string, number>;
     /** Result count of the current filters */
     resultCount?: number;
+    /** Phone summary: rows without the bar's filters and search ("filtered from M") */
+    unfilteredCount?: number;
   }>(),
   { fields: () => [], searchDebounce: 300, searchable: true, variant: "inline" },
 );
@@ -314,15 +319,15 @@ const menuTitle = computed(() => {
   if (openField.value) return openField.value.label;
   if (list.value === "overflow")
     return t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.MORE_FILTERS", { count: hiddenChips.value.length });
-  // the desktop panel has its own header
-  return isMobile.value ? t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.FILTERS") : undefined;
+  // the panel has its own header, the phone sheet too
+  return undefined;
 });
-// The desktop Filters panel: 360px at the end of the Filters button
-const panelHost = computed(() =>
-  list.value === "filters" && !openField.value && !isMobile.value
-    ? { width: "360px", placement: "bottom-end" as const, label: t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.FILTERS") }
-    : {},
-);
+// The Filters panel: on desktop 360px at the end of the Filters button; on a phone the whole sheet
+const panelHost = computed(() => {
+  if (list.value !== "filters" || openField.value) return {};
+  const label = t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.FILTERS");
+  return isMobile.value ? { label } : { width: "360px", placement: "bottom-end" as const, label };
+});
 
 // A menu whose anchor left the row (the "+N" button once every chip fits, a chip in a narrower mode) closes
 watch([mode, visibleCount, () => chipFields.value.length, isMobile], async () => {
@@ -411,9 +416,6 @@ function onTypedChip(c: { fieldId: string; value: unknown; rest: string }) {
   }
   &__editor {
     @apply tw-flex tw-flex-col tw-gap-2 tw-p-3;
-  }
-  &__done {
-    @apply tw-w-full;
   }
 }
 </style>

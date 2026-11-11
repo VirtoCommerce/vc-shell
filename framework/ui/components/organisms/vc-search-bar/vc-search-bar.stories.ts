@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { IsMobileKey } from "@framework/injection-keys";
 import { VcSearchBar } from "./index";
 import type { SearchBarField, SearchBarState, SearchBarView } from "./types";
-import { minHeight, mouseSwipe } from "./vc-search-bar.story-helpers";
+import { minHeight } from "./vc-search-bar.story-helpers";
 
 const STATUSES = ["New", "Processing", "Paid", "Shipped", "Cancelled"];
 const counts = [12, 4, 31, 18, 2];
@@ -217,8 +217,7 @@ export const NarrowBlade: Story = {
   render: inWidth("560px"),
 };
 
-// a mouse drag swipes the filters row (Storybook has no touch emulation)
-const PHONE = [mouseSwipe, minHeight(640)];
+const PHONE = [minHeight(640)];
 
 const phoneValues: SearchBarState["values"] = { status: ["New", "Paid"], customer: "Acme" };
 
@@ -242,16 +241,16 @@ const phone =
       '<div ref="root" style="width: 360px; max-width: 100%; min-height: 560px"><VcSearchBar v-bind="args" v-model="state" /></div>',
   });
 
-/** On a phone the bar is the search and an icon Filters button with the count. */
+/** On a phone the bar is the search and an icon Filters button with the count, and a summary line under it. */
 export const Phone: Story = {
-  args: { fields: allKinds, views },
+  args: { fields: allKinds, views, resultCount: 18, unfilteredCount: 67 },
   decorators: PHONE,
   render: phone(),
 };
 
-/** On a phone the Filters button opens the field list in a bottom sheet; a field edits there with Done. */
+/** On a phone the Filters button opens a bottom sheet: Clear and Done, the views as chips, the fields and "Show N results". */
 export const PhoneFiltersSheet: Story = {
-  args: { fields: allKinds, views, storageKey: "story-search-bar-phone" },
+  args: { fields: allKinds, views, storageKey: "story-search-bar-phone", resultCount: 18, unfilteredCount: 67 },
   decorators: PHONE,
   render: phone(".vc-search-bar__filters-main"),
 };

@@ -181,8 +181,18 @@
           "BY_FIELD": "Nach Feld filtern",
           "ENTER": "↵ zum Hinzufügen"
         },
-        "MOBILE": {
-          "DONE": "Fertig"
+        "PHONE": {
+          "CLEAR": "Löschen",
+          "DONE": "Fertig",
+          "VIEW": "Ansicht",
+          "SHOW": "{count} Ergebnis anzeigen | {count} Ergebnisse anzeigen",
+          "SHOW_ANY": "Ergebnisse anzeigen",
+          "NO_MATCH": "Keine passenden Ergebnisse",
+          "RESULTS": "{count} Ergebnis | {count} Ergebnisse",
+          "ITEMS": "{count} Eintrag | {count} Einträge",
+          "FILTERED_FROM": "gefiltert aus {count}",
+          "FILTER_COUNT": "{count} Filter | {count} Filter",
+          "CLEAR_ALL": "Alle löschen"
         },
         "DATE": {
           "TODAY": "Heute",

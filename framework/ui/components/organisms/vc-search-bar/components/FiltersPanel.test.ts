@@ -235,15 +235,71 @@ describe("FiltersPanel", () => {
     expect(document.activeElement).toBe(w.get(".vc-search-bar__panel-close").element);
   });
 
-  it("touch: the body only, without header, unsaved row and footer", async () => {
-    const { views, state, setValues } = makeViews();
-    setValues({ urgent: true });
-    const w = mountPanel({ views, state: state.value, touch: true });
-    expect(w.find(".vc-search-bar__panel--touch").exists()).toBe(true);
-    expect(w.find(".vc-search-bar__panel-head").exists()).toBe(false);
-    expect(w.find(".vc-search-bar__unsaved").exists()).toBe(false);
-    expect(w.find(".vc-search-bar__panel-foot").exists()).toBe(false);
-    expect(accLabels(w)).toEqual(["Status", "Created", "Total"]);
+  describe("touch (phone sheet)", () => {
+    const H = "COMPONENTS.ORGANISMS.VC_SEARCH_BAR.PHONE.";
+    const chips = (w: VueWrapper) => w.findAll(".vc-search-bar__view-chip");
+
+    it("a header with Clear, the title with the count and Done; no desktop header or footer", async () => {
+      const w = mountPanel({ state: { search: "", values: { urgent: true } }, touch: true });
+      expect(w.find(".vc-search-bar__panel-head").exists()).toBe(false);
+      expect(w.find(".vc-search-bar__panel-foot").exists()).toBe(false);
+      expect(w.get(".vc-search-bar__sheet-title").text()).toBe("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.FILTERS 1");
+      expect(w.get(".vc-search-bar__sheet-count").text()).toBe("1");
+      expect(w.get(".vc-search-bar__sheet-clear").text()).toBe(`${H}CLEAR`);
+      await w.get(".vc-search-bar__sheet-clear").trigger("click");
+      expect(w.emitted("clear-all")).toHaveLength(1);
+      await w.get(".vc-search-bar__sheet-done").trigger("click");
+      expect(w.emitted("close")).toHaveLength(1);
+      expect(accLabels(w)).toEqual(["Status", "Created", "Total"]);
+    });
+
+    it("Clear is disabled and the count hidden without filters", () => {
+      const w = mountPanel({ touch: true });
+      expect(w.get(".vc-search-bar__sheet-clear").attributes()).toHaveProperty("disabled");
+      expect(w.find(".vc-search-bar__sheet-count").exists()).toBe(false);
+    });
+
+    it("the views as chips; the current one is pressed and marked when modified", async () => {
+      const { views, state, setValues } = makeViews();
+      const w = mountPanel({ views, state: state.value, touch: true });
+      expect(chips(w).map((c) => c.text())).toEqual(["All", "Paid"]);
+      expect(chips(w)[0].attributes("aria-pressed")).toBe("true");
+      expect(chips(w)[1].attributes("aria-pressed")).toBe("false");
+      setValues({ urgent: true });
+      await w.setProps({ state: state.value });
+      expect(chips(w)[0].text()).toBe("All*");
+      expect(w.get(".vc-search-bar__unsaved--touch").text()).toContain(`${K}UNSAVED`);
+    });
+
+    it("tapping a chip selects its view", async () => {
+      const { views, state } = makeViews();
+      const w = mountPanel({ views, state: state.value, touch: true });
+      await chips(w)[1].trigger("click");
+      expect(views.current.value.id).toBe("paid");
+      expect(state.value.values).toEqual({ status: ["paid"] });
+    });
+
+    it("the footer button shows the result count and closes", async () => {
+      const show = (w: VueWrapper) => w.get(".vc-search-bar__sheet-show");
+      const w = mountPanel({ touch: true, resultCount: 12 });
+      expect(show(w).text()).toBe(`${H}SHOW:12`);
+      await show(w).trigger("click");
+      expect(w.emitted("close")).toHaveLength(1);
+      await w.setProps({ resultCount: 0 });
+      expect(show(w).text()).toBe(`${H}NO_MATCH`);
+      await w.setProps({ resultCount: undefined });
+      expect(show(w).text()).toBe(`${H}SHOW_ANY`);
+    });
+
+    it("after Clear focus moves to Done", async () => {
+      const w = mountPanel({ state: { search: "", values: { urgent: true } }, touch: true });
+      const clear = w.get<HTMLButtonElement>(".vc-search-bar__sheet-clear");
+      clear.element.focus();
+      await clear.trigger("click");
+      await w.setProps({ state: { search: "", values: {} } });
+      await nextTick();
+      expect(document.activeElement).toBe(w.get(".vc-search-bar__sheet-done").element);
+    });
   });
 });
 

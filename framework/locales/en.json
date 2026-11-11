@@ -181,8 +181,18 @@
           "BY_FIELD": "Filter by field",
           "ENTER": "↵ to add"
         },
-        "MOBILE": {
-          "DONE": "Done"
+        "PHONE": {
+          "CLEAR": "Clear",
+          "DONE": "Done",
+          "VIEW": "View",
+          "SHOW": "Show {count} result | Show {count} results",
+          "SHOW_ANY": "Show results",
+          "NO_MATCH": "No matching results",
+          "RESULTS": "{count} result | {count} results",
+          "ITEMS": "{count} item | {count} items",
+          "FILTERED_FROM": "filtered from {count}",
+          "FILTER_COUNT": "{count} filter | {count} filters",
+          "CLEAR_ALL": "Clear all"
         },
         "DATE": {
           "TODAY": "Today",

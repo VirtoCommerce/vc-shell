@@ -1,4 +1,4 @@
-<!-- The Filters panel. `touch` renders only the body, for the phone sheet that brings its own header and footer -->
+<!-- The Filters panel: a popover on desktop; `touch` is the phone sheet with Clear / Done, the views as chips and a "Show N results" footer -->
 <template>
   <div
     class="vc-search-bar__panel"
@@ -29,6 +29,70 @@
         />
       </button>
     </div>
+    <template v-else>
+      <div class="vc-search-bar__sheet-head">
+        <button
+          type="button"
+          class="vc-search-bar__sheet-clear"
+          :disabled="!active"
+          @click="clearAll"
+        >
+          {{ $t(`${PH}CLEAR`) }}
+        </button>
+        <span class="vc-search-bar__sheet-title">
+          {{ $t(`${K}FILTERS`) }}
+          <span
+            v-if="active"
+            class="vc-search-bar__sheet-count"
+            >{{ active }}</span
+          >
+        </span>
+        <button
+          ref="closeBtn"
+          type="button"
+          class="vc-search-bar__sheet-done"
+          @click="emit('close')"
+        >
+          {{ $t(`${PH}DONE`) }}
+        </button>
+      </div>
+      <div class="vc-search-bar__sheet-views">
+        <div
+          :id="viewsLabelId"
+          class="vc-search-bar__panel-section"
+        >
+          {{ $t(`${PH}VIEW`) }}
+        </div>
+        <div
+          class="vc-search-bar__view-chips"
+          role="group"
+          :aria-labelledby="viewsLabelId"
+        >
+          <button
+            v-for="v in views.all.value"
+            :key="v.id"
+            type="button"
+            class="vc-search-bar__view-chip"
+            :class="{ 'vc-search-bar__view-chip--current': v.id === views.current.value.id }"
+            :aria-pressed="v.id === views.current.value.id"
+            @click="views.select(v.id)"
+          >
+            <VcIcon
+              v-if="v.id === views.current.value.id"
+              icon="lucide-check"
+              :custom-size="14"
+            />
+            {{ v.name }}<template v-if="v.id === views.current.value.id && views.modified.value">*</template>
+          </button>
+        </div>
+        <div ref="unsaved">
+          <UnsavedViewRow
+            :views="views"
+            touch
+          />
+        </div>
+      </div>
+    </template>
 
     <div class="vc-search-bar__panel-body">
       <template v-if="toggles.length">
@@ -92,11 +156,24 @@
         </VcButton>
       </div>
     </template>
+    <div
+      v-else
+      class="vc-search-bar__sheet-foot"
+    >
+      <VcButton
+        class="vc-search-bar__sheet-show"
+        @click="emit('close')"
+      >
+        <template v-if="resultCount === undefined">{{ $t(`${PH}SHOW_ANY`) }}</template>
+        <template v-else-if="resultCount === 0">{{ $t(`${PH}NO_MATCH`) }}</template>
+        <template v-else>{{ $t(`${PH}SHOW`, { count: resultCount }, resultCount) }}</template>
+      </VcButton>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from "vue";
+import { computed, nextTick, ref, useId, watch } from "vue";
 import { VcButton, VcIcon } from "@ui/components/atoms";
 import { VcSwitch } from "@ui/components/molecules";
 import type { BarField } from "../lib/fields";
@@ -114,9 +191,9 @@ const props = defineProps<{
   views: ViewsApi;
   /** Results per option value, per field id; a toggle's count is under `true` */
   counts?: Record<string, Record<string, number>>;
-  /** Results of the current filters, shown in the footer */
+  /** Results of the current filters, shown in the footer (the sheet's "Show N results") */
   resultCount?: number;
-  /** Phone sheet: the body only, with bigger rows */
+  /** Phone sheet: Clear / Done header, view chips, bigger rows and a "Show N results" footer */
   touch?: boolean;
   /** Field ids in the order they were applied; the first one starts expanded */
   order?: string[];
@@ -129,6 +206,8 @@ const emit = defineEmits<{
 }>();
 
 const K = "COMPONENTS.ORGANISMS.VC_SEARCH_BAR.";
+const PH = `${K}PHONE.`;
+const viewsLabelId = `vc-search-bar-views-${useId()}`;
 
 const isSet = (id: string) => !isEmptyValue(props.state.values[id]);
 const toggles = computed(() => props.fields.filter((f) => f.kind === "toggle"));
@@ -234,13 +313,85 @@ function clearAll() {
       color: var(--neutrals-900);
     }
   }
+  // the sheet's header, views and footer stay put; the body scrolls between them
   &__panel--touch {
+    @apply tw-flex-1;
     .vc-search-bar__panel-body {
+      @apply tw-flex-1;
       max-height: none;
+      min-height: 0;
     }
     .vc-search-bar__toggle,
     .vc-search-bar__acc-row {
       min-height: 48px;
+    }
+  }
+  &__sheet-head {
+    @apply tw-relative tw-flex tw-items-center tw-justify-between tw-shrink-0 tw-px-2;
+    height: 48px;
+  }
+  &__sheet-clear,
+  &__sheet-done {
+    @apply tw-inline-flex tw-items-center tw-px-2 tw-rounded-md;
+    min-height: 40px;
+    font-size: 14px;
+    &:disabled {
+      color: var(--neutrals-400);
+    }
+  }
+  &__sheet-clear {
+    color: var(--neutrals-600);
+  }
+  &__sheet-done {
+    @apply tw-font-semibold;
+    color: var(--primary-600);
+  }
+  &__sheet-title {
+    @apply tw-absolute tw-inline-flex tw-items-center tw-gap-1.5 tw-font-semibold tw-pointer-events-none;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 15px;
+    color: var(--neutrals-900);
+  }
+  &__sheet-count {
+    @apply tw-inline-flex tw-items-center tw-justify-center tw-rounded-full tw-px-1.5;
+    min-width: 20px;
+    height: 20px;
+    background: var(--primary-600);
+    color: var(--additional-50);
+    font-size: 11px;
+  }
+  &__sheet-views {
+    @apply tw-shrink-0 tw-pb-1;
+    border-bottom: 1px solid var(--neutrals-200);
+    .vc-search-bar__unsaved {
+      @apply tw-px-3;
+    }
+  }
+  &__view-chips {
+    @apply tw-flex tw-gap-2 tw-overflow-x-auto tw-px-3 tw-py-1;
+    scrollbar-width: none;
+  }
+  &__view-chip {
+    @apply tw-inline-flex tw-items-center tw-gap-1 tw-shrink-0 tw-rounded-full tw-px-3.5 tw-font-medium;
+    height: 36px;
+    border: 1px solid var(--neutrals-300);
+    font-size: 13px;
+    color: var(--neutrals-800);
+    &--current {
+      border-color: var(--primary-600);
+      background: var(--primary-600);
+      color: var(--additional-50);
+    }
+  }
+  &__sheet-foot {
+    @apply tw-shrink-0 tw-p-3;
+    border-top: 1px solid var(--neutrals-200);
+    // over the button's own size
+    .vc-search-bar__sheet-show {
+      @apply tw-w-full;
+      height: 48px;
+      border-radius: 16px;
     }
   }
 }

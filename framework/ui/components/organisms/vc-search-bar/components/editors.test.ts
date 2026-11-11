@@ -252,7 +252,7 @@ describe("MenuHost", () => {
   });
   const SidebarStub = defineComponent({
     name: "VcSidebar",
-    props: ["modelValue", "position", "size", "draggable", "dragHandle", "closeButton", "inset", "title"],
+    props: ["modelValue", "position", "size", "draggable", "dragHandle", "closeButton", "inset", "title", "ariaLabel"],
     emits: ["update:modelValue"],
     setup:
       (_, { slots }) =>
@@ -284,14 +284,15 @@ describe("MenuHost", () => {
   });
 
   it("renders a bottom sheet when sheet", () => {
-    const w = mountHost({ sheet: true, title: "T" });
+    const w = mountHost({ sheet: true, title: "T", label: "Filters" });
     const sb = w.findComponent(SidebarStub);
     expect(sb.exists()).toBe(true);
     expect(w.findComponent(PopoverStub).exists()).toBe(false);
     expect(sb.props()).toMatchObject({
       modelValue: true,
       position: "bottom",
-      size: "sm",
+      size: "lg",
+      ariaLabel: "Filters",
       draggable: true,
       dragHandle: true,
       closeButton: false,

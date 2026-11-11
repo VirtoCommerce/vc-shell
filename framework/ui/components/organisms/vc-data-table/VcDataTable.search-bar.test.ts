@@ -101,10 +101,9 @@ const global = {
 type FilterEvent = { filters: Record<string, unknown> }[];
 
 const SEARCH = ".vc-search-bar__search-input";
-const menuItem = (label: string) =>
-  [...document.body.querySelectorAll<HTMLElement>(".vc-search-bar__menu-item")].find((b) =>
-    b.textContent?.includes(label),
-  )!;
+/** The Filters panel's switch of a toggle field */
+const panelSwitch = (label: string) =>
+  document.body.querySelector<HTMLInputElement>(`.vc-search-bar__panel input[role='switch'][aria-label='${label}']`)!;
 
 /** The blade's URL query service over a plain query record, with the real namespaced serialization */
 function urlQueryState(query: Record<string, string> = {}) {
@@ -235,7 +234,7 @@ describe("VcDataTable search bar header", () => {
     (input.element as HTMLInputElement).value = "abc";
     // The click lands before the table re-renders, so the bar has not seen the echoed search yet
     void input.trigger("input");
-    menuItem("Overdue").click();
+    panelSwitch("Overdue").click();
     await nextTick();
     vi.advanceTimersByTime(1000);
     await nextTick();

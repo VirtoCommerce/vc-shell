@@ -10,6 +10,7 @@ export type {
   RelativeDate,
   ToggleFilterConfig,
   NumberFilterConfig,
+  NumberPreset,
   CustomFilterConfig,
   EnumOperator,
 } from "./types";

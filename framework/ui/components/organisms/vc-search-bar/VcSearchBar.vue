@@ -96,6 +96,7 @@
       :anchor="anchor"
       :title="menuTitle"
       :close-on-outside="false"
+      v-bind="panelHost"
       @close="closeEditor(true)"
     >
       <div
@@ -105,6 +106,7 @@
         <PillEditor
           :field="openField"
           :value="state.values[openField.id]"
+          :counts="counts?.[openField.id]"
           @update:value="onEditorValue"
         />
         <VcButton
@@ -115,11 +117,28 @@
           {{ $t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.MOBILE.DONE") }}
         </VcButton>
       </div>
-      <FieldList
+      <FieldAccordion
+        v-else-if="list === 'overflow'"
+        :fields="hiddenChips"
+        :state="state"
+        :counts="counts"
+        :initially-open="hiddenChips[0]?.id"
+        @set="setValue"
+        @clear-field="clearValue"
+      />
+      <!-- phone: the current sheet shows the panel body; Task 6 gives the sheet its own header and footer -->
+      <FiltersPanel
         v-else
-        :fields="list === 'overflow' ? hiddenChips : fields"
-        :values="state.values"
-        @pick="pickField"
+        :fields="fields"
+        :state="state"
+        :views="views"
+        :counts="counts"
+        :result-count="resultCount"
+        :touch="isMobile"
+        @set="setValue"
+        @clear-field="clearValue"
+        @clear-all="views.clearToSystem()"
+        @close="closeEditor(true)"
       />
     </MenuHost>
   </div>
@@ -140,7 +159,8 @@ import MenuHost from "./components/MenuHost.vue";
 import SearchInput from "./components/SearchInput.vue";
 import FilterChip from "./components/FilterChip.vue";
 import FiltersButton from "./components/FiltersButton.vue";
-import FieldList from "./components/FieldList.vue";
+import FieldAccordion from "./components/FieldAccordion.vue";
+import FiltersPanel from "./components/FiltersPanel.vue";
 import ViewSelector from "./components/ViewSelector.vue";
 import { useSearchInput } from "./composables/useSearchInput";
 import { useBarMenus } from "./composables/useBarMenus";
@@ -286,17 +306,22 @@ const names = computed(() => {
   return labels.slice(0, NAMES_SHOWN).join(", ") + (rest > 0 ? ` +${rest}` : "");
 });
 
-const isSet = (id: string) => !isEmptyValue(state.value.values[id]);
-const { openId, anchor, list, openField, hostOpen, openEditor, openList, pickField, closeEditor } = useBarMenus({
+const { openId, anchor, list, openField, hostOpen, openEditor, openList, closeEditor } = useBarMenus({
   fields: () => fields.value,
-  flipToggle: (id) => (isSet(id) ? clearValue(id) : setValue(id, true)),
 });
 const menuTitle = computed(() => {
   if (openField.value) return openField.value.label;
-  return list.value === "overflow"
-    ? t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.MORE_FILTERS", { count: hiddenChips.value.length })
-    : t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.FILTERS");
+  if (list.value === "overflow")
+    return t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.MORE_FILTERS", { count: hiddenChips.value.length });
+  // the desktop panel has its own header
+  return isMobile.value ? t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.FILTERS") : undefined;
 });
+// The desktop Filters panel: 360px at the end of the Filters button
+const panelHost = computed(() =>
+  list.value === "filters" && !openField.value && !isMobile.value
+    ? { width: "360px", placement: "bottom-end" as const, label: t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.FILTERS") }
+    : {},
+);
 
 // A menu whose anchor left the row (the "+N" button once every chip fits, a chip in a narrower mode) closes
 watch([mode, visibleCount, () => chipFields.value.length, isMobile], async () => {

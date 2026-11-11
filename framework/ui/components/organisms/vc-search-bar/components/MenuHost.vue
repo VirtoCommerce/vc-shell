@@ -20,6 +20,10 @@ const props = defineProps<{
   anchor?: HTMLElement | null;
   title?: string;
   closeOnOutside?: boolean;
+  /** Popover: a fixed width, its placement and the label of a dialog without a title */
+  width?: string;
+  placement?: "bottom-start" | "bottom-end";
+  label?: string;
 }>();
 const emit = defineEmits<{ close: [] }>();
 
@@ -41,8 +45,12 @@ const hostProps = computed<Record<string, unknown>>(() =>
         anchorRef: props.anchor ?? null,
         title: props.title,
         closeOnClickOutside: props.closeOnOutside ?? true,
-        width: "280px",
-        maxWidth: "360px",
+        placement: props.placement ?? "bottom-start",
+        width: props.width ?? "280px",
+        maxWidth: props.width ?? "360px",
+        // a fixed-width panel lays out and scrolls its own body
+        ...(props.width ? { contentScrollable: false, maxHeight: 640 } : {}),
+        ...(props.label ? { role: "dialog", ariaLabel: props.label } : {}),
       },
 );
 </script>

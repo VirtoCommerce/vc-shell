@@ -14,9 +14,11 @@ import {
   fakeWidths,
   fields,
   global,
+  expandField,
   lastChange,
-  listItems,
+  accLabels,
   mountBar,
+  panel,
   stubs,
 } from "./bar.test-helpers";
 
@@ -55,7 +57,25 @@ describe("VcSearchBar", () => {
       const more = wrapper.get(".vc-search-bar__more");
       expect(more.text()).toBe("+1");
       await more.trigger("click");
-      expect(listItems().map((b) => b.textContent?.trim())).toEqual(["Overdue"]);
+      expect(accLabels()).toEqual(["Overdue"]);
+      expect(panel()).toBeNull();
+    });
+
+    it("+N opens an accordion of the hidden fields with the first one expanded", async () => {
+      const resize = fakeResizeObserver();
+      fakeWidths();
+      wrapper = mountBar();
+      await setThree();
+      // 600 - 200 - 103 = 297 holds one chip and the +N button
+      await resize(760, 600);
+      expect(wrapper.findAll(CHIP).map((c) => c.text())).toEqual(["Store: x"]);
+      await wrapper.get(".vc-search-bar__more").trigger("click");
+      expect(accLabels()).toEqual(["Status", "Overdue"]);
+      const open = document.body.querySelector(".vc-search-bar__acc-toggle[aria-expanded='true']");
+      expect(open?.textContent).toContain("Status");
+      document.body.querySelector<HTMLElement>(".vc-search-bar__acc-clear")!.click();
+      await nextTick();
+      expect(lastChange(wrapper).state.values).toEqual({ store: "x", overdue: true });
     });
 
     it("a chip opens its field's editor; x clears the field", async () => {
@@ -122,21 +142,63 @@ describe("VcSearchBar", () => {
       await resize(1400);
       expect(wrapper.find(".vc-search-bar__more").exists()).toBe(false);
       // the popover's leave transition never ends in jsdom; its content is gone
-      expect(listItems()).toHaveLength(0);
+      expect(accLabels()).toHaveLength(0);
       expect(editor()).toBeNull();
     });
 
-    it("the Filters button lists every field; a toggle flips, a field opens its editor", async () => {
+    it("the Filters button opens the panel: toggles as switches, the rest in the accordion", async () => {
       wrapper = mountBar();
       await wrapper.get(".vc-search-bar__filters-main").trigger("click");
-      expect(listItems().map((b) => b.textContent?.trim())).toEqual(["Status", "Created", "Overdue", "Store"]);
-      listItems()[2].click();
+      expect(panel()).not.toBeNull();
+      expect(document.body.querySelector(".vc-search-bar__toggle")?.textContent?.trim()).toBe("Overdue");
+      expect(accLabels()).toEqual(["Status", "Created", "Store"]);
+      const sw = document.body.querySelector<HTMLInputElement>(".switch-stub")!;
+      sw.checked = true;
+      sw.dispatchEvent(new Event("change"));
       await nextTick();
       expect(lastChange(wrapper).filters).toEqual({ overdue: true });
-      listItems()[3].click();
+      expect(panel()).not.toBeNull();
+    });
+
+    it("the panel is a 360px popover at the end of the Filters button", async () => {
+      wrapper = mountBar();
+      await wrapper.get(".vc-search-bar__filters-main").trigger("click");
+      const pop = wrapper.findComponent({ name: "VcPopover" });
+      expect(pop.props()).toMatchObject({
+        placement: "bottom-end",
+        width: "360px",
+        maxWidth: "360px",
+        anchorRef: wrapper.get(".vc-search-bar__filters-btn").element,
+      });
+    });
+
+    it("the panel shows the result count and Clear filters switches to the system view", async () => {
+      wrapper = mountBar({ resultCount: 12, modelValue: { search: "q", values: { overdue: true } } });
+      await wrapper.get(".vc-search-bar__filters-main").trigger("click");
+      expect(panel()!.querySelector(".vc-search-bar__panel-status")?.textContent).toContain("12");
+      panel()!.querySelector<HTMLElement>(".vc-search-bar__panel-clear")!.click();
       await nextTick();
-      expect(editor()).not.toBeNull();
-      expect(wrapper.findComponent(PillEditor).props("field")).toMatchObject({ id: "store" });
+      expect(lastChange(wrapper).state).toMatchObject({ search: "q", values: {} });
+      expect(panel()).not.toBeNull();
+    });
+
+    it("a new counts prop reaches an open editor without reopening it", async () => {
+      wrapper = mountBar({ counts: { status: { a: 3 } } });
+      await wrapper.get(".vc-search-bar__filters-main").trigger("click");
+      const count = () => panel()!.querySelector(".vc-search-bar-editor__count")?.textContent;
+      expect(count()).toBe("3");
+      await wrapper.setProps({ counts: { status: { a: 8 } } });
+      expect(count()).toBe("8");
+    });
+
+    it("the panel's close button closes it and returns focus to the Filters button", async () => {
+      wrapper = mountBar();
+      await wrapper.get(".vc-search-bar__filters-main").trigger("click");
+      panel()!.querySelector<HTMLElement>(".vc-search-bar__panel-close")!.click();
+      await nextTick();
+      await nextTick();
+      expect(panel()).toBeNull();
+      expect(document.activeElement).toBe(wrapper.get(".vc-search-bar__filters-main").element);
     });
 
     it("a bar without fields shows only the search", () => {
@@ -264,7 +326,7 @@ describe("VcSearchBar", () => {
       await wrapper.get(SEARCH).setValue("abc");
       vi.advanceTimersByTime(100);
       await wrapper.get(".vc-search-bar__filters-main").trigger("click");
-      listItems()[2].click();
+      document.body.querySelector<HTMLInputElement>(".switch-stub")!.click();
       await nextTick();
       const changes = wrapper.emitted("change") as SearchBarChange[][];
       expect(changes).toHaveLength(1);
@@ -328,27 +390,27 @@ describe("VcSearchBar", () => {
       expect(editor()).toBeNull();
     });
 
-    it("a number editor that commits after its editor closed still sets that field", async () => {
+    it("Enter in the panel's number editor sets the field", async () => {
       const total: SearchBarField = { id: "total", label: "Total", filter: { number: true } };
       wrapper = mountBar({ fields: [...fields, total] });
       await wrapper.get(".vc-search-bar__filters-main").trigger("click");
-      listItems()
-        .find((b) => b.textContent?.includes("Total"))!
-        .click();
-      await nextTick();
-      const input = document.body.querySelector<HTMLInputElement>(".vc-search-bar__editor .input-stub")!;
+      await expandField("Total");
+      const input = panel()!.querySelector<HTMLInputElement>(".vc-search-bar-editor__range .input-stub")!;
       input.value = "7";
       input.dispatchEvent(new Event("input"));
       await nextTick();
-      const errors: unknown[] = [];
-      wrapper.vm.$.appContext.config.errorHandler = (err) => void errors.push(err);
-      down(document.body);
-      input.dispatchEvent(new Event("blur"));
+      input.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
       await nextTick();
-      expect(errors).toEqual([]);
-      expect(editor()).toBeNull();
       const models = wrapper.emitted("update:modelValue") as SearchBarState[][];
       expect(models.at(-1)?.[0].values.total).toEqual({ op: "gte", min: 7 });
+    });
+
+    it("stays open for a click inside its own panel", async () => {
+      wrapper = mountBar();
+      await wrapper.get(".vc-search-bar__filters-main").trigger("click");
+      down(panel()!.querySelector(".vc-search-bar__acc-toggle")!);
+      await nextTick();
+      expect(panel()).not.toBeNull();
     });
 
     it("disabled bar disables the search, the chips and the Filters button", () => {
@@ -387,7 +449,8 @@ describe("VcSearchBar", () => {
       expect(wrapper.find(".vc-search-bar__filters-btn--icon").exists()).toBe(true);
       await wrapper.get(".vc-search-bar__filters-main").trigger("click");
       expect(wrapper.find(".sheet-stub").exists()).toBe(true);
-      expect(listItems().map((b) => b.textContent?.trim())).toHaveLength(4);
+      expect(wrapper.find(".sheet-stub .vc-search-bar__panel--touch").exists()).toBe(true);
+      expect(accLabels()).toEqual(["Status", "Created", "Store"]);
     });
   });
 });

@@ -1,127 +1,154 @@
 <template>
   <div
     class="vc-search-bar-editor"
-    @keydown.enter.prevent="commit"
+    @keydown.enter.prevent="apply"
   >
+    <div class="vc-search-bar-editor__range">
+      <VcInput
+        v-model="from"
+        size="small"
+        type="number"
+        :aria-label="$t(`${N}MIN`)"
+        :placeholder="$t(`${N}MIN`)"
+      />
+      <VcInput
+        v-model="to"
+        size="small"
+        type="number"
+        :aria-label="$t(`${N}MAX`)"
+        :placeholder="$t(`${N}MAX`)"
+      />
+    </div>
     <div
-      class="vc-search-bar-editor__segments"
+      v-if="presets.length"
+      class="vc-search-bar-editor__presets"
       role="group"
       :aria-label="field.label"
     >
       <button
-        v-for="o in ops"
-        :key="o.id"
+        v-for="p in presets"
+        :key="p.label"
         type="button"
-        class="vc-search-bar-editor__segment"
-        :class="{ 'vc-search-bar-editor__segment--on': op === o.id }"
-        :aria-pressed="op === o.id"
-        @click="setOp(o.id)"
+        class="vc-search-bar-editor__preset"
+        :class="{ 'vc-search-bar-editor__preset--on': same(p.value, current) }"
+        :aria-pressed="same(p.value, current)"
+        @click="pick(p.value)"
       >
-        {{ $t(o.label) }}
+        {{ p.label }}
       </button>
     </div>
-    <div class="vc-search-bar-editor__range">
-      <VcInput
-        v-model="first"
-        size="small"
-        type="number"
-        :aria-label="firstLabel"
-        :placeholder="firstLabel"
-        @blur="commit"
-      />
-      <VcInput
-        v-if="op === 'between'"
-        v-model="second"
-        size="small"
-        type="number"
-        :aria-label="$t('COMPONENTS.ORGANISMS.VC_SEARCH_BAR.NUMBER.MAX')"
-        :placeholder="$t('COMPONENTS.ORGANISMS.VC_SEARCH_BAR.NUMBER.MAX')"
-        @blur="commit"
-      />
+    <div class="vc-search-bar-editor__foot">
+      <span class="vc-search-bar-editor__note">{{ $t(presets.length ? `${N}NOTE_PRESETS` : `${N}NOTE`) }}</span>
+      <VcButton
+        class="vc-search-bar-editor__apply"
+        size="sm"
+        :disabled="!changed"
+        @click="apply"
+      >
+        {{ $t(`${N}APPLY`) }}
+      </VcButton>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { useI18n } from "vue-i18n";
+import { VcButton } from "@ui/components/atoms";
 import { VcInput } from "@ui/components/molecules";
 import type { BarField } from "../../lib/fields";
-import type { NumberValue, SearchBarValue } from "../../types";
+import { buildNumber } from "../../lib/values";
+import type { NumberFilterConfig, NumberValue, SearchBarValue } from "../../types";
 
 const props = defineProps<{ field: BarField; value: SearchBarValue }>();
 const emit = defineEmits<{ "update:value": [value: SearchBarValue | undefined] }>();
-const { t } = useI18n({ useScope: "global" });
 
-type Op = NumberValue["op"];
-const P = "COMPONENTS.ORGANISMS.VC_SEARCH_BAR.NUMBER";
-const ops: { id: Op; label: string }[] = [
-  { id: "gte", label: `${P}.GTE` },
-  { id: "lte", label: `${P}.LTE` },
-  { id: "eq", label: `${P}.EQ` },
-  { id: "between", label: `${P}.BETWEEN` },
-];
+const N = "COMPONENTS.ORGANISMS.VC_SEARCH_BAR.NUMBER.";
 
 const asNumber = (v: unknown): NumberValue | undefined =>
   typeof v === "object" && v !== null && "op" in v ? (v as NumberValue) : undefined;
 const text = (n?: number) => (n === undefined ? "" : String(n));
+const same = (a?: NumberValue, b?: NumberValue) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
 
-const op = ref<Op>(asNumber(props.value)?.op ?? "gte");
-const first = ref("");
-const second = ref("");
+const current = computed(() => asNumber(props.value));
+const presets = computed(() => (props.field.source.filter as NumberFilterConfig).presets ?? []);
 
+const from = ref("");
+const to = ref("");
+
+// "Equals" shows as the same From and To
 function load(v?: NumberValue) {
-  if (!v) {
-    first.value = "";
-    second.value = "";
-    return;
-  }
-  op.value = v.op;
-  first.value = text(v.op === "lte" ? v.max : v.min);
-  second.value = v.op === "between" ? text(v.max) : "";
+  from.value = v && v.op !== "lte" ? text(v.min) : "";
+  to.value = !v || v.op === "gte" ? "" : text(v.op === "eq" ? v.min : v.max);
 }
-load(asNumber(props.value));
-watch(
-  () => props.value,
-  (v) => load(asNumber(v)),
-);
+load(current.value);
+watch(current, (v) => load(v));
 
-const firstLabel = computed(() => t(op.value === "between" ? `${P}.MIN` : `${P}.VALUE`));
+const blank = (s: unknown) => String(s ?? "").trim() === "";
 
-const parse = (s: string | number | null | undefined): number | undefined => {
-  const trimmed = String(s ?? "").trim();
-  const n = trimmed === "" ? NaN : Number(trimmed);
-  return Number.isFinite(n) ? n : undefined;
-};
+/** The typed range; `null` when a bound is not a number */
+const draft = computed<NumberValue | undefined | null>(() => {
+  const noFrom = blank(from.value);
+  const noTo = blank(to.value);
+  if (noFrom && noTo) return undefined;
+  const built = noTo
+    ? buildNumber("gte", from.value)
+    : noFrom
+      ? buildNumber("lte", to.value)
+      : buildNumber("between", from.value, to.value);
+  return built ?? null;
+});
 
-// Never a NumberValue with a bound missing for its op
-function build(): NumberValue | undefined {
-  const a = parse(first.value);
-  const b = parse(second.value);
-  switch (op.value) {
-    case "gte":
-    case "eq":
-      return a === undefined ? undefined : { op: op.value, min: a };
-    case "lte":
-      return a === undefined ? undefined : { op: "lte", max: a };
-    default:
-      return a === undefined || b === undefined ? undefined : { op: "between", min: a, max: b };
-  }
+const changed = computed(() => {
+  if (draft.value === null) return false;
+  const loaded =
+    current.value?.op === "eq" ? { op: "between", min: current.value.min, max: current.value.min } : current.value;
+  return !same(draft.value, loaded as NumberValue | undefined);
+});
+
+function apply() {
+  if (!changed.value) return;
+  emit("update:value", draft.value ?? undefined);
 }
 
-function commit() {
-  const next = build();
-  if (next) {
-    if (JSON.stringify(next) !== JSON.stringify(asNumber(props.value))) emit("update:value", next);
-  } else if (parse(first.value) === undefined && parse(second.value) === undefined && asNumber(props.value)) {
-    emit("update:value", undefined);
-  }
-}
-
-function setOp(next: Op) {
-  if (next === op.value) return;
-  op.value = next;
-  const built = build();
-  if (built) emit("update:value", built);
+function pick(v: NumberValue) {
+  emit("update:value", same(v, current.value) ? undefined : v);
 }
 </script>
+
+<style lang="scss">
+.vc-search-bar-editor {
+  &__range {
+    @apply tw-grid tw-grid-cols-2 tw-gap-2;
+  }
+  &__presets {
+    @apply tw-flex tw-flex-wrap tw-gap-1;
+  }
+  &__preset {
+    @apply tw-inline-flex tw-items-center tw-rounded-full tw-px-2.5;
+    height: 24px;
+    font-size: 12px;
+    border: 1px solid var(--neutrals-300);
+    background: var(--additional-50);
+    color: var(--neutrals-700);
+    &:hover {
+      background: var(--neutrals-100);
+    }
+  }
+  &__preset--on {
+    border-color: var(--primary-300);
+    background: var(--primary-50);
+    color: var(--primary-700);
+  }
+  &__foot {
+    @apply tw-flex tw-items-center tw-justify-between tw-gap-2;
+  }
+  &__note {
+    font-size: 11.5px;
+    color: var(--neutrals-500);
+  }
+  &__apply {
+    @apply tw-shrink-0;
+    --button-sm-height: 28px;
+  }
+}
+</style>

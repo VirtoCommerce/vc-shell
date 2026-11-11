@@ -188,16 +188,17 @@
           "TODAY": "Heute",
           "LAST_7": "Letzte 7 Tage",
           "LAST_30": "Letzte 30 Tage",
-          "CUSTOM_RANGE": "Eigener Zeitraum"
+          "CUSTOM_RANGE": "Eigener Zeitraum",
+          "ANY": "Beliebig"
         },
         "NUMBER": {
-          "GTE": "Mindestens",
-          "LTE": "Höchstens",
-          "EQ": "Gleich",
           "BETWEEN": "Zwischen",
           "VALUE": "Wert",
           "MIN": "Von",
-          "MAX": "Bis"
+          "MAX": "Bis",
+          "APPLY": "Anwenden",
+          "NOTE": "Bereiche gelten mit Enter",
+          "NOTE_PRESETS": "Bereiche gelten mit Enter, Vorgaben sofort"
         },
         "VIEWS": {
           "ALL": "Alle",
@@ -279,6 +280,20 @@
           "REASON_CUSTOM_FIELD": "sie verwendet ein Feld mit eigenem Editor.",
           "REASON_MULTI_VALUE": "sie listet mehrere Werte für ein Feld mit nur einem Wert auf.",
           "CHIP_NOT": "ist nicht"
+        },
+        "PANEL": {
+          "ACTIVE": "{count} aktiv",
+          "TOGGLES": "Schalter",
+          "ANY": "Alle",
+          "RESULTS": "Ergebnisse · sofort angewendet",
+          "APPLIED": "Sofort angewendet",
+          "CLEAR": "Filter löschen"
+        },
+        "EDITOR": {
+          "FIND": "Suchen",
+          "NOTHING_FOUND": "Nichts gefunden",
+          "ONLY": "Nur",
+          "ONLY_LABEL": "Nur {label}"
         }
       },
       "VC_DYNAMIC_PROPERTY": {

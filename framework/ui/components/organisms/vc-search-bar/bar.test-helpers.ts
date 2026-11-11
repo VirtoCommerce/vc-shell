@@ -23,7 +23,29 @@ export const InputStub = defineComponent({
         onBlur: () => emit("blur"),
       }),
 });
-export const stubs = { VcInput: InputStub, VcIcon: true, VcCheckbox: true, VcDatePicker: true };
+export const SwitchStub = defineComponent({
+  name: "VcSwitch",
+  props: { modelValue: Boolean, ariaLabel: String },
+  emits: ["update:modelValue"],
+  setup:
+    (props, { emit }) =>
+    () =>
+      h("input", {
+        type: "checkbox",
+        role: "switch",
+        class: "switch-stub",
+        checked: props.modelValue,
+        "aria-label": props.ariaLabel,
+        onChange: (e: Event) => emit("update:modelValue", (e.target as HTMLInputElement).checked),
+      }),
+});
+export const stubs = {
+  VcInput: InputStub,
+  VcIcon: true,
+  VcCheckbox: true,
+  VcDatePicker: true,
+  VcSwitch: SwitchStub,
+};
 export const global = {
   stubs,
   mocks: { $t: (k: string, p?: Record<string, string>) => (p ? `${k}:${Object.values(p).join(",")}` : k) },
@@ -38,8 +60,17 @@ export const fields: SearchBarField[] = [
 
 export const SEARCH = ".vc-search-bar__search-input";
 export const CHIP = ".vc-search-bar__row .vc-search-bar__chip";
-export const LIST_ITEM = ".vc-search-bar__menu-item";
-export const listItems = () => [...document.body.querySelectorAll<HTMLElement>(LIST_ITEM)];
+export const panel = () => document.body.querySelector<HTMLElement>(".vc-search-bar__panel");
+/** Field labels of every accordion on the page (the panel's or the "+N" popover's) */
+export const accLabels = () =>
+  [...document.body.querySelectorAll<HTMLElement>(".vc-search-bar__acc-label")].map((l) => l.textContent?.trim());
+/** Opens a field's editor in an accordion by its label */
+export const expandField = async (label: string) => {
+  [...document.body.querySelectorAll<HTMLElement>(".vc-search-bar__acc-toggle")]
+    .find((b) => b.textContent?.includes(label))!
+    .click();
+  await nextTick();
+};
 export const editor = () => document.body.querySelector(".vc-search-bar__editor");
 
 /** ResizeObserver stand-in: `resize(w)` reports a new width of the bar and its row */

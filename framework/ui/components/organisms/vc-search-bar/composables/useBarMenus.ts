@@ -6,11 +6,9 @@ export type BarList = "filters" | "overflow";
 
 export interface UseBarMenusOptions {
   fields: () => BarField[];
-  /** Flips a toggle picked from a list */
-  flipToggle: (id: string) => void;
 }
 
-/** The bar's one menu host: a chip's editor or a field list, which turns into the picked field's editor */
+/** The bar's one menu host: a chip's editor, the Filters panel or the "+N" accordion */
 export function useBarMenus(o: UseBarMenusOptions) {
   const openId = ref<string>();
   const anchor = ref<HTMLElement | null>(null);
@@ -44,12 +42,6 @@ export function useBarMenus(o: UseBarMenusOptions) {
     list.value = kind;
   }
 
-  function pickField(f: BarField) {
-    if (f.kind === "toggle") return o.flipToggle(f.id);
-    list.value = undefined;
-    openId.value = f.id;
-  }
-
   // The popover's own outside-click is off: a teleported date menu or select list counts as outside it
   function onOutsidePointerDown(e: PointerEvent) {
     const target = e.target as Element | null;
@@ -67,5 +59,5 @@ export function useBarMenus(o: UseBarMenusOptions) {
   });
   onScopeDispose(() => document.removeEventListener("pointerdown", onOutsidePointerDown));
 
-  return { openId, anchor, list, openField, hostOpen, openEditor, openList, pickField, closeEditor };
+  return { openId, anchor, list, openField, hostOpen, openEditor, openList, closeEditor };
 }

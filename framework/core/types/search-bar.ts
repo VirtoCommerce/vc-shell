@@ -65,7 +65,12 @@ export interface GlobalFilterConfig {
 }
 
 export type ToggleFilterConfig = { toggle: true };
-export type NumberFilterConfig = { number: true; min?: number; max?: number };
+/** A one-click range in the number editor */
+export interface NumberPreset {
+  label: string;
+  value: NumberValue;
+}
+export type NumberFilterConfig = { number: true; min?: number; max?: number; presets?: NumberPreset[] };
 export type CustomFilterConfig = {
   component: Component;
   label: (v: unknown) => string;

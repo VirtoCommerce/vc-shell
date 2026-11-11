@@ -188,16 +188,17 @@
           "TODAY": "Today",
           "LAST_7": "Last 7 days",
           "LAST_30": "Last 30 days",
-          "CUSTOM_RANGE": "Custom range"
+          "CUSTOM_RANGE": "Custom range",
+          "ANY": "Any time"
         },
         "NUMBER": {
-          "GTE": "At least",
-          "LTE": "At most",
-          "EQ": "Equals",
           "BETWEEN": "Between",
           "VALUE": "Value",
           "MIN": "From",
-          "MAX": "To"
+          "MAX": "To",
+          "APPLY": "Apply",
+          "NOTE": "Ranges apply on Enter",
+          "NOTE_PRESETS": "Ranges apply on Enter, presets apply instantly"
         },
         "VIEWS": {
           "ALL": "All",
@@ -279,6 +280,20 @@
           "REASON_CUSTOM_FIELD": "it uses a field with a custom editor.",
           "REASON_MULTI_VALUE": "it lists several values for a single-value field.",
           "CHIP_NOT": "is not"
+        },
+        "PANEL": {
+          "ACTIVE": "{count} active",
+          "TOGGLES": "Toggles",
+          "ANY": "Any",
+          "RESULTS": "results · applied instantly",
+          "APPLIED": "Applied instantly",
+          "CLEAR": "Clear filters"
+        },
+        "EDITOR": {
+          "FIND": "Find",
+          "NOTHING_FOUND": "Nothing found",
+          "ONLY": "Only",
+          "ONLY_LABEL": "Only {label}"
         }
       },
       "VC_DYNAMIC_PROPERTY": {

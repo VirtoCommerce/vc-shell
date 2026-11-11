@@ -1,9 +1,11 @@
 <template>
+  <!-- not a named group: its title already is the chip button's name, a group would read it twice -->
   <VcButtonGroup
     ref="root"
     class="vc-search-bar__chip"
     :class="{ 'vc-search-bar__chip--open': open }"
     :title="title"
+    role="presentation"
     size="2xs"
     attached
   >

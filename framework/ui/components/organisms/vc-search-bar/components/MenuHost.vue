@@ -6,7 +6,10 @@
     @update:model-value="!$event && emit('close')"
     @update:show="!$event && emit('close')"
   >
-    <slot />
+    <!-- the marker the bar's popover and sheet styles below key on; it adds no box -->
+    <div class="vc-search-bar__menu-body">
+      <slot />
+    </div>
   </component>
 </template>
 
@@ -96,15 +99,18 @@ const hostProps = computed<Record<string, unknown>>(() =>
 
 <style lang="scss">
 // A fitted body fills the popover's capped height, so its own scroll area takes the overflow
-.vc-popover__content:has(> .vc-search-bar__fit) {
+.vc-search-bar__menu-body {
+  display: contents;
+}
+.vc-popover__content:has(> .vc-search-bar__menu-body > .vc-search-bar__fit) {
   @apply tw-flex tw-flex-col;
 }
 .vc-search-bar__fit {
   @apply tw-flex tw-flex-col tw-flex-auto tw-min-h-0;
 }
 
-// The bar's popovers: every menu body the host shows is a vc-search-bar element
-.vc-popover:has(> .vc-popover__content > [class*="vc-search-bar"]) {
+// The bar's popovers
+.vc-popover:has(> .vc-popover__content > .vc-search-bar__menu-body) {
   --vc-popover-border-radius: 12px;
   --vc-popover-border-color: var(--neutrals-200);
   --vc-popover-shadow: 0 12px 32px -8px rgb(19 32 47 / 22%), 0 2px 6px rgb(19 32 47 / 6%);

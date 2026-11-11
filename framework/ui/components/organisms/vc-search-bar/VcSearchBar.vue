@@ -435,6 +435,13 @@ function onTypedChip(c: { fieldId: string; value: unknown; rest: string }) {
 :is(.vc-search-bar, .vc-search-bar__fit, .vc-search-bar__acc, .vc-search-bar__editor) .vc-button::after {
   content: none;
 }
+// the phone sheet's buttons stand apart: they keep the 44px touch target, except inside an attached group
+.vc-search-bar__panel--touch .vc-button::after {
+  content: "";
+}
+.vc-search-bar__panel--touch .vc-button-group--attached .vc-button::after {
+  content: none;
+}
 
 // a menu row: a ghost button laid out as a full-width, start-aligned line (menus are teleported: no bar ancestor)
 .vc-button.vc-button-ghost.vc-search-bar__menu-row {

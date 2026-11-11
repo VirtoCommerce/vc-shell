@@ -73,6 +73,13 @@ describe("VcSearchBar", () => {
       expect(lastChange(wrapper).state.values).toEqual({ store: "x", overdue: true });
     });
 
+    it("a chip is not a named group: its title would read the chip twice", async () => {
+      wrapper = mountBar({ modelValue: { search: "", values: { status: ["a"] } } });
+      const chip = wrapper.get(CHIP);
+      expect(chip.attributes("role")).toBe("presentation");
+      expect(chip.attributes("title")).toBeTruthy();
+    });
+
     it("a chip opens its field's editor; x clears the field", async () => {
       wrapper = mountBar({ modelValue: { search: "", values: { status: ["a"] } } });
       await wrapper.get(`${CHIP} .vc-search-bar__chip-main`).trigger("click");

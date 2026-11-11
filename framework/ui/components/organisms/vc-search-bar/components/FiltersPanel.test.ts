@@ -351,6 +351,21 @@ describe("FieldAccordion", () => {
     w.unmount();
   });
 
+  it("a field reopened while it closes has one body with its id", async () => {
+    const list = fields.filter((f) => f.kind !== "toggle");
+    const w = mount(FieldAccordion, {
+      props: { fields: list, state: { search: "", values: {} }, initiallyOpen: list[0].id },
+      global: { ...global, stubs: { ...global.stubs, transition: false } },
+      attachTo: document.body,
+    });
+    const toggles = w.findAll(".vc-search-bar__acc-toggle");
+    const id = toggles[0].attributes("aria-controls");
+    await toggles[1].trigger("click");
+    await toggles[0].trigger("click");
+    expect(document.querySelectorAll(`[id="${id}"]`)).toHaveLength(1);
+    w.unmount();
+  });
+
   it("an editor that empties its field emits clear-field", async () => {
     const list = fields.filter((f) => f.id === "status");
     const w = mount(FieldAccordion, {

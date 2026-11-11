@@ -110,6 +110,8 @@ const collapse = (el: Element) => {
 };
 const fixHeight = (el: Element) => {
   (el as HTMLElement).style.height = `${(el as HTMLElement).offsetHeight}px`;
+  // a field reopened while it closes mounts a new body with the same id; the leaving one gives it up
+  el.removeAttribute("id");
 };
 const expandToContent = (el: Element) => {
   const body = el as HTMLElement;

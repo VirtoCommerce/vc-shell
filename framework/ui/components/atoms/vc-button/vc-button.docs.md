@@ -91,6 +91,14 @@ No border or background, used for inline or de-emphasized actions.
 | `ghost` | Toolbar icons, inline actions      | Light background tint |
 | `link`  | Text-like navigation, inline links | Underline on text     |
 
+### Tonal Variant
+
+A soft primary tint with a light border, for applied state: filter chips, an active filters button, tags. `selected` takes the hover tint.
+
+```vue
+<VcButton variant="tonal" size="2xs">Status: New</VcButton>
+```
+
 ## Sizes
 
 Five size options cover all common use cases from toolbar icons to prominent CTAs.
@@ -98,6 +106,7 @@ Five size options cover all common use cases from toolbar icons to prominent CTA
 ::storybook id="action-vcbutton--all-sizes"
 
 ```vue
+<VcButton size="2xs">Extra small</VcButton>
 <VcButton size="sm">Small</VcButton>
 <VcButton size="default">Default</VcButton>
 <VcButton size="lg">Large</VcButton>
@@ -107,11 +116,14 @@ Five size options cover all common use cases from toolbar icons to prominent CTA
 
 | Size      | Height  | Padding                       | Typical Use                         |
 | --------- | ------- | ----------------------------- | ----------------------------------- |
+| `2xs`     | 28px    | 8px horizontal                | Filter chips, tags, dense toolbars  |
 | `sm`      | 32px    | 12px horizontal               | Compact form actions, table footers |
 | `default` | 36px    | 16px horizontal, 8px vertical | Standard blade actions              |
 | `lg`      | 40px    | 24px horizontal               | Prominent CTAs, dialog actions      |
 | `icon`    | 36x36px | 0 (square)                    | Toolbar icon buttons                |
 | `icon-sm` | 24x24px | 0 (square)                    | Table cell actions, inline controls |
+
+`2xs` is the 28px size; with only an icon it is a 28px square. It is not the legacy `xs`, which still renders as `sm`.
 
 !!! note "Legacy size aliases"
 `xs` (maps to `sm`) and `base` (maps to `default`) are supported for backward compatibility but should not be used in new code.

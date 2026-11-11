@@ -9,9 +9,11 @@ export type ButtonVariant =
   | "info"
   | "outline"
   | "ghost"
+  | "tonal"
   | "link";
 
 export type ButtonSize =
+  | "2xs"
   | "sm"
   | "default"
   | "lg"

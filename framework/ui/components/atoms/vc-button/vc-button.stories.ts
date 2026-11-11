@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcButton } from "@ui/components/atoms/vc-button";
+import VcButtonGroup from "@ui/components/atoms/vc-button/vc-button-group.vue";
 import { ref } from "vue";
 
 const FILLED_VARIANTS = ["primary", "danger", "warning", "success", "info"] as const;
@@ -437,6 +438,49 @@ export const LegacySizeAliases: Story = {
           <VcButton size="base">Legacy Base</VcButton>
           <VcButton size="default">New Default</VcButton>
         </div>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * `2xs` — 28px, for dense controls: filter chips, tags, compact toolbars.
+ * An icon-only 2xs button is a 28px square; a group sizes all its buttons.
+ */
+export const DoubleExtraSmall: Story = {
+  render: () => ({
+    components: { VcButton, VcButtonGroup },
+    template: `
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <VcButton size="2xs" variant="secondary">Export</VcButton>
+        <VcButton size="2xs" variant="ghost" icon="lucide-bookmark">All items</VcButton>
+        <VcButton size="2xs" variant="secondary" icon="lucide-x" aria-label="Remove" />
+        <VcButtonGroup size="2xs" attached>
+          <VcButton variant="secondary">Is any of</VcButton>
+          <VcButton variant="secondary">Is not</VcButton>
+        </VcButtonGroup>
+      </div>
+    `,
+  }),
+};
+
+/**
+ * `tonal` — a soft primary tint for applied state: filter chips, an active filters button.
+ * `selected` takes the hover tint (an open chip).
+ */
+export const Tonal: Story = {
+  render: () => ({
+    components: { VcButton, VcButtonGroup },
+    template: `
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <VcButton variant="tonal">Filters</VcButton>
+        <VcButton variant="tonal" selected>Open</VcButton>
+        <VcButton variant="tonal" disabled>Disabled</VcButton>
+        <VcButtonGroup size="2xs" attached>
+          <VcButton variant="tonal">Status: New</VcButton>
+          <VcButton variant="tonal" icon="lucide-x" aria-label="Remove Status" />
+        </VcButtonGroup>
+        <VcButton size="2xs" variant="tonal">+3</VcButton>
       </div>
     `,
   }),

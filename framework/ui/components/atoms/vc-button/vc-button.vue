@@ -212,6 +212,16 @@ function onClick(e: Event): void {
   --button-ghost-border-color-hover: transparent;
   --button-ghost-border-color-disabled: transparent;
 
+  // TONAL (soft primary tint: applied filters, tags; the selected state takes the hover tint)
+  --button-tonal-background-color: var(--primary-50);
+  --button-tonal-background-color-hover: var(--primary-100);
+  --button-tonal-background-color-disabled: var(--primary-50);
+  --button-tonal-text-color: var(--primary-700);
+  --button-tonal-text-color-disabled: var(--primary-700);
+  --button-tonal-border-color: var(--primary-200);
+  --button-tonal-border-color-hover: var(--primary-200);
+  --button-tonal-border-color-disabled: var(--primary-200);
+
   // LINK (text link style)
   --button-link-background-color: transparent;
   --button-link-background-color-hover: transparent;
@@ -232,6 +242,10 @@ function onClick(e: Event): void {
   --button-focus-ring-offset: 2px;
 
   --button-border-radius: 6px;
+
+  // 2xs: h-7 px-2 text-xs (no vertical padding, fixed height); icon-only is a 28px square
+  --button-2xs-height: 28px;
+  --button-2xs-padding-hor: 8px;
 
   // sm: h-8 px-3 text-xs (no vertical padding, fixed height)
   --button-sm-height: 32px;
@@ -254,6 +268,7 @@ function onClick(e: Event): void {
 }
 
 $variants: primary, secondary, danger, warning, success, info, outline, ghost, link;
+$variants: append($variants, tonal);
 
 .vc-button {
   position: relative;
@@ -329,6 +344,15 @@ $variants: primary, secondary, danger, warning, success, info, outline, ghost, l
         }
       }
 
+      // Size: 2xs — h-7 px-2 text-xs (no vertical padding); only an icon makes it a square
+      &.vc-button--2xs {
+        @apply tw-h-[var(--button-2xs-height)] tw-px-[var(--button-2xs-padding-hor)] tw-py-0 tw-text-xs #{!important};
+
+        &:not(:has(.vc-button__title)) {
+          @apply tw-w-[var(--button-2xs-height)] tw-px-0 #{!important};
+        }
+      }
+
       // Size: sm — h-8 px-3 text-xs (no vertical padding)
       &.vc-button--sm {
         @apply tw-h-[var(--button-sm-height)] tw-px-[var(--button-sm-padding-hor)] tw-py-0 tw-text-xs #{!important};
@@ -371,6 +395,11 @@ $variants: primary, secondary, danger, warning, success, info, outline, ghost, l
       tw-border-[color:var(--button-outline-border-color-hover)];
   }
 
+  &.vc-button-tonal:hover:not(:disabled):not(.vc-button--text) {
+    @apply tw-opacity-100 tw-bg-[color:var(--button-tonal-background-color-hover)]
+      tw-border-[color:var(--button-tonal-border-color-hover)];
+  }
+
   &.vc-button-ghost:hover:not(:disabled):not(.vc-button--text) {
     @apply tw-opacity-100 tw-bg-[color:var(--button-ghost-background-color-hover)];
   }
@@ -391,5 +420,15 @@ $variants: primary, secondary, danger, warning, success, info, outline, ghost, l
       }
     }
   }
+}
+
+// Dark theme: the low primary steps are surfaces there, so the tint mixes the brand colour in
+:root[data-theme="dark"] {
+  --button-tonal-background-color: color-mix(in srgb, var(--primary-500) 14%, transparent);
+  --button-tonal-background-color-hover: color-mix(in srgb, var(--primary-500) 24%, transparent);
+  --button-tonal-background-color-disabled: color-mix(in srgb, var(--primary-500) 14%, transparent);
+  --button-tonal-border-color: color-mix(in srgb, var(--primary-500) 40%, transparent);
+  --button-tonal-border-color-hover: color-mix(in srgb, var(--primary-500) 40%, transparent);
+  --button-tonal-border-color-disabled: color-mix(in srgb, var(--primary-500) 40%, transparent);
 }
 </style>

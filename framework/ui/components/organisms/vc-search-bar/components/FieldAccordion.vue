@@ -41,18 +41,30 @@
           @click="emit('clear-field', f.id)"
         />
       </div>
-      <div
-        v-if="f.kind !== 'toggle' && isOpen(f.id)"
-        :id="bodyId(f.id)"
-        class="vc-search-bar__acc-body"
+      <!-- the body grows from 0 to its content's height and back; the editor unmounts after the close -->
+      <Transition
+        name="vc-search-bar-acc"
+        @before-enter="collapse"
+        @enter="expandToContent"
+        @after-enter="release"
+        @before-leave="fixHeight"
+        @leave="collapse"
       >
-        <PillEditor
-          :field="f"
-          :value="state.values[f.id]"
-          :counts="counts?.[f.id]"
-          @update:value="onValue"
-        />
-      </div>
+        <div
+          v-if="f.kind !== 'toggle' && isOpen(f.id)"
+          :id="bodyId(f.id)"
+          class="vc-search-bar__acc-body"
+        >
+          <div class="vc-search-bar__acc-scroll">
+            <PillEditor
+              :field="f"
+              :value="state.values[f.id]"
+              :counts="counts?.[f.id]"
+              @update:value="onValue"
+            />
+          </div>
+        </div>
+      </Transition>
     </div>
   </div>
 </template>
@@ -89,6 +101,24 @@ const flip = (id: string) => {
   open.value = open.value === id ? undefined : id;
 };
 const bodyId = (id: string) => `${uid}-${id}`;
+
+// The body's height animates between 0 and its content's measured height; the CSS transition ends each step
+const collapse = (el: Element) => {
+  const body = el as HTMLElement;
+  void body.offsetHeight;
+  body.style.height = "0px";
+};
+const fixHeight = (el: Element) => {
+  (el as HTMLElement).style.height = `${(el as HTMLElement).offsetHeight}px`;
+};
+const expandToContent = (el: Element) => {
+  const body = el as HTMLElement;
+  void body.offsetHeight;
+  body.style.height = `${body.scrollHeight}px`;
+};
+const release = (el: Element) => {
+  (el as HTMLElement).style.height = "";
+};
 
 const isSet = (id: string) => !isEmptyValue(props.state.values[id]);
 const summary = (f: BarField) => chipLabel(f, props.state.values[f.id], t);
@@ -142,9 +172,24 @@ const onValue = (v: SearchBarValue | undefined, id: string) =>
     @apply tw-shrink-0;
   }
   &__acc-body {
+    background: var(--neutrals-50);
+  }
+  &__acc-scroll {
     @apply tw-overflow-y-auto tw-px-3 tw-py-2;
     max-height: 256px;
-    background: var(--neutrals-50);
+  }
+}
+
+// VcAccordion's duration; the closing field and the opening one move together
+.vc-search-bar-acc-enter-active,
+.vc-search-bar-acc-leave-active {
+  @apply tw-overflow-hidden;
+  transition: height 200ms ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .vc-search-bar-acc-enter-active,
+  .vc-search-bar-acc-leave-active {
+    transition: none;
   }
 }
 </style>

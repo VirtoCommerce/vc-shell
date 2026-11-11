@@ -332,6 +332,25 @@ describe("FieldAccordion", () => {
     expect(w.findAll(".vc-search-bar__acc-body")).toHaveLength(0);
   });
 
+  it("animates the closing and the opening field together, then unmounts the closed editor", async () => {
+    const list = fields.filter((f) => f.kind !== "toggle");
+    const w = mount(FieldAccordion, {
+      props: { fields: list, state: { search: "", values: {} }, initiallyOpen: list[0].id },
+      global: { ...global, stubs: { ...global.stubs, transition: false } },
+      attachTo: document.body,
+    });
+    await w.findAll(".vc-search-bar__acc-toggle")[1].trigger("click");
+    const bodies = w.findAll(".vc-search-bar__acc-body");
+    expect(bodies).toHaveLength(2);
+    expect(bodies[0].classes()).toContain("vc-search-bar-acc-leave-active");
+    expect(bodies[1].classes()).toContain("vc-search-bar-acc-enter-active");
+    // jsdom reports no transition duration, so both finish on the next frames
+    await new Promise((r) => setTimeout(r, 50));
+    expect(w.findAll(".vc-search-bar__acc-body")).toHaveLength(1);
+    expect(expanded(w)).toEqual([list[1].label]);
+    w.unmount();
+  });
+
   it("an editor that empties its field emits clear-field", async () => {
     const list = fields.filter((f) => f.id === "status");
     const w = mount(FieldAccordion, {

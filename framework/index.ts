@@ -130,9 +130,10 @@ function setupI18n(app: App, args: FrameworkInstallArgs) {
     i18n.global.mergeLocaleMessage(resolveCamelCaseLocale(locale), message);
   };
 
-  // Components locales
+  // Components locales. The keys are plain language codes; resolveCamelCaseLocale would map every
+  // language not registered yet to "en" and merge it over the English texts.
   Object.entries(locales).forEach(([key, message]) => {
-    i18n.global.mergeLocaleMessage(resolveCamelCaseLocale(key), message);
+    i18n.global.mergeLocaleMessage(key, message);
   });
 }
 

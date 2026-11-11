@@ -184,13 +184,20 @@ jobs:
       # 25-minute job means the tests never get to run. The system libraries
       # live outside the cached directory, so they are installed either way --
       # `install-deps` alone is seconds, the browser download is not.
-      - name: Install Chromium and system deps
+      #
+      # The system packages come from Ubuntu's apt mirrors, and those sometimes
+      # stop resolving on the runner for hours. The runner image already ships
+      # Chrome with the libraries Chromium needs, so a failed apt install is a
+      # warning here, not a failed job; if Chromium really cannot start, the
+      # story tests fail on their own with a clear error.
+      - name: Install Chromium
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: yarn playwright install --with-deps chromium
+        run: yarn playwright install chromium
 
-      - name: Install system deps for cached Chromium
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: yarn playwright install-deps chromium
+      - name: Install Chromium system deps
+        run: >-
+          yarn playwright install-deps chromium
+          || echo "::warning title=Chromium system deps::apt failed, running on the runner's preinstalled libraries"
 
       # Two shards, sequentially, in one job. Not for speed — each invocation
       # launches a fresh browser, and that is the point. The browser does not

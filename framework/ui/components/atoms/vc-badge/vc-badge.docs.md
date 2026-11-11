@@ -44,6 +44,8 @@ A small indicator component for displaying counts, status dots, or short text la
 | `top`            | `string`                                                                   | --          | Custom top offset (requires `customPosition`)             |
 | `right`          | `string`                                                                   | --          | Custom right offset (requires `customPosition`)           |
 | `ariaLabel`      | `string`                                                                   | --          | Custom accessible label for the badge                     |
+| `solid`          | `boolean`                                                                  | `false`     | Inline mode: filled colours with white text (a count)     |
+| `label`          | `boolean`                                                                  | `false`     | Inline mode: a word label, not truncated, rounded corners |
 
 ::storybook id="data-display-vcbadge--use-cases" height="350"
 

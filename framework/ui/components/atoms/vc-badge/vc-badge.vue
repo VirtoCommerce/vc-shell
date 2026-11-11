@@ -15,6 +15,8 @@
         'vc-badge__badge--dot': isDot,
         'vc-badge__badge--inline-small': size === 's',
         'vc-badge__badge--inline-medium': size === 'm',
+        'vc-badge__badge--solid': solid,
+        'vc-badge__badge--label': label,
       },
     ]"
     :role="clickable ? 'button' : ariaLabel || isDot ? 'img' : undefined"
@@ -98,6 +100,10 @@ export interface Props {
   inline?: boolean;
   /** Accessible label for the badge (useful for screen readers) */
   ariaLabel?: string;
+  /** Inline mode: the solid overlay colours (a filled count) instead of the soft tint */
+  solid?: boolean;
+  /** Inline mode: a word label (e.g. "Modified") — no truncation, rounded rectangle */
+  label?: boolean;
 }
 
 export interface Emits {
@@ -348,6 +354,23 @@ $badge-variants: primary, secondary, success, warning, danger, info;
 @each $v in $badge-variants {
   .vc-badge__badge--inline.vc-badge__badge--#{$v} {
     @apply tw-bg-[color:var(--badge-inline-bg-#{$v})] tw-text-[color:var(--badge-inline-text-#{$v})] tw-border-[color:var(--badge-inline-border-#{$v})];
+  }
+}
+
+// Solid inline badge: the overlay fill with white text, for a count inside a control
+@each $v in $badge-variants {
+  .vc-badge__badge--inline.vc-badge__badge--solid.vc-badge__badge--#{$v} {
+    @apply tw-bg-[color:var(--badge-background-color-#{$v})] tw-text-[color:var(--badge-text-color)] tw-border-transparent;
+  }
+}
+
+// Label badge: a short word, never cut to the 40px of a long count
+.vc-badge__badge--inline.vc-badge__badge--label {
+  @apply tw-rounded tw-px-1.5;
+  max-width: none;
+
+  .vc-badge__text {
+    @apply tw-overflow-visible tw-whitespace-nowrap;
   }
 }
 </style>

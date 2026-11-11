@@ -1,0 +1,664 @@
+{
+  "CORE": {
+    "ERRORS": {
+      "SESSION_EXPIRED": "تم رفض الوصول: انتهت صلاحية جلستك أو ليست لديك الأذونات اللازمة.\nيُرجى تسجيل الدخول مرة أخرى أو التواصل مع المسؤول للحصول على المساعدة.",
+      "NETWORK_UNAVAILABLE": "الشبكة غير متاحة. يُرجى التحقق من اتصالك.",
+      "SESSION_CHECK_FAILED": "تعذّر التحقق من جلستك. يُرجى المحاولة مرة أخرى."
+    },
+    "THEMES": {
+      "LIGHT": "فاتح",
+      "DARK": "داكن"
+    },
+    "NOTIFICATIONS": {
+      "CLEAR_ALL": "مسح الكل"
+    }
+  },
+  "SHELL": {
+    "NAVIGATION_ARIA_LABEL": "التنقل الرئيسي",
+    "SIDEBAR": {
+      "SEARCH_PLACEHOLDER": "كلمة البحث"
+    },
+    "USER": {
+      "ROLE": {
+        "ADMINISTRATOR": "مسؤول"
+      }
+    },
+    "ACCOUNT": {
+      "SETTINGS": "الإعدادات",
+      "CHANGE_PASSWORD": "تغيير كلمة المرور",
+      "PROFILE": "الملف الشخصي",
+      "LOGOUT": "تسجيل الخروج"
+    }
+  },
+  "COMPONENTS": {
+    "CONTROLS": {
+      "CLEAR": "مسح",
+      "CLEAR_ALL": "مسح الكل",
+      "CLOSE": "إغلاق",
+      "TOGGLE_DROPDOWN": "فتح/إغلاق القائمة المنسدلة",
+      "SEARCH_OPTIONS": "البحث في الخيارات",
+      "SELECT_OPTION": "اختر خيارًا",
+      "CLEAR_SELECTION": "مسح التحديد",
+      "COPY_TO_CLIPBOARD": "نسخ إلى الحافظة",
+      "DELETE_ITEM": "حذف العنصر",
+      "SHOW_PASSWORD": "إظهار كلمة المرور",
+      "HIDE_PASSWORD": "إخفاء كلمة المرور"
+    },
+    "ATOMS": {
+      "VC_IMAGE": {
+        "LABEL": "صورة"
+      },
+      "VC_BANNER": {
+        "SHOW_MORE": "عرض المزيد",
+        "SHOW_LESS": "عرض أقل"
+      },
+      "VC_SCROLLABLE_CONTAINER": {
+        "LABEL": "محتوى قابل للتمرير"
+      },
+      "VC_VIDEO": {
+        "NO_SOURCE": "لا يوجد مصدر للفيديو"
+      }
+    },
+    "MOLECULES": {
+      "VC_SELECT": {
+        "CLICK_TO_SELECT": "انقر للاختيار...",
+        "LOADING": "جارٍ التحميل...",
+        "LOADING_MORE": "جارٍ تحميل المزيد...",
+        "NO_OPTIONS": "لا توجد خيارات"
+      },
+      "VC_FILE_UPLOAD": {
+        "DRAG_HERE": "اسحب الملف وأفلته هنا أو",
+        "BROWSE": "تصفّح ملفاتك",
+        "TAP_TO_UPLOAD": "انقر لاختيار الملفات",
+        "UPLOADING": "جارٍ الرفع..."
+      },
+      "VC_INPUT": {
+        "DATE_PLACEHOLDER": "اختر التاريخ",
+        "DATE_TIME_PLACEHOLDER": "اختر التاريخ والوقت"
+      },
+      "VC_PAGINATION": {
+        "JUMP": "الانتقال إلى الصفحة:",
+        "LABEL": "ترقيم الصفحات",
+        "FIRST": "الصفحة الأولى",
+        "PREVIOUS": "الصفحة السابقة",
+        "NEXT": "الصفحة التالية",
+        "LAST": "الصفحة الأخيرة",
+        "PAGE": "صفحة {page}"
+      },
+      "VC_MULTIVALUE": {
+        "ADD": "إضافة"
+      },
+      "VC_BREADCRUMBS": {
+        "BACK": "رجوع",
+        "LABEL": "مسار التنقل",
+        "SHOW_MORE": "عرض المزيد من مسار التنقل"
+      },
+      "VC_COLOR_INPUT": {
+        "CLEAR": "مسح اللون"
+      },
+      "VC_DATE_PICKER": {
+        "CLEAR": "مسح التاريخ",
+        "ARIA": {
+          "TOGGLE_OVERLAY": "إظهار أداة الاختيار أو إخفاؤها",
+          "MENU": "قائمة اختيار التاريخ",
+          "INPUT": "حقل التاريخ",
+          "OPEN_TIME_PICKER": "فتح أداة اختيار الوقت",
+          "CLOSE_TIME_PICKER": "إغلاق أداة اختيار الوقت",
+          "INCREMENT": "زيادة {unit}",
+          "DECREMENT": "إنقاص {unit}",
+          "OPEN_TIME_OVERLAY": "اختيار {unit}",
+          "AM_PM": "التبديل بين ص/م",
+          "OPEN_YEARS": "اختيار سنة",
+          "OPEN_MONTHS": "اختيار شهر",
+          "NEXT_MONTH": "الشهر التالي",
+          "PREV_MONTH": "الشهر السابق",
+          "NEXT_YEAR": "السنة التالية",
+          "PREV_YEAR": "السنة السابقة",
+          "CALENDAR_ICON": "فتح التقويم",
+          "TIME_PICKER": "أداة اختيار الوقت",
+          "MONTH_PICKER": "أداة اختيار الشهر",
+          "MONTH_PICKER_OVERLAY": "قائمة الأشهر",
+          "YEAR_PICKER": "أداة اختيار السنة",
+          "YEAR_PICKER_OVERLAY": "قائمة السنوات",
+          "TIME_OVERLAY": "أداة اختيار {unit}",
+          "UNITS": {
+            "hours": "الساعات",
+            "minutes": "الدقائق",
+            "seconds": "الثواني"
+          }
+        }
+      },
+      "VC_SLIDER": {
+        "PREVIOUS": "الشريحة السابقة",
+        "NEXT": "الشريحة التالية"
+      },
+      "VC_TOAST": {
+        "DISMISS": "تجاهل الإشعار"
+      },
+      "VC_EDITOR": {
+        "TOOLBAR": {
+          "LABEL": "تنسيق النص",
+          "BOLD": "غامق",
+          "ITALIC": "مائل",
+          "UNDERLINE": "تسطير",
+          "STRIKETHROUGH": "يتوسطه خط",
+          "HEADING_1": "عنوان 1",
+          "HEADING_2": "عنوان 2",
+          "HEADING_3": "عنوان 3",
+          "BULLET_LIST": "قائمة نقطية",
+          "NUMBERED_LIST": "قائمة مرقّمة",
+          "BLOCKQUOTE": "اقتباس",
+          "INSERT_LINK": "إدراج رابط",
+          "INSERT_IMAGE": "إدراج صورة",
+          "INSERT_TABLE": "إدراج جدول",
+          "DELETE_TABLE": "حذف الجدول",
+          "ADD_COLUMN_BEFORE": "إضافة عمود قبل",
+          "ADD_COLUMN_AFTER": "إضافة عمود بعد",
+          "ADD_ROW_BEFORE": "إضافة صف قبل",
+          "ADD_ROW_AFTER": "إضافة صف بعد",
+          "DELETE_COLUMN": "حذف العمود",
+          "DELETE_ROW": "حذف الصف"
+        },
+        "FONT_SIZE": "حجم الخط",
+        "VIEW": {
+          "PREVIEW": "معاينة",
+          "SPLIT": "عرض جنبًا إلى جنب",
+          "SOURCE": "الشفرة المصدرية"
+        }
+      }
+    },
+    "ORGANISMS": {
+      "VC_DYNAMIC_PROPERTY": {
+        "ADD": "إضافة قيمة",
+        "VALUE_TYPE": {
+          "COLOR": {
+            "PLACEHOLDER": "رمز اللون",
+            "NAME": "اسم اللون"
+          }
+        }
+      },
+      "VC_GALLERY": {
+        "INTERNAL": {
+          "VC_GALLERY_ITEM": {
+            "FULLSCREEN": "ملء الشاشة",
+            "EDIT": "تعديل",
+            "DELETE": "حذف"
+          },
+          "VC_GALLERY_PREVIEW": {
+            "COPY_IMAGE_LINK": "نسخ رابط الصورة"
+          },
+          "VC_GALLERY_FILMSTRIP": {
+            "PREVIOUS": "الصور السابقة",
+            "NEXT": "الصور التالية"
+          }
+        },
+        "GALLERY_IS_EMPTY": "المعرض فارغ",
+        "DROP_TO_UPLOAD": "أفلت للرفع",
+        "DRAG_IMAGES_HERE": "اسحب الصور إلى هنا أو",
+        "BROWSE_IMAGES": "تصفّح ملفاتك",
+        "UPLOAD": "رفع",
+        "OR_DROP_HERE": "أو أفلتها هنا",
+        "SHOW_ALL": "توسيع ({count})",
+        "COLLAPSE": "طي"
+      },
+      "VC_APP": {
+        "NOTIFICATIONS": "الإشعارات",
+        "OPEN_MENU": "فتح القائمة",
+        "CLOSE_MENU": "إغلاق القائمة",
+        "INTERNAL": {
+          "VC_APP_BAR": {
+            "BACK": "رجوع"
+          },
+          "MOBILE_LAYOUT": {
+            "TAB_MENU": "القائمة",
+            "TAB_HUB": "المركز"
+          },
+          "APP_HUB": {
+            "SEARCH_PLACEHOLDER": "البحث في التطبيقات والأدوات",
+            "APPLICATIONS": "التطبيقات",
+            "WIDGETS": "الأدوات",
+            "NO_APPLICATIONS": "لم يتم العثور على تطبيقات",
+            "NO_WIDGETS": "لم يتم العثور على أدوات",
+            "LIST_VIEW": "عرض القائمة",
+            "TILE_VIEW": "عرض المربعات"
+          }
+        }
+      },
+      "BLADE_NAVIGATION": {
+        "ARIA_LABEL": "التنقل بين الألواح"
+      },
+      "VC_BLADE": {
+        "SEE_DETAILS": "عرض التفاصيل",
+        "UNSAVED_CHANGES": "توجد تغييرات غير محفوظة",
+        "ERROR_POPUP": {
+          "TITLE": "تفاصيل الخطأ",
+          "COPY_ERROR": "نسخ المحتوى",
+          "CLOSE": "تجاهل"
+        },
+        "MORE": "المزيد",
+        "TOOLBAR": "إجراءات شريط الأدوات",
+        "CLOSE_MENU": "إغلاق القائمة",
+        "PANEL": "لوحة",
+        "WIDGETS": {
+          "ALERTS_TITLE": "{title}: يحتاج إلى انتباه",
+          "OPEN": "فتح",
+          "ALERTS_COUNT": "تنبيهات تحتاج إلى انتباه: {count}",
+          "MORE_WIDGETS": "المزيد من الأدوات",
+          "MORE_WIDGETS_ALERTS": "المزيد من الأدوات، تنبيهات تحتاج إلى انتباه: {count}",
+          "CUSTOMIZE": "تخصيص",
+          "DONE": "تم",
+          "RESET": "إعادة تعيين",
+          "NOT_ON_BLADE": "الأدوات المخفية",
+          "ON_BLADE": "على اللوحة · حتى {max}",
+          "ALL_ON_BLADE": "اسحب أداة إلى هنا لإخفائها",
+          "STRIP_EMPTY": "اسحب أداة إلى هنا لإظهارها",
+          "REMOVE": "إزالة {title} من اللوحة",
+          "ADD": "إضافة {title} إلى اللوحة",
+          "REORDER": "إعادة ترتيب {title}"
+        }
+      },
+      "VC_BLADE_HEADER": {
+        "UNSAVED_CHANGES": "توجد تغييرات غير محفوظة",
+        "NO_CHANGES": "لا توجد تغييرات غير محفوظة",
+        "CLOSE": "إغلاق",
+        "MAXIMIZE": "تكبير",
+        "RESTORE": "استعادة"
+      },
+      "VC_TABLE": {
+        "SELECT_ROW": "تحديد الصف",
+        "SELECT_ALL_ROWS": "تحديد كل الصفوف",
+        "EXPAND_ROW": "إظهار/إخفاء تفاصيل الصف",
+        "CURRENT_PAGE_SELECTED": "تم تحديد كل العناصر في هذه الصفحة.",
+        "SELECT_ALL": "تحديد كل العناصر",
+        "ALL_SELECTED": "تم تحديد كل العناصر.",
+        "ALL_SELECTED_COUNT": "تم تحديد كل العناصر ({count})",
+        "SELECT_ALL_COUNT": "تحديد كل العناصر ({count})",
+        "CANCEL": "مسح التحديد",
+        "ALL_ACTIONS": "كل الإجراءات",
+        "MORE": "المزيد",
+        "ALL_FILTERS": "عوامل التصفية",
+        "SEARCH": "بحث...",
+        "EMPTY": "القائمة فارغة.",
+        "EMPTY_TITLE": "لا توجد بيانات",
+        "EMPTY_DESCRIPTION": "لا توجد عناصر لعرضها",
+        "NOT_FOUND": "لم يتم العثور على شيء.",
+        "NOT_FOUND_TITLE": "لم يتم العثور على نتائج",
+        "NOT_FOUND_DESCRIPTION": "جرّب تعديل البحث أو عوامل التصفية",
+        "TOTALS": "الإجماليات:",
+        "ACTIONS": "الإجراءات",
+        "NOT_SET": "غير محدد",
+        "SELECTED": "المحدد",
+        "SELECT_ALL_TRUNCATED": "تحديد الكل",
+        "PULL_TO_REFRESH": "اسحب للتحديث",
+        "RELEASE_TO_REFRESH": "أفلت للتحديث",
+        "REFRESHING": "جارٍ التحديث...",
+        "ADD_ROW": "إضافة صف",
+        "LOADING": "جارٍ التحميل...",
+        "PAGE_INFO": "صفحة {current} من {total}",
+        "COLUMN_FILTER": {
+          "APPLY": "تطبيق",
+          "CLEAR": "مسح",
+          "FROM": "من",
+          "TO": "إلى",
+          "TITLE": "تصفية العمود"
+        },
+        "GLOBAL_FILTERS": {
+          "BUTTON": "عوامل التصفية",
+          "TITLE": "عوامل التصفية"
+        },
+        "COLUMN_SWITCHER": {
+          "BUTTON": "الأعمدة",
+          "TITLE": "إظهار/إخفاء الأعمدة",
+          "SHOW_ALL": "إظهار الكل",
+          "RESET": "إعادة تعيين"
+        },
+        "OF": "من",
+        "PAGE": "صفحة"
+      },
+      "VC_POPUP": {
+        "OK": "موافق",
+        "CONFIRM": "تأكيد",
+        "CANCEL": "إلغاء",
+        "CLOSE": "إغلاق",
+        "TITLE": {
+          "CONFIRMATION": "تأكيد",
+          "ERROR": "خطأ",
+          "INFO": "معلومات"
+        }
+      }
+    },
+    "THEME_SELECTOR": {
+      "THEME_CHANGED": " سمة",
+      "THEME_SELECTOR": "السمة"
+    },
+    "CHANGE_PASSWORD": {
+      "TITLE": "تغيير كلمة المرور",
+      "TITLE_FORCED": "انتهت صلاحية كلمة المرور",
+      "SUBTITLE_FORCED": "يُرجى تعيين كلمة مرور جديدة",
+      "FORCED": {
+        "LABEL": "انتهت صلاحية كلمة المرور الخاصة بك. يجب تغيير كلمة المرور لمتابعة استخدام لوحة الإدارة."
+      },
+      "CURRENT_PASSWORD": {
+        "LABEL": "كلمة المرور الحالية",
+        "PLACEHOLDER": "أدخل كلمة المرور"
+      },
+      "NEW_PASSWORD": {
+        "LABEL": "كلمة المرور الجديدة",
+        "PLACEHOLDER": "أدخل كلمة المرور"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "تأكيد كلمة المرور",
+        "PLACEHOLDER": "أكّد كلمة المرور"
+      },
+      "CANCEL": "إلغاء",
+      "SAVE": "تحديث",
+      "ERRORS": {
+        "Repeat-password": "كلمتا المرور غير متطابقتين",
+        "Equal-passwords": "يجب ألا تتطابق كلمة المرور الجديدة مع القديمة",
+        "Invalid-token": "الرمز المميز غير صالح أو منتهي الصلاحية",
+        "Password-too-weak": "كلمة المرور الجديدة لا تستوفي سياسة واحدة أو أكثر من سياسات أمان كلمات المرور:",
+        "PasswordTooShort": "كلمة المرور قصيرة جدًا",
+        "PasswordRequiresUniqueChars": "يجب أن تحتوي كلمة المرور على أحرف مختلفة",
+        "PasswordRequiresLower": "يجب أن تحتوي كلمة المرور على حرف صغير واحد على الأقل ('a'-'z')",
+        "PasswordRequiresUpper": "يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل ('A'-'Z')",
+        "PasswordRequiresDigit": "يجب أن تحتوي كلمة المرور على رقم واحد على الأقل ('0'-'9')",
+        "PasswordRequiresNonAlphanumeric": "يجب أن تحتوي كلمة المرور على رمز واحد على الأقل من غير الحروف والأرقام",
+        "Incorrect password.": "أدخلت كلمة مرور غير صحيحة",
+        "You have used this password in the past. Choose another one.": "سبق لك استخدام كلمة المرور هذه. اختر كلمة مرور أخرى."
+      }
+    },
+    "APP_HUB": {
+      "TITLE": "التطبيقات"
+    },
+    "NOTIFICATION_DROPDOWN": {
+      "TITLE": "الإشعارات",
+      "EMPTY": "لا توجد إشعارات بعد"
+    },
+    "LANGUAGE_SELECTOR": {
+      "TITLE": "اللغة"
+    },
+    "FILTERS": {
+      "APPLY": "تطبيق عوامل التصفية",
+      "RESET": "إعادة تعيين"
+    }
+  },
+  "INVITATION": {
+    "TITLE": "أنت مدعو!",
+    "SUBTITLE": "عيّن كلمة مرور لحسابك",
+    "FIELDS": {
+      "EMAIL": {
+        "LABEL": "البريد الإلكتروني"
+      },
+      "PASSWORD": {
+        "LABEL": "كلمة المرور الجديدة",
+        "PLACEHOLDER": "أدخل كلمة المرور"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "تأكيد كلمة المرور",
+        "PLACEHOLDER": "أكّد كلمة المرور"
+      }
+    },
+    "ACCEPT_INVITATION": "تفعيل",
+    "ERRORS": {
+      "Repeat-password": "كلمتا المرور غير متطابقتين",
+      "Invalid-token": "الرمز المميز غير صالح أو منتهي الصلاحية",
+      "Password-too-weak": "كلمة المرور الجديدة لا تستوفي سياسة واحدة أو أكثر من سياسات أمان كلمات المرور:",
+      "PasswordTooShort": "كلمة المرور قصيرة جدًا",
+      "PasswordRequiresUniqueChars": "يجب أن تحتوي كلمة المرور على أحرف مختلفة",
+      "PasswordRequiresLower": "يجب أن تحتوي كلمة المرور على حرف صغير واحد على الأقل ('a'-'z')",
+      "PasswordRequiresUpper": "يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل ('A'-'Z')",
+      "PasswordRequiresDigit": "يجب أن تحتوي كلمة المرور على رقم واحد على الأقل ('0'-'9')",
+      "PasswordRequiresNonAlphanumeric": "يجب أن تحتوي كلمة المرور على رمز واحد على الأقل من غير الحروف والأرقام",
+      "recentPasswordUsed": "سبق لك استخدام كلمة المرور هذه. اختر كلمة مرور أخرى."
+    }
+  },
+  "LOGIN": {
+    "TITLE": "مرحبًا بعودتك",
+    "SUBTITLE": "سجّل الدخول إلى حسابك للمتابعة",
+    "FIELDS": {
+      "LOGIN": {
+        "LABEL": "البريد الإلكتروني",
+        "PLACEHOLDER": "أدخل بريدك الإلكتروني"
+      },
+      "PASSWORD": {
+        "LABEL": "كلمة المرور",
+        "PLACEHOLDER": "أدخل كلمة المرور"
+      },
+      "REMEMBER_ME": {
+        "LABEL": "تذكرني"
+      },
+      "FORGOT_PASSWORD": {
+        "TITLE": "نسيت كلمة المرور",
+        "LABEL": "البريد الإلكتروني",
+        "PLACEHOLDER": "يُرجى إدخال بريدك الإلكتروني"
+      }
+    },
+    "FORGOT_PASSWORD_BUTTON": "نسيت كلمة المرور؟",
+    "BUTTON": "تسجيل الدخول",
+    "OR": "أو",
+    "FORGOT_BUTTON": "إرسال",
+    "BACK_BUTTON": "رجوع",
+    "BUTTON_OK": "موافق",
+    "RESET_EMAIL_TEXT": "سنرسل إليك رسالة بريد إلكتروني تتضمن تعليمات إعادة تعيين كلمة المرور.",
+    "RESET_EMAIL_SENT": "تم إرسال رسالة بريد إلكتروني تتضمن التعليمات إليك.",
+    "SSO_NO_PROVIDERS_ERROR": "لم يتم تكوين المصادقة عبر تسجيل الدخول الموحّد (SSO). يُرجى التواصل مع المسؤول.",
+    "ERRORS": {
+      "INVALID_CREDENTIALS": "اسم المستخدم أو كلمة المرور غير صحيحة.",
+      "AUTH_WITH_CODE": "خطأ في المصادقة (الرمز: {code}).",
+      "AUTH_GENERIC": "خطأ في المصادقة: {detail}"
+    }
+  },
+  "FORGOT_PASSWORD": {
+    "TITLE": "إعادة تعيين كلمة المرور",
+    "SUBTITLE": "أدخل بريدك الإلكتروني وسنرسل إليك رابط إعادة التعيين",
+    "FIELDS": {
+      "EMAIL": {
+        "LABEL": "البريد الإلكتروني",
+        "PLACEHOLDER": "أدخل عنوان بريدك الإلكتروني"
+      }
+    },
+    "SEND_BUTTON": "إرسال رابط إعادة التعيين",
+    "BACK_TO_LOGIN": "العودة إلى تسجيل الدخول",
+    "SUCCESS_TITLE": "تحقق من بريدك الإلكتروني",
+    "SUCCESS_TEXT": "أرسلنا رابط إعادة التعيين إلى {email}"
+  },
+  "PASSWORDRESET": {
+    "TITLE": "تعيين كلمة مرور جديدة",
+    "SUBTITLE": "أدخل كلمة المرور الجديدة أدناه",
+    "FIELDS": {
+      "PASSWORD": {
+        "LABEL": "كلمة المرور الجديدة",
+        "PLACEHOLDER": "أدخل كلمة المرور"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "تأكيد كلمة المرور",
+        "PLACEHOLDER": "أكّد كلمة المرور"
+      }
+    },
+    "SAVE_PASSWORD": "حفظ",
+    "ERRORS": {
+      "Repeat-password": "كلمتا المرور غير متطابقتين",
+      "Invalid-token": "الرمز المميز غير صالح أو منتهي الصلاحية",
+      "Password-too-weak": "كلمة المرور الجديدة لا تستوفي سياسة واحدة أو أكثر من سياسات أمان كلمات المرور:",
+      "PasswordTooShort": "كلمة المرور قصيرة جدًا",
+      "PasswordRequiresUniqueChars": "يجب أن تحتوي كلمة المرور على أحرف مختلفة",
+      "PasswordRequiresLower": "يجب أن تحتوي كلمة المرور على حرف صغير واحد على الأقل ('a'-'z')",
+      "PasswordRequiresUpper": "يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل ('A'-'Z')",
+      "PasswordRequiresDigit": "يجب أن تحتوي كلمة المرور على رقم واحد على الأقل ('0'-'9')",
+      "PasswordRequiresNonAlphanumeric": "يجب أن تحتوي كلمة المرور على رمز واحد على الأقل من غير الحروف والأرقام",
+      "recentPasswordUsed": "سبق لك استخدام كلمة المرور هذه. اختر كلمة مرور أخرى."
+    }
+  },
+  "ASSETS_MANAGER": {
+    "TITLE": "الأصول",
+    "TOOLBAR": {
+      "SAVE": "حفظ",
+      "REFRESH": "تحديث",
+      "ADD": "إضافة",
+      "DELETE": "حذف المحدد"
+    },
+    "EMPTY": {
+      "NO_ASSETS": "لا توجد أصول",
+      "UPLOAD_ASSETS": "اسحب الأصول وأفلتها هنا أو انقر على زر 'رفع'",
+      "UPLOAD": "رفع"
+    },
+    "TABLE": {
+      "HEADER": {
+        "IMAGE": "صورة",
+        "NAME": "الاسم",
+        "SIZE": "الحجم",
+        "SORT_ORDER": "ترتيب الفرز",
+        "CREATED_DATE": "تاريخ الإنشاء"
+      },
+      "ACTIONS": {
+        "DELETE": "حذف",
+        "EDIT": "تعديل"
+      }
+    }
+  },
+  "ASSETS": {
+    "PAGES": {
+      "DETAILS": {
+        "SUBTITLE": "تعديل الأصل",
+        "TOOLBAR": {
+          "SAVE": "حفظ",
+          "DELETE": "حذف"
+        },
+        "FIELDS": {
+          "SIZE": "الحجم",
+          "CREATED_DATE": "تاريخ الإنشاء",
+          "URL": "URL",
+          "COPY": "نسخ الرابط",
+          "NAME": {
+            "TITLE": "اسم الأصل",
+            "PLACEHOLDER": "أدخل اسم الأصل"
+          },
+          "ALT": {
+            "TITLE": "النص البديل للصورة",
+            "PLACEHOLDER": "أدخل النص البديل للصورة",
+            "TOOLTIP": "سيُعرض هذا النص في حال تعطيل الصورة أو تعذّر تحميلها على الصفحة"
+          },
+          "DESCRIPTION": {
+            "TITLE": "الوصف التعريفي (Meta)",
+            "PLACEHOLDER": "أدخل الوصف التعريفي"
+          }
+        }
+      }
+    }
+  },
+  "messages": {
+    "_default": "قيمة الحقل {field} غير صالحة",
+    "alpha": "يجب أن يحتوي الحقل {field} على أحرف أبجدية فقط",
+    "alpha_num": "يجب أن يحتوي الحقل {field} على أحرف وأرقام فقط",
+    "alpha_dash": "يمكن أن يحتوي الحقل {field} على أحرف وأرقام بالإضافة إلى الشرطات والشرطات السفلية",
+    "alpha_spaces": "يجب أن يحتوي الحقل {field} على أحرف أبجدية ومسافات فقط",
+    "between": "يجب أن تكون قيمة الحقل {field} بين 0:{min} و1:{max}",
+    "confirmed": "تأكيد الحقل {field} غير مطابق",
+    "digits": "يجب أن يكون الحقل {field} رقميًا ويحتوي على 0:{length} من الأرقام بالضبط",
+    "dimensions": "يجب أن تكون أبعاد الحقل {field} هي 0:{width} × 1:{height} بكسل",
+    "email": "يجب أن يكون الحقل {field} بريدًا إلكترونيًا صالحًا",
+    "not_one_of": "قيمة الحقل {field} غير صالحة",
+    "ext": "الحقل {field} ليس ملفًا صالحًا",
+    "image": "يجب أن يكون الحقل {field} صورة",
+    "integer": "يجب أن يكون الحقل {field} عددًا صحيحًا",
+    "length": "يجب أن يكون طول الحقل {field} هو 0:{length}",
+    "max_value": "يجب أن تكون قيمة الحقل {field} هي 0:{max} أو أقل",
+    "max": "يجب ألا يتجاوز الحقل {field} عدد 0:{length} من الأحرف",
+    "mimes": "يجب أن يكون نوع ملف الحقل {field} صالحًا",
+    "min_value": "يجب أن تكون قيمة الحقل {field} هي 0:{min} أو أكثر",
+    "min": "يجب أن يحتوي الحقل {field} على 0:{length} من الأحرف على الأقل",
+    "numeric": "يجب أن يحتوي الحقل {field} على أرقام فقط",
+    "one_of": "قيمة الحقل {field} غير صالحة",
+    "regex": "تنسيق الحقل {field} غير صالح",
+    "required_if": "الحقل {field} مطلوب",
+    "required": "الحقل {field} مطلوب",
+    "size": "يجب أن يكون حجم الحقل {field} أقل من 0:{size} كيلوبايت",
+    "url": "الحقل {field} ليس عنوان URL صالحًا",
+    "min_dimensions": {
+      "error": "يجب أن تكون أبعاد الصورة أكبر من {height}*{width}",
+      "not_image_error": "الملف ليس صورة"
+    },
+    "file_weight": "يجب ألا يتجاوز حجم الملف {size} كيلوبايت",
+    "before": "يجب أن يكون تاريخ الانتهاء قبل تاريخ البدء",
+    "after": "يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء",
+    "bigint": "رقم غير مدعوم"
+  },
+  "PERMISSION_MESSAGES": {
+    "ACCESS_RESTRICTED": "الوصول مقيّد"
+  },
+  "AI_AGENT": {
+    "LOADING": "جارٍ تحميل Virto OZ..."
+  },
+  "VC_SCHEDULER": {
+    "AGENDA": "جدول الأعمال",
+    "ALL_DAY": "طوال اليوم",
+    "CANCEL": "إلغاء",
+    "CLOSE": "إغلاق",
+    "COLOR": "اللون",
+    "COLOR_DEFAULT": "اللون الافتراضي",
+    "COLOR_CUSTOM": "لون مخصص",
+    "COLOR_BLUE": "أزرق",
+    "COLOR_GREEN": "أخضر",
+    "COLOR_AMBER": "كهرماني",
+    "COLOR_RED": "أحمر",
+    "COLOR_PURPLE": "أرجواني",
+    "COLOR_PINK": "وردي",
+    "COLOR_TEAL": "أزرق مخضر",
+    "COLOR_SLATE": "رمادي أردوازي",
+    "DAY": "يوم",
+    "DAY_N_OF_M": "اليوم {n} من {total}",
+    "DELETE": "حذف",
+    "DELETE_CONFIRM_BODY": "هل تريد حذف \"{title}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+    "DELETE_CONFIRM_TITLE": "حذف الحدث",
+    "EDIT": "تعديل",
+    "EDIT_EVENT": "تعديل الحدث",
+    "EMPTY": "لا توجد أحداث في هذا النطاق",
+    "EMPTY_HINT": "لا توجد أحداث بعد. انقر على يوم لإضافة حدث.",
+    "END": "النهاية",
+    "LOADING": "جارٍ تحميل الأحداث…",
+    "MORE": "+{count} أخرى",
+    "MORE_EVENTS": "مزيد من الأحداث",
+    "MONTH": "شهر",
+    "MORE_OPTIONS": "مزيد من الخيارات",
+    "NEW_EVENT": "حدث جديد",
+    "NEXT": "التالي",
+    "PREVIOUS": "السابق",
+    "RECUR_SCOPE_ALL": "كل الأحداث",
+    "RECUR_SCOPE_BODY_DELETE": "هذا الحدث جزء من سلسلة متكررة. هل تريد حذف هذا الحدث فقط أم كل الأحداث في السلسلة؟",
+    "RECUR_SCOPE_BODY_EDIT": "هذا الحدث جزء من سلسلة متكررة. هل تريد تعديل هذا الحدث فقط أم كل الأحداث في السلسلة؟",
+    "RECUR_SCOPE_THIS": "هذا الحدث",
+    "RECUR_SCOPE_TITLE": "حدث متكرر",
+    "REPEAT": "التكرار",
+    "REPEAT_DAILY": "يوميًا",
+    "REPEAT_END": "ينتهي",
+    "REPEAT_END_COUNT": "بعد",
+    "REPEAT_END_NEVER": "أبدًا",
+    "REPEAT_END_UNTIL": "في تاريخ",
+    "REPEAT_EVERY": "التكرار كل",
+    "REPEAT_UNIT_DAYS": "يوم (أيام)",
+    "REPEAT_UNIT_WEEKS": "أسبوع (أسابيع)",
+    "REPEAT_UNIT_MONTHS": "شهر (أشهر)",
+    "REPEAT_UNIT_YEARS": "سنة (سنوات)",
+    "REPEAT_MONTHLY": "شهريًا",
+    "REPEAT_NONE": "بدون تكرار",
+    "REPEAT_OCCURRENCES": "مرة (مرات)",
+    "REPEAT_ON": "التكرار في",
+    "REPEAT_WEEKLY": "أسبوعيًا",
+    "REPEAT_YEARLY": "سنويًا",
+    "SAVE": "حفظ",
+    "START": "البداية",
+    "TIMELINE": "المخطط الزمني",
+    "TIMELINE_DAY": "المخطط الزمني لليوم",
+    "TIMELINE_WEEK": "المخطط الزمني للأسبوع",
+    "TITLE": "العنوان",
+    "TODAY": "اليوم",
+    "WEEK": "أسبوع",
+    "WORK_WEEK": "أسبوع العمل",
+    "ZOOM_IN": "تكبير",
+    "ZOOM_OUT": "تصغير",
+    "EVENT_DETAILS": "تفاصيل الحدث"
+  },
+  "common": {
+    "no_options": "لا توجد خيارات"
+  }
+}

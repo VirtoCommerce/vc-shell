@@ -1,0 +1,664 @@
+{
+  "CORE": {
+    "ERRORS": {
+      "SESSION_EXPIRED": "Доступ запрещён: срок действия Вашего сеанса истёк или у Вас нет необходимых прав.\nПожалуйста, войдите снова или обратитесь к администратору.",
+      "NETWORK_UNAVAILABLE": "Сеть недоступна. Пожалуйста, проверьте подключение.",
+      "SESSION_CHECK_FAILED": "Не удалось проверить сеанс. Попробуйте ещё раз."
+    },
+    "THEMES": {
+      "LIGHT": "Светлая",
+      "DARK": "Тёмная"
+    },
+    "NOTIFICATIONS": {
+      "CLEAR_ALL": "Очистить все"
+    }
+  },
+  "SHELL": {
+    "NAVIGATION_ARIA_LABEL": "Основная навигация",
+    "SIDEBAR": {
+      "SEARCH_PLACEHOLDER": "Поиск по ключевому слову"
+    },
+    "USER": {
+      "ROLE": {
+        "ADMINISTRATOR": "Администратор"
+      }
+    },
+    "ACCOUNT": {
+      "SETTINGS": "Настройки",
+      "CHANGE_PASSWORD": "Изменить пароль",
+      "PROFILE": "Профиль",
+      "LOGOUT": "Выйти"
+    }
+  },
+  "COMPONENTS": {
+    "CONTROLS": {
+      "CLEAR": "Очистить",
+      "CLEAR_ALL": "Очистить все",
+      "CLOSE": "Закрыть",
+      "TOGGLE_DROPDOWN": "Открыть или закрыть список",
+      "SEARCH_OPTIONS": "Поиск вариантов",
+      "SELECT_OPTION": "Выберите вариант",
+      "CLEAR_SELECTION": "Сбросить выбор",
+      "COPY_TO_CLIPBOARD": "Копировать в буфер обмена",
+      "DELETE_ITEM": "Удалить элемент",
+      "SHOW_PASSWORD": "Показать пароль",
+      "HIDE_PASSWORD": "Скрыть пароль"
+    },
+    "ATOMS": {
+      "VC_IMAGE": {
+        "LABEL": "Изображение"
+      },
+      "VC_BANNER": {
+        "SHOW_MORE": "Показать больше",
+        "SHOW_LESS": "Показать меньше"
+      },
+      "VC_SCROLLABLE_CONTAINER": {
+        "LABEL": "Прокручиваемое содержимое"
+      },
+      "VC_VIDEO": {
+        "NO_SOURCE": "Нет источника видео"
+      }
+    },
+    "MOLECULES": {
+      "VC_SELECT": {
+        "CLICK_TO_SELECT": "Нажмите, чтобы выбрать...",
+        "LOADING": "Загрузка...",
+        "LOADING_MORE": "Загрузка ещё...",
+        "NO_OPTIONS": "Нет вариантов"
+      },
+      "VC_FILE_UPLOAD": {
+        "DRAG_HERE": "Перетащите файл сюда или",
+        "BROWSE": "выберите файлы",
+        "TAP_TO_UPLOAD": "Нажмите, чтобы выбрать файлы",
+        "UPLOADING": "Загрузка..."
+      },
+      "VC_INPUT": {
+        "DATE_PLACEHOLDER": "Выберите дату",
+        "DATE_TIME_PLACEHOLDER": "Выберите дату и время"
+      },
+      "VC_PAGINATION": {
+        "JUMP": "Перейти к странице:",
+        "LABEL": "Разбивка на страницы",
+        "FIRST": "Первая страница",
+        "PREVIOUS": "Предыдущая страница",
+        "NEXT": "Следующая страница",
+        "LAST": "Последняя страница",
+        "PAGE": "Страница {page}"
+      },
+      "VC_MULTIVALUE": {
+        "ADD": "Добавить"
+      },
+      "VC_BREADCRUMBS": {
+        "BACK": "Назад",
+        "LABEL": "Навигационная цепочка",
+        "SHOW_MORE": "Показать всю цепочку"
+      },
+      "VC_COLOR_INPUT": {
+        "CLEAR": "Очистить цвет"
+      },
+      "VC_DATE_PICKER": {
+        "CLEAR": "Очистить дату",
+        "ARIA": {
+          "TOGGLE_OVERLAY": "Показать или скрыть выбор даты",
+          "MENU": "Меню выбора даты",
+          "INPUT": "Поле даты",
+          "OPEN_TIME_PICKER": "Открыть выбор времени",
+          "CLOSE_TIME_PICKER": "Закрыть выбор времени",
+          "INCREMENT": "Увеличить: {unit}",
+          "DECREMENT": "Уменьшить: {unit}",
+          "OPEN_TIME_OVERLAY": "Выбрать: {unit}",
+          "AM_PM": "Переключить AM/PM",
+          "OPEN_YEARS": "Выбрать год",
+          "OPEN_MONTHS": "Выбрать месяц",
+          "NEXT_MONTH": "Следующий месяц",
+          "PREV_MONTH": "Предыдущий месяц",
+          "NEXT_YEAR": "Следующий год",
+          "PREV_YEAR": "Предыдущий год",
+          "CALENDAR_ICON": "Открыть календарь",
+          "TIME_PICKER": "Выбор времени",
+          "MONTH_PICKER": "Выбор месяца",
+          "MONTH_PICKER_OVERLAY": "Список месяцев",
+          "YEAR_PICKER": "Выбор года",
+          "YEAR_PICKER_OVERLAY": "Список лет",
+          "TIME_OVERLAY": "Выбор: {unit}",
+          "UNITS": {
+            "hours": "часы",
+            "minutes": "минуты",
+            "seconds": "секунды"
+          }
+        }
+      },
+      "VC_SLIDER": {
+        "PREVIOUS": "Предыдущий слайд",
+        "NEXT": "Следующий слайд"
+      },
+      "VC_TOAST": {
+        "DISMISS": "Закрыть уведомление"
+      },
+      "VC_EDITOR": {
+        "TOOLBAR": {
+          "LABEL": "Форматирование текста",
+          "BOLD": "Полужирный",
+          "ITALIC": "Курсив",
+          "UNDERLINE": "Подчёркнутый",
+          "STRIKETHROUGH": "Зачёркнутый",
+          "HEADING_1": "Заголовок 1",
+          "HEADING_2": "Заголовок 2",
+          "HEADING_3": "Заголовок 3",
+          "BULLET_LIST": "Маркированный список",
+          "NUMBERED_LIST": "Нумерованный список",
+          "BLOCKQUOTE": "Цитата",
+          "INSERT_LINK": "Вставить ссылку",
+          "INSERT_IMAGE": "Вставить изображение",
+          "INSERT_TABLE": "Вставить таблицу",
+          "DELETE_TABLE": "Удалить таблицу",
+          "ADD_COLUMN_BEFORE": "Добавить столбец слева",
+          "ADD_COLUMN_AFTER": "Добавить столбец справа",
+          "ADD_ROW_BEFORE": "Добавить строку выше",
+          "ADD_ROW_AFTER": "Добавить строку ниже",
+          "DELETE_COLUMN": "Удалить столбец",
+          "DELETE_ROW": "Удалить строку"
+        },
+        "FONT_SIZE": "Размер шрифта",
+        "VIEW": {
+          "PREVIEW": "Предпросмотр",
+          "SPLIT": "Параллельный просмотр",
+          "SOURCE": "Исходный код"
+        }
+      }
+    },
+    "ORGANISMS": {
+      "VC_DYNAMIC_PROPERTY": {
+        "ADD": "Добавить значение",
+        "VALUE_TYPE": {
+          "COLOR": {
+            "PLACEHOLDER": "Код цвета",
+            "NAME": "Название цвета"
+          }
+        }
+      },
+      "VC_GALLERY": {
+        "INTERNAL": {
+          "VC_GALLERY_ITEM": {
+            "FULLSCREEN": "Во весь экран",
+            "EDIT": "Редактировать",
+            "DELETE": "Удалить"
+          },
+          "VC_GALLERY_PREVIEW": {
+            "COPY_IMAGE_LINK": "копировать ссылку на изображение"
+          },
+          "VC_GALLERY_FILMSTRIP": {
+            "PREVIOUS": "Предыдущие изображения",
+            "NEXT": "Следующие изображения"
+          }
+        },
+        "GALLERY_IS_EMPTY": "Галерея пуста",
+        "DROP_TO_UPLOAD": "Отпустите для загрузки",
+        "DRAG_IMAGES_HERE": "Перетащите изображения сюда или",
+        "BROWSE_IMAGES": "выберите файлы",
+        "UPLOAD": "Загрузить",
+        "OR_DROP_HERE": "или перетащите сюда",
+        "SHOW_ALL": "Развернуть ({count})",
+        "COLLAPSE": "Свернуть"
+      },
+      "VC_APP": {
+        "NOTIFICATIONS": "Уведомления",
+        "OPEN_MENU": "Открыть меню",
+        "CLOSE_MENU": "Закрыть меню",
+        "INTERNAL": {
+          "VC_APP_BAR": {
+            "BACK": "Назад"
+          },
+          "MOBILE_LAYOUT": {
+            "TAB_MENU": "Меню",
+            "TAB_HUB": "Хаб"
+          },
+          "APP_HUB": {
+            "SEARCH_PLACEHOLDER": "Поиск приложений и виджетов",
+            "APPLICATIONS": "Приложения",
+            "WIDGETS": "Виджеты",
+            "NO_APPLICATIONS": "Приложения не найдены",
+            "NO_WIDGETS": "Виджеты не найдены",
+            "LIST_VIEW": "Список",
+            "TILE_VIEW": "Плитки"
+          }
+        }
+      },
+      "BLADE_NAVIGATION": {
+        "ARIA_LABEL": "Навигация по панелям"
+      },
+      "VC_BLADE": {
+        "SEE_DETAILS": "Подробнее",
+        "UNSAVED_CHANGES": "Есть несохранённые изменения",
+        "ERROR_POPUP": {
+          "TITLE": "Сведения об ошибке",
+          "COPY_ERROR": "копировать текст",
+          "CLOSE": "закрыть"
+        },
+        "MORE": "Ещё",
+        "TOOLBAR": "Действия панели инструментов",
+        "CLOSE_MENU": "Закрыть меню",
+        "PANEL": "Панель",
+        "WIDGETS": {
+          "ALERTS_TITLE": "{title}: требует внимания",
+          "OPEN": "Открыть",
+          "ALERTS_COUNT": "Предупреждений, требующих внимания: {count}",
+          "MORE_WIDGETS": "Другие виджеты",
+          "MORE_WIDGETS_ALERTS": "Другие виджеты, предупреждений, требующих внимания: {count}",
+          "CUSTOMIZE": "Настроить",
+          "DONE": "Готово",
+          "RESET": "Сбросить",
+          "NOT_ON_BLADE": "Скрытые виджеты",
+          "ON_BLADE": "На панели · не более {max}",
+          "ALL_ON_BLADE": "Перетащите виджет сюда, чтобы скрыть его",
+          "STRIP_EMPTY": "Перетащите виджет сюда, чтобы показать его",
+          "REMOVE": "Убрать «{title}» с панели",
+          "ADD": "Добавить «{title}» на панель",
+          "REORDER": "Переместить «{title}»"
+        }
+      },
+      "VC_BLADE_HEADER": {
+        "UNSAVED_CHANGES": "Есть несохранённые изменения",
+        "NO_CHANGES": "Нет несохранённых изменений",
+        "CLOSE": "Закрыть",
+        "MAXIMIZE": "Развернуть",
+        "RESTORE": "Восстановить"
+      },
+      "VC_TABLE": {
+        "SELECT_ROW": "Выбрать строку",
+        "SELECT_ALL_ROWS": "Выбрать все строки",
+        "EXPAND_ROW": "Показать или скрыть подробности строки",
+        "CURRENT_PAGE_SELECTED": "Выбраны все элементы на этой странице.",
+        "SELECT_ALL": "Выбрать все элементы",
+        "ALL_SELECTED": "Выбраны все элементы.",
+        "ALL_SELECTED_COUNT": "Выбраны все элементы: {count}",
+        "SELECT_ALL_COUNT": "Выбрать все элементы: {count}",
+        "CANCEL": "Сбросить выбор",
+        "ALL_ACTIONS": "Все действия",
+        "MORE": "Ещё",
+        "ALL_FILTERS": "Фильтры",
+        "SEARCH": "Поиск...",
+        "EMPTY": "Список пуст.",
+        "EMPTY_TITLE": "Нет данных",
+        "EMPTY_DESCRIPTION": "Нет элементов для отображения",
+        "NOT_FOUND": "Ничего не найдено.",
+        "NOT_FOUND_TITLE": "Ничего не найдено",
+        "NOT_FOUND_DESCRIPTION": "Попробуйте изменить условия поиска или фильтры",
+        "TOTALS": "Итого:",
+        "ACTIONS": "Действия",
+        "NOT_SET": "Не задано",
+        "SELECTED": "Выбрано",
+        "SELECT_ALL_TRUNCATED": "Выбрать все",
+        "PULL_TO_REFRESH": "Потяните, чтобы обновить",
+        "RELEASE_TO_REFRESH": "Отпустите, чтобы обновить",
+        "REFRESHING": "Обновление...",
+        "ADD_ROW": "Добавить строку",
+        "LOADING": "Загрузка...",
+        "PAGE_INFO": "Страница {current} из {total}",
+        "COLUMN_FILTER": {
+          "APPLY": "Применить",
+          "CLEAR": "Очистить",
+          "FROM": "От",
+          "TO": "До",
+          "TITLE": "Фильтр по столбцу"
+        },
+        "GLOBAL_FILTERS": {
+          "BUTTON": "Фильтры",
+          "TITLE": "Фильтры"
+        },
+        "COLUMN_SWITCHER": {
+          "BUTTON": "Столбцы",
+          "TITLE": "Показать/скрыть столбцы",
+          "SHOW_ALL": "Показать все",
+          "RESET": "Сбросить"
+        },
+        "OF": "из",
+        "PAGE": "Страница"
+      },
+      "VC_POPUP": {
+        "OK": "ОК",
+        "CONFIRM": "Подтвердить",
+        "CANCEL": "Отменить",
+        "CLOSE": "Закрыть",
+        "TITLE": {
+          "CONFIRMATION": "Подтверждение",
+          "ERROR": "Ошибка",
+          "INFO": "Информация"
+        }
+      }
+    },
+    "THEME_SELECTOR": {
+      "THEME_CHANGED": " тема",
+      "THEME_SELECTOR": "Тема"
+    },
+    "CHANGE_PASSWORD": {
+      "TITLE": "Изменить пароль",
+      "TITLE_FORCED": "Срок действия пароля истёк",
+      "SUBTITLE_FORCED": "Пожалуйста, задайте новый пароль",
+      "FORCED": {
+        "LABEL": "Срок действия Вашего пароля истёк. Чтобы продолжить работу, необходимо изменить пароль."
+      },
+      "CURRENT_PASSWORD": {
+        "LABEL": "Текущий пароль",
+        "PLACEHOLDER": "Введите пароль"
+      },
+      "NEW_PASSWORD": {
+        "LABEL": "Новый пароль",
+        "PLACEHOLDER": "Введите пароль"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Подтвердите пароль",
+        "PLACEHOLDER": "Подтвердите пароль"
+      },
+      "CANCEL": "Отменить",
+      "SAVE": "Обновить",
+      "ERRORS": {
+        "Repeat-password": "Пароли не совпадают",
+        "Equal-passwords": "Новый пароль не должен совпадать со старым",
+        "Invalid-token": "Токен недействителен или истёк",
+        "Password-too-weak": "Новый пароль не соответствует одной или нескольким политикам безопасности паролей:",
+        "PasswordTooShort": "Пароль слишком короткий",
+        "PasswordRequiresUniqueChars": "Пароль должен содержать разные символы",
+        "PasswordRequiresLower": "Пароль должен содержать хотя бы одну строчную букву ('a'-'z')",
+        "PasswordRequiresUpper": "Пароль должен содержать хотя бы одну заглавную букву ('A'-'Z')",
+        "PasswordRequiresDigit": "Пароль должен содержать хотя бы одну цифру ('0'-'9')",
+        "PasswordRequiresNonAlphanumeric": "Пароль должен содержать хотя бы один небуквенно-цифровой символ",
+        "Incorrect password.": "Вы ввели неверный пароль",
+        "You have used this password in the past. Choose another one.": "Вы уже использовали этот пароль ранее. Выберите другой."
+      }
+    },
+    "APP_HUB": {
+      "TITLE": "Приложения"
+    },
+    "NOTIFICATION_DROPDOWN": {
+      "TITLE": "Уведомления",
+      "EMPTY": "Уведомлений пока нет"
+    },
+    "LANGUAGE_SELECTOR": {
+      "TITLE": "Язык"
+    },
+    "FILTERS": {
+      "APPLY": "Применить фильтры",
+      "RESET": "Сбросить"
+    }
+  },
+  "INVITATION": {
+    "TITLE": "Вас пригласили!",
+    "SUBTITLE": "Задайте пароль для своей учётной записи",
+    "FIELDS": {
+      "EMAIL": {
+        "LABEL": "Email"
+      },
+      "PASSWORD": {
+        "LABEL": "Новый пароль",
+        "PLACEHOLDER": "Введите пароль"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Подтвердите пароль",
+        "PLACEHOLDER": "Подтвердите пароль"
+      }
+    },
+    "ACCEPT_INVITATION": "Активировать",
+    "ERRORS": {
+      "Repeat-password": "Пароли не совпадают",
+      "Invalid-token": "Токен недействителен или истёк",
+      "Password-too-weak": "Новый пароль не соответствует одной или нескольким политикам безопасности паролей:",
+      "PasswordTooShort": "Пароль слишком короткий",
+      "PasswordRequiresUniqueChars": "Пароль должен содержать разные символы",
+      "PasswordRequiresLower": "Пароль должен содержать хотя бы одну строчную букву ('a'-'z')",
+      "PasswordRequiresUpper": "Пароль должен содержать хотя бы одну заглавную букву ('A'-'Z')",
+      "PasswordRequiresDigit": "Пароль должен содержать хотя бы одну цифру ('0'-'9')",
+      "PasswordRequiresNonAlphanumeric": "Пароль должен содержать хотя бы один небуквенно-цифровой символ",
+      "recentPasswordUsed": "Вы уже использовали этот пароль ранее. Выберите другой."
+    }
+  },
+  "LOGIN": {
+    "TITLE": "С возвращением",
+    "SUBTITLE": "Войдите в свою учётную запись, чтобы продолжить",
+    "FIELDS": {
+      "LOGIN": {
+        "LABEL": "Email",
+        "PLACEHOLDER": "Введите email"
+      },
+      "PASSWORD": {
+        "LABEL": "Пароль",
+        "PLACEHOLDER": "Введите пароль"
+      },
+      "REMEMBER_ME": {
+        "LABEL": "Запомнить меня"
+      },
+      "FORGOT_PASSWORD": {
+        "TITLE": "Забыли пароль",
+        "LABEL": "Email",
+        "PLACEHOLDER": "Пожалуйста, введите email"
+      }
+    },
+    "FORGOT_PASSWORD_BUTTON": "Забыли пароль?",
+    "BUTTON": "Войти",
+    "OR": "или",
+    "FORGOT_BUTTON": "Отправить",
+    "BACK_BUTTON": "Назад",
+    "BUTTON_OK": "ОК",
+    "RESET_EMAIL_TEXT": "Мы отправим Вам письмо с инструкциями по сбросу пароля.",
+    "RESET_EMAIL_SENT": "Письмо с инструкциями отправлено.",
+    "SSO_NO_PROVIDERS_ERROR": "Аутентификация SSO не настроена. Пожалуйста, обратитесь к администратору.",
+    "ERRORS": {
+      "INVALID_CREDENTIALS": "Неверный логин или пароль.",
+      "AUTH_WITH_CODE": "Ошибка аутентификации (код: {code}).",
+      "AUTH_GENERIC": "Ошибка аутентификации: {detail}"
+    }
+  },
+  "FORGOT_PASSWORD": {
+    "TITLE": "Сброс пароля",
+    "SUBTITLE": "Введите email, и мы отправим Вам ссылку для сброса",
+    "FIELDS": {
+      "EMAIL": {
+        "LABEL": "Email",
+        "PLACEHOLDER": "Введите адрес электронной почты"
+      }
+    },
+    "SEND_BUTTON": "Отправить ссылку",
+    "BACK_TO_LOGIN": "Вернуться ко входу",
+    "SUCCESS_TITLE": "Проверьте почту",
+    "SUCCESS_TEXT": "Мы отправили ссылку для сброса на адрес {email}"
+  },
+  "PASSWORDRESET": {
+    "TITLE": "Новый пароль",
+    "SUBTITLE": "Введите новый пароль",
+    "FIELDS": {
+      "PASSWORD": {
+        "LABEL": "Новый пароль",
+        "PLACEHOLDER": "Введите пароль"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Подтвердите пароль",
+        "PLACEHOLDER": "Подтвердите пароль"
+      }
+    },
+    "SAVE_PASSWORD": "Сохранить",
+    "ERRORS": {
+      "Repeat-password": "Пароли не совпадают",
+      "Invalid-token": "Токен недействителен или истёк",
+      "Password-too-weak": "Новый пароль не соответствует одной или нескольким политикам безопасности паролей:",
+      "PasswordTooShort": "Пароль слишком короткий",
+      "PasswordRequiresUniqueChars": "Пароль должен содержать разные символы",
+      "PasswordRequiresLower": "Пароль должен содержать хотя бы одну строчную букву ('a'-'z')",
+      "PasswordRequiresUpper": "Пароль должен содержать хотя бы одну заглавную букву ('A'-'Z')",
+      "PasswordRequiresDigit": "Пароль должен содержать хотя бы одну цифру ('0'-'9')",
+      "PasswordRequiresNonAlphanumeric": "Пароль должен содержать хотя бы один небуквенно-цифровой символ",
+      "recentPasswordUsed": "Вы уже использовали этот пароль ранее. Выберите другой."
+    }
+  },
+  "ASSETS_MANAGER": {
+    "TITLE": "Ресурсы",
+    "TOOLBAR": {
+      "SAVE": "Сохранить",
+      "REFRESH": "Обновить",
+      "ADD": "Добавить",
+      "DELETE": "Удалить выбранные"
+    },
+    "EMPTY": {
+      "NO_ASSETS": "Нет ресурсов",
+      "UPLOAD_ASSETS": "Перетащите ресурсы сюда или нажмите кнопку «Загрузить»",
+      "UPLOAD": "Загрузить"
+    },
+    "TABLE": {
+      "HEADER": {
+        "IMAGE": "Изобр.",
+        "NAME": "Имя",
+        "SIZE": "Размер",
+        "SORT_ORDER": "Порядок сортировки",
+        "CREATED_DATE": "Дата создания"
+      },
+      "ACTIONS": {
+        "DELETE": "Удалить",
+        "EDIT": "Редактировать"
+      }
+    }
+  },
+  "ASSETS": {
+    "PAGES": {
+      "DETAILS": {
+        "SUBTITLE": "Редактирование ресурса",
+        "TOOLBAR": {
+          "SAVE": "Сохранить",
+          "DELETE": "Удалить"
+        },
+        "FIELDS": {
+          "SIZE": "Размер",
+          "CREATED_DATE": "Дата создания",
+          "URL": "URL",
+          "COPY": "Копировать ссылку",
+          "NAME": {
+            "TITLE": "Имя ресурса",
+            "PLACEHOLDER": "Введите имя ресурса"
+          },
+          "ALT": {
+            "TITLE": "Альтернативный текст изображения",
+            "PLACEHOLDER": "Введите альтернативный текст",
+            "TOOLTIP": "Этот текст отображается, если изображение на странице отключено или не загрузилось"
+          },
+          "DESCRIPTION": {
+            "TITLE": "Мета-описание",
+            "PLACEHOLDER": "Введите мета-описание"
+          }
+        }
+      }
+    }
+  },
+  "messages": {
+    "_default": "Поле {field} содержит недопустимое значение",
+    "alpha": "Поле {field} может содержать только буквы",
+    "alpha_num": "Поле {field} может содержать только буквы и цифры",
+    "alpha_dash": "Поле {field} может содержать только буквы, цифры, дефисы и символы подчёркивания",
+    "alpha_spaces": "Поле {field} может содержать только буквы и пробелы",
+    "between": "Значение поля {field} должно быть от 0:{min} до 1:{max}",
+    "confirmed": "Значение поля {field} не совпадает с подтверждением",
+    "digits": "Поле {field} должно быть числом и содержать ровно 0:{length} цифр",
+    "dimensions": "Размер поля {field} должен быть 0:{width} на 1:{height} пикселей",
+    "email": "Поле {field} должно содержать корректный email",
+    "not_one_of": "Поле {field} содержит недопустимое значение",
+    "ext": "Поле {field} содержит недопустимый файл",
+    "image": "Поле {field} должно содержать изображение",
+    "integer": "Поле {field} должно быть целым числом",
+    "length": "Длина поля {field} должна быть 0:{length}",
+    "max_value": "Значение поля {field} должно быть не больше 0:{max}",
+    "max": "Поле {field} не может содержать больше 0:{length} символов",
+    "mimes": "Поле {field} должно содержать файл допустимого типа",
+    "min_value": "Значение поля {field} должно быть не меньше 0:{min}",
+    "min": "Поле {field} должно содержать не менее 0:{length} символов",
+    "numeric": "Поле {field} может содержать только цифры",
+    "one_of": "Поле {field} содержит недопустимое значение",
+    "regex": "Поле {field} имеет неверный формат",
+    "required_if": "Поле {field} обязательно для заполнения",
+    "required": "Поле {field} обязательно для заполнения",
+    "size": "Размер поля {field} должен быть меньше 0:{size} КБ",
+    "url": "Поле {field} содержит недопустимый URL",
+    "min_dimensions": {
+      "error": "Размеры изображения должны быть больше {height}*{width}",
+      "not_image_error": "Файл не является изображением"
+    },
+    "file_weight": "Размер файла не должен превышать {size} КБ",
+    "before": "Дата окончания должна быть раньше даты начала",
+    "after": "Дата окончания должна быть позже даты начала",
+    "bigint": "Неподдерживаемое число"
+  },
+  "PERMISSION_MESSAGES": {
+    "ACCESS_RESTRICTED": "Доступ ограничен"
+  },
+  "AI_AGENT": {
+    "LOADING": "Загрузка Virto OZ..."
+  },
+  "VC_SCHEDULER": {
+    "AGENDA": "Повестка",
+    "ALL_DAY": "Весь день",
+    "CANCEL": "Отменить",
+    "CLOSE": "Закрыть",
+    "COLOR": "Цвет",
+    "COLOR_DEFAULT": "Цвет по умолчанию",
+    "COLOR_CUSTOM": "Другой цвет",
+    "COLOR_BLUE": "Синий",
+    "COLOR_GREEN": "Зелёный",
+    "COLOR_AMBER": "Янтарный",
+    "COLOR_RED": "Красный",
+    "COLOR_PURPLE": "Фиолетовый",
+    "COLOR_PINK": "Розовый",
+    "COLOR_TEAL": "Бирюзовый",
+    "COLOR_SLATE": "Серый",
+    "DAY": "День",
+    "DAY_N_OF_M": "День {n} из {total}",
+    "DELETE": "Удалить",
+    "DELETE_CONFIRM_BODY": "Удалить «{title}»? Это действие нельзя отменить.",
+    "DELETE_CONFIRM_TITLE": "Удалить событие",
+    "EDIT": "Редактировать",
+    "EDIT_EVENT": "Редактировать событие",
+    "EMPTY": "Нет событий в этом периоде",
+    "EMPTY_HINT": "Событий пока нет. Нажмите на день, чтобы добавить событие.",
+    "END": "Окончание",
+    "LOADING": "Загрузка событий…",
+    "MORE": "+{count} ещё",
+    "MORE_EVENTS": "Другие события",
+    "MONTH": "Месяц",
+    "MORE_OPTIONS": "Другие параметры",
+    "NEW_EVENT": "Новое событие",
+    "NEXT": "Далее",
+    "PREVIOUS": "Назад",
+    "RECUR_SCOPE_ALL": "Все события",
+    "RECUR_SCOPE_BODY_DELETE": "Это событие входит в повторяющуюся серию. Удалить только это событие или все события серии?",
+    "RECUR_SCOPE_BODY_EDIT": "Это событие входит в повторяющуюся серию. Изменить только это событие или все события серии?",
+    "RECUR_SCOPE_THIS": "Это событие",
+    "RECUR_SCOPE_TITLE": "Повторяющееся событие",
+    "REPEAT": "Повтор",
+    "REPEAT_DAILY": "Ежедневно",
+    "REPEAT_END": "Окончание",
+    "REPEAT_END_COUNT": "После",
+    "REPEAT_END_NEVER": "Никогда",
+    "REPEAT_END_UNTIL": "В дату",
+    "REPEAT_EVERY": "Повторять каждые",
+    "REPEAT_UNIT_DAYS": "дн.",
+    "REPEAT_UNIT_WEEKS": "нед.",
+    "REPEAT_UNIT_MONTHS": "мес.",
+    "REPEAT_UNIT_YEARS": "г.",
+    "REPEAT_MONTHLY": "Ежемесячно",
+    "REPEAT_NONE": "Не повторять",
+    "REPEAT_OCCURRENCES": "повтор.",
+    "REPEAT_ON": "Повторять по",
+    "REPEAT_WEEKLY": "Еженедельно",
+    "REPEAT_YEARLY": "Ежегодно",
+    "SAVE": "Сохранить",
+    "START": "Начало",
+    "TIMELINE": "Временная шкала",
+    "TIMELINE_DAY": "Шкала: день",
+    "TIMELINE_WEEK": "Шкала: неделя",
+    "TITLE": "Название",
+    "TODAY": "Сегодня",
+    "WEEK": "Неделя",
+    "WORK_WEEK": "Рабочая неделя",
+    "ZOOM_IN": "Увеличить",
+    "ZOOM_OUT": "Уменьшить",
+    "EVENT_DETAILS": "Сведения о событии"
+  },
+  "common": {
+    "no_options": "Нет вариантов"
+  }
+}

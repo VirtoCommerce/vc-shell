@@ -46,6 +46,9 @@ describe("validateFrontmatter", () => {
       group: "blade-navigation", // valid for composables, not components
     });
     expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error).toContain('group: group "blade-navigation" is not allowed for category "components"');
+    }
   });
 
   it("accepts category: plugins with group: root", () => {

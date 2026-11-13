@@ -50,34 +50,35 @@ const open = ref(false);
 
 ## Props
 
-| Prop             | Type                                   | Default           | Description                                                                                 |
-| ---------------- | -------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------- |
-| `modelValue`     | `boolean`                              | _required_        | Open/close state (v-model).                                                                 |
-| `position`       | `"left" \| "right" \| "bottom"`        | `"right"`         | Slide-in direction.                                                                         |
-| `size`           | `"sm" \| "md" \| "lg" \| "full"`       | `"sm"`            | Panel size preset. Width (left/right) 300/380/520px/100vw; height (bottom) 40/56/72/100dvh. |
-| `variant`        | `"default" \| "elevated" \| "minimal"` | `"default"`       | Visual style.                                                                               |
-| `width`          | `number \| string`                     | --                | Custom width override (left/right positions).                                               |
-| `height`         | `number \| string`                     | --                | Custom height override (bottom position).                                                   |
-| `title`          | `string`                               | `""`              | Header title text.                                                                          |
-| `subtitle`       | `string`                               | `""`              | Header subtitle text.                                                                       |
-| `showOverlay`    | `boolean`                              | `true`            | Show backdrop overlay.                                                                      |
-| `closeOnOverlay` | `boolean`                              | `true`            | Close when clicking overlay.                                                                |
-| `closeOnEscape`  | `boolean`                              | `true`            | Close on Escape key.                                                                        |
-| `closeButton`    | `boolean`                              | `true`            | Show close button in header.                                                                |
-| `trapFocus`      | `boolean`                              | `true`            | Trap keyboard focus inside panel.                                                           |
-| `lockScroll`     | `boolean`                              | `true`            | Prevent body scroll while open.                                                             |
-| `inset`          | `boolean`                              | `true`            | Add rounded inset gap from viewport edges.                                                  |
-| `returnFocus`    | `boolean`                              | `true`            | Restore focus to the trigger element on close.                                              |
-| `autoFocus`      | `boolean`                              | `true`            | Focus the first focusable element on open.                                                  |
-| `teleport`       | `boolean`                              | `true`            | Teleport the panel to a target (disabled toggles it off).                                   |
-| `teleportTo`     | `string \| HTMLElement`                | --                | Teleport target selector or element.                                                        |
-| `ariaLabel`      | `string`                               | `""`              | Accessible label for the dialog.                                                            |
-| `closeAriaLabel` | `string`                               | `"Close sidebar"` | Accessible label for the close button.                                                      |
-| `zIndex`         | `number`                               | `9200`            | Stacking order of the sidebar container.                                                    |
-| `closeThreshold` | `number`                               | `0.3`             | Swipe fraction of panel height needed to dismiss (bottom).                                  |
-| `draggable`      | `boolean`                              | `false`           | Enable swipe-to-dismiss (bottom only).                                                      |
-| `dragHandle`     | `boolean`                              | `false`           | Show iOS-style drag handle bar.                                                             |
-| `forceMount`     | `boolean`                              | `false`           | Keep the panel content mounted (hidden, inert) while closed.                                |
+| Prop             | Type                                   | Default           | Description                                                                                                      |
+| ---------------- | -------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `modelValue`     | `boolean`                              | _required_        | Open/close state (v-model).                                                                                      |
+| `position`       | `"left" \| "right" \| "bottom"`        | `"right"`         | Slide-in direction.                                                                                              |
+| `size`           | `"sm" \| "md" \| "lg" \| "full"`       | `"sm"`            | Panel size preset. Width (left/right) 300/380/520px/100vw; height (bottom) 40/56/72/100dvh.                      |
+| `variant`        | `"default" \| "elevated" \| "minimal"` | `"default"`       | Visual style.                                                                                                    |
+| `width`          | `number \| string`                     | --                | Custom width override (left/right positions).                                                                    |
+| `height`         | `number \| string`                     | --                | Custom height override (bottom position).                                                                        |
+| `title`          | `string`                               | `""`              | Header title text.                                                                                               |
+| `subtitle`       | `string`                               | `""`              | Header subtitle text.                                                                                            |
+| `showOverlay`    | `boolean`                              | `true`            | Show backdrop overlay.                                                                                           |
+| `closeOnOverlay` | `boolean`                              | `true`            | Close when clicking overlay.                                                                                     |
+| `closeOnEscape`  | `boolean`                              | `true`            | Close on Escape key.                                                                                             |
+| `closeButton`    | `boolean`                              | `true`            | Show close button in header.                                                                                     |
+| `trapFocus`      | `boolean`                              | `true`            | Trap keyboard focus inside panel.                                                                                |
+| `lockScroll`     | `boolean`                              | `true`            | Prevent body scroll while open.                                                                                  |
+| `inset`          | `boolean`                              | `true`            | Add rounded inset gap from viewport edges.                                                                       |
+| `returnFocus`    | `boolean`                              | `true`            | Restore focus to the trigger element on close.                                                                   |
+| `autoFocus`      | `boolean`                              | `true`            | Focus the first focusable element on open.                                                                       |
+| `teleport`       | `boolean`                              | `true`            | Teleport the panel to a target (disabled toggles it off).                                                        |
+| `teleportTo`     | `string \| HTMLElement`                | --                | Teleport target selector or element.                                                                             |
+| `ariaLabel`      | `string`                               | `""`              | Accessible label for the dialog.                                                                                 |
+| `closeAriaLabel` | `string`                               | `"Close sidebar"` | Accessible label for the close button.                                                                           |
+| `zIndex`         | `number`                               | `9200`            | Stacking order of the sidebar container.                                                                         |
+| `closeThreshold` | `number`                               | `0.3`             | Swipe fraction of panel height needed to dismiss (bottom).                                                       |
+| `draggable`      | `boolean`                              | `false`           | Enable swipe-to-dismiss (bottom only).                                                                           |
+| `dragHandle`     | `boolean`                              | `false`           | Show iOS-style drag handle bar.                                                                                  |
+| `forceMount`     | `boolean`                              | `false`           | Keep the panel content mounted (hidden, inert) while closed.                                                     |
+| `panelClass`     | `string`                               | --                | Extra class on the teleported root (`.vc-sidebar`, which holds the overlay and the panel), to style one sidebar. |
 
 ## Events
 

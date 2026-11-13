@@ -168,6 +168,102 @@
       }
     },
     "ORGANISMS": {
+      "VC_SEARCH_BAR": {
+        "SEARCH_PLACEHOLDER": "Sök",
+        "FILTERS": "Filter",
+        "REMOVE_FILTER": "Ta bort filtret ”{label}”",
+        "CLEAR_SEARCH": "Rensa sökningen",
+        "CLEAR_FILTERS": "Rensa alla filter",
+        "FILTERS_APPLIED": "Filter, {count} tillämpade",
+        "MORE_FILTERS": "{count} filter till",
+        "SUGGEST": {
+          "BY": "Filtrera efter {field}",
+          "BY_FIELD": "Filtrera efter fält",
+          "ADD": "för att lägga till"
+        },
+        "PHONE": {
+          "CLEAR": "Rensa",
+          "DONE": "Klar",
+          "VIEW": "Vy",
+          "SHOW": "Visa {count} resultat | Visa {count} resultat",
+          "SHOW_ANY": "Visa resultat",
+          "NO_MATCH": "Inga matchande resultat",
+          "RESULTS": "{count} resultat | {count} resultat",
+          "ITEMS": "{count} objekt | {count} objekt",
+          "FILTERED_FROM": "filtrerat från {count}",
+          "FILTER_COUNT": "{count} filter | {count} filter",
+          "CLEAR_ALL": "Rensa alla"
+        },
+        "DATE": {
+          "TODAY": "Idag",
+          "LAST_7": "Senaste 7 dagarna",
+          "LAST_30": "Senaste 30 dagarna",
+          "CUSTOM_RANGE": "Anpassat intervall",
+          "ANY": "När som helst"
+        },
+        "NUMBER": {
+          "MIN": "Från",
+          "MAX": "Till",
+          "APPLY": "Tillämpa",
+          "NOTE": "Intervall tillämpas med Enter",
+          "NOTE_PRESETS": "Intervall tillämpas med Enter, förval direkt"
+        },
+        "VIEWS": {
+          "ALL": "Alla",
+          "SELECTOR": "Vy: {name}",
+          "SAVED_VIEWS": "Sparade vyer",
+          "MODIFIED": "Ändrad",
+          "OPTIONS": "Alternativ för {name}",
+          "SAVE_CHANGES": "Spara ändringarna i ”{name}”",
+          "SAVE_AS_NEW": "Spara som ny vy…",
+          "REVERT": "Återgå till ”{name}”",
+          "REVERT_SHORT": "Återgå",
+          "RENAME": "Byt namn",
+          "DELETE": "Ta bort",
+          "NEW_NAME": "Nytt namn",
+          "UNSAVED": "Osparade filter",
+          "SAVE": "Spara",
+          "SAVE_AS_VIEW": "Spara som vy…",
+          "NAME_PLACEHOLDER": "Vyns namn",
+          "CANCEL": "Avbryt"
+        },
+        "OPERATOR": {
+          "ANY": "Är något av",
+          "NOT": "Är inte"
+        },
+        "PANEL": {
+          "ACTIVE": "Aktiva: {count}",
+          "TOGGLES": "Växlar",
+          "ANY": "Alla",
+          "RESULTS": "resultat · tillämpas direkt | resultat · tillämpas direkt",
+          "APPLIED": "Tillämpas direkt",
+          "CLEAR": "Rensa filter"
+        },
+        "EDITOR": {
+          "FIND": "Sök",
+          "NOTHING_FOUND": "Inget hittades",
+          "ONLY": "Endast",
+          "ONLY_LABEL": "Endast {label}"
+        }
+      },
+      "VC_DATA_TABLE": {
+        "STATUS": {
+          "FILTERED_FROM": "filtrerat från {count}",
+          "FILTERS": "{count} filter | {count} filter",
+          "FILTERS_AND_SEARCH": "{count} filter + sökning | {count} filter + sökning",
+          "SEARCH": "sökning",
+          "CLEAR_ALL": "Rensa alla"
+        },
+        "NO_RESULTS": {
+          "TITLE_SEARCH_FILTERS": "Inga resultat matchar ”{query}” med {count} filter | Inga resultat matchar ”{query}” med {count} filter",
+          "TITLE_SEARCH": "Inga resultat matchar ”{query}”",
+          "TITLE_FILTERS": "Inga resultat matchar {count} filter | Inga resultat matchar {count} filter",
+          "HINT_FILTERS": "Ta bort ett filter nedan eller rensa alla.",
+          "HINT_SEARCH": "Kontrollera stavningen eller prova ett annat sökord.",
+          "CLEAR_SEARCH": "Rensa sökningen",
+          "CLEAR_FILTERS": "Rensa filter"
+        }
+      },
       "VC_DYNAMIC_PROPERTY": {
         "ADD": "Lägg till värde",
         "VALUE_TYPE": {

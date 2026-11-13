@@ -168,6 +168,102 @@
       }
     },
     "ORGANISMS": {
+      "VC_SEARCH_BAR": {
+        "SEARCH_PLACEHOLDER": "Buscar",
+        "FILTERS": "Filtros",
+        "REMOVE_FILTER": "Quitar el filtro \"{label}\"",
+        "CLEAR_SEARCH": "Limpiar búsqueda",
+        "CLEAR_FILTERS": "Limpiar todos los filtros",
+        "FILTERS_APPLIED": "Filtros, {count} aplicados",
+        "MORE_FILTERS": "{count} filtros más",
+        "SUGGEST": {
+          "BY": "Filtrar por {field}",
+          "BY_FIELD": "Filtrar por campo",
+          "ADD": "para añadir"
+        },
+        "PHONE": {
+          "CLEAR": "Limpiar",
+          "DONE": "Listo",
+          "VIEW": "Vista",
+          "SHOW": "Mostrar {count} resultado | Mostrar {count} resultados",
+          "SHOW_ANY": "Mostrar resultados",
+          "NO_MATCH": "No hay resultados coincidentes",
+          "RESULTS": "{count} resultado | {count} resultados",
+          "ITEMS": "{count} elemento | {count} elementos",
+          "FILTERED_FROM": "filtrados de {count}",
+          "FILTER_COUNT": "{count} filtro | {count} filtros",
+          "CLEAR_ALL": "Limpiar todo"
+        },
+        "DATE": {
+          "TODAY": "Hoy",
+          "LAST_7": "Últimos 7 días",
+          "LAST_30": "Últimos 30 días",
+          "CUSTOM_RANGE": "Rango personalizado",
+          "ANY": "Cualquier fecha"
+        },
+        "NUMBER": {
+          "MIN": "Desde",
+          "MAX": "Hasta",
+          "APPLY": "Aplicar",
+          "NOTE": "Los rangos se aplican al pulsar Enter",
+          "NOTE_PRESETS": "Los rangos se aplican al pulsar Enter; los valores predefinidos, al instante"
+        },
+        "VIEWS": {
+          "ALL": "Todos",
+          "SELECTOR": "Vista: {name}",
+          "SAVED_VIEWS": "Vistas guardadas",
+          "MODIFIED": "Modificada",
+          "OPTIONS": "Opciones de {name}",
+          "SAVE_CHANGES": "Guardar cambios en \"{name}\"",
+          "SAVE_AS_NEW": "Guardar como nueva vista…",
+          "REVERT": "Volver a \"{name}\"",
+          "REVERT_SHORT": "Revertir",
+          "RENAME": "Cambiar nombre",
+          "DELETE": "Eliminar",
+          "NEW_NAME": "Nuevo nombre",
+          "UNSAVED": "Filtros sin guardar",
+          "SAVE": "Guardar",
+          "SAVE_AS_VIEW": "Guardar como vista…",
+          "NAME_PLACEHOLDER": "Nombre de la vista",
+          "CANCEL": "Cancelar"
+        },
+        "OPERATOR": {
+          "ANY": "Es cualquiera de",
+          "NOT": "No es"
+        },
+        "PANEL": {
+          "ACTIVE": "Activos: {count}",
+          "TOGGLES": "Interruptores",
+          "ANY": "Cualquiera",
+          "RESULTS": "resultado · se aplica al instante | resultados · se aplican al instante",
+          "APPLIED": "Se aplica al instante",
+          "CLEAR": "Limpiar filtros"
+        },
+        "EDITOR": {
+          "FIND": "Buscar",
+          "NOTHING_FOUND": "No se encontró nada",
+          "ONLY": "Solo",
+          "ONLY_LABEL": "Solo {label}"
+        }
+      },
+      "VC_DATA_TABLE": {
+        "STATUS": {
+          "FILTERED_FROM": "filtrados de {count}",
+          "FILTERS": "{count} filtro | {count} filtros",
+          "FILTERS_AND_SEARCH": "{count} filtro + búsqueda | {count} filtros + búsqueda",
+          "SEARCH": "búsqueda",
+          "CLEAR_ALL": "Limpiar todo"
+        },
+        "NO_RESULTS": {
+          "TITLE_SEARCH_FILTERS": "No hay resultados para \"{query}\" con {count} filtro | No hay resultados para \"{query}\" con {count} filtros",
+          "TITLE_SEARCH": "No hay resultados para \"{query}\"",
+          "TITLE_FILTERS": "No hay resultados con {count} filtro | No hay resultados con {count} filtros",
+          "HINT_FILTERS": "Quite un filtro abajo o límpielos todos.",
+          "HINT_SEARCH": "Revise la ortografía o pruebe con otra palabra clave.",
+          "CLEAR_SEARCH": "Limpiar búsqueda",
+          "CLEAR_FILTERS": "Limpiar filtros"
+        }
+      },
       "VC_DYNAMIC_PROPERTY": {
         "ADD": "Añadir valor",
         "VALUE_TYPE": {

@@ -168,6 +168,102 @@
       }
     },
     "ORGANISMS": {
+      "VC_SEARCH_BAR": {
+        "SEARCH_PLACEHOLDER": "Rechercher",
+        "FILTERS": "Filtres",
+        "REMOVE_FILTER": "Supprimer le filtre « {label} »",
+        "CLEAR_SEARCH": "Effacer la recherche",
+        "CLEAR_FILTERS": "Effacer tous les filtres",
+        "FILTERS_APPLIED": "Filtres, appliqués : {count}",
+        "MORE_FILTERS": "Autres filtres : {count}",
+        "SUGGEST": {
+          "BY": "Filtrer par {field}",
+          "BY_FIELD": "Filtrer par champ",
+          "ADD": "pour ajouter"
+        },
+        "PHONE": {
+          "CLEAR": "Effacer",
+          "DONE": "Terminé",
+          "VIEW": "Vue",
+          "SHOW": "Afficher {count} résultat | Afficher {count} résultats",
+          "SHOW_ANY": "Afficher les résultats",
+          "NO_MATCH": "Aucun résultat correspondant",
+          "RESULTS": "{count} résultat | {count} résultats",
+          "ITEMS": "{count} élément | {count} éléments",
+          "FILTERED_FROM": "filtrés sur {count}",
+          "FILTER_COUNT": "{count} filtre | {count} filtres",
+          "CLEAR_ALL": "Tout effacer"
+        },
+        "DATE": {
+          "TODAY": "Aujourd'hui",
+          "LAST_7": "7 derniers jours",
+          "LAST_30": "30 derniers jours",
+          "CUSTOM_RANGE": "Période personnalisée",
+          "ANY": "Toutes les dates"
+        },
+        "NUMBER": {
+          "MIN": "De",
+          "MAX": "À",
+          "APPLY": "Appliquer",
+          "NOTE": "Les plages s'appliquent avec Entrée",
+          "NOTE_PRESETS": "Les plages s'appliquent avec Entrée, les préréglages immédiatement"
+        },
+        "VIEWS": {
+          "ALL": "Tous",
+          "SELECTOR": "Vue : {name}",
+          "SAVED_VIEWS": "Vues enregistrées",
+          "MODIFIED": "Modifiée",
+          "OPTIONS": "Options de {name}",
+          "SAVE_CHANGES": "Enregistrer les modifications de « {name} »",
+          "SAVE_AS_NEW": "Enregistrer comme nouvelle vue…",
+          "REVERT": "Revenir à « {name} »",
+          "REVERT_SHORT": "Rétablir",
+          "RENAME": "Renommer",
+          "DELETE": "Supprimer",
+          "NEW_NAME": "Nouveau nom",
+          "UNSAVED": "Filtres non enregistrés",
+          "SAVE": "Enregistrer",
+          "SAVE_AS_VIEW": "Enregistrer comme vue…",
+          "NAME_PLACEHOLDER": "Nom de la vue",
+          "CANCEL": "Annuler"
+        },
+        "OPERATOR": {
+          "ANY": "Est l'un de",
+          "NOT": "N'est pas"
+        },
+        "PANEL": {
+          "ACTIVE": "Actifs : {count}",
+          "TOGGLES": "Interrupteurs",
+          "ANY": "Tous",
+          "RESULTS": "résultat · appliqué immédiatement | résultats · appliqués immédiatement",
+          "APPLIED": "Appliqué immédiatement",
+          "CLEAR": "Effacer les filtres"
+        },
+        "EDITOR": {
+          "FIND": "Rechercher",
+          "NOTHING_FOUND": "Aucun résultat",
+          "ONLY": "Seulement",
+          "ONLY_LABEL": "Seulement {label}"
+        }
+      },
+      "VC_DATA_TABLE": {
+        "STATUS": {
+          "FILTERED_FROM": "filtrés sur {count}",
+          "FILTERS": "{count} filtre | {count} filtres",
+          "FILTERS_AND_SEARCH": "{count} filtre + recherche | {count} filtres + recherche",
+          "SEARCH": "recherche",
+          "CLEAR_ALL": "Tout effacer"
+        },
+        "NO_RESULTS": {
+          "TITLE_SEARCH_FILTERS": "Aucun résultat pour « {query} » avec {count} filtre | Aucun résultat pour « {query} » avec {count} filtres",
+          "TITLE_SEARCH": "Aucun résultat pour « {query} »",
+          "TITLE_FILTERS": "Aucun résultat avec {count} filtre | Aucun résultat avec {count} filtres",
+          "HINT_FILTERS": "Supprimez un filtre ci-dessous ou effacez-les tous.",
+          "HINT_SEARCH": "Vérifiez l'orthographe ou essayez un autre mot-clé.",
+          "CLEAR_SEARCH": "Effacer la recherche",
+          "CLEAR_FILTERS": "Effacer les filtres"
+        }
+      },
       "VC_DYNAMIC_PROPERTY": {
         "ADD": "Ajouter une valeur",
         "VALUE_TYPE": {

@@ -78,6 +78,22 @@
           class="vc-blade-header__content"
         >
           <div
+            v-if="titleAddon"
+            class="vc-blade-header__title-row"
+          >
+            <div
+              :id="titleId"
+              class="vc-blade-header__title"
+              :class="{
+                'vc-blade-header__title-no-subtitle': !subtitle,
+              }"
+            >
+              {{ title }}
+            </div>
+            <component :is="titleAddon" />
+          </div>
+          <div
+            v-else
             :id="titleId"
             class="vc-blade-header__title"
             :class="{
@@ -117,7 +133,7 @@
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 import { HeaderControls } from "@ui/components/shared/header-controls";
-import { ref, inject } from "vue";
+import { ref, inject, type VNode } from "vue";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { shift } from "@floating-ui/vue";
 import { BladeRenderingStateKey } from "@core/blade-navigation/types";
@@ -133,6 +149,8 @@ export interface Props {
   titleId?: string;
   /** When true, shows skeleton placeholders for icon/title/subtitle while keeping controls usable */
   loading?: boolean;
+  /** Render function registered through BladeTitleAddonKey, shown next to the title */
+  titleAddon?: (() => VNode) | null;
 }
 const props = defineProps<Props>();
 
@@ -251,6 +269,18 @@ function onClose(): void {
 
   &__content {
     @apply tw-overflow-hidden;
+  }
+
+  &__title-row {
+    @apply tw-flex tw-items-center tw-gap-2 tw-min-w-0;
+
+    > .vc-blade-header__title {
+      @apply tw-min-w-0;
+    }
+
+    > :not(.vc-blade-header__title) {
+      @apply tw-shrink-0;
+    }
   }
 
   &__title {

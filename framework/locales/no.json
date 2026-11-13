@@ -168,6 +168,102 @@
       }
     },
     "ORGANISMS": {
+      "VC_SEARCH_BAR": {
+        "SEARCH_PLACEHOLDER": "Søk",
+        "FILTERS": "Filtre",
+        "REMOVE_FILTER": "Fjern filteret «{label}»",
+        "CLEAR_SEARCH": "Tøm søket",
+        "CLEAR_FILTERS": "Tøm alle filtre",
+        "FILTERS_APPLIED": "Filtre, {count} i bruk",
+        "MORE_FILTERS": "{count} filtre til",
+        "SUGGEST": {
+          "BY": "Filtrer etter {field}",
+          "BY_FIELD": "Filtrer etter felt",
+          "ADD": "for å legge til"
+        },
+        "PHONE": {
+          "CLEAR": "Tøm",
+          "DONE": "Ferdig",
+          "VIEW": "Visning",
+          "SHOW": "Vis {count} resultat | Vis {count} resultater",
+          "SHOW_ANY": "Vis resultater",
+          "NO_MATCH": "Ingen samsvarende resultater",
+          "RESULTS": "{count} resultat | {count} resultater",
+          "ITEMS": "{count} element | {count} elementer",
+          "FILTERED_FROM": "filtrert fra {count}",
+          "FILTER_COUNT": "{count} filter | {count} filtre",
+          "CLEAR_ALL": "Tøm alle"
+        },
+        "DATE": {
+          "TODAY": "I dag",
+          "LAST_7": "Siste 7 dager",
+          "LAST_30": "Siste 30 dager",
+          "CUSTOM_RANGE": "Egendefinert periode",
+          "ANY": "Når som helst"
+        },
+        "NUMBER": {
+          "MIN": "Fra",
+          "MAX": "Til",
+          "APPLY": "Bruk",
+          "NOTE": "Intervaller brukes med Enter",
+          "NOTE_PRESETS": "Intervaller brukes med Enter, forhåndsvalg med en gang"
+        },
+        "VIEWS": {
+          "ALL": "Alle",
+          "SELECTOR": "Visning: {name}",
+          "SAVED_VIEWS": "Lagrede visninger",
+          "MODIFIED": "Endret",
+          "OPTIONS": "Alternativer for {name}",
+          "SAVE_CHANGES": "Lagre endringene i «{name}»",
+          "SAVE_AS_NEW": "Lagre som ny visning…",
+          "REVERT": "Gå tilbake til «{name}»",
+          "REVERT_SHORT": "Gå tilbake",
+          "RENAME": "Gi nytt navn",
+          "DELETE": "Slett",
+          "NEW_NAME": "Nytt navn",
+          "UNSAVED": "Ulagrede filtre",
+          "SAVE": "Lagre",
+          "SAVE_AS_VIEW": "Lagre som visning…",
+          "NAME_PLACEHOLDER": "Navn på visningen",
+          "CANCEL": "Avbryt"
+        },
+        "OPERATOR": {
+          "ANY": "Er en av",
+          "NOT": "Er ikke"
+        },
+        "PANEL": {
+          "ACTIVE": "Aktive: {count}",
+          "TOGGLES": "Brytere",
+          "ANY": "Alle",
+          "RESULTS": "resultat · brukes med en gang | resultater · brukes med en gang",
+          "APPLIED": "Brukes med en gang",
+          "CLEAR": "Tøm filtre"
+        },
+        "EDITOR": {
+          "FIND": "Finn",
+          "NOTHING_FOUND": "Ingenting funnet",
+          "ONLY": "Bare",
+          "ONLY_LABEL": "Bare {label}"
+        }
+      },
+      "VC_DATA_TABLE": {
+        "STATUS": {
+          "FILTERED_FROM": "filtrert fra {count}",
+          "FILTERS": "{count} filter | {count} filtre",
+          "FILTERS_AND_SEARCH": "{count} filter + søk | {count} filtre + søk",
+          "SEARCH": "søk",
+          "CLEAR_ALL": "Tøm alle"
+        },
+        "NO_RESULTS": {
+          "TITLE_SEARCH_FILTERS": "Ingen resultater for «{query}» med {count} filter | Ingen resultater for «{query}» med {count} filtre",
+          "TITLE_SEARCH": "Ingen resultater for «{query}»",
+          "TITLE_FILTERS": "Ingen resultater med {count} filter | Ingen resultater med {count} filtre",
+          "HINT_FILTERS": "Fjern et filter nedenfor eller tøm alle.",
+          "HINT_SEARCH": "Sjekk stavemåten eller prøv et annet søkeord.",
+          "CLEAR_SEARCH": "Tøm søket",
+          "CLEAR_FILTERS": "Tøm filtre"
+        }
+      },
       "VC_DYNAMIC_PROPERTY": {
         "ADD": "Legg til verdi",
         "VALUE_TYPE": {

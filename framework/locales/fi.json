@@ -168,6 +168,102 @@
       }
     },
     "ORGANISMS": {
+      "VC_SEARCH_BAR": {
+        "SEARCH_PLACEHOLDER": "Hae",
+        "FILTERS": "Suodattimet",
+        "REMOVE_FILTER": "Poista suodatin ”{label}”",
+        "CLEAR_SEARCH": "Tyhjennä haku",
+        "CLEAR_FILTERS": "Tyhjennä kaikki suodattimet",
+        "FILTERS_APPLIED": "Suodattimet, käytössä {count}",
+        "MORE_FILTERS": "Muita suodattimia: {count}",
+        "SUGGEST": {
+          "BY": "Suodata kentän {field} mukaan",
+          "BY_FIELD": "Suodata kentän mukaan",
+          "ADD": "lisää"
+        },
+        "PHONE": {
+          "CLEAR": "Tyhjennä",
+          "DONE": "Valmis",
+          "VIEW": "Näkymä",
+          "SHOW": "Näytä {count} tulos | Näytä {count} tulosta",
+          "SHOW_ANY": "Näytä tulokset",
+          "NO_MATCH": "Ei vastaavia tuloksia",
+          "RESULTS": "{count} tulos | {count} tulosta",
+          "ITEMS": "{count} kohde | {count} kohdetta",
+          "FILTERED_FROM": "suodatettu {count} kohteesta",
+          "FILTER_COUNT": "{count} suodatin | {count} suodatinta",
+          "CLEAR_ALL": "Tyhjennä kaikki"
+        },
+        "DATE": {
+          "TODAY": "Tänään",
+          "LAST_7": "Viimeiset 7 päivää",
+          "LAST_30": "Viimeiset 30 päivää",
+          "CUSTOM_RANGE": "Mukautettu aikaväli",
+          "ANY": "Milloin tahansa"
+        },
+        "NUMBER": {
+          "MIN": "Alkaen",
+          "MAX": "Asti",
+          "APPLY": "Käytä",
+          "NOTE": "Välit otetaan käyttöön Enterillä",
+          "NOTE_PRESETS": "Välit otetaan käyttöön Enterillä, valmiit vaihtoehdot heti"
+        },
+        "VIEWS": {
+          "ALL": "Kaikki",
+          "SELECTOR": "Näkymä: {name}",
+          "SAVED_VIEWS": "Tallennetut näkymät",
+          "MODIFIED": "Muokattu",
+          "OPTIONS": "Näkymän {name} asetukset",
+          "SAVE_CHANGES": "Tallenna muutokset näkymään ”{name}”",
+          "SAVE_AS_NEW": "Tallenna uutena näkymänä…",
+          "REVERT": "Palauta ”{name}”",
+          "REVERT_SHORT": "Palauta",
+          "RENAME": "Nimeä uudelleen",
+          "DELETE": "Poista",
+          "NEW_NAME": "Uusi nimi",
+          "UNSAVED": "Tallentamattomat suodattimet",
+          "SAVE": "Tallenna",
+          "SAVE_AS_VIEW": "Tallenna näkymänä…",
+          "NAME_PLACEHOLDER": "Näkymän nimi",
+          "CANCEL": "Peruuta"
+        },
+        "OPERATOR": {
+          "ANY": "On jokin näistä",
+          "NOT": "Ei ole"
+        },
+        "PANEL": {
+          "ACTIVE": "Käytössä: {count}",
+          "TOGGLES": "Valitsimet",
+          "ANY": "Mikä tahansa",
+          "RESULTS": "tulos · käytössä heti | tulosta · käytössä heti",
+          "APPLIED": "Käytössä heti",
+          "CLEAR": "Tyhjennä suodattimet"
+        },
+        "EDITOR": {
+          "FIND": "Etsi",
+          "NOTHING_FOUND": "Mitään ei löytynyt",
+          "ONLY": "Vain",
+          "ONLY_LABEL": "Vain {label}"
+        }
+      },
+      "VC_DATA_TABLE": {
+        "STATUS": {
+          "FILTERED_FROM": "suodatettu {count} kohteesta",
+          "FILTERS": "{count} suodatin | {count} suodatinta",
+          "FILTERS_AND_SEARCH": "{count} suodatin + haku | {count} suodatinta + haku",
+          "SEARCH": "haku",
+          "CLEAR_ALL": "Tyhjennä kaikki"
+        },
+        "NO_RESULTS": {
+          "TITLE_SEARCH_FILTERS": "Ei tuloksia haulla ”{query}” ja {count} suodattimella | Ei tuloksia haulla ”{query}” ja {count} suodattimella",
+          "TITLE_SEARCH": "Ei tuloksia haulla ”{query}”",
+          "TITLE_FILTERS": "Ei tuloksia {count} suodattimella | Ei tuloksia {count} suodattimella",
+          "HINT_FILTERS": "Poista jokin alla olevista suodattimista tai tyhjennä kaikki.",
+          "HINT_SEARCH": "Tarkista kirjoitusasu tai kokeile toista hakusanaa.",
+          "CLEAR_SEARCH": "Tyhjennä haku",
+          "CLEAR_FILTERS": "Tyhjennä suodattimet"
+        }
+      },
       "VC_DYNAMIC_PROPERTY": {
         "ADD": "Lisää arvo",
         "VALUE_TYPE": {

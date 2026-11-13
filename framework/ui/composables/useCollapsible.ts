@@ -1,4 +1,4 @@
-import { ref, computed, type Ref, type CSSProperties } from "vue";
+import { ref, computed, onMounted, type Ref, type CSSProperties } from "vue";
 import { useResizeObserver } from "@vueuse/core";
 
 export interface UseCollapsibleOptions {
@@ -53,11 +53,16 @@ export function useCollapsible(options: UseCollapsibleOptions = {}): UseCollapsi
     isExpanded.value = !isExpanded.value;
   }
 
-  useResizeObserver(contentRef, () => {
+  function measure() {
     if (contentRef.value) {
       contentHeight.value = contentRef.value.scrollHeight;
     }
-  });
+  }
+
+  // Measure on mount too: the first resize callback comes a frame later, and until then a trigger
+  // that depends on hasOverflow stays disabled (and is skipped by focus-on-open in dialogs)
+  onMounted(measure);
+  useResizeObserver(contentRef, measure);
 
   return {
     contentRef,

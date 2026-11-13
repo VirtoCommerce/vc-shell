@@ -52,4 +52,16 @@ describe("VcBadge", () => {
     const w = mountBadge({ content: "1", inline: true, size: "s" });
     expect(w.find(".vc-badge__badge--inline-small").exists()).toBe(true);
   });
+
+  it("solid inline mode marks the badge for the filled colours", () => {
+    const w = mountBadge({ content: "3", inline: true, solid: true });
+    expect(w.find(".vc-badge__badge--inline.vc-badge__badge--solid").exists()).toBe(true);
+    expect(mountBadge({ content: "3", inline: true }).find(".vc-badge__badge--solid").exists()).toBe(false);
+  });
+
+  it("label mode shows a word in full", () => {
+    const w = mountBadge({ content: "Modified", inline: true, label: true, variant: "warning" });
+    expect(w.find(".vc-badge__badge--label").exists()).toBe(true);
+    expect(w.find(".vc-badge__text").text()).toBe("Modified");
+  });
 });

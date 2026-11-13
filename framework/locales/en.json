@@ -168,6 +168,102 @@
       }
     },
     "ORGANISMS": {
+      "VC_SEARCH_BAR": {
+        "SEARCH_PLACEHOLDER": "Search",
+        "FILTERS": "Filters",
+        "REMOVE_FILTER": "Remove {label} filter",
+        "CLEAR_SEARCH": "Clear search",
+        "CLEAR_FILTERS": "Clear all filters",
+        "FILTERS_APPLIED": "Filters, {count} applied",
+        "MORE_FILTERS": "{count} more filters",
+        "SUGGEST": {
+          "BY": "Filter by {field}",
+          "BY_FIELD": "Filter by field",
+          "ADD": "to add"
+        },
+        "PHONE": {
+          "CLEAR": "Clear",
+          "DONE": "Done",
+          "VIEW": "View",
+          "SHOW": "Show {count} result | Show {count} results",
+          "SHOW_ANY": "Show results",
+          "NO_MATCH": "No matching results",
+          "RESULTS": "{count} result | {count} results",
+          "ITEMS": "{count} item | {count} items",
+          "FILTERED_FROM": "filtered from {count}",
+          "FILTER_COUNT": "{count} filter | {count} filters",
+          "CLEAR_ALL": "Clear all"
+        },
+        "DATE": {
+          "TODAY": "Today",
+          "LAST_7": "Last 7 days",
+          "LAST_30": "Last 30 days",
+          "CUSTOM_RANGE": "Custom range",
+          "ANY": "Any time"
+        },
+        "NUMBER": {
+          "MIN": "From",
+          "MAX": "To",
+          "APPLY": "Apply",
+          "NOTE": "Ranges apply on Enter",
+          "NOTE_PRESETS": "Ranges apply on Enter, presets apply instantly"
+        },
+        "VIEWS": {
+          "ALL": "All",
+          "SELECTOR": "View: {name}",
+          "SAVED_VIEWS": "Saved views",
+          "MODIFIED": "Modified",
+          "OPTIONS": "{name} options",
+          "SAVE_CHANGES": "Save changes to “{name}”",
+          "SAVE_AS_NEW": "Save as new view…",
+          "REVERT": "Revert to “{name}”",
+          "REVERT_SHORT": "Revert",
+          "RENAME": "Rename",
+          "DELETE": "Delete",
+          "NEW_NAME": "New name",
+          "UNSAVED": "Unsaved filters",
+          "SAVE": "Save",
+          "SAVE_AS_VIEW": "Save as view…",
+          "NAME_PLACEHOLDER": "View name",
+          "CANCEL": "Cancel"
+        },
+        "OPERATOR": {
+          "ANY": "Is any of",
+          "NOT": "Is not"
+        },
+        "PANEL": {
+          "ACTIVE": "{count} active",
+          "TOGGLES": "Toggles",
+          "ANY": "Any",
+          "RESULTS": "result · applied instantly | results · applied instantly",
+          "APPLIED": "Applied instantly",
+          "CLEAR": "Clear filters"
+        },
+        "EDITOR": {
+          "FIND": "Find",
+          "NOTHING_FOUND": "Nothing found",
+          "ONLY": "Only",
+          "ONLY_LABEL": "Only {label}"
+        }
+      },
+      "VC_DATA_TABLE": {
+        "STATUS": {
+          "FILTERED_FROM": "filtered from {count}",
+          "FILTERS": "{count} filter | {count} filters",
+          "FILTERS_AND_SEARCH": "{count} filter + search | {count} filters + search",
+          "SEARCH": "search",
+          "CLEAR_ALL": "Clear all"
+        },
+        "NO_RESULTS": {
+          "TITLE_SEARCH_FILTERS": "No results match “{query}” with {count} filter | No results match “{query}” with {count} filters",
+          "TITLE_SEARCH": "No results match “{query}”",
+          "TITLE_FILTERS": "No results match {count} filter | No results match {count} filters",
+          "HINT_FILTERS": "Remove a filter below or clear them all.",
+          "HINT_SEARCH": "Check the spelling or try another keyword.",
+          "CLEAR_SEARCH": "Clear search",
+          "CLEAR_FILTERS": "Clear filters"
+        }
+      },
       "VC_DYNAMIC_PROPERTY": {
         "ADD": "Add value",
         "VALUE_TYPE": {

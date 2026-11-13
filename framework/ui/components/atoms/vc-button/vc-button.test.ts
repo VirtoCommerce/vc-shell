@@ -72,6 +72,22 @@ describe("VcButton", () => {
     const w = mountButton({});
     expect(w.find("button").attributes("aria-pressed")).toBeUndefined();
   });
+
+  it("renders the 2xs size", () => {
+    const w = mountButton({ size: "2xs" }, { default: "Tag" });
+    expect(w.find("button").classes()).toContain("vc-button--2xs");
+  });
+
+  it("keeps the legacy xs alias on sm", () => {
+    const w = mountButton({ size: "xs" }, { default: "Tag" });
+    expect(w.find("button").classes()).toContain("vc-button--sm");
+    expect(w.find("button").classes()).not.toContain("vc-button--2xs");
+  });
+
+  it("applies the tonal variant, selected or not", () => {
+    const w = mountButton({ variant: "tonal", selected: true }, { default: "Status: New" });
+    expect(w.find("button").classes()).toEqual(expect.arrayContaining(["vc-button-tonal", "vc-button--selected"]));
+  });
 });
 
 /**

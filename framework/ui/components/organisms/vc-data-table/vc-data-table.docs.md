@@ -1142,7 +1142,7 @@ When you turn on `search-bar` for a screen that has wide content (breadcrumbs, s
 
 With `search-bar` and a `state-key`, the applied filters are kept in the blade URL under `<state-key>_filters` and the current view under `<state-key>_view`, next to `<state-key>_sort`, `_search` and `_page` (see [URL query persistence](#url-query-persistence)). A copied link opens the screen with the same filters and view, and a reload keeps them. When the table opens with filters in the URL (or a default view), it emits `@filter` once after the screen's own `onMounted`, so load your data from `@filter` as usual. Nothing is emitted when there is nothing to apply.
 
-Without a `state-key` the bar remembers nothing: if it unmounts (no `searchable`, `global-filters` or `search-header-actions` left) and comes back, it starts empty while the last `@filter` payload stays applied.
+The table holds the bar's state: if the bar unmounts (no `searchable`, `global-filters` or `search-header-actions` left) and comes back, it shows the filters of the last `@filter` payload, with or without a `state-key`. Without a `state-key` nothing outlives the table.
 
 - The value is compact and readable, for example `?orders_filters=status:Paid,New;created:7d;total:>=100`. The full format is in the VcSearchBar docs, "Filters and the View in the URL".
 - Relative dates stay relative: `created:7d` always means the last 7 days from the day the link is opened.

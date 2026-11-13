@@ -6,7 +6,7 @@ group: data-display
 
 # VcSearchBar
 
-Search, applied filters and saved views for a list screen, in one row. It holds the filter state and reports it as plain values and as a search phrase. `VcDataTable` renders it when you set `search-bar`; it also works on its own.
+Search, applied filters and saved views for a list screen, in one row. It holds the filter state and reports it as plain filter values. `VcDataTable` renders it when you set `search-bar`; it also works on its own.
 
 ::storybook id="data-display-vcsearchbar--wide-blade"
 
@@ -132,19 +132,21 @@ While modified, the view menu offers "Save changes to “X”" (not for "All"; f
 | `unfilteredCount` | `number`                                 | -          | Rows without the bar's filters and search: "filtered from M" in the phone summary     |
 | `placeholder`     | `string`                                 | -          | Search placeholder and accessible name                                                |
 | `searchDebounce`  | `number`                                 | `300`      | Delay in ms before the typed text reaches the state, `change` and `search`            |
-| `search`          | `string`                                 | -          | Controlled search text, see below                                                     |
 | `name`            | `string`                                 | -          | Target of external filters and views; defaults to the name of the blade the bar is in |
 | `searchable`      | `boolean`                                | `true`     | Show the search input                                                                 |
 | `disabled`        | `boolean`                                | `false`    | Disable the bar                                                                       |
 
 ## Events
 
-| Event               | Payload           | Description                                                                              |
-| ------------------- | ----------------- | ---------------------------------------------------------------------------------------- |
-| `update:modelValue` | `SearchBarState`  | Any change of search text or values                                                      |
-| `change`            | `SearchBarChange` | `{ search, filters, phrase, state }`. One per user action; the debounced text counts too |
-| `update:search`     | `string`          | Every keystroke, undebounced                                                             |
-| `search`            | `string`          | The debounced search text                                                                |
+| Event               | Payload           | Description                                                                                            |
+| ------------------- | ----------------- | ------------------------------------------------------------------------------------------------------ |
+| `update:modelValue` | `SearchBarState`  | Any change of search text or values                                                                    |
+| `change`            | `SearchBarChange` | `{ search, filters, state }`. One per user action; the debounced text counts too                       |
+| `update:search`     | `string`          | Every keystroke, undebounced                                                                           |
+| `search`            | `string`          | The debounced search text                                                                              |
+| `update:mode`       | `SearchBarMode`   | The bar's width mode (`wide`, `medium`, `narrow`), or `phone` on a phone; at mount and on every change |
+
+`change.filters` holds the filters as plain values keyed by field, with relative dates resolved.
 
 ## Fields
 
@@ -157,7 +159,7 @@ A field is `{ id, label, filter, key?, operators? }`. `filter` selects the kind;
 | Date range | `{ range: [startField, endField] }`      | `{ start?, end? }` or a `RelativeDate`                         |
 | Toggle     | `{ toggle: true }`                       | `boolean`                                                      |
 | Number     | `{ number: true, min?, max?, presets? }` | `NumberValue`                                                  |
-| Custom     | `{ component, label, toPhrase? }`        | whatever your component emits                                  |
+| Custom     | `{ component, label, parse? }`           | whatever your component emits                                  |
 
 Value shapes added by the bar:
 
@@ -167,15 +169,15 @@ type NotValue = { not: string[] };
 type RelativeDate = { relative: "today" | "7d" | "30d" };
 ```
 
-- `NumberValue`: `gte` and `eq` carry `min`, `lte` carries `max`, `between` carries both. The editor writes `gte`, `lte` or `between`; `eq` comes only from code or a phrase.
+- `NumberValue`: `gte` and `eq` carry `min`, `lte` carries `max`, `between` carries both. The editor writes `gte`, `lte` or `between`; `eq` comes only from code or a link.
 - `NotValue`: the chip reads "Field: not Value".
 - `RelativeDate`: the date editor's relative ranges. The bar resolves it to concrete dates in `change.filters`.
-- `key` is the name used in the phrase and in the search syntax (default: `id`).
+- `key` is the field name in the search syntax (default: `id`).
 - `FilterOption.count` shows a count next to the option; the `counts` prop overrides it per state.
 
 ### Custom editors
 
-A custom field gives a component and two functions. The component receives `modelValue` and emits `update:modelValue`. `label(value)` is the text on the chip after `Name:`; `toPhrase(value)` is the phrase fragment (without it the phrase gets `key:value`).
+A custom field gives a component and a label function. The component receives `modelValue` and emits `update:modelValue`. `label(value)` is the text on the chip after `Name:`.
 
 A value read back from the URL or from a saved view is untrusted input. Give `parse(raw)` to check it: `raw` is the JSON-parsed value, return the value to apply or `undefined` to drop it (a throw drops it too). Without `parse` the bar accepts only a primitive, an array of primitives or a plain object whose entries are those, and drops anything with a `__proto__`, `constructor` or `prototype` key.
 
@@ -187,25 +189,26 @@ const fields: SearchBarField[] = [
     filter: {
       component: StarsEditor,
       label: (v) => `${v}+ stars`,
-      toPhrase: (v) => `rating:[${v} TO]`,
       parse: (raw) => (typeof raw === "number" && raw >= 1 && raw <= 5 ? raw : undefined),
     },
   },
 ];
 ```
 
-## Search text: `search` prop vs `v-model`
+## Search text and `v-model`
 
-`v-model` carries the whole state, search text included. When the parent changes `v-model`, the bar updates its state and the URL but does **not** emit `change`: the parent that wrote the value loads the data itself. The `search` prop is for a parent that owns the text itself (the table does): an outside change of `search` updates the input and `state.search` and emits neither `change` nor `search`, and typing that the parent echoes back emits nothing extra. The search text is never part of a view or of the remembered filters.
+`v-model` carries the whole state, search text included; `state.search` follows the input after `search-debounce`. A filter changed while the text waits for that pause takes the text with it: `search` fires first, then one `change` carries both.
+
+When the parent writes `v-model`, the bar updates its state, the input and the URL but emits neither `change` nor `search`: the parent that wrote the value loads the data itself. A write while the typed text waits for its pause drops that text. The table drives its bar this way (Clear all, the empty state's actions). The search text is never part of a view or of the remembered filters.
 
 ## Filters and the View in the URL
 
 Inside a blade that has a URL, the applied filters go to the URL query under `<storage-key>_filters` and the current view under `<storage-key>_view`, next to the table's `_sort`, `_search` and `_page`. A link to the screen opens it with the same filters and view, and a reload keeps them.
 
-- On mount, `v-model` comes first, then the URL, then the default view. Values the bar starts with win over the default view: it is not applied, and the view reads as "All", modified, unless the URL names a view.
+- On mount, the values of `v-model` come first, then the URL's, then the default view. A `v-model` with a search and no values keeps its search and takes the URL's values. Values the bar starts with win over the default view: it is not applied, and the view reads as "All", modified, unless the URL names a view.
 - A link that names a view but has no filters (`orders_view=overdue` from a dashboard) opens the view with its values. A view registered after mount applies when it arrives, unless a filter was set meanwhile.
-- If filters were restored (or a view applied), the bar emits `change` once so the data can be loaded; it emits nothing when there is nothing to apply.
-- Every applied change rewrites the value; with nothing applied the parameter is removed. "All" is written as `_view=all` when the bar has a default view, so a reload does not reopen the default.
+- If filters were restored (or a view applied), the bar emits `update:modelValue` and `change` once so the data can be loaded; it emits nothing when there is nothing to apply.
+- Every applied change rewrites the value; with nothing applied the parameter is removed. The current view is always written, "All" as `_view=all`; a link without `_view` opens the default view.
 - A view id that no longer exists (a deleted user view) shows as "All", modified while its filters apply; the filters still apply.
 - A blade without a URL, a bar outside a blade, or a bar without `storage-key` remembers nothing.
 
@@ -255,19 +258,8 @@ unregisterExternalSearchFilters("reviews-rating");
 - Contributed fields and views come after the screen's own, ordered by `priority` (lower first, default 100). Registering an existing `id` replaces it. The registry is reactive: a module that loads after the blade opened still reaches it.
 - A field that registers late (a contributed one, or `fields` loaded after mount) still gets its value from the URL: that part of the URL is kept until the field arrives, then applies as one `change`.
 
-## Phrase Output
-
-`change.phrase` is the search phrase for the Virto Commerce keyword search: the search words, then one `key:value` per filter, joined by spaces.
-
-- The search words are a raw fragment. They are put into the phrase as typed and are not escaped.
-- Values with spaces or special characters are quoted; lists are comma separated (`status:New,Processing`); `NotValue` becomes `!status:...`; ranges use the bracket form (`total:[100 TO]`, `total:[10 TO 20]`, `created:[2026-01-01 TO 2026-01-31]`); a toggle is `key:true`; `eq` is `total:100`.
-- A custom field writes whatever its `toPhrase` returns.
-- `change.filters` holds the same filters as plain values keyed by field, with relative dates resolved.
-
 ## Known Limitations
 
-- The search text goes into the phrase unescaped (see above).
-- Dates in a phrase are not checked for calendar validity (`2026-13-45` is accepted).
 - User views keep object and array values by reference: treat view values as immutable. Custom values must be cloneable to be saved in a view.
 - Two bars with the same `storage-key` on one page keep separate caches and can overwrite each other.
 - Views use `localStorage` even when `VcDataTable` has `state-storage="session"`.
@@ -279,7 +271,6 @@ unregisterExternalSearchFilters("reviews-rating");
 ## Common Mistakes
 
 - Putting a `VcSearchBar` into `#header` and also setting `search-bar` on the table: the table renders its own bar as well. Use one.
-- Passing `v-model` and `search` that disagree: the parent value of `search` wins for the text.
 - Expecting user views or URL filters without `storage-key`: views live in memory and nothing goes to the URL. `VcDataTable` with `search-bar` and no `state-key` warns about it in development.
 - Passing `v-model` with values and expecting the default view: values the bar starts with win.
 - Targeting external filters with a module name instead of the blade name.

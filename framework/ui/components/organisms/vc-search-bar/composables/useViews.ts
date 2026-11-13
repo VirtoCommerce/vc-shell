@@ -4,7 +4,7 @@ import type { SearchBarState, SearchBarValue, SearchBarView } from "../types";
 import type { BarField } from "../lib/fields";
 import { acceptValue, cloneValue, isEmptyValue } from "../lib/values";
 import { SYSTEM_VIEW_ID, isViewModified, type BarView } from "../lib/views";
-import { createLocalViewStore, type StoredView, type ViewStore } from "../lib/storage";
+import { readViews, writeViews, type StoredView } from "../lib/storage";
 
 export interface UseViewsOptions {
   /** Namespace of the stored views and of the `<key>_view` URL entry; without it views live in memory */
@@ -13,7 +13,7 @@ export interface UseViewsOptions {
   fields: () => BarField[];
   state: Ref<SearchBarState>;
   /** Replaces the values, keeps the search */
-  apply: (s: SearchBarState) => void;
+  apply: (values: Record<string, SearchBarValue>) => void;
   /** The blade's URL query service, as useSearchBarState receives it */
   queryState?: ITableQueryStateService;
   t: (k: string) => string;
@@ -39,27 +39,33 @@ export interface ViewsApi {
 
 const ALL_KEY = "COMPONENTS.ORGANISMS.VC_SEARCH_BAR.VIEWS.ALL";
 
-function createMemoryViewStore(): ViewStore {
-  let views: StoredView[] = [];
-  return {
-    list: () => [...views],
-    save: (v) => (views = views.some((x) => x.id === v.id) ? views.map((x) => (x.id === v.id ? v : x)) : [...views, v]),
-    remove: (id) => (views = views.filter((x) => x.id !== id)),
-  };
-}
-
 const newId = () => `view-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 
 export function useViews(o: UseViewsOptions): ViewsApi {
   const key = () => o.storageKey() || undefined;
-  const memory = createMemoryViewStore();
-  const store = computed(() => {
-    const k = key();
-    return k ? createLocalViewStore(k) : memory;
-  });
-  const stored = shallowRef<StoredView[]>(store.value.list());
-  const refresh = () => (stored.value = store.value.list());
-  watch(store, refresh);
+  // User views and module view overrides; without a key they live in memory
+  const stored = shallowRef<StoredView[]>([]);
+  let loaded: StoredView[] = [];
+  watch(
+    key,
+    (k) => {
+      loaded = k ? readViews(k) : [];
+      stored.value = loaded;
+    },
+    { immediate: true },
+  );
+  watch(
+    stored,
+    (list) => {
+      const k = key();
+      if (k && list !== loaded) writeViews(k, list);
+    },
+    { flush: "sync" },
+  );
+  const store = (v: StoredView) =>
+    (stored.value = stored.value.some((x) => x.id === v.id)
+      ? stored.value.map((x) => (x.id === v.id ? v : x))
+      : [...stored.value, v]);
 
   const system = computed<BarView>(() => ({ id: SYSTEM_VIEW_ID, name: o.t(ALL_KEY), values: {}, scope: "system" }));
 
@@ -85,8 +91,7 @@ export function useViews(o: UseViewsOptions): ViewsApi {
   const current = computed(() => find(currentId.value) ?? system.value);
   const modified = computed(() => isViewModified(o.fields(), o.state.value.values, current.value));
 
-  const applyValues = (values: Record<string, SearchBarValue>) =>
-    o.apply({ search: o.state.value.search, values: cloneValue(values) });
+  const applyValues = (values: Record<string, SearchBarValue>) => o.apply(cloneValue(values));
 
   // Values read from storage (user views, module overrides): only known fields, through the field's check
   function viewValues(view: BarView): Record<string, SearchBarValue> {
@@ -159,19 +164,14 @@ export function useViews(o: UseViewsOptions): ViewsApi {
     if (empty && current.value.scope !== "system" && hasValues(current.value)) currentId.value = SYSTEM_VIEW_ID;
   });
 
-  // A missing key opens the default view, so with one the system view is written explicitly
-  const hasDefault = computed(() => moduleViews.value.some((v) => v.default));
-
   watch(
-    () => [currentId.value, !!find(currentId.value), hasDefault.value] as const,
-    ([id, found, withDefault]) => {
+    () => [currentId.value, !!find(currentId.value)] as const,
+    ([id, found]) => {
       const target = urlKey();
       // An unresolved id stays in the URL: its registration may still arrive
-      if (!target || !found) return;
-      const view = id === SYSTEM_VIEW_ID && !withDefault ? undefined : id;
-      if (view === written) return;
-      written = view;
-      o.queryState!.write(target, { view });
+      if (!target || !found || id === written) return;
+      written = id;
+      o.queryState!.write(target, { view: id });
     },
     { immediate: true },
   );
@@ -184,26 +184,22 @@ export function useViews(o: UseViewsOptions): ViewsApi {
     saveChanges() {
       const view = current.value;
       if (view.scope === "system") return;
-      store.value.save({ id: view.id, name: view.name, values: currentValues(), scope: view.scope });
-      refresh();
+      store({ id: view.id, name: view.name, values: currentValues(), scope: view.scope });
     },
     saveAs(name) {
       const id = newId();
-      store.value.save({ id, name: name.trim(), values: currentValues(), scope: "user" });
-      refresh();
+      store({ id, name: name.trim(), values: currentValues(), scope: "user" });
       currentId.value = id;
     },
     revert: () => applyValues(viewValues(current.value)),
     rename(id, name) {
       const view = userView(id);
       if (!view) return;
-      store.value.save({ ...view, name: name.trim() });
-      refresh();
+      store({ ...view, name: name.trim() });
     },
     remove(id) {
       if (!userView(id)) return;
-      store.value.remove(id);
-      refresh();
+      stored.value = stored.value.filter((v) => v.id !== id);
       if (currentId.value === id) select(SYSTEM_VIEW_ID);
     },
     clearToSystem: () => select(SYSTEM_VIEW_ID),

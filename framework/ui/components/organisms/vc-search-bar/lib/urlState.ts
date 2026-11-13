@@ -4,13 +4,11 @@ import { RELATIVE_DATES, acceptValue, isEmptyValue, isNot } from "./values";
 
 // The applied filters as one readable URL value: `status:Paid,New;!type:A;created:7d;total:>=100`.
 // `\` escapes `\ ; , :` inside ids and values; the search words are not part of it.
-// An Advanced query is stored as `~` + the query text.
 
-const QUERY_MARK = "~";
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 const escape = (s: string) => s.replace(/[\\;,:]/g, "\\$&");
-const escapeId = (id: string) => escape(id).replace(/^[!~]/, "\\$&");
+const escapeId = (id: string) => escape(id).replace(/^!/, "\\$&");
 const unescape = (s: string) => s.replace(/\\(.?)/g, "$1");
 
 /** Splits on `sep` where it is not escaped; the parts keep their escapes */
@@ -70,7 +68,6 @@ function encodeValue(field: BarField, value: SearchBarValue): string | undefined
 
 /** The applied state as the URL value; "" when nothing is applied */
 export function stateToUrl(fields: BarField[], state: SearchBarState): string {
-  if (state.query) return QUERY_MARK + state.query;
   const byId = new Map(fields.map((f) => [f.id, f]));
   const segments: string[] = [];
   for (const [id, value] of Object.entries(state.values)) {
@@ -161,10 +158,6 @@ function decodeValue(field: BarField, raw: string, negated: boolean): SearchBarV
  * Unknown field ids and malformed segments are dropped; it never throws.
  */
 export function urlToState(fields: BarField[], raw: string): SearchBarState | null {
-  if (raw.startsWith(QUERY_MARK)) {
-    const query = raw.slice(QUERY_MARK.length);
-    return query ? { search: "", values: {}, query } : null;
-  }
   const byId = new Map(fields.map((f) => [f.id, f]));
   const values: Record<string, SearchBarValue> = {};
   for (const segment of splitUnescaped(raw, ";")) {
@@ -181,7 +174,7 @@ export function urlToState(fields: BarField[], raw: string): SearchBarState | nu
 
 /** Segments of a URL value whose field id is not among `fields` (kept escaped, as written) */
 export function unknownSegments(fields: BarField[], raw: string): string[] {
-  if (!raw || raw.startsWith(QUERY_MARK)) return [];
+  if (!raw) return [];
   const known = new Set(fields.map((f) => f.id));
   return splitUnescaped(raw, ";").filter((segment) => {
     const parts = splitUnescaped(segment.startsWith("!") ? segment.slice(1) : segment, ":");

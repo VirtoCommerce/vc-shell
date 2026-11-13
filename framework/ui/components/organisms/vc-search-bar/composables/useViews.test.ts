@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { effectScope, nextTick, ref, type EffectScope } from "vue";
 import type { ITableQueryStateService, TableQueryPatch } from "@core/blade-navigation/table-query-state";
-import type { SearchBarField, SearchBarState, SearchBarView } from "../types";
+import type { SearchBarField, SearchBarState, SearchBarValue, SearchBarView } from "../types";
 import { normalizeFields } from "../lib/fields";
 import { SYSTEM_VIEW_ID } from "../lib/views";
-import { createLocalViewStore } from "../lib/storage";
+import { readViews, writeViews, type StoredView } from "../lib/storage";
 import { useViews } from "./useViews";
 
 const fields = normalizeFields([
@@ -38,6 +38,8 @@ function fakeQueryState(initial: Record<string, TableQueryPatch> = {}) {
   return { service, store };
 }
 
+const saveView = (v: StoredView) => writeViews("orders", [...readViews("orders"), v]);
+
 const scopes: EffectScope[] = [];
 beforeEach(() => localStorage.clear());
 afterEach(() => scopes.splice(0).forEach((s) => s.stop()));
@@ -51,8 +53,8 @@ function setup(
   } = {},
 ) {
   const state = ref<SearchBarState>(o.state ?? { search: "", values: {} });
-  const apply = vi.fn((s: SearchBarState) => {
-    state.value = { search: state.value.search, values: { ...s.values } };
+  const apply = vi.fn((values: Record<string, SearchBarValue>) => {
+    state.value = { search: state.value.search, values: { ...values } };
   });
   const scope = effectScope();
   scopes.push(scope);
@@ -74,7 +76,7 @@ function setup(
 describe("useViews", () => {
   it("system view is first and has no values", () => {
     const { api } = setup({ moduleViews: [MODULE[0]] });
-    createLocalViewStore("orders").save({ id: "u", name: "Mine", values: { urgent: true }, scope: "user" });
+    saveView({ id: "u", name: "Mine", values: { urgent: true }, scope: "user" });
     const { api: withUser } = setup({ moduleViews: [MODULE[0]] });
     expect(api.all.value[0]).toMatchObject({ id: SYSTEM_VIEW_ID, name: "All", values: {}, scope: "system" });
     expect(withUser.all.value.map((v) => [v.id, v.scope])).toEqual([
@@ -141,7 +143,7 @@ describe("useViews", () => {
     expect(api.current.value).toMatchObject({ name: "New ones", scope: "user", values: { status: ["new"] } });
     expect(api.modified.value).toBe(false);
     expect(api.all.value.at(-1)!.id).toBe(api.current.value.id);
-    const stored = createLocalViewStore("orders").list();
+    const stored = readViews("orders");
     expect(stored).toEqual([expect.objectContaining({ id: api.current.value.id, name: "New ones", scope: "user" })]);
     expect(stored[0]).not.toHaveProperty("search");
   });
@@ -160,7 +162,7 @@ describe("useViews", () => {
     api.saveChanges();
     expect(api.current.value).toMatchObject({ id: "paid", scope: "module", name: "Paid" });
     expect(api.modified.value).toBe(false);
-    const stored = createLocalViewStore("orders").list();
+    const stored = readViews("orders");
     expect(stored.find((v) => v.id === id)!.values).toEqual({ urgent: true, status: ["paid"] });
     expect(stored.find((v) => v.id === "paid")).toMatchObject({ scope: "module", values: { status: ["paid", "new"] } });
     // the override is merged over the module view on the next load
@@ -172,7 +174,7 @@ describe("useViews", () => {
     state.value = { search: "", values: { urgent: true } };
     api.saveChanges();
     expect(api.current.value.values).toEqual({});
-    expect(createLocalViewStore("orders").list()).toHaveLength(2);
+    expect(readViews("orders")).toHaveLength(2);
   });
 
   it("revert restores the current view's values and keeps the search", () => {
@@ -182,7 +184,7 @@ describe("useViews", () => {
     expect(api.modified.value).toBe(true);
     apply.mockClear();
     api.revert();
-    expect(apply).toHaveBeenCalledWith({ search: "words", values: { status: ["paid"] } });
+    expect(apply).toHaveBeenCalledWith({ status: ["paid"] });
     expect(state.value).toEqual({ search: "words", values: { status: ["paid"] } });
     expect(api.modified.value).toBe(false);
   });
@@ -197,7 +199,7 @@ describe("useViews", () => {
     expect(api.current.value.name).toBe("Renamed");
     expect(api.all.value.find((v) => v.id === "paid")!.name).toBe("Paid");
     expect(api.all.value[0].name).toBe("All");
-    expect(createLocalViewStore("orders").list()[0].name).toBe("Renamed");
+    expect(readViews("orders")[0].name).toBe("Renamed");
 
     api.remove("paid");
     api.remove(SYSTEM_VIEW_ID);
@@ -207,7 +209,7 @@ describe("useViews", () => {
     expect(api.all.value.map((v) => v.id)).toEqual([SYSTEM_VIEW_ID, "paid", "urgent"]);
     expect(api.current.value.id).toBe(SYSTEM_VIEW_ID);
     expect(state.value.values).toEqual({});
-    expect(createLocalViewStore("orders").list()).toEqual([]);
+    expect(readViews("orders")).toEqual([]);
   });
 
   it("clearToSystem selects the system view and empties the values", () => {
@@ -228,7 +230,6 @@ describe("useViews", () => {
     expect(store.orders.view).toBe("paid");
     api.clearToSystem();
     await nextTick();
-    // with a default view a missing key would reopen it, so the system view is named
     expect(store.orders.view).toBe(SYSTEM_VIEW_ID);
     const writes = service.write.mock.calls.length;
     api.clearToSystem();
@@ -236,17 +237,19 @@ describe("useViews", () => {
     expect(service.write.mock.calls.length).toBe(writes);
   });
 
-  it("without a default view the system view clears the URL key", async () => {
+  it("names the system view in the URL; a link with it opens All, a link without a view the default view", async () => {
     const { service, store } = fakeQueryState();
-    const { api } = setup({ queryState: service, moduleViews: [MODULE[0]] });
+    setup({ queryState: service, moduleViews: [MODULE[0]] });
     await nextTick();
-    expect(service.write).not.toHaveBeenCalled();
-    api.select("paid");
-    await nextTick();
-    expect(store.orders.view).toBe("paid");
-    api.clearToSystem();
-    await nextTick();
-    expect(store.orders).toHaveProperty("view", undefined);
+    expect(store.orders.view).toBe(SYSTEM_VIEW_ID);
+
+    const all = setup({ queryState: fakeQueryState({ orders: { view: SYSTEM_VIEW_ID } }).service });
+    expect(all.api.current.value.id).toBe(SYSTEM_VIEW_ID);
+    expect(all.apply).not.toHaveBeenCalled();
+
+    const none = setup({ queryState: fakeQueryState({ orders: {} }).service });
+    expect(none.api.current.value.id).toBe("urgent");
+    expect(none.apply).toHaveBeenCalledTimes(1);
   });
 
   it("keeps the system view across a reload when a default view exists", async () => {
@@ -306,7 +309,7 @@ describe("useViews", () => {
 
 describe("useViews: stored values", () => {
   it("a stored view applies only values of known fields that pass the field's check", () => {
-    createLocalViewStore("orders").save({
+    saveView({
       id: "u",
       name: "Mine",
       values: { urgent: true, gone: ["x"], status: { a: { b: { c: 1 } } } },
@@ -314,11 +317,11 @@ describe("useViews: stored values", () => {
     });
     const { api, apply } = setup({ moduleViews: [] });
     api.select("u");
-    expect(apply).toHaveBeenLastCalledWith({ search: "", values: { urgent: true } });
+    expect(apply).toHaveBeenLastCalledWith({ urgent: true });
   });
 
   it("a stored override of a module view goes through the same check", () => {
-    createLocalViewStore("orders").save({
+    saveView({
       id: "paid",
       name: "Paid",
       values: { gone: 1, urgent: true },
@@ -326,6 +329,6 @@ describe("useViews: stored values", () => {
     });
     const { api, apply } = setup({ moduleViews: [MODULE[0]] });
     api.select("paid");
-    expect(apply).toHaveBeenLastCalledWith({ search: "", values: { urgent: true } });
+    expect(apply).toHaveBeenLastCalledWith({ urgent: true });
   });
 });

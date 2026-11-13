@@ -15,31 +15,28 @@
 
     <!-- Search bar (opt-in): the bar (search, filters as chips, views), then custom actions in the same row -->
     <div
-      v-if="
-        searchBar && (searchable || globalFilters?.length || hasExternalBarFields || $slots['search-header-actions'])
-      "
+      v-if="showSearchBar"
       ref="searchHeaderRef"
       class="vc-data-table__search-header"
       :class="{ 'vc-data-table__search-header--with-actions': $slots['search-header-actions'] }"
     >
-      <SearchBarControllerScope :controller="barController">
-        <VcSearchBar
-          :fields="globalFilters"
-          :search="internalSearchValue"
-          :placeholder="searchPlaceholder"
-          :search-debounce="searchDebounce"
-          :storage-key="stateKey"
-          :name="searchName"
-          :searchable="searchable"
-          :variant="searchBarVariant"
-          :views="searchViews"
-          :counts="filterCounts"
-          :result-count="barResultCount"
-          :unfiltered-count="unfilteredCount"
-          @update:search="handleSearchInput"
-          @change="handleSearchBarChange"
-        />
-      </SearchBarControllerScope>
+      <VcSearchBar
+        v-model="barState"
+        :fields="globalFilters"
+        :placeholder="searchPlaceholder"
+        :search-debounce="searchDebounce"
+        :storage-key="stateKey"
+        :name="searchName"
+        :searchable="searchable"
+        :variant="searchBarVariant"
+        :views="searchViews"
+        :counts="filterCounts"
+        :result-count="barResultCount"
+        :unfiltered-count="unfilteredCount"
+        @update:search="onBarInput"
+        @search="onBarSearch"
+        @update:mode="barMode = $event"
+      />
       <div
         v-if="$slots['search-header-actions']"
         ref="searchHeaderActionsRef"
@@ -242,11 +239,11 @@
             />
             <TableNoResults
               v-else-if="showNoResults"
-              :search="barController.search.value"
-              :applied-fields="barController.appliedFields.value"
-              @remove="barController.removeFilter"
+              :search="barSearch"
+              :applied-fields="barApplied"
+              @remove="removeBarFilter"
               @clear-search="clearBarSearch"
-              @clear-filters="barController.clearFilters"
+              @clear-filters="clearBarFilters"
             />
             <slot
               v-else
@@ -366,11 +363,11 @@
           />
           <TableNoResults
             v-else-if="showNoResults"
-            :search="barController.search.value"
-            :applied-fields="barController.appliedFields.value"
-            @remove="barController.removeFilter"
+            :search="barSearch"
+            :applied-fields="barApplied"
+            @remove="removeBarFilter"
             @clear-search="clearBarSearch"
-            @clear-filters="barController.clearFilters"
+            @clear-filters="clearBarFilters"
           />
           <slot
             v-else-if="$slots.empty"
@@ -409,11 +406,11 @@
       >
         <span class="vc-data-table__page-info">{{ paginationRangeText }}</span>
         <TableFilterStatus
-          :filter-count="barController.filterCount.value"
-          :search="barController.search.value !== ''"
+          :filter-count="barApplied.length"
+          :search="barSearch !== ''"
           :unfiltered-count="unfilteredCount"
           :narrow="footerNarrow"
-          @clear-all="barController.clearAll"
+          @clear-all="clearBar"
         />
       </div>
       <span
@@ -482,14 +479,16 @@ import {
   TableCheckbox,
 } from "@ui/components/organisms/vc-data-table/components";
 import { VcPagination } from "@ui/components/molecules";
-import { VcSearchBar, type SearchBarChange } from "@ui/components/organisms/vc-search-bar";
+import {
+  VcSearchBar,
+  type SearchBarMode,
+  type SearchBarState,
+  type SearchBarValue,
+} from "@ui/components/organisms/vc-search-bar";
 import TableFilterStatus from "@ui/components/organisms/vc-data-table/components/TableFilterStatus.vue";
 import TableNoResults from "@ui/components/organisms/vc-data-table/components/TableNoResults.vue";
-import {
-  createSearchBarController,
-  SearchBarControllerScope,
-} from "@ui/components/organisms/vc-search-bar/composables/useSearchBarController";
-import { useHasExternalSearchFields } from "@ui/components/organisms/vc-search-bar/composables/useHasExternalSearchFields";
+import { useSearchBarFields } from "@ui/components/organisms/vc-search-bar/composables/useSearchBarFields";
+import { chipLabel, isEmptyValue, toFlatFilters } from "@ui/components/organisms/vc-search-bar/lib/values";
 import { warnOnce } from "@ui/components/organisms/vc-search-bar/lib/warn";
 import { useDataTableOrchestrator } from "@ui/components/organisms/vc-data-table/composables/useDataTableOrchestrator";
 import { useSearchActionsHint } from "@ui/components/organisms/vc-data-table/composables/useSearchActionsHint";
@@ -513,6 +512,7 @@ import type {
   PersistedStateV2,
   SearchBarSlotProps,
   SearchBarNotFoundSlotProps,
+  SearchBarAppliedField,
 } from "@ui/components/organisms/vc-data-table/types";
 import { vLoading } from "@core/directives";
 import type { VirtualElement } from "@floating-ui/vue";
@@ -745,7 +745,7 @@ const isNotFoundState = computed(
     displayItems.value.length === 0 &&
     !props.loading &&
     // bar filters count only with the opt-in bar (v2.11.0 global filters never did)
-    (internalSearchValue.value !== "" || hasActiveFilters.value || barController.filterCount.value > 0),
+    (internalSearchValue.value !== "" || hasActiveFilters.value || barApplied.value.length > 0),
 );
 
 /** Resolved title/description/icon/action for the current empty-like state */
@@ -1240,8 +1240,74 @@ const handleGlobalFilterClear = () => {
 };
 
 // ============================================================================
-// Search Bar (opt-in `searchBar`): the bar owns the global filter values
+// Search Bar (opt-in `searchBar`): the bar's state is the table's (v-model)
 // ============================================================================
+
+/** The bar's fields: globalFilters plus those other modules registered for its name (searchName, else the blade's) */
+const barFields = useSearchBarFields(
+  () => props.globalFilters ?? [],
+  () => props.searchName,
+);
+const hasExternalBarFields = computed(() => barFields.value.hasExternalFields);
+const showSearchBar = computed(
+  () =>
+    props.searchBar &&
+    (props.searchable ||
+      !!props.globalFilters?.length ||
+      hasExternalBarFields.value ||
+      !!slots["search-header-actions"]),
+);
+
+// It starts with the table's search and no values, so the bar takes its values from the URL
+const barState = ref<SearchBarState>({ search: internalSearchValue.value, values: {} });
+const barMode = ref<SearchBarMode>("wide");
+// The text in the bar's input; barState.search follows it after the search pause
+let barText = internalSearchValue.value;
+const onBarInput = (v: string) => {
+  barText = v;
+  internalSearchValue.value = v;
+  emit("update:searchValue", v);
+};
+const onBarSearch = (v: string) => emit("search", v);
+
+/** The table's own change to the bar (Clear all, the empty state): the search goes out first, as with the bar's */
+function updateBar(values: Record<string, SearchBarValue>, search = barText) {
+  if (search !== barText) onBarInput(search);
+  if (search !== barState.value.search) onBarSearch(search);
+  barState.value = { search, values };
+}
+const clearBar = () => updateBar({}, "");
+const clearBarFilters = () => updateBar({});
+const clearBarSearch = () => updateBar(barState.value.values, "");
+function removeBarFilter(id: string) {
+  const { [id]: _removed, ...rest } = barState.value.values;
+  updateBar(rest);
+}
+
+// The searchValue a parent sets (not the echo of the bar's own text) shows in the bar, without events
+watch(
+  () => props.searchValue,
+  (v) => {
+    if (!props.searchBar || v === undefined || v === barText) return;
+    barText = v;
+    barState.value = { search: v, values: barState.value.values };
+  },
+);
+
+const barSearch = computed(() => (showSearchBar.value ? internalSearchValue.value : ""));
+/** The bar's fields with a value; a value left for a field that went away is not applied */
+const barApplied = computed((): SearchBarAppliedField[] => {
+  const values = barState.value.values;
+  if (!showSearchBar.value) return [];
+  return barFields.value.fields
+    .filter((f) => !isEmptyValue(values[f.id]))
+    .map((f) => ({
+      id: f.id,
+      label: f.label,
+      text: f.kind === "toggle" ? f.label : `${f.label}: ${chipLabel(f, values[f.id], t).title}`,
+    }));
+});
+const barFiltered = computed(() => barApplied.value.length > 0 || barSearch.value !== "");
 
 // The bar's flat filters merge with column filters in one @filter.
 // Restored state arrives during the bar's setup, before the screen's own onMounted load: hold that
@@ -1250,26 +1316,19 @@ let tableMounted = false;
 let restoredFilterPending = false;
 // A change with the bar's filters unchanged (a search cleared with them) is no new @filter
 let lastBarFilters = "{}";
-const handleSearchBarChange = (change: SearchBarChange) => {
-  // A change can carry a search text the table has not seen; typing never differs here (update:search came first)
-  if (change.search !== internalSearchValue.value) handleSearchInput(change.search);
-  globalFilterPayload.value = change.filters;
-  const filtersKey = JSON.stringify(change.filters);
-  if (filtersKey === lastBarFilters) return;
-  lastBarFilters = filtersKey;
-  if (!tableMounted) {
-    restoredFilterPending = true;
-    return;
-  }
-  // A change that also moved the search (Clear all, a typed chip): its @search goes first, not after
-  // the pause, so a screen that loads on both does not request with the old words
-  if (searchTimer) {
-    clearTimeout(searchTimer);
-    searchTimer = null;
-    emit("search", internalSearchValue.value);
-  }
-  emitFilterPayload();
-};
+watch(
+  barState,
+  (s) => {
+    const filters = toFlatFilters(barFields.value.fields, s.values, new Date());
+    globalFilterPayload.value = filters;
+    const filtersKey = JSON.stringify(filters);
+    if (filtersKey === lastBarFilters) return;
+    lastBarFilters = filtersKey;
+    if (!tableMounted) restoredFilterPending = true;
+    else emitFilterPayload();
+  },
+  { flush: "sync" },
+);
 onMounted(() => {
   tableMounted = true;
   if (!restoredFilterPending) return;
@@ -1279,9 +1338,6 @@ onMounted(() => {
     emitFilterPayload();
   });
 });
-
-/** Fields registered by other modules for the bar's name (searchName, else the blade's) mount the bar too */
-const hasExternalBarFields = useHasExternalSearchFields(() => props.searchName);
 
 // Setup mistakes that fail silently (warnOnce: development only, once per key)
 if (props.searchBar && !props.stateKey) {
@@ -1294,28 +1350,23 @@ if (!props.searchBar && props.searchName) {
   );
 }
 const barResultCount = computed(() => props.totalCount ?? props.items.length);
-/** The bar's status for the footer and the empty state, and its actions; empty without the bar */
-const barController = createSearchBarController();
-const clearBarSearch = () => handleSearchInput("");
 
 /** The bar's status for `#search-header-actions` and `#not-found`; nothing without the bar, as before it */
 const searchBarSlotProps = computed(
   (): Partial<SearchBarSlotProps> =>
     props.searchBar
       ? {
-          mode: barController.mode.value,
-          filtered: barController.filtered.value,
-          filterCount: barController.filterCount.value,
-          search: barController.search.value,
-          clearAll: barController.clearAll,
+          mode: barMode.value,
+          filtered: barFiltered.value,
+          filterCount: barApplied.value.length,
+          search: barSearch.value,
+          clearAll: clearBar,
         }
       : {},
 );
 const notFoundSlotProps = computed(
   (): Partial<SearchBarNotFoundSlotProps> =>
-    props.searchBar
-      ? { ...searchBarSlotProps.value, clearSearch: clearBarSearch, clearFilters: barController.clearFilters }
-      : {},
+    props.searchBar ? { ...searchBarSlotProps.value, clearSearch: clearBarSearch, clearFilters: clearBarFilters } : {},
 );
 const searchHeaderRef = ref<HTMLElement>();
 const searchHeaderActionsRef = ref<HTMLElement>();
@@ -1323,7 +1374,7 @@ useSearchActionsHint(searchHeaderRef, searchHeaderActionsRef);
 
 /** The reason-based empty state; a not-found slot or `notFoundState` wins */
 const showNoResults = computed(
-  () => isNotFoundState.value && barController.filtered.value && !props.notFoundState && !slots["not-found"],
+  () => isNotFoundState.value && barFiltered.value && !props.notFoundState && !slots["not-found"],
 );
 
 // ============================================================================
@@ -1383,7 +1434,7 @@ const getRowProps = (item: T, index: number) => ({
 const { width: paginationWidth } = useElementSize(paginationRef);
 
 /** Filter status next to the range text; a phone has the bar's own summary line instead */
-const showFilterStatus = computed(() => barController.filtered.value && !isMobileView.value);
+const showFilterStatus = computed(() => barFiltered.value && !isMobileView.value);
 /** A narrow footer drops "filtered from M" from the status */
 const FOOTER_NARROW_WIDTH = 520;
 const footerNarrow = computed(() => paginationWidth.value > 0 && paginationWidth.value < FOOTER_NARROW_WIDTH);

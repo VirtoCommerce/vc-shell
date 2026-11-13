@@ -464,7 +464,8 @@ export const BarFiltersInUrlTest: Story = {
     await waitFor(() => expect(log).toHaveTextContent('1 filter event(s) {"status":"Low Stock"}'));
     const url = canvasElement.querySelector("[data-testid=url-query]");
     await userEvent.click(await bar.findByRole("button", { name: /Clear all/i }));
-    await waitFor(() => expect(url).toHaveTextContent(/^URL: \?$/));
+    // no filters left; the view is named, "All"
+    await waitFor(() => expect(url).toHaveTextContent(/^URL: \?story-url_view=all$/));
   },
 };
 

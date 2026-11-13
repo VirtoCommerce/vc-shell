@@ -35,7 +35,7 @@ export function makeViews(moduleViews: SearchBarView[] = MODULE) {
       moduleViews: () => moduleViews,
       fields: () => fields,
       state,
-      apply: (s) => (state.value = { search: state.value.search, values: { ...s.values } }),
+      apply: (values) => (state.value = { search: state.value.search, values: { ...values } }),
       t: (k) => (k.endsWith("VIEWS.ALL") ? "All" : k),
     }),
   )!;

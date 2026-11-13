@@ -24,7 +24,7 @@
           :placeholder="placeholder"
           :disabled="disabled"
           :hide-hint="isMobile"
-          @update:model-value="onSearchInput"
+          @update:model-value="input"
           @chip="onTypedChip"
           @backspace-empty="removeLast"
         />
@@ -108,14 +108,12 @@
       />
     </div>
 
-    <MenuHost
-      :open="hostOpen"
-      :sheet="isMobile"
-      :anchor="anchor"
-      :title="menuTitle"
-      :close-on-outside="false"
-      v-bind="panelHost"
-      @close="closeEditor(true)"
+    <!-- one menu at a time; the hosts stay mounted and animate on their own open flag -->
+    <component
+      :is="menuHost"
+      v-bind="menuProps"
+      @update:model-value="!$event && closeEditor(true)"
+      @update:show="!$event && closeEditor(true)"
     >
       <div
         v-if="shown.field"
@@ -151,23 +149,31 @@
         @clear-all="views.clearToSystem()"
         @close="closeEditor(true)"
       />
-    </MenuHost>
+    </component>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, inject, nextTick, provide, ref, watch } from "vue";
+import { computed, inject, nextTick, provide, ref, watch, type Component } from "vue";
 import { useI18n } from "vue-i18n";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import { BladeLoadingKey } from "@framework/injection-keys";
 import { VcButton } from "@ui/components/atoms";
+import { VcPopover } from "@ui/components/molecules";
+import { VcSidebar } from "@ui/components/organisms/vc-sidebar";
 import { TableQueryStateKey } from "@core/blade-navigation/table-query-state";
-import type { SearchBarChange, SearchBarField, SearchBarState, SearchBarValue, SearchBarView } from "./types";
+import type {
+  SearchBarChange,
+  SearchBarField,
+  SearchBarMode,
+  SearchBarState,
+  SearchBarValue,
+  SearchBarView,
+} from "./types";
 import { useSearchBarState } from "./composables/useSearchBarState";
 import { isEmptyValue } from "./lib/values";
 import PillEditor from "./components/PillEditor.vue";
-import MenuHost from "./components/MenuHost.vue";
 import SearchInput from "./components/SearchInput.vue";
 import FilterChip from "./components/FilterChip.vue";
 import FiltersButton from "./components/FiltersButton.vue";
@@ -175,13 +181,11 @@ import FieldAccordion from "./components/FieldAccordion.vue";
 import FiltersPanel from "./components/FiltersPanel.vue";
 import ViewSelector from "./components/ViewSelector.vue";
 import PhoneSummary from "./components/PhoneSummary.vue";
-import { useSearchInput } from "./composables/useSearchInput";
 import { useBarMenus } from "./composables/useBarMenus";
 import { useBarMode } from "./composables/useBarMode";
 import { useChipOverflow } from "./composables/useChipOverflow";
 import { useViews } from "./composables/useViews";
 import { useBarViewSelector, useSlashFocus } from "./composables/useBarViewSelector";
-import { useSearchBarControllerSource } from "./composables/useSearchBarController";
 
 defineOptions({ name: "VcSearchBar" });
 
@@ -198,8 +202,6 @@ const props = withDefaults(
     views?: SearchBarView[];
     /** Registry target of external filters and views; defaults to the blade's name */
     name?: string;
-    /** Controlled search text; an outside change updates the input and state without `change` or `search` */
-    search?: string;
     searchable?: boolean;
     disabled?: boolean;
     /** Wide bar: chips in the row (`inline`) or the applied field names on the Filters button (`summary`) */
@@ -223,6 +225,8 @@ const emit = defineEmits<{
   "update:search": [value: string];
   /** The debounced search */
   search: [value: string];
+  /** The bar's width mode, or "phone" on a phone */
+  "update:mode": [mode: SearchBarMode];
 }>();
 
 const { t } = useI18n({ useScope: "global" });
@@ -237,42 +241,28 @@ const model = computed<SearchBarState | undefined>({
   set: (v) => v && emit("update:modelValue", v),
 });
 
-const { state, order, fields, externalViews, setSearch, flushSearch, setValue, clearValue, applyState } =
-  useSearchBarState({
+const { state, order, fields, externalViews, searchText, input, setValue, clearValue, applyValues } = useSearchBarState(
+  {
     fields: () => props.fields,
     target: () => props.name ?? descriptor?.value?.name,
     storageKey: () => props.storageKey,
     queryState,
     model,
-    search: () => props.search,
-    takePendingSearch: () => takePendingSearch(),
+    debounce: () => props.searchDebounce,
+    onInput: (v) => emit("update:search", v),
+    onSearch: (v) => emit("search", v),
     onChange: (c) => emit("change", c),
-  });
+  },
+);
 
-const {
-  searchText,
-  input: onSearchInput,
-  takePending: takePendingSearch,
-} = useSearchInput({
-  state,
-  setSearch,
-  search: () => props.search,
-  debounce: () => props.searchDebounce,
-  onInput: (v) => emit("update:search", v),
-  onSearch: (v) => emit("search", v),
-});
-
-// After the search input: a default view applied here commits through flushSearch. A commit during
-// setup reaches the table as the same deferred first @filter as filters restored from the URL
+// A default view applied during setup reaches the table as the same deferred first @filter as
+// filters restored from the URL
 const views = useViews({
   storageKey: () => props.storageKey,
   moduleViews: () => [...(props.views ?? []), ...externalViews.value],
   fields: () => fields.value,
   state,
-  apply: (s) => {
-    flushSearch();
-    applyState({ search: state.value.search, values: s.values });
-  },
+  apply: applyValues,
   queryState,
   t,
 });
@@ -303,6 +293,12 @@ const { mode } = useBarMode(root, "border-box");
 const { width: mainWidth } = useBarMode(main);
 const buttonMode = computed(() => (isMobile.value ? "narrow" : mode.value));
 const chipsInRow = computed(() => !isMobile.value && mode.value === "wide" && props.variant === "inline");
+// The host (the table) lays out its own actions by it
+watch(
+  () => (isMobile.value ? "phone" : mode.value),
+  (m) => emit("update:mode", m),
+  { immediate: true },
+);
 
 const chipFields = computed(() =>
   order.value.map((id) => fields.value.find((f) => f.id === id)).filter((f) => f !== undefined),
@@ -334,11 +330,45 @@ const menuTitle = computed(() => {
   // the panel has its own header, the phone sheet too
   return undefined;
 });
-// The Filters panel: on desktop 360px at the end of the Filters button; on a phone the whole sheet
-const panelHost = computed(() => {
-  if (shown.value.list !== "filters" || shown.value.field) return {};
-  const label = t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.FILTERS");
-  return isMobile.value ? { fit: true, label } : { width: "360px", placement: "bottom-end" as const, fit: true, label };
+const menuHost = computed<Component>(() => (isMobile.value ? VcSidebar : VcPopover));
+// A chip's editor and "+N" open in a popover under their button; the Filters panel 360px wide at the
+// end of the Filters button. A phone opens the Filters panel in a bottom sheet
+const menuProps = computed<Record<string, unknown>>(() => {
+  const open = hostOpen.value;
+  const filters = shown.value.list === "filters" && !shown.value.field;
+  const label = filters ? t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.FILTERS") : undefined;
+  if (isMobile.value)
+    return {
+      modelValue: open,
+      position: "bottom",
+      // the Filters sheet takes its content's height, capped in the styles below
+      height: filters ? "auto" : undefined,
+      draggable: true,
+      dragHandle: true,
+      closeButton: false,
+      inset: true,
+      title: menuTitle.value,
+      ariaLabel: label,
+      panelClass: "vc-search-bar__sheet",
+    };
+  return {
+    show: open,
+    // a closing panel is still on screen for its fade; it takes no more clicks
+    inert: !open,
+    anchorRef: anchor.value,
+    offset: 6,
+    title: menuTitle.value,
+    // the bar closes its menus on an outside click itself: a teleported date menu or select list counts as outside
+    closeOnClickOutside: false,
+    placement: filters ? "bottom-end" : "bottom-start",
+    width: filters ? "360px" : "280px",
+    maxWidth: "360px",
+    // the panel scrolls its own body; the popover only caps the height to the room below the anchor
+    ...(filters ? { contentScrollable: false, maxHeight: 640 } : {}),
+    // a titled popover (a chip editor, "+N") is a dialog named by its title
+    ...(label || menuTitle.value ? { role: "dialog", ariaLabel: label ?? menuTitle.value } : {}),
+    panelClass: filters ? "vc-search-bar__popover vc-search-bar__popover--fit" : "vc-search-bar__popover",
+  };
 });
 
 // A menu whose anchor left the row (the "+N" button once every chip fits, a chip in a narrower mode) closes
@@ -369,20 +399,9 @@ function clearFilters() {
   views.clearToSystem();
 }
 
-/** The table's "Clear all": filters and search in one change, back to the system view */
-function clearAll() {
-  // the pending "" is taken by the view's commit, so the change carries the cleared search
-  if (searchText.value) onSearchInput("");
-  clearFilters();
-}
-
-// A host (the table) reads the bar's status and drives it from its footer and empty state
-const hostMode = computed(() => (isMobile.value ? "phone" : mode.value));
-useSearchBarControllerSource({ mode: hostMode, fields, state, searchText, t, clearAll, clearFilters, removeFilter });
-
 function onTypedChip(c: { fieldId: string; value: unknown; rest: string }) {
   // the commit below carries the rest of the text in the same change
-  onSearchInput(c.rest);
+  input(c.rest);
   const field = fields.value.find((f) => f.id === c.fieldId);
   const prev = state.value.values[c.fieldId];
   const value =
@@ -442,6 +461,44 @@ function onTypedChip(c: { fieldId: string; value: unknown; rest: string }) {
 }
 .vc-search-bar__panel--touch .vc-button-group--attached .vc-button::after {
   content: none;
+}
+
+// The bar's menus are teleported: their hosts carry the bar's class (panelClass)
+.vc-popover.vc-search-bar__popover {
+  --vc-popover-border-radius: 12px;
+  --vc-popover-border-color: var(--neutrals-200);
+  --vc-popover-shadow: 0 12px 32px -8px rgb(19 32 47 / 22%), 0 2px 6px rgb(19 32 47 / 6%);
+  font-size: 13px;
+}
+// A fitted body fills the popover's capped height, so its own scroll area takes the overflow
+.vc-search-bar__popover--fit > .vc-popover__content {
+  @apply tw-flex tw-flex-col;
+}
+.vc-search-bar__fit {
+  @apply tw-flex tw-flex-col tw-flex-auto tw-min-h-0;
+}
+
+// The phone sheet: a floating card with a short grabber, over a darker overlay
+.vc-sidebar.vc-search-bar__sheet {
+  --vc-sidebar-inset-gap: 8px;
+  --vc-sidebar-radius: 28px;
+  --vc-sidebar-shadow: 0 10px 50px rgb(11 20 32 / 28%);
+  --vc-sidebar-overlay-color: rgb(11 20 32 / 40%);
+
+  .vc-sidebar__panel {
+    max-height: calc(100dvh - 56px);
+  }
+  .vc-sidebar__handle {
+    @apply tw-pt-2 tw-pb-0;
+  }
+  .vc-sidebar__handle-bar {
+    width: 36px;
+    height: 5px;
+  }
+  .vc-sidebar-panel-bottom-enter-active,
+  .vc-sidebar-panel-bottom-leave-active {
+    transition-duration: 420ms;
+  }
 }
 
 // a menu row: a ghost button laid out as a full-width, start-aligned line (menus are teleported: no bar ancestor)

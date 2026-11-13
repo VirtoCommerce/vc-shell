@@ -35,14 +35,18 @@
         size="s"
       />
     </VcButton>
-    <MenuHost
-      :open="open"
-      :sheet="false"
-      :anchor="triggerEl"
-      fit
+    <VcPopover
+      :show="open"
+      :inert="!open"
+      :anchor-ref="triggerEl ?? null"
+      :offset="6"
+      max-width="360px"
+      :content-scrollable="false"
+      :max-height="640"
       role="dialog"
       :aria-label="$t(`${K}SAVED_VIEWS`)"
-      @close="close"
+      panel-class="vc-search-bar__popover vc-search-bar__popover--fit"
+      @update:show="!$event && close()"
     >
       <div
         ref="menu"
@@ -174,14 +178,14 @@
           </VcButton>
         </div>
       </div>
-    </MenuHost>
+    </VcPopover>
   </span>
 </template>
 
 <script setup lang="ts">
 import { computed, nextTick, ref, type ComponentPublicInstance } from "vue";
 import { VcBadge, VcButton, VcIcon } from "@ui/components/atoms";
-import MenuHost from "./MenuHost.vue";
+import { VcPopover } from "@ui/components/molecules";
 import ViewNameField from "./ViewNameField.vue";
 import type { ViewsApi } from "../composables/useViews";
 

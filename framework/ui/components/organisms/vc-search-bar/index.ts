@@ -4,6 +4,7 @@ export type {
   SearchBarState,
   SearchBarChange,
   SearchBarView,
+  SearchBarMode,
   SearchBarValue,
   NumberValue,
   NotValue,

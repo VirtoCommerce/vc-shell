@@ -60,12 +60,6 @@ describe("stateToUrl", () => {
     expect(stateToUrl(fields, { search: "only words", values: {} })).toBe("");
   });
 
-  it("stores the advanced query as '~' + the query", () => {
-    expect(stateToUrl(fields, { search: "", values: {}, query: "status:Paid OR name:a;b" })).toBe(
-      "~status:Paid OR name:a;b",
-    );
-  });
-
   it("JSON-encodes a custom editor value", () => {
     expect(stateToUrl(fields, state({ cust: { a: 1 } }))).toBe('cust:{"a"\\:1}');
   });
@@ -110,15 +104,9 @@ describe("urlToState round trip", () => {
     expect(roundTrip({ status: { not: [v] } })).toEqual(state({ status: { not: [v] } }));
   });
 
-  it("round-trips the advanced query", () => {
-    const s: SearchBarState = { search: "", values: {}, query: "a OR (b;c, d:e)" };
-    expect(urlToState(fields, stateToUrl(fields, s))).toEqual(s);
-  });
-
   it("returns null for an empty state", () => {
     expect(urlToState(fields, stateToUrl(fields, state({})))).toBeNull();
     expect(urlToState(fields, "")).toBeNull();
-    expect(urlToState(fields, "~")).toBeNull();
   });
 });
 
@@ -165,8 +153,7 @@ describe("unknownSegments", () => {
     expect(unknownSegments(fields, "name:a;!late:x\\;y;other:1")).toEqual(["!late:x\\;y", "other:1"]);
   });
 
-  it("ignores queries, empty values and malformed segments", () => {
-    expect(unknownSegments(fields, "~late:x")).toEqual([]);
+  it("ignores empty values and malformed segments", () => {
     expect(unknownSegments(fields, "")).toEqual([]);
     expect(unknownSegments(fields, "late;:x")).toEqual([]);
   });

@@ -194,11 +194,14 @@ describe("VcSearchBar", () => {
     it("the panel is a 360px popover at the end of the Filters button", async () => {
       wrapper = mountBar();
       await wrapper.get(".vc-search-bar__filters-main").trigger("click");
-      const pop = wrapper.findComponent({ name: "VcPopover" });
+      const pop = wrapper.findAllComponents({ name: "VcPopover" }).find((p) => p.props("show"))!;
       expect(pop.props()).toMatchObject({
         placement: "bottom-end",
         width: "360px",
         maxWidth: "360px",
+        contentScrollable: false,
+        maxHeight: 640,
+        panelClass: "vc-search-bar__popover vc-search-bar__popover--fit",
         anchorRef: wrapper.get(".vc-search-bar__filters-btn").element,
       });
     });
@@ -466,8 +469,8 @@ describe("VcSearchBar", () => {
     });
 
     it("an outside search change updates the input without change or search", async () => {
-      wrapper = mountBar({ search: "" });
-      await wrapper.setProps({ search: "abc" });
+      wrapper = mountBar({ modelValue: { search: "", values: {} } });
+      await wrapper.setProps({ modelValue: { search: "abc", values: {} } });
       expect((wrapper.get(SEARCH).element as HTMLInputElement).value).toBe("abc");
       vi.advanceTimersByTime(1000);
       expect(wrapper.emitted("change")).toBeUndefined();
@@ -475,9 +478,9 @@ describe("VcSearchBar", () => {
     });
 
     it("a parent rewrite mid-pause drops the typed text: no change, no search", async () => {
-      wrapper = mountBar({ search: "", searchDebounce: 300 });
+      wrapper = mountBar({ modelValue: { search: "", values: {} }, searchDebounce: 300 });
       await wrapper.get(SEARCH).setValue("ab");
-      await wrapper.setProps({ search: "xyz" });
+      await wrapper.setProps({ modelValue: { search: "xyz", values: {} } });
       vi.advanceTimersByTime(1000);
       expect((wrapper.get(SEARCH).element as HTMLInputElement).value).toBe("xyz");
       expect(wrapper.emitted("change")).toBeUndefined();
@@ -509,6 +512,44 @@ describe("VcSearchBar", () => {
       down(document.body);
       await nextTick();
       expect(editor()).toBeNull();
+    });
+
+    it("a chip's editor opens in a popover under the chip, a dialog named by the field", async () => {
+      await openStatus();
+      const pop = wrapper!.findAllComponents({ name: "VcPopover" }).find((p) => p.props("show"))!;
+      expect(pop.props()).toMatchObject({
+        anchorRef: wrapper!.get(`${CHIP}`).element,
+        offset: 6,
+        title: "Status",
+        placement: "bottom-start",
+        width: "280px",
+        maxWidth: "360px",
+        closeOnClickOutside: false,
+        role: "dialog",
+        ariaLabel: "Status",
+        panelClass: "vc-search-bar__popover",
+      });
+    });
+
+    it("a closed menu's popover stays mounted: closed by its own flag (so it fades out) and inert", async () => {
+      await openStatus();
+      const pop = wrapper!.findAllComponents({ name: "VcPopover" }).find((p) => p.props("show"))!;
+      down(document.body);
+      await nextTick();
+      expect(pop.exists()).toBe(true);
+      expect(pop.props()).toMatchObject({ show: false, inert: true });
+    });
+
+    it("each opening starts with fresh content", async () => {
+      wrapper = mountBar();
+      const open = () => wrapper!.get(".vc-search-bar__filters-main").trigger("click");
+      await open();
+      const first = panel();
+      await open();
+      expect(panel()).toBeNull();
+      await open();
+      expect(panel()).not.toBeNull();
+      expect(panel()).not.toBe(first);
     });
 
     it("Enter in the panel's number editor sets the field", async () => {

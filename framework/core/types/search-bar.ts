@@ -74,7 +74,6 @@ export type NumberFilterConfig = { number: true; min?: number; max?: number; pre
 export type CustomFilterConfig = {
   component: Component;
   label: (v: unknown) => string;
-  toPhrase?: (v: unknown) => string;
   /**
    * Checks a value read back from the URL or a saved view (already JSON-parsed): return the value
    * to apply, or undefined to drop it. Without it only primitives, arrays of primitives and plain
@@ -87,7 +86,7 @@ export type EnumOperator = "any" | "not";
 
 export interface SearchBarField extends Omit<GlobalFilterConfig, "filter"> {
   filter: ColumnFilterConfig | ToggleFilterConfig | NumberFilterConfig | CustomFilterConfig;
-  /** Phrase name, defaults to id */
+  /** Name typed in the search as `key:value`, defaults to id */
   key?: string;
   /** Select only, default ["any"] */
   operators?: EnumOperator[];
@@ -102,15 +101,16 @@ export type SearchBarValue = FilterValue | boolean | NumberValue | NotValue | Re
 export interface SearchBarState {
   search: string;
   values: Record<string, SearchBarValue>;
-  query?: string;
 }
 
 export interface SearchBarChange {
   search: string;
   filters: Record<string, unknown>;
-  phrase: string;
   state: SearchBarState;
 }
+
+/** A search bar's width mode (wide ≥720px, medium ≥480px, else narrow), or "phone" on a phone */
+export type SearchBarMode = "wide" | "medium" | "narrow" | "phone";
 
 /** A named set of filter values; the search text is not part of it */
 export interface SearchBarView {

@@ -13,13 +13,6 @@ export interface StoredView extends SearchBarView {
   scope: "module" | "user";
 }
 
-/** @internal */
-export interface ViewStore {
-  list(): StoredView[];
-  save(v: StoredView): void;
-  remove(id: string): void;
-}
-
 function isStoredView(v: unknown): v is StoredView {
   return (
     isPlainObject(v) &&
@@ -43,8 +36,9 @@ const withSafeValues = (v: StoredView): StoredView => ({
   values: Object.fromEntries(Object.entries(v.values).filter(([id, x]) => !isUnsafeKey(id) && hasSafeKeys(x))),
 });
 
-// `v: 2` entries; a `v: 1` entry (presets of older versions) reads as empty and is replaced on save
-function readViews(key: string): StoredView[] {
+// `v: 2` entries; a `v: 1` entry (presets of older versions) reads as empty and is replaced on the next write
+/** @internal */
+export function readViews(key: string): StoredView[] {
   try {
     const parsed = JSON.parse(localStorage.getItem(storageKey(key)) ?? "null");
     if (isPlainObject(parsed) && parsed.v === 2 && Array.isArray(parsed.views))
@@ -56,28 +50,10 @@ function readViews(key: string): StoredView[] {
 }
 
 /** @internal */
-export function createLocalViewStore(key: string): ViewStore {
-  let cache: StoredView[] | null = null;
-  const load = () => (cache ??= readViews(key));
-  const persist = () => {
-    try {
-      localStorage.setItem(storageKey(key), JSON.stringify({ v: 2, views: load() }));
-    } catch {
-      // quota or blocked storage: views live in memory only
-    }
-  };
-  return {
-    list: () => [...load()],
-    save(v) {
-      const list = load();
-      const i = list.findIndex((x) => x.id === v.id);
-      if (i >= 0) list[i] = v;
-      else list.push(v);
-      persist();
-    },
-    remove(id) {
-      cache = load().filter((x) => x.id !== id);
-      persist();
-    },
-  };
+export function writeViews(key: string, views: StoredView[]): void {
+  try {
+    localStorage.setItem(storageKey(key), JSON.stringify({ v: 2, views }));
+  } catch {
+    // quota or blocked storage: views live in memory only
+  }
 }

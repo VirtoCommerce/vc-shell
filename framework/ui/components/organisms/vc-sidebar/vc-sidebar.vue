@@ -6,6 +6,7 @@
   >
     <div
       class="vc-sidebar"
+      :class="panelClass"
       :style="containerStyle"
       :aria-hidden="!modelValue"
       :inert="inert || undefined"
@@ -213,6 +214,8 @@ export interface Props {
   closeThreshold?: number;
   /** Keep the panel content mounted (hidden and inert) while closed. */
   forceMount?: boolean;
+  /** Extra class on the teleported root (`.vc-sidebar`, which holds the overlay and the panel), to style one sidebar */
+  panelClass?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {

@@ -54,7 +54,7 @@ import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { VcIcon, VcButton } from "@ui/components/atoms";
 import TableEmpty from "@ui/components/organisms/vc-data-table/components/TableEmpty.vue";
-import type { SearchBarAppliedField } from "@ui/components/organisms/vc-search-bar/composables/useSearchBarController";
+import type { SearchBarAppliedField } from "@ui/components/organisms/vc-data-table/types";
 
 const props = defineProps<{
   /** The bar's search text */

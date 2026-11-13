@@ -17,10 +17,10 @@ import {
 
 /**
  * `VcSearchBar` is an organism for a list screen: a search input, the applied filters as chips and a Filters panel,
- * with saved views. It reports the state as plain filter values and as a search phrase.
+ * with saved views. It reports the state as plain filter values.
  *
  * Fields come from `fields`, or from the registry for the blade it sits in. Use `v-model` for a controlled state
- * and `@change` for the flat filter payload and the platform search phrase.
+ * and `@change` for the flat filter payload.
  */
 const meta = {
   title: "Data Display/VcSearchBar",
@@ -30,11 +30,6 @@ const meta = {
     modelValue: {
       description: "Controlled state: the search text and the filter values by field id",
       table: { type: { summary: "SearchBarState" }, category: "Model" },
-    },
-    search: {
-      description: "Controlled search text; an outside change emits neither `change` nor `search`",
-      control: "text",
-      table: { type: { summary: "string" }, category: "Model" },
     },
     fields: {
       description: "Filter fields offered by the screen",
@@ -108,7 +103,7 @@ const meta = {
       table: { category: "Events", type: { summary: "(value: SearchBarState) => void" } },
     },
     onChange: {
-      description: "Applied filters changed; payload carries the flat filters and the phrase",
+      description: "Applied filters changed; payload carries the flat filters",
       action: "change",
       table: { category: "Events", type: { summary: "(value: SearchBarChange) => void" } },
     },
@@ -121,6 +116,11 @@ const meta = {
       description: "The debounced search text",
       action: "search",
       table: { category: "Events", type: { summary: "(value: string) => void" } },
+    },
+    "onUpdate:mode": {
+      description: "The bar's width mode, or phone on a phone",
+      action: "update:mode",
+      table: { category: "Events", type: { summary: "(mode: SearchBarMode) => void" } },
     },
   },
   args: { fields: statusAndDateRange },

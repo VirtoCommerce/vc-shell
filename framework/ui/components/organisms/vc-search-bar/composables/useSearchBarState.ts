@@ -1,11 +1,10 @@
-import { computed, ref, watch, type ComputedRef, type Ref } from "vue";
-import { getExternalSearchFilters } from "@core/services/search-filters-service";
+import { computed, onScopeDispose, ref, toRaw, watch, type ComputedRef, type Ref } from "vue";
 import type { ITableQueryStateService } from "@core/blade-navigation/table-query-state";
 import type { SearchBarChange, SearchBarField, SearchBarState, SearchBarValue, SearchBarView } from "../types";
-import { normalizeFields, type BarField } from "../lib/fields";
+import type { BarField } from "../lib/fields";
 import { cloneValue, isEmptyValue, toFlatFilters } from "../lib/values";
 import { stateToUrl, unknownSegments, urlToState } from "../lib/urlState";
-import { stateToPhrase } from "../phrase/convert";
+import { resolveSearchBarFields } from "./useSearchBarFields";
 
 export interface UseSearchBarStateOptions {
   fields: () => SearchBarField[];
@@ -14,11 +13,14 @@ export interface UseSearchBarStateOptions {
   storageKey: () => string | undefined;
   /** The blade's URL query service; without it (or a key) the applied filters are not remembered */
   queryState?: ITableQueryStateService;
+  /** The host's state (v-model): its values win over the URL, and a host write changes the state without onChange */
   model: Ref<SearchBarState | undefined>;
-  /** Controlled search text: wins over the model and the URL, changes apply without onChange */
-  search?: () => string | undefined;
-  /** Text typed but still in the search pause; a filter commit takes it so its change carries it */
-  takePendingSearch?: () => string | undefined;
+  /** Pause between the last keystroke and the search reaching the state */
+  debounce?: () => number;
+  /** Every keystroke */
+  onInput?: (v: string) => void;
+  /** The search after its pause, or taken early by a filter commit */
+  onSearch?: (v: string) => void;
   onChange: (c: SearchBarChange) => void;
 }
 
@@ -28,30 +30,20 @@ export interface UseSearchBarState {
   state: Ref<SearchBarState>;
   /** Ids of the set fields in the order they were set */
   order: Ref<string[]>;
-  setSearch(v: string): void;
-  /** Writes the pending typed text into the state; the filter commit that follows emits it */
-  flushSearch(): void;
+  /** The text in the input, ahead of `state.search` by the search pause */
+  searchText: Ref<string>;
+  /** A keystroke: the state follows after the pause */
+  input(v: string): void;
   setValue(id: string, v: SearchBarValue): void;
   clearValue(id: string): void;
-  clearAll(): void;
-  applyState(s: SearchBarState): void;
-  setQuery(q: string | undefined): void;
+  /** Replaces the values, keeps the search; URL values still waiting for their fields are dropped */
+  applyValues(values: Record<string, SearchBarValue>): void;
 }
 
-const emptyState = (): SearchBarState => ({ search: "", values: {} });
-
 export function useSearchBarState(opts: UseSearchBarStateOptions): UseSearchBarState {
-  const registrations = computed(() => {
-    const target = opts.target();
-    return target ? getExternalSearchFilters(target) : [];
-  });
-
-  // own fields first, then external by priority; normalizeFields keeps the first on an id clash
-  const fields = computed(() => normalizeFields([...opts.fields(), ...registrations.value.flatMap((r) => r.fields)]));
-  const externalViews = computed(() => registrations.value.flatMap((r) => r.views ?? []));
-
-  const isNonEmpty = (s: SearchBarState) =>
-    !!s.search || !!s.query || Object.values(s.values).some((v) => !isEmptyValue(v));
+  const sources = computed(() => resolveSearchBarFields(opts.fields(), opts.target()));
+  const fields = computed(() => sources.value.fields);
+  const externalViews = computed(() => sources.value.views);
 
   // The applied filters live in the URL next to the table's sort/search/page; the search words are not part of them
   const urlKey = (): string | undefined => (opts.queryState ? opts.storageKey() || undefined : undefined);
@@ -60,23 +52,20 @@ export function useSearchBarState(opts: UseSearchBarStateOptions): UseSearchBarS
   // they stay in the URL and apply when their fields arrive
   let unresolved: string[] = [];
 
+  // The model's values win over the URL; a model with no values (only a search) starts from the URL's
   let restored = false;
-  const base = (): SearchBarState => {
-    if (opts.model.value !== undefined) return clone(opts.model.value);
+  function initial(): SearchBarState {
+    const m = opts.model.value;
+    if (m && Object.values(m.values).some((v) => !isEmptyValue(v))) return clone(m);
+    const search = m?.search ?? "";
     const key = urlKey();
-    if (!key) return emptyState();
+    if (!key) return { search, values: {} };
     written = opts.queryState!.read(key).filters ?? "";
     unresolved = unknownSegments(fields.value, written);
     const fromUrl = urlToState(fields.value, written);
-    if (!fromUrl) return emptyState();
-    restored = true;
-    return fromUrl;
-  };
-  const initial = (): SearchBarState => {
-    const s = base();
-    const search = opts.search?.();
-    return search === undefined ? s : { ...s, search };
-  };
+    restored = !!fromUrl;
+    return { search, values: fromUrl?.values ?? {} };
+  }
 
   const state = ref<SearchBarState>(initial());
 
@@ -87,8 +76,8 @@ export function useSearchBarState(opts: UseSearchBarStateOptions): UseSearchBarS
     (values) => {
       const set = Object.keys(values).filter((id) => !isEmptyValue(values[id]));
       const kept = order.value.filter((id) => set.includes(id));
-      const next = [...kept, ...set.filter((id) => !kept.includes(id))];
-      if (next.join("\u0000") !== order.value.join("\u0000")) order.value = next;
+      const added = set.filter((id) => !kept.includes(id));
+      if (added.length || kept.length !== order.value.length) order.value = [...kept, ...added];
     },
     { flush: "sync", immediate: true },
   );
@@ -102,39 +91,53 @@ export function useSearchBarState(opts: UseSearchBarStateOptions): UseSearchBarS
     opts.queryState!.write(key, { filters });
   }
 
+  // The last state handed to the host: its echo through v-model is no host write
+  let own: SearchBarState | undefined;
+  function report(): void {
+    own = clone(state.value);
+    opts.model.value = own;
+    const s = state.value;
+    opts.onChange({ search: s.search, filters: toFlatFilters(fields.value, s.values, new Date()), state: s });
+  }
+
   function commit(next: SearchBarState): void {
     // Raw copies: values spread from the reactive state still hold proxies at depth
-    const normalized: SearchBarState = { search: next.search, values: cloneValue(next.values) };
-    if (next.query) normalized.query = next.query;
-    if (normalized.query) normalized.values = {};
-    state.value = normalized;
-    opts.model.value = clone(normalized);
-    persist(normalized);
-    emit();
+    state.value = { search: next.search, values: cloneValue(next.values) };
+    persist(state.value);
+    report();
   }
 
-  function emit(): void {
-    const s = state.value;
-    opts.onChange({
-      search: s.search,
-      filters: s.query ? {} : toFlatFilters(fields.value, s.values, new Date()),
-      phrase: s.query ?? stateToPhrase(fields.value, s),
-      state: s,
-    });
-  }
-
-  function flushSearch(): void {
-    const pending = opts.takePendingSearch?.();
-    if (pending !== undefined && pending !== state.value.search) state.value = { ...state.value, search: pending };
-  }
-  const withoutQuery = (): SearchBarState => {
-    flushSearch();
-    return { search: state.value.search, values: state.value.values };
+  // The input is immediate; the state follows after a pause
+  const searchText = ref(state.value.search);
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const cancelPause = () => {
+    clearTimeout(timer);
+    timer = undefined;
   };
+  onScopeDispose(cancelPause);
+
+  function input(v: string): void {
+    searchText.value = v;
+    opts.onInput?.(v);
+    cancelPause();
+    timer = setTimeout(() => {
+      timer = undefined;
+      if (v !== state.value.search) commit({ search: v, values: state.value.values });
+      opts.onSearch?.(v);
+    }, opts.debounce?.() ?? 0);
+  }
+
+  /** The search a filter commit carries: a running pause ends here and its text is searched first */
+  function search(): string {
+    if (timer === undefined) return state.value.search;
+    cancelPause();
+    opts.onSearch?.(searchText.value);
+    return searchText.value;
+  }
 
   /** The waiting URL values whose fields are registered now; they win over the current ones */
   function takeArrived(): SearchBarState | null {
-    if (!unresolved.length || state.value.query) return null;
+    if (!unresolved.length) return null;
     const arrived = urlToState(fields.value, unresolved.join(";"));
     unresolved = unknownSegments(fields.value, unresolved.join(";"));
     return arrived;
@@ -148,83 +151,62 @@ export function useSearchBarState(opts: UseSearchBarStateOptions): UseSearchBarS
     (ids) => {
       const known = new Set(ids);
       const entries = Object.entries(state.value.values);
-      const kept = entries.filter(([id]) => known.has(id));
       const dropped = entries.filter(([id]) => !known.has(id));
       const before = prevFields;
       prevFields = fields.value;
       const arrived = takeArrived();
       if (!dropped.length && !arrived) return;
-      if (!state.value.query) {
-        const left = dropped.map(([id, v]) => stateToUrl(before, { search: "", values: { [id]: v } }));
-        unresolved = [...unresolved, ...left.filter(Boolean)];
-      }
-      commit({ ...state.value, values: { ...Object.fromEntries(kept), ...arrived?.values } });
+      const left = dropped.map(([id, v]) => stateToUrl(before, { search: "", values: { [id]: v } }));
+      unresolved = [...unresolved, ...left.filter(Boolean)];
+      const kept = entries.filter(([id]) => known.has(id));
+      commit({ search: state.value.search, values: { ...Object.fromEntries(kept), ...arrived?.values } });
     },
     { flush: "sync" },
   );
 
-  // Controlled model: a parent-driven change replaces the state without onChange (the parent already knows)
+  // A host write (not the echo of our own report) replaces the state without onChange: the host already
+  // knows. It also ends a running pause, its search replacing the typed text
   watch(
     opts.model,
     (m) => {
-      if (m === undefined || sameState(m, state.value)) return;
+      if (m === undefined || toRaw(m) === own) return;
+      cancelPause();
+      searchText.value = m.search;
+      if (sameState(m, state.value)) return;
       const known = new Set(fields.value.map((f) => f.id));
-      const next = clone(m);
-      next.values = Object.fromEntries(Object.entries(next.values).filter(([id]) => known.has(id)));
-      state.value = next;
-      persist(next);
+      const values = Object.entries(cloneValue(m.values)).filter(([id]) => known.has(id));
+      state.value = { search: m.search, values: Object.fromEntries(values) };
+      persist(state.value);
     },
     { flush: "sync" },
   );
 
-  // Controlled search: like a model change, the parent already knows, so no onChange
-  watch(
-    () => opts.search?.(),
-    (search) => {
-      if (search === undefined || search === state.value.search) return;
-      state.value = { ...state.value, search };
-      opts.model.value = clone(state.value);
-    },
-    { flush: "sync" },
-  );
-
-  if (restored && isNonEmpty(state.value)) emit();
+  // Filters restored from the URL reach the host like a change
+  if (restored) report();
 
   return {
     fields,
     externalViews,
     state,
     order,
-    setSearch: (v) => commit({ search: v, values: state.value.values }),
-    flushSearch,
-    setValue: (id, v) => commit({ ...withoutQuery(), values: { ...state.value.values, [id]: v } }),
+    searchText,
+    input,
+    setValue: (id, v) => commit({ search: search(), values: { ...state.value.values, [id]: v } }),
     clearValue(id) {
       const { [id]: _removed, ...rest } = state.value.values;
-      commit({ ...withoutQuery(), values: rest });
+      commit({ search: search(), values: rest });
     },
-    clearAll() {
+    applyValues(values) {
       unresolved = [];
-      commit(emptyState());
-    },
-    applyState(s) {
-      unresolved = [];
-      flushSearch();
-      commit({ search: s.search, values: { ...s.values }, ...(s.query ? { query: s.query } : {}) });
-    },
-    setQuery(q) {
-      unresolved = [];
-      flushSearch();
-      commit({ search: state.value.search, values: {}, ...(q ? { query: q } : {}) });
+      commit({ search: search(), values });
     },
   };
 }
 
 function clone(s: SearchBarState): SearchBarState {
-  return { ...s, values: cloneValue(s.values) };
+  return { search: s.search, values: cloneValue(s.values) };
 }
 
 function sameState(a: SearchBarState, b: SearchBarState): boolean {
-  return (
-    JSON.stringify([a.search, a.values, a.query ?? null]) === JSON.stringify([b.search, b.values, b.query ?? null])
-  );
+  return JSON.stringify([a.search, a.values]) === JSON.stringify([b.search, b.values]);
 }

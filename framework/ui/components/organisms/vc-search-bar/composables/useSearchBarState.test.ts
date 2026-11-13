@@ -42,6 +42,7 @@ function setup(
 ) {
   const model = ref<SearchBarState | undefined>(o.model);
   const changes: SearchBarChange[] = [];
+  const searches: string[] = [];
   const scope = effectScope();
   scopes.push(scope);
   const api = scope.run(() =>
@@ -51,35 +52,44 @@ function setup(
       storageKey: () => o.storageKey,
       queryState: o.queryState,
       model,
+      debounce: () => 300,
+      onSearch: (v) => searches.push(v),
       onChange: (c) => changes.push(c),
     }),
   )!;
-  return { api, model, changes };
+  return { api, model, changes, searches };
 }
 
 describe("useSearchBarState", () => {
   describe("filters in the URL", () => {
-    it("model wins over the URL and does not emit at init", () => {
+    it("model values win over the URL and do not emit at init", () => {
       const { service } = fakeQueryState({ k: { filters: "name:url" } });
-      const { api, changes } = setup({ storageKey: "k", queryState: service, model: { search: "m", values: {} } });
-      expect(api.state.value).toEqual({ search: "m", values: {} });
+      const model = { search: "m", values: { name: "model" } };
+      const { api, changes } = setup({ storageKey: "k", queryState: service, model });
+      expect(api.state.value).toEqual(model);
       expect(changes).toEqual([]);
+    });
+
+    it("a model with only a search keeps it and starts from the URL's values", () => {
+      const { service } = fakeQueryState({ k: { filters: "name:url" } });
+      const { api, model, changes } = setup({
+        storageKey: "k",
+        queryState: service,
+        model: { search: "m", values: {} },
+      });
+      expect(api.state.value).toEqual({ search: "m", values: { name: "url" } });
+      expect(model.value).toEqual({ search: "m", values: { name: "url" } });
+      expect(changes).toHaveLength(1);
     });
 
     it("restores the filters from the URL when the model is undefined and emits once", () => {
       const { service } = fakeQueryState({ k: { filters: "name:a;gone:x" } });
-      const { api, changes } = setup({ storageKey: "k", queryState: service });
+      const { api, model, changes } = setup({ storageKey: "k", queryState: service });
       expect(service.read).toHaveBeenCalledWith("k");
       expect(api.state.value).toEqual({ search: "", values: { name: "a" } });
+      expect(model.value).toEqual({ search: "", values: { name: "a" } });
       expect(changes).toHaveLength(1);
       expect(changes[0].filters).toEqual({ name: "a" });
-    });
-
-    it("restores an advanced query", () => {
-      const { service } = fakeQueryState({ k: { filters: "~name:a OR name:b" } });
-      const { api, changes } = setup({ storageKey: "k", queryState: service });
-      expect(api.state.value).toEqual({ search: "", values: {}, query: "name:a OR name:b" });
-      expect(changes).toHaveLength(1);
     });
 
     it("an empty or unusable URL value emits nothing and writes nothing", () => {
@@ -94,12 +104,15 @@ describe("useSearchBarState", () => {
       const { api, model, changes } = setup({ storageKey: "k", queryState: service });
       api.setValue("name", "bob");
       expect(service.write).toHaveBeenLastCalledWith("k", { filters: "name:bob" });
-      api.setSearch("hi");
+      vi.useFakeTimers();
+      api.input("hi");
+      vi.runAllTimers();
+      vi.useRealTimers();
       expect(model.value).toEqual({ search: "hi", values: { name: "bob" } });
-      expect(changes.at(-1)).toMatchObject({ search: "hi", filters: { name: "bob" }, phrase: "hi name:bob" });
+      expect(changes.at(-1)).toMatchObject({ search: "hi", filters: { name: "bob" } });
       // the search words alone do not change the filters value, so nothing new is written
       expect(service.write).toHaveBeenCalledTimes(1);
-      api.clearAll();
+      api.applyValues({});
       expect(service.write).toHaveBeenLastCalledWith("k", { filters: "" });
       expect(store.k.filters).toBe("");
     });
@@ -179,11 +192,11 @@ describe("useSearchBarState", () => {
       expect(store.k.filters).toBe("name:a;late:x\\;y");
     });
 
-    it("clearAll drops URL filters still waiting for their fields", () => {
+    it("replacing the values drops URL filters still waiting for their fields", () => {
       const { service, store } = fakeQueryState({ k: { filters: "name:a;late:x" } });
       const fields = ref<SearchBarField[]>([text("name")]);
       const { api } = setup({ fields, storageKey: "k", queryState: service });
-      api.clearAll();
+      api.applyValues({});
       expect(store.k.filters).toBe("");
       fields.value = [text("name"), text("late")];
       expect(api.state.value.values).toEqual({});
@@ -219,7 +232,7 @@ describe("useSearchBarState", () => {
 
     it("own commit does not re-trigger the watcher", () => {
       const { api, changes } = setup();
-      api.setSearch("x");
+      api.setValue("name", "x");
       expect(changes).toHaveLength(1);
     });
   });
@@ -265,30 +278,65 @@ describe("useSearchBarState", () => {
     expect(api.fields.value[0].label).toBe("name");
   });
 
-  it("query: phrase equals query, values cleared, filters empty; setValue clears query", () => {
-    const { api, changes } = setup();
-    api.setValue("name", "a");
-    api.setQuery("a OR b");
-    expect(api.state.value).toEqual({ search: "", values: {}, query: "a OR b" });
-    expect(changes.at(-1)).toMatchObject({ phrase: "a OR b", filters: {} });
-    api.setValue("name", "c");
-    expect(api.state.value.query).toBeUndefined();
-    expect(changes.at(-1)!.phrase).toBe("name:c");
-  });
-
-  it("clearAll empties search, values and query", () => {
-    const { api, model } = setup();
-    api.setSearch("s");
-    api.setQuery("q");
-    api.clearAll();
-    expect(api.state.value).toEqual({ search: "", values: {} });
-    expect(model.value).toEqual({ search: "", values: {} });
-  });
-
-  it("applyState replaces state", () => {
-    const { api } = setup({ fields: [text("a"), text("b")] });
-    api.applyState({ search: "s", values: { b: "1" } });
+  it("applyValues replaces the values and keeps the search", () => {
+    const { api } = setup({ fields: [text("a"), text("b")], model: { search: "s", values: { a: "1" } } });
+    api.applyValues({ b: "1" });
     expect(api.state.value).toEqual({ search: "s", values: { b: "1" } });
+  });
+
+  describe("search pause", () => {
+    afterEach(() => vi.useRealTimers());
+
+    it("the state takes the typed text after the pause, then search fires", () => {
+      vi.useFakeTimers();
+      const { api, changes, searches } = setup();
+      api.input("a");
+      api.input("ab");
+      expect(api.searchText.value).toBe("ab");
+      expect(changes).toEqual([]);
+      vi.advanceTimersByTime(300);
+      expect(api.state.value.search).toBe("ab");
+      expect(changes).toHaveLength(1);
+      expect(searches).toEqual(["ab"]);
+    });
+
+    it("a filter commit within the pause carries the typed text, searched first and once", () => {
+      vi.useFakeTimers();
+      const { api, changes, searches } = setup();
+      api.input("ab");
+      api.setValue("name", "x");
+      expect(searches).toEqual(["ab"]);
+      expect(changes).toHaveLength(1);
+      expect(changes[0]).toMatchObject({ search: "ab", filters: { name: "x" } });
+      vi.advanceTimersByTime(1000);
+      expect(searches).toEqual(["ab"]);
+      expect(changes).toHaveLength(1);
+    });
+
+    it("a host write ends the pause: its search replaces the typed text, nothing is emitted", () => {
+      vi.useFakeTimers();
+      const { api, model, changes, searches } = setup({ model: { search: "", values: {} } });
+      api.input("ab");
+      model.value = { search: "", values: {} };
+      expect(api.searchText.value).toBe("");
+      vi.advanceTimersByTime(1000);
+      expect(api.state.value.search).toBe("");
+      expect(changes).toEqual([]);
+      expect(searches).toEqual([]);
+    });
+
+    it("a change of the bar's own within the pause (a field that goes away) keeps the pause", () => {
+      vi.useFakeTimers();
+      const fields = ref<SearchBarField[]>([text("name"), text("late")]);
+      const { api, model, searches } = setup({ fields, model: { search: "", values: { late: "x" } } });
+      api.input("ab");
+      fields.value = [text("name")];
+      expect(model.value).toEqual({ search: "", values: {} });
+      expect(api.searchText.value).toBe("ab");
+      vi.advanceTimersByTime(300);
+      expect(searches).toEqual(["ab"]);
+      expect(api.state.value.search).toBe("ab");
+    });
   });
 
   it("order lists the set fields in the order they were set", () => {

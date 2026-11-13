@@ -7,12 +7,7 @@ import { BladeTitleAddonKey } from "@ui/components/organisms/vc-blade/_internal/
 import { registerExternalSearchFilters, unregisterExternalSearchFilters } from "@core/services/search-filters-service";
 import VcSearchBar from "./VcSearchBar.vue";
 import type { SearchBarChange, SearchBarField } from "./types";
-import {
-  createSearchBarController,
-  SearchBarControllerScope,
-  type SearchBarController,
-} from "./composables/useSearchBarController";
-import { CHIP, fakeQueryState, fields, global, lastChange, mountBar } from "./bar.test-helpers";
+import { CHIP, SEARCH, fakeQueryState, fields, global, lastChange, mountBar } from "./bar.test-helpers";
 
 describe("VcSearchBar views and URL", () => {
   let wrapper: ReturnType<typeof mountBar> | undefined;
@@ -26,7 +21,7 @@ describe("VcSearchBar views and URL", () => {
 
   it("filters restored from the URL emit one change at setup", () => {
     const url = fakeQueryState({ orders: { filters: "overdue:1" } });
-    wrapper = mountBar({ storageKey: "orders", search: "" }, url.provide);
+    wrapper = mountBar({ storageKey: "orders" }, url.provide);
     const changes = wrapper.emitted("change") as SearchBarChange[][];
     expect(changes).toHaveLength(1);
     expect(changes[0][0]).toMatchObject({ search: "", filters: { overdue: true } });
@@ -92,11 +87,11 @@ describe("VcSearchBar views and URL", () => {
   });
 
   it.each([
-    ["without a default view", false, undefined],
-    ["with a default view", true, "all"],
+    ["without a default view", false],
+    ["with a default view", true],
   ])(
     "removing the last chip of a view switches to the system view (%s); a reload stays there",
-    async (_n, withDefault, written) => {
+    async (_n, withDefault) => {
       const views = [
         { id: "late", name: "Late", values: { overdue: true } },
         ...(withDefault ? [{ id: "paid", name: "Paid", values: { status: ["a"] }, default: true }] : []),
@@ -108,7 +103,7 @@ describe("VcSearchBar views and URL", () => {
       expect(lastChange(wrapper).filters).toEqual({});
       expect(wrapper.get(".vc-search-bar__view-btn-name").text()).toBe("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.VIEWS.ALL");
       expect(wrapper.find(".vc-search-bar__view-badge").exists()).toBe(false);
-      expect(url.store.orders.view).toBe(written);
+      expect(url.store.orders.view).toBe("all");
       expect(url.store.orders.filters).toBe("");
       wrapper.unmount();
 
@@ -157,7 +152,7 @@ describe("external filters", () => {
     {
       id: "rating",
       label: "Rating",
-      filter: { component: rating, label: (v) => `${v}+ stars`, toPhrase: (v) => `rating:[${v} TO]` },
+      filter: { component: rating, label: (v) => `${v}+ stars` },
     },
   ];
   let w: ReturnType<typeof mount> | undefined;
@@ -190,12 +185,6 @@ describe("external filters", () => {
     expect(w.text()).not.toContain("Rating");
   });
 
-  it("puts toPhrase output into the phrase", async () => {
-    w = mountIn();
-    await w.get(`${CHIP} .vc-search-bar__chip-x`).trigger("click");
-    expect((w.emitted("change") as SearchBarChange[][]).at(-1)?.[0].phrase).toBe("rating:[4 TO]");
-  });
-
   it("offers the contributed views", async () => {
     w = mountIn();
     await w.get(".vc-search-bar__view-btn").trigger("click");
@@ -203,57 +192,38 @@ describe("external filters", () => {
   });
 });
 
-describe("VcSearchBar driven through its controller (the table's footer and empty state)", () => {
-  let host: ReturnType<typeof mount> | undefined;
-  let controller: SearchBarController;
+describe("VcSearchBar written by its host through v-model (the table's footer and empty state)", () => {
   let w: ReturnType<typeof mountBar> | undefined;
   const views = [{ id: "late", name: "Late", values: { overdue: true } }];
-  const api = () => controller;
-  const mountBar = (props: Record<string, unknown>, provide: Record<symbol, unknown>) => {
-    controller = createSearchBarController();
-    const c = controller;
-    const Host = defineComponent({
-      setup: () => () => h(SearchBarControllerScope, { controller: c }, () => h(VcSearchBar, { fields, ...props })),
-    });
-    host = mount(Host, { global: { ...global, provide }, attachTo: document.body });
-    return host.findComponent(VcSearchBar);
-  };
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => {
-    host?.unmount();
-    host = undefined;
+    w?.unmount();
     w = undefined;
     vi.useRealTimers();
     localStorage.clear();
   });
 
-  it("clearAll clears the filters and the search in one change and selects the system view", async () => {
+  it("a host write clears the values and the search: the URL follows, the view ends on All, nothing is emitted", async () => {
     const url = fakeQueryState({ orders: { filters: "overdue:1;status:a", view: "late" } });
-    w = mountBar({ storageKey: "orders", views, search: "acme" }, url.provide);
-    const before = (w.emitted("change") ?? []).length;
-    api().clearAll();
-    const changes = w.emitted("change") as SearchBarChange[][];
-    expect(changes).toHaveLength(before + 1);
-    expect(lastChange(w)).toMatchObject({ search: "", filters: {} });
-    expect(w.emitted("update:search")).toEqual([[""]]);
+    w = mountBar({ storageKey: "orders", views, modelValue: { search: "acme", values: {} } }, url.provide);
+    const changes = (w.emitted("change") ?? []).length;
+    const models = (w.emitted("update:modelValue") ?? []).length;
+    await w.setProps({ modelValue: { search: "", values: {} } });
     await nextTick();
-    expect(url.store.orders).toMatchObject({ filters: "", view: undefined });
+    expect((w.get(SEARCH).element as HTMLInputElement).value).toBe("");
+    expect(w.find(CHIP).exists()).toBe(false);
+    expect(url.store.orders).toMatchObject({ filters: "", view: "all" });
+    expect(w.emitted("change") ?? []).toHaveLength(changes);
+    expect(w.emitted("update:modelValue") ?? []).toHaveLength(models);
+    expect(w.emitted("search")).toBeUndefined();
   });
 
-  it("clearAll without search text emits no search update", () => {
-    const url = fakeQueryState({ orders: { filters: "overdue:1" } });
-    w = mountBar({ storageKey: "orders" }, url.provide);
-    api().clearAll();
-    expect(lastChange(w)).toMatchObject({ search: "", filters: {} });
-    expect(w.emitted("update:search")).toBeUndefined();
-  });
-
-  it("clearFilters keeps the search; removeFilter drops one field", () => {
+  it("a host write without one field keeps the rest and the search", async () => {
     const url = fakeQueryState({ orders: { filters: "overdue:1;status:a" } });
-    w = mountBar({ storageKey: "orders", search: "acme" }, url.provide);
-    api().removeFilter("overdue");
-    expect(lastChange(w)).toMatchObject({ search: "acme", filters: { status: ["a"] } });
-    api().clearFilters();
-    expect(lastChange(w)).toMatchObject({ search: "acme", filters: {} });
+    w = mountBar({ storageKey: "orders", modelValue: { search: "acme", values: {} } }, url.provide);
+    await w.setProps({ modelValue: { search: "acme", values: { status: ["a"] } } });
+    expect(w.findAll(CHIP).map((c) => c.text())).toEqual(["Status: A"]);
+    expect((w.get(SEARCH).element as HTMLInputElement).value).toBe("acme");
+    expect(url.store.orders.filters).toBe("status:a");
   });
 });

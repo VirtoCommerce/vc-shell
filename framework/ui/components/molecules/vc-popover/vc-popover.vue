@@ -5,6 +5,7 @@
         v-if="show"
         ref="floatingRef"
         class="vc-popover"
+        :class="panelClass"
         :inert="inert || undefined"
         :style="[floatingStyle, panelStyle]"
         :role="role"
@@ -103,6 +104,8 @@ interface Props {
    * attribute: the panel is teleported, and `inert` does not cross a Teleport.
    */
   inert?: boolean;
+  /** Extra class on the teleported panel (`.vc-popover`), to style one popover */
+  panelClass?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {

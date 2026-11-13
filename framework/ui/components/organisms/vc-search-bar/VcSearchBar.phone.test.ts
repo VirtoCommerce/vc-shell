@@ -19,7 +19,18 @@ describe("VcSearchBar phone", () => {
 
   const SheetStub = defineComponent({
     name: "VcSidebar",
-    props: ["modelValue", "title"],
+    props: [
+      "modelValue",
+      "title",
+      "position",
+      "height",
+      "draggable",
+      "dragHandle",
+      "closeButton",
+      "inset",
+      "ariaLabel",
+      "panelClass",
+    ],
     emits: ["update:modelValue"],
     setup:
       (props, { slots }) =>
@@ -53,6 +64,17 @@ describe("VcSearchBar phone", () => {
     expect(wrapper.find(".sheet-stub .vc-search-bar__panel--touch").exists()).toBe(true);
     expect(wrapper.find(".sheet-stub .vc-search-bar__sheet-head").exists()).toBe(true);
     expect(accLabels()).toEqual(["Status", "Created", "Store"]);
+    expect(wrapper.findComponent(SheetStub).props()).toMatchObject({
+      position: "bottom",
+      // the Filters sheet takes its content's height
+      height: "auto",
+      draggable: true,
+      dragHandle: true,
+      closeButton: false,
+      inset: true,
+      ariaLabel: "COMPONENTS.ORGANISMS.VC_SEARCH_BAR.FILTERS",
+      panelClass: "vc-search-bar__sheet",
+    });
   });
 
   it("the sheet: Done closes it, Clear clears the filters, a view chip applies its view", async () => {

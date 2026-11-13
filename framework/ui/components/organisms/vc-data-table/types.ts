@@ -876,6 +876,14 @@ export interface PersistedStateV2 {
   userSized?: boolean;
 }
 
+/** A search bar field with a value, as the table's empty state lists it */
+export interface SearchBarAppliedField {
+  id: string;
+  label: string;
+  /** "Label: value", or the label alone for a toggle */
+  text: string;
+}
+
 /** Props of `#search-header-actions` with `search-bar`; the slot gets none without it */
 export interface SearchBarSlotProps {
   /** The bar's width mode (wide ≥720px, medium ≥480px, else narrow), or "phone" on a phone */

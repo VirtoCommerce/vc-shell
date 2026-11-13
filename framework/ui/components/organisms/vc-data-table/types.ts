@@ -875,3 +875,24 @@ export interface PersistedStateV2 {
    */
   userSized?: boolean;
 }
+
+/** Props of `#search-header-actions` with `search-bar`; the slot gets none without it */
+export interface SearchBarSlotProps {
+  /** The bar's width mode (wide ≥720px, medium ≥480px, else narrow), or "phone" on a phone */
+  mode: "wide" | "medium" | "narrow" | "phone";
+  /** Filters or search text applied */
+  filtered: boolean;
+  /** Number of filters with a value */
+  filterCount: number;
+  /** The search text */
+  search: string;
+  /** Clears the filters and the search in one change */
+  clearAll: () => void;
+}
+
+/** Props of `#not-found` with `search-bar`; the slot gets none without it */
+export interface SearchBarNotFoundSlotProps extends SearchBarSlotProps {
+  clearSearch: () => void;
+  /** Clears the filters, keeps the search */
+  clearFilters: () => void;
+}

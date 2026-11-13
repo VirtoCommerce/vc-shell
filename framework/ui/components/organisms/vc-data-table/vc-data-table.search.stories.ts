@@ -1,10 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { computed, ref } from "vue";
 import { VcButton } from "@ui/components/atoms";
+import { VcBreadcrumbs } from "@ui/components/molecules";
 import { VcDataTable, VcColumn } from "@ui/components/organisms/vc-data-table";
 import type { GlobalFilterConfig } from "@ui/components/organisms/vc-data-table/types";
 import type { SearchBarView } from "@ui/components/organisms/vc-search-bar";
 import { mockProducts } from "./vc-data-table.stories.helpers";
+import { withMobileView } from "../../../../../.storybook/decorators";
 
 const meta = {
   title: "Data Display/VcDataTable",
@@ -227,7 +229,7 @@ SearchWithGlobalFilters.parameters = {
  * Shown when `items` is empty and there is no active search or filters.
  */
 
-/** With `searchBar`, custom `#search-header-actions` get their own left-aligned row above the search bar, inside the table's header. */
+/** With `searchBar`, custom `#search-header-actions` sit in the bar's row, after the Filters button. */
 export const SearchWithHeaderActions: Story = {
   render: () => ({
     components: { VcDataTable, VcColumn, VcButton },
@@ -347,8 +349,8 @@ export const SearchBarNoResults: Story = {
 
 /**
  * The same table and `#search-header-actions` without and with `search-bar`. Without it the classic header
- * stays as in v2.11.0: search, the actions and the global filters button in one row. With it the actions get
- * their own row above the bar.
+ * stays as in v2.11.0: search, the actions and the global filters button in one row. With it the actions sit
+ * at the end of the bar's row.
  */
 export const SearchHeaderWithAndWithoutBar: Story = {
   render: () => ({
@@ -367,6 +369,101 @@ export const SearchHeaderWithAndWithoutBar: Story = {
           <VcColumn id="currency" field="currency" title="Currency" />
         </VcDataTable>
       </section>
+    </div>`,
+  }),
+};
+
+// `#search-header-actions` and `#not-found` slot props with `search-bar`
+const slotsTable = (width: string) => `
+  <div style="height: 260px; width: ${width}" class="tw-overflow-hidden tw-border tw-border-solid tw-border-[var(--neutrals-200)]">
+    <VcDataTable :items="products" :state-key="stateKey + '${width}'" searchable search-bar :global-filters="stockFilters">
+      <template #search-header-actions="{ mode }">
+        <VcButton v-if="mode === 'narrow' || mode === 'phone'" icon="lucide-download" size="sm" variant="outline" aria-label="Export" />
+        <VcButton v-else icon="lucide-download" size="sm" variant="outline">Export</VcButton>
+      </template>
+      <VcColumn id="name" field="name" title="Product Name" />
+      <VcColumn id="status" field="status" title="Status" />
+    </VcDataTable>
+  </div>`;
+const slotsSetup = () => ({ products: mockProducts.slice(0, 3), stockFilters, stateKey: barKey("slots") });
+
+/**
+ * With `search-bar`, `#search-header-actions` gets the bar's `mode`: the Export button drops its label
+ * when the bar is narrow (a narrow blade) or on a phone.
+ */
+export const SearchBarActionsByMode: Story = {
+  render: () => ({
+    components: { VcDataTable, VcColumn, VcButton },
+    setup: slotsSetup,
+    template: `<div class="tw-flex tw-flex-col tw-gap-6">${slotsTable("100%")}${slotsTable("420px")}</div>`,
+  }),
+};
+
+/** The same table on a phone: search, the filter icon and the icon-only Export button in one row. */
+export const SearchBarActionsByModePhone: Story = {
+  decorators: [withMobileView],
+  render: () => ({
+    components: { VcDataTable, VcColumn, VcButton },
+    setup: slotsSetup,
+    template: slotsTable("100%"),
+  }),
+};
+
+/** A custom `#not-found` built from its props: the search, the filter count and the clear actions. */
+export const SearchBarCustomNotFound: Story = {
+  render: () => ({
+    components: { VcDataTable, VcColumn, VcButton },
+    setup: () => ({ stockFilters, stateKey: barKey("not-found") }),
+    template: `
+    <div style="height: 360px" class="tw-overflow-hidden">
+      <VcDataTable :items="[]" :state-key="stateKey" searchable search-bar search-value="zzz" :global-filters="stockFilters">
+        <template #not-found="{ search, filterCount, clearSearch, clearFilters, clearAll }">
+          <div class="tw-flex tw-flex-col tw-items-center tw-gap-3 tw-p-8 tw-text-center">
+            <p class="tw-font-semibold">Nothing matches{{ search ? ' "' + search + '"' : '' }}</p>
+            <p class="tw-text-sm tw-text-[var(--neutrals-600)]">{{ filterCount }} filter(s) applied</p>
+            <div class="tw-flex tw-gap-2">
+              <VcButton v-if="search" size="sm" variant="outline" @click="clearSearch">Clear search</VcButton>
+              <VcButton v-if="filterCount" size="sm" variant="outline" @click="clearFilters">Clear filters</VcButton>
+              <VcButton size="sm" @click="clearAll">Start over</VcButton>
+            </div>
+          </div>
+        </template>
+        <VcColumn id="name" field="name" title="Product Name" />
+        <VcColumn id="status" field="status" title="Status" />
+      </VcDataTable>
+    </div>`,
+  }),
+};
+
+/** List-wide content (breadcrumbs, a view toggle) goes in `#header`, above the bar; the bar keeps its row. */
+export const SearchBarWithHeaderSlot: Story = {
+  render: () => ({
+    components: { VcDataTable, VcColumn, VcButton, VcBreadcrumbs },
+    setup() {
+      const view = ref<"list" | "grid">("list");
+      const crumbs = [
+        { id: "catalog", title: "Catalog" },
+        { id: "electronics", title: "Electronics" },
+        { id: "phones", title: "Phones" },
+      ];
+      return { view, crumbs, products: mockProducts.slice(0, 5), stockFilters, stateKey: barKey("header") };
+    },
+    template: `
+    <div style="height: 420px" class="tw-overflow-hidden">
+      <VcDataTable :items="products" :state-key="stateKey" searchable search-bar :global-filters="stockFilters">
+        <template #header>
+          <div class="tw-flex tw-items-center tw-justify-between tw-gap-4">
+            <VcBreadcrumbs :items="crumbs" />
+            <div class="tw-flex tw-gap-1">
+              <VcButton icon="lucide-list" size="sm" variant="outline" :selected="view === 'list'" :aria-pressed="view === 'list'" @click="view = 'list'">List</VcButton>
+              <VcButton icon="lucide-layout-grid" size="sm" variant="outline" :selected="view === 'grid'" :aria-pressed="view === 'grid'" @click="view = 'grid'">Grid</VcButton>
+            </div>
+          </div>
+        </template>
+        <VcColumn id="name" field="name" title="Product Name" />
+        <VcColumn id="status" field="status" title="Status" />
+        <VcColumn id="currency" field="currency" title="Currency" />
+      </VcDataTable>
     </div>`,
   }),
 };

@@ -13,20 +13,15 @@
       <slot name="header" />
     </div>
 
-    <!-- Search bar (opt-in): custom actions row above the bar (search, filters as chips, views) -->
+    <!-- Search bar (opt-in): the bar (search, filters as chips, views), then custom actions in the same row -->
     <div
       v-if="
         searchBar && (searchable || globalFilters?.length || hasExternalBarFields || $slots['search-header-actions'])
       "
+      ref="searchHeaderRef"
       class="vc-data-table__search-header"
+      :class="{ 'vc-data-table__search-header--with-actions': $slots['search-header-actions'] }"
     >
-      <div
-        v-if="$slots['search-header-actions']"
-        class="vc-data-table__search-header-actions"
-      >
-        <!-- Custom actions from parent (e.g. adapter's filter button) -->
-        <slot name="search-header-actions" />
-      </div>
       <SearchBarControllerScope :controller="barController">
         <VcSearchBar
           :fields="globalFilters"
@@ -45,6 +40,17 @@
           @change="handleSearchBarChange"
         />
       </SearchBarControllerScope>
+      <div
+        v-if="$slots['search-header-actions']"
+        ref="searchHeaderActionsRef"
+        class="vc-data-table__search-header-actions"
+      >
+        <!-- Custom actions from parent (e.g. adapter's filter button) -->
+        <slot
+          name="search-header-actions"
+          v-bind="searchBarSlotProps"
+        />
+      </div>
     </div>
 
     <!-- Search bar + Global Filters + Column Switcher (combined toolbar) -->
@@ -232,6 +238,7 @@
             <slot
               v-if="isNotFoundState && $slots['not-found']"
               name="not-found"
+              v-bind="notFoundSlotProps"
             />
             <TableNoResults
               v-else-if="showNoResults"
@@ -355,6 +362,7 @@
           <slot
             v-if="isNotFoundState && $slots['not-found']"
             name="not-found"
+            v-bind="notFoundSlotProps"
           />
           <TableNoResults
             v-else-if="showNoResults"
@@ -483,6 +491,7 @@ import {
 } from "@ui/components/organisms/vc-search-bar/composables/useSearchBarController";
 import { useHasExternalSearchFields } from "@ui/components/organisms/vc-search-bar/composables/useHasExternalSearchFields";
 import { useDataTableOrchestrator } from "@ui/components/organisms/vc-data-table/composables/useDataTableOrchestrator";
+import { useSearchActionsHint } from "@ui/components/organisms/vc-data-table/composables/useSearchActionsHint";
 import { ColumnCollector, type ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
 import {
   ColumnCollectorKey,
@@ -501,6 +510,8 @@ import type {
   MobileSwipeAction,
   TableFitMode,
   PersistedStateV2,
+  SearchBarSlotProps,
+  SearchBarNotFoundSlotProps,
 } from "@ui/components/organisms/vc-data-table/types";
 import { vLoading } from "@core/directives";
 import type { VirtualElement } from "@floating-ui/vue";
@@ -688,8 +699,8 @@ defineSlots<{
   default?: () => VNode[];
   /** Custom header content above the table */
   header?: () => VNode[];
-  /** Extra action buttons in the search header toolbar */
-  "search-header-actions"?: () => VNode[];
+  /** Extra action buttons in the search header toolbar; with `searchBar`, in the bar's row after it, with its status */
+  "search-header-actions"?: (props: Partial<SearchBarSlotProps>) => VNode[];
   /** Custom selection banner replacing the default TableSelectAllBar */
   "selection-banner"?: (props: {
     count: number;
@@ -700,8 +711,8 @@ defineSlots<{
   }) => VNode[];
   /** Custom content for expanded rows */
   expansion?: (props: { data: T; index: number }) => VNode[];
-  /** Custom not-found state content (shown when search yields no results) */
-  "not-found"?: () => VNode[];
+  /** Custom not-found state content (shown when search yields no results); with `searchBar`, gets its status and actions */
+  "not-found"?: (props: Partial<SearchBarNotFoundSlotProps>) => VNode[];
   /** Custom empty state content */
   empty?: () => VNode[];
   /** Custom loading state content */
@@ -1264,6 +1275,29 @@ const barResultCount = computed(() => props.totalCount ?? props.items.length);
 const barController = createSearchBarController();
 const clearBarSearch = () => handleSearchInput("");
 
+/** The bar's status for `#search-header-actions` and `#not-found`; nothing without the bar, as before it */
+const searchBarSlotProps = computed(
+  (): Partial<SearchBarSlotProps> =>
+    props.searchBar
+      ? {
+          mode: barController.mode.value,
+          filtered: barController.filtered.value,
+          filterCount: barController.filterCount.value,
+          search: barController.search.value,
+          clearAll: barController.clearAll,
+        }
+      : {},
+);
+const notFoundSlotProps = computed(
+  (): Partial<SearchBarNotFoundSlotProps> =>
+    props.searchBar
+      ? { ...searchBarSlotProps.value, clearSearch: clearBarSearch, clearFilters: barController.clearFilters }
+      : {},
+);
+const searchHeaderRef = ref<HTMLElement>();
+const searchHeaderActionsRef = ref<HTMLElement>();
+useSearchActionsHint(searchHeaderRef, searchHeaderActionsRef);
+
 /** The reason-based empty state; a not-found slot or `notFoundState` wins */
 const showNoResults = computed(
   () => isNotFoundState.value && barController.filtered.value && !props.notFoundState && !slots["not-found"],
@@ -1423,15 +1457,26 @@ onBeforeUnmount(() => {
     @apply tw-flex-shrink-0 tw-px-4 tw-py-2;
   }
 
+  // One row: the bar takes the width left by the custom actions (it measures its own width for its mode)
   &__search-header {
-    @apply tw-flex tw-flex-col tw-gap-2 tw-flex-shrink-0 tw-border-b tw-border-solid;
+    @apply tw-flex tw-items-start tw-flex-shrink-0 tw-border-b tw-border-solid;
     background-color: var(--table-header-bg, var(--neutrals-50));
     border-color: var(--table-header-border, var(--neutrals-200));
   }
 
-  // The bar carries its own padding; only the actions row keeps the header's spacing
+  &__search-header > .vc-search-bar {
+    @apply tw-flex-1 tw-min-w-0;
+  }
+  &__search-header--with-actions > .vc-search-bar {
+    padding-inline-end: 8px;
+  }
+
+  // Aligned with the bar's first row (8px padding, 36px row); on a phone the bar's summary line sits below
   &__search-header-actions {
-    @apply tw-flex tw-flex-wrap tw-items-center tw-gap-2 tw-pt-2 tw-px-4;
+    @apply tw-flex tw-shrink-0 tw-items-center tw-gap-2;
+    min-height: 36px;
+    padding: 8px 16px 8px 0;
+    box-sizing: content-box;
   }
 
   &__content {

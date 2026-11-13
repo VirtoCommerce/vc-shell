@@ -1091,7 +1091,7 @@ const orderViews: SearchBarView[] = [
 ];
 ```
 
-- **Header.** The bar sits in a header with the table's `--table-header-bg` and `--table-header-border`. Content of the `search-header-actions` slot gets its own row above the bar. Without the slot there is no actions row.
+- **Header.** The bar sits in a header with the table's `--table-header-bg` and `--table-header-border`. Content of the `search-header-actions` slot sits at the end of the bar's row (see [Search bar slots](#search-bar-slots)).
 - **Search.** Typing emits `update:searchValue` at once and one debounced `search` per pause, as with the classic header. The table owns the search text: `searchValue` from the parent shows in the bar.
 - **Filters.** `global-filters` become the bar's fields. The `@filter` payload is the same flat object, merged with column filters; date ranges are split into their two fields. Column filters stay outside the bar: they are not counted, not shown as chips and not cleared by the bar.
 - **Wide bar layout.** `search-bar-variant="inline"` (default) shows applied filters as chips in the row; `"summary"` shows the applied field names on the Filters button instead.
@@ -1099,6 +1099,44 @@ const orderViews: SearchBarView[] = [
 - **Views.** `search-views` are views from code; one may be the `default` the list opens on. The view selector sits next to the blade title. With a `state-key`, users save their own views in `localStorage` under `VC_SEARCHBAR_<STATE-KEY>`, separate from the column layout, also when `state-storage` is `"session"`. The search text is not part of a view.
 - **Footer status.** Next to the range text the footer reads `filtered from 120 · 2 filters + search · Clear all` while bar filters or search are applied. "filtered from M" appears only when `unfiltered-count` is set; a footer under 520px shows just the filter part and "Clear all". "Clear all" clears the bar's filters and the search and selects the "All" view; column filters stay. The status shows only with `pagination`; on a phone the summary line under the bar shows it instead.
 - **Empty state.** When the result is empty because of bar filters or search, the table names the reason ("No results match “acme” with 2 filters"), lists the applied filters as removable tags, and offers "Clear search" and "Clear filters". The `not-found` slot and `not-found-state` win over it.
+
+### Search bar slots
+
+With `search-bar`, two slots place custom content around the bar:
+
+- `#header` renders above everything, full width. Put list-wide content here: breadcrumbs, a list/grid toggle, a title.
+- `#search-header-actions` renders in the bar's row, after the Filters button, at its own width; the bar takes the rest and picks its mode from that width. On a phone the row is the search, the filter icon and the slot. Keep it to one or two buttons.
+
+When you turn on `search-bar` for a screen that has wide content (breadcrumbs, several buttons) in `#search-header-actions`, move that content to `#header`. In development the table warns in the console once when the slot takes more than 40% of the row.
+
+`#search-header-actions` gets the bar's status as slot props (`SearchBarSlotProps`); `#not-found` gets the same plus two actions (`SearchBarNotFoundSlotProps`). Without `search-bar` both slots get no props.
+
+| Prop           | Type                                        | Description                                                                      |
+| -------------- | ------------------------------------------- | -------------------------------------------------------------------------------- |
+| `mode`         | `"wide" \| "medium" \| "narrow" \| "phone"` | The bar's width mode (wide from 720px, medium from 480px), `"phone"` on a phone. |
+| `filtered`     | `boolean`                                   | Filters or search text applied.                                                  |
+| `filterCount`  | `number`                                    | Number of bar filters with a value.                                              |
+| `search`       | `string`                                    | The search text.                                                                 |
+| `clearAll`     | `() => void`                                | Clears the filters and the search in one `@filter`.                              |
+| `clearSearch`  | `() => void`                                | `#not-found` only. Clears the search, keeps the filters.                         |
+| `clearFilters` | `() => void`                                | `#not-found` only. Clears the filters, keeps the search.                         |
+
+```vue
+<VcDataTable :items="orders" state-key="orders-list" searchable search-bar :global-filters="orderFilters">
+  <template #header>
+    <VcBreadcrumbs :items="breadcrumbs" />
+  </template>
+  <template #search-header-actions="{ mode }">
+    <VcButton v-if="mode === 'narrow' || mode === 'phone'" icon="lucide-download" variant="outline" size="sm" aria-label="Export" />
+    <VcButton v-else icon="lucide-download" variant="outline" size="sm">Export</VcButton>
+  </template>
+  <template #not-found="{ search, clearAll }">
+    <p>Nothing matches "{{ search }}"</p>
+    <VcButton size="sm" @click="clearAll">Clear all</VcButton>
+  </template>
+  <VcColumn id="number" field="number" title="Number" />
+</VcDataTable>
+```
 
 ### Filters and the view in the URL
 
@@ -1117,7 +1155,7 @@ With `search-bar`, modules can add fields and views to a list with `registerExte
 
 ### VcTableAdapter
 
-Legacy `VcTableAdapter` screens keep the classic header. Pass `search-bar` to the adapter to get the bar: the legacy filters button and `search-header-actions` stay in the row above it, and with no `global-filters` the bar shows only the search.
+Legacy `VcTableAdapter` screens keep the classic header. Pass `search-bar` to the adapter to get the bar: the legacy filters button and `search-header-actions` sit at the end of the bar's row, and with no `global-filters` the bar shows only the search.
 
 ### Your own bar
 
@@ -1827,20 +1865,20 @@ These props apply only with `searchBar`.
 
 ## VcDataTable Slots Reference
 
-| Slot                    | Props                                                           | Description                                                                                                |
-| ----------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `default`               | --                                                              | VcColumn declarations (required).                                                                          |
-| `header`                | --                                                              | Custom header content above the table.                                                                     |
-| `footer`                | --                                                              | Custom footer content below the table body.                                                                |
-| `search-header-actions` | --                                                              | Extra buttons in the search toolbar (beside filter icon); in their own row above the bar with `searchBar`. |
-| `selection-banner`      | `{ count, totalCount, isSelectAll, selectAll, clearSelection }` | Custom selection banner.                                                                                   |
-| `expansion`             | `{ data: T, index: number }`                                    | Content rendered below an expanded row (desktop and mobile).                                               |
-| `empty`                 | --                                                              | Custom empty state (no items, no search).                                                                  |
-| `not-found`             | --                                                              | Custom not-found state (no items + active search/filters).                                                 |
-| `loading`               | --                                                              | Custom loading state.                                                                                      |
-| `groupheader`           | `{ data: T, index: number }`                                    | Custom row group header.                                                                                   |
-| `groupfooter`           | `{ data: T, index: number }`                                    | Custom row group footer.                                                                                   |
-| `pagination`            | `{ pages, currentPage, onPageClick }`                           | Custom pagination replacing built-in VcPagination.                                                         |
+| Slot                    | Props                                                           | Description                                                                                             |
+| ----------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `default`               | --                                                              | VcColumn declarations (required).                                                                       |
+| `header`                | --                                                              | Custom header content above the table.                                                                  |
+| `footer`                | --                                                              | Custom footer content below the table body.                                                             |
+| `search-header-actions` | `SearchBarSlotProps` with `searchBar`, else --                  | Extra buttons in the search toolbar (beside filter icon); at the end of the bar's row with `searchBar`. |
+| `selection-banner`      | `{ count, totalCount, isSelectAll, selectAll, clearSelection }` | Custom selection banner.                                                                                |
+| `expansion`             | `{ data: T, index: number }`                                    | Content rendered below an expanded row (desktop and mobile).                                            |
+| `empty`                 | --                                                              | Custom empty state (no items, no search).                                                               |
+| `not-found`             | `SearchBarNotFoundSlotProps` with `searchBar`, else --          | Custom not-found state (no items + active search/filters).                                              |
+| `loading`               | --                                                              | Custom loading state.                                                                                   |
+| `groupheader`           | `{ data: T, index: number }`                                    | Custom row group header.                                                                                |
+| `groupfooter`           | `{ data: T, index: number }`                                    | Custom row group footer.                                                                                |
+| `pagination`            | `{ pages, currentPage, onPageClick }`                           | Custom pagination replacing built-in VcPagination.                                                      |
 
 ---
 

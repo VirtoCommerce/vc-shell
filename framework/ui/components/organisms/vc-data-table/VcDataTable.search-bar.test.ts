@@ -166,15 +166,15 @@ describe("VcDataTable search bar header", () => {
     expect(w.find(".vc-data-table__search-header-actions").exists()).toBe(false);
   });
 
-  it("renders search-header-actions in their own row above the bar, not inside it", () => {
+  it("renders search-header-actions in the bar's row after the bar, not inside it", () => {
     const w = mountTable(
       { searchable: true },
       { "search-header-actions": "<button class='custom-action'>Export</button>" },
     );
     const children = w.find(".vc-data-table__search-header").element.children;
     expect(children).toHaveLength(2);
-    expect(children[0].classList.contains("vc-data-table__search-header-actions")).toBe(true);
-    expect(children[1].classList.contains("vc-search-bar")).toBe(true);
+    expect(children[0].classList.contains("vc-search-bar")).toBe(true);
+    expect(children[1].classList.contains("vc-data-table__search-header-actions")).toBe(true);
     expect(w.find(".vc-data-table__search-header-actions .custom-action").exists()).toBe(true);
     expect(w.find(".vc-search-bar .custom-action").exists()).toBe(false);
     expect(w.find(".vc-search-bar__actions").exists()).toBe(false);

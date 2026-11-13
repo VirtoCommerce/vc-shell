@@ -37,6 +37,7 @@ describe("search bar controller", () => {
 
   it("is empty and its actions do nothing without a bar", () => {
     const c = createSearchBarController();
+    expect(c.mode.value).toBe("wide");
     expect(c.filterCount.value).toBe(0);
     expect(c.search.value).toBe("");
     expect(c.filtered.value).toBe(false);

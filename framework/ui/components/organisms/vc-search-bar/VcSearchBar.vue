@@ -377,7 +377,8 @@ function clearAll() {
 }
 
 // A host (the table) reads the bar's status and drives it from its footer and empty state
-useSearchBarControllerSource({ fields, state, searchText, t, clearAll, clearFilters, removeFilter });
+const hostMode = computed(() => (isMobile.value ? "phone" : mode.value));
+useSearchBarControllerSource({ mode: hostMode, fields, state, searchText, t, clearAll, clearFilters, removeFilter });
 
 function onTypedChip(c: { fieldId: string; value: unknown; rest: string }) {
   // the commit below carries the rest of the text in the same change

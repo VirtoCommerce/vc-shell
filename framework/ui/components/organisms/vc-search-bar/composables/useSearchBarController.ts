@@ -13,6 +13,10 @@ import {
 import type { SearchBarState } from "../types";
 import type { BarField } from "../lib/fields";
 import { chipLabel, isEmptyValue } from "../lib/values";
+import type { BarMode } from "./useBarMode";
+
+/** The bar's width mode, or "phone" on a phone */
+export type SearchBarMode = BarMode | "phone";
 
 /** A bar field with a value, as the table's empty state lists it */
 export interface SearchBarAppliedField {
@@ -24,6 +28,8 @@ export interface SearchBarAppliedField {
 
 /** Read-only status of a search bar plus its actions, for the component that hosts the bar (the table) */
 export interface SearchBarController {
+  /** "wide" until a bar connects */
+  mode: ComputedRef<SearchBarMode>;
   filterCount: ComputedRef<number>;
   search: ComputedRef<string>;
   /** Filters or search text applied */
@@ -35,6 +41,7 @@ export interface SearchBarController {
 }
 
 export interface ControllerSource {
+  mode: Ref<SearchBarMode>;
   search: Ref<string>;
   appliedFields: Ref<SearchBarAppliedField[]>;
   clearAll(): void;
@@ -54,11 +61,13 @@ const SearchBarControllerKey: InjectionKey<ConnectableController> = Symbol("Sear
 export function createSearchBarController(): ConnectableController {
   const source = shallowRef<ControllerSource | null>(null);
   const appliedFields = computed(() => source.value?.appliedFields.value ?? []);
+  const mode = computed<SearchBarMode>(() => source.value?.mode.value ?? "wide");
   const search = computed(() => source.value?.search.value ?? "");
   const filterCount = computed(() => appliedFields.value.length);
   const filtered = computed(() => filterCount.value > 0 || search.value !== "");
 
   const controller: ConnectableController = {
+    mode,
     filterCount,
     search,
     filtered,
@@ -96,6 +105,7 @@ export const SearchBarControllerScope = defineComponent({
 
 /** Bar side: reports the bar's status to the host's controller, if there is one */
 export function useSearchBarControllerSource(o: {
+  mode: Ref<SearchBarMode>;
   fields: Ref<BarField[]>;
   state: Ref<SearchBarState>;
   /** The text in the input (ahead of the debounced state) */
@@ -120,6 +130,7 @@ export function useSearchBarControllerSource(o: {
   );
 
   const disconnect = controller.connect({
+    mode: o.mode,
     search: o.searchText,
     appliedFields,
     clearAll: o.clearAll,

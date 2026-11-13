@@ -156,7 +156,7 @@ describe("VcTableAdapter and the search bar", () => {
     w.unmount();
   });
 
-  it("with searchBar and no fields: only the search, the legacy button above it, no status", () => {
+  it("with searchBar and no fields: only the search, the legacy button after it in the same row, no status", () => {
     const w = mountAdapter({
       searchBar: true,
       pages: 2,
@@ -165,6 +165,11 @@ describe("VcTableAdapter and the search bar", () => {
     });
     expect(w.find(".vc-data-table__search-header-actions .vc-global-filters-button__label").exists()).toBe(true);
     expect(w.find(".vc-search-bar .vc-global-filters-button__label").exists()).toBe(false);
+    const row = [...w.find(".vc-data-table__search-header").element.children];
+    expect(row.map((c) => c.className.split(" ")[0])).toEqual([
+      "vc-search-bar",
+      "vc-data-table__search-header-actions",
+    ]);
     expect(w.find(SEARCH).exists()).toBe(true);
     expect(w.find(".vc-search-bar__divider").exists()).toBe(false);
     expect(w.find(".vc-search-bar__filters-btn").exists()).toBe(false);

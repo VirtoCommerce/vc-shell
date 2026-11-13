@@ -1140,7 +1140,7 @@ When you turn on `search-bar` for a screen that has wide content (breadcrumbs, s
 
 ### Filters and the view in the URL
 
-With `search-bar` and a `state-key`, the applied filters are kept in the blade URL under `<state-key>_filters` and the current view under `<state-key>_view`, next to `<state-key>_sort`, `_search` and `_page` (see [URL query persistence](#url-query-persistence)). A copied link opens the screen with the same filters and view, and a reload keeps them. When the table opens with filters in the URL (or a default view), it emits `@filter` once after the screen's own `onMounted`, so load your data from `@filter` as usual. Nothing is emitted when there is nothing to apply.
+With `search-bar` and a `state-key`, the applied filters are kept in the blade URL under `<state-key>_filters` and the current view under `<state-key>_view`, next to `<state-key>_sort`, `_search` and `_page` (see [URL query persistence](#url-query-persistence)). A copied link opens the screen with the same filters and view, and a reload keeps them. When the table opens with filters in the URL (or a default view), it emits `@filter` once before the screen's own `onMounted`, so a handler that keeps the filters in the screen's query lets the first load in `onMounted` use them, as it uses a search or sort restored in setup. Nothing is emitted when there is nothing to apply.
 
 The table holds the bar's state: if the bar unmounts (no `searchable`, `global-filters` or `search-header-actions` left) and comes back, it shows the filters of the last `@filter` payload, with or without a `state-key`. Without a `state-key` nothing outlives the table.
 

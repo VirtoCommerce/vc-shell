@@ -6,6 +6,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { mount, type VueWrapper } from "@vue/test-utils";
 import { defineComponent, h, nextTick, onMounted, ref } from "vue";
 import VcDataTable from "./VcDataTable.vue";
+import type { GlobalFilterConfig } from "./types";
 import { registerExternalSearchFilters, unregisterExternalSearchFilters } from "@core/services/search-filters-service";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import {
@@ -361,28 +362,77 @@ describe("VcDataTable search bar header", () => {
       expect(url.query.orders_view).toBe("paid");
     });
 
-    it("emits the restored filter after the screen's own onMounted", async () => {
-      url.query.orders_filters = "status:Paid";
-      const log: string[] = [];
-      const Screen = defineComponent({
+    // A screen that loads in onMounted and reloads on @filter, merging into its query (the list pattern)
+    const loadingScreen = (
+      requests: Record<string, unknown>[],
+      log: string[] = [],
+      fields = ref<GlobalFilterConfig[]>(globalFilters),
+    ) =>
+      defineComponent({
         setup() {
-          onMounted(() => log.push("screen mounted"));
+          let query: Record<string, unknown> = {};
+          const load = (patch: Record<string, unknown>) => {
+            query = { ...query, ...patch };
+            requests.push(query);
+          };
+          onMounted(() => {
+            log.push("screen mounted");
+            load({ take: 20 });
+          });
           return () =>
             h(VcDataTable as never, {
               items: [],
               stateKey: "orders",
               searchBar: true,
-              globalFilters,
-              onFilter: (e: { filters: Record<string, unknown> }) => log.push(`filter ${JSON.stringify(e.filters)}`),
+              globalFilters: fields.value,
+              searchViews: [{ id: "paid", name: "Paid", values: { status: ["Paid"] } }],
+              onFilter: (e: { filters: Record<string, unknown> }) => {
+                log.push(`filter ${JSON.stringify(e.filters)}`);
+                load({ status: e.filters.status, skip: 0 });
+              },
             });
         },
       });
-      wrapper = mount(Screen, { global: withUrl(), attachTo: document.body });
-      expect(log).toEqual(["screen mounted"]);
+    const settle = async () => {
       await nextTick();
       vi.advanceTimersByTime(1000);
       await nextTick();
-      expect(log).toEqual(["screen mounted", 'filter {"status":["Paid"]}']);
+    };
+
+    it("emits the restored filter before the screen's own onMounted, so its first load has it", async () => {
+      url.query.orders_filters = "status:Paid";
+      const log: string[] = [];
+      const requests: Record<string, unknown>[] = [];
+      wrapper = mount(loadingScreen(requests, log), { global: withUrl(), attachTo: document.body });
+      await settle();
+      expect(log).toEqual(['filter {"status":["Paid"]}', "screen mounted"]);
+      expect(requests.length).toBeGreaterThan(0);
+      expect(requests.every((r) => JSON.stringify(r.status) === '["Paid"]')).toBe(true);
+    });
+
+    it("a link with only `<key>_view` reaches the screen's first load too", async () => {
+      url.query.orders_view = "paid";
+      const requests: Record<string, unknown>[] = [];
+      wrapper = mount(loadingScreen(requests), { global: withUrl(), attachTo: document.body });
+      await settle();
+      expect(requests.length).toBeGreaterThan(0);
+      expect(requests.every((r) => JSON.stringify(r.status) === '["Paid"]')).toBe(true);
+    });
+
+    it("a field that arrives after mount applies its URL value with a later filter", async () => {
+      url.query.orders_filters = "status:Paid;late:yes";
+      const requests: Record<string, unknown>[] = [];
+      const log: string[] = [];
+      const fields = ref<GlobalFilterConfig[]>(globalFilters);
+      wrapper = mount(loadingScreen(requests, log, fields), { global: withUrl(), attachTo: document.body });
+      await settle();
+      expect(log).toEqual(['filter {"status":["Paid"]}', "screen mounted"]);
+      fields.value = [
+        ...globalFilters,
+        { id: "late", label: "Late", filter: { options: [{ value: "yes", label: "Yes" }] } },
+      ];
+      await settle();
+      expect(log.at(-1)).toBe('filter {"status":["Paid"],"late":"yes"}');
     });
 
     it("a relative date stays relative in the URL and resolves against today", async () => {

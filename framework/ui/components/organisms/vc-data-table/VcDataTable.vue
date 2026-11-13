@@ -448,18 +448,7 @@
  * Orchestration (sub-composable wiring, watchers, event handlers, derived computeds)
  * lives in useDataTableOrchestrator so it can be tested on its own.
  */
-import {
-  ref,
-  computed,
-  provide,
-  watch,
-  watchEffect,
-  nextTick,
-  onMounted,
-  onBeforeUnmount,
-  useSlots,
-  type VNode,
-} from "vue";
+import { ref, computed, provide, watch, watchEffect, onMounted, onBeforeUnmount, useSlots, type VNode } from "vue";
 import { useElementSize } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import {
@@ -1305,8 +1294,9 @@ const barApplied = computed((): SearchBarAppliedField[] => {
 const barFiltered = computed(() => barApplied.value.length > 0 || barSearch.value !== "");
 
 // The bar's flat filters merge with column filters in one @filter.
-// Restored state arrives during the bar's setup, before the screen's own onMounted load: hold that
-// @filter until the screen has mounted, so the restored filters land after its initial request.
+// Restored state (URL filters, a linked or default view) arrives while the table renders: it goes out
+// once the table has mounted, which is before the screen's own onMounted, so the screen's first load
+// already has it, as it has a search or sort restored in its setup.
 let tableMounted = false;
 let restoredFilterPending = false;
 // A change with the bar's filters unchanged (a search cleared with them) is no new @filter
@@ -1327,11 +1317,8 @@ watch(
 onMounted(() => {
   tableMounted = true;
   if (!restoredFilterPending) return;
-  // nextTick runs after the parent's onMounted in the same mount flush
-  nextTick(() => {
-    restoredFilterPending = false;
-    emitFilterPayload();
-  });
+  restoredFilterPending = false;
+  emitFilterPayload();
 });
 
 // Setup mistakes that fail silently (warnOnce: development only, once per key)

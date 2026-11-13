@@ -266,7 +266,7 @@ unregisterExternalSearchFilters("reviews-rating");
 - Two bars with the same `storage-key` on one page keep separate caches and can overwrite each other.
 - Views use `localStorage` even when `VcDataTable` has `state-storage="session"`.
 - Back and forward navigation inside an open blade does not update the bar: the URL is read when the bar mounts.
-- In the table, the restored `@filter` is sent after the screen's own `onMounted`, but a screen that starts its own unfiltered load there can still race with it: whichever response arrives last fills the table.
+- In the table, the restored `@filter` is sent before the screen's own `onMounted`. A screen whose `onMounted` load builds its query from scratch, ignoring what `@filter` set, still sends an unfiltered request after the filtered one: keep the filters in the query that load reads.
 - The date editor's relative ranges have no arrow-key navigation.
 - A click on a button in Safari does not focus it, so focus is not returned to it after a popover closes.
 

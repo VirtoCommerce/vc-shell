@@ -61,6 +61,7 @@
           {{ $t(`${PH}VIEW`) }}
         </div>
         <div
+          ref="viewChips"
           class="vc-search-bar__view-chips"
           role="group"
           :aria-labelledby="viewsLabelId"
@@ -214,6 +215,19 @@ const firstOpen =
 const toggleCount = (id: string) => props.counts?.[id]?.true;
 const setToggle = (id: string, on: unknown) => (on ? emit("set", id, true) : emit("clear-field", id));
 
+// The sheet's current view chip scrolls into the row when the sheet opens and after a save or a pick
+const viewChips = ref<HTMLElement>();
+watch(
+  [() => props.views.current.value.id, viewChips],
+  () =>
+    void nextTick(() =>
+      viewChips.value
+        ?.querySelector(".vc-search-bar__view-chip--current")
+        ?.scrollIntoView?.({ block: "nearest", inline: "nearest" }),
+    ),
+  { immediate: true },
+);
+
 const closeBtn = ref<ComponentPublicInstance>();
 const unsaved = ref<HTMLElement>();
 const focusClose = () => void nextTick(() => (closeBtn.value?.$el as HTMLElement | undefined)?.focus());
@@ -347,9 +361,12 @@ function clearAll() {
       @apply tw-px-3;
     }
   }
+  // a chip cut at an edge fades out over the row's padding
   &__view-chips {
     @apply tw-flex tw-gap-2 tw-overflow-x-auto tw-px-3 tw-py-1;
+    scroll-padding-inline: 12px;
     scrollbar-width: none;
+    mask-image: linear-gradient(to right, transparent, #000 12px, #000 calc(100% - 12px), transparent);
   }
   // pills; the current view is a solid one
   &__view-chip {

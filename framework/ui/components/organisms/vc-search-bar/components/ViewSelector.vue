@@ -20,7 +20,13 @@
       :aria-expanded="open"
       @click="toggle"
     >
-      <span class="vc-search-bar__view-btn-name">{{ current.name }}</span>
+      <span
+        ref="nameEl"
+        class="vc-search-bar__view-btn-name"
+        :class="{ 'vc-search-bar__view-btn-name--cut': nameCut }"
+        :title="nameCut ? current.name : undefined"
+        >{{ current.name }}</span
+      >
       <VcBadge
         v-if="modified"
         class="vc-search-bar__view-badge"
@@ -51,6 +57,7 @@
       <div
         ref="menu"
         class="vc-search-bar__views-menu vc-search-bar__fit"
+        @keydown="onMenuKeydown"
       >
         <div
           class="vc-search-bar__views-title"
@@ -183,10 +190,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, type ComponentPublicInstance } from "vue";
+import { computed, nextTick, ref, watch, type ComponentPublicInstance } from "vue";
 import { VcBadge, VcButton, VcIcon } from "@ui/components/atoms";
 import { VcPopover } from "@ui/components/molecules";
 import ViewNameField from "./ViewNameField.vue";
+import { cycleTab } from "../lib/focus";
 import type { ViewsApi } from "../composables/useViews";
 
 defineOptions({ name: "ViewSelector" });
@@ -211,6 +219,18 @@ const optionsFor = ref<string | null>(null);
 const current = computed(() => props.views.current.value);
 const modified = computed(() => props.views.modified.value);
 
+// A long name fades out at the end of its box: an ellipsis would leave up to a letter's gap before the chevron
+const nameEl = ref<HTMLElement>();
+const nameCut = ref(false);
+watch(
+  () => current.value.name,
+  () => {
+    const el = nameEl.value;
+    nameCut.value = !!el && el.scrollWidth > el.clientWidth;
+  },
+  { flush: "post", immediate: true },
+);
+
 // A menu opens fresh; a closing one keeps what it showed while it fades out
 function toggle() {
   if (open.value) return close();
@@ -218,6 +238,36 @@ function toggle() {
   renaming.value = null;
   optionsFor.value = null;
   open.value = true;
+  // the menu takes the focus on its current view
+  void nextTick(() => {
+    const m = menu.value;
+    (m?.querySelector<HTMLElement>("[aria-current='true']") ?? m?.querySelector<HTMLElement>(ROWS))?.focus({
+      preventScroll: true,
+    });
+  });
+}
+
+// The menu's rows, in order: the views (with their "⋯"), a view's options, the actions of a modified view
+const ROWS = ".vc-search-bar__menu-row, .vc-search-bar__view-more";
+const STEP: Record<string, (i: number, n: number) => number> = {
+  ArrowDown: (i, n) => (i + 1) % n,
+  ArrowUp: (i, n) => (i - 1 + n) % n,
+  Home: () => 0,
+  End: (_, n) => n - 1,
+};
+
+/** Arrow keys, Home and End move between the rows; Tab stays in the menu (it is teleported to the end of the page) */
+function onMenuKeydown(e: KeyboardEvent) {
+  const m = menu.value;
+  if (!m) return;
+  if (e.key === "Tab") return cycleTab(e, m);
+  const step = STEP[e.key];
+  // a name field keeps its keys
+  if (!step || e.target instanceof HTMLInputElement) return;
+  const rows = [...m.querySelectorAll<HTMLElement>(ROWS)];
+  if (!rows.length) return;
+  e.preventDefault();
+  rows[step(rows.indexOf(document.activeElement as HTMLElement), rows.length)].focus();
 }
 
 function close() {
@@ -274,8 +324,22 @@ function act(run: () => void) {
     @apply tw-truncate;
     max-width: 220px;
   }
+  &__view-btn-name.vc-search-bar__view-btn-name--cut {
+    text-overflow: clip;
+    mask-image: linear-gradient(to left, transparent, #000 20px);
+
+    [dir="rtl"] & {
+      mask-image: linear-gradient(to right, transparent, #000 20px);
+    }
+  }
+  // rows, their hovers and the name field keep off the popover's edges
   &__views-menu {
     @apply tw-flex tw-flex-col tw-gap-1;
+    padding: 6px;
+
+    .vc-search-bar__view-name-field {
+      padding: 4px 2px;
+    }
   }
   &__views-title {
     @apply tw-uppercase tw-font-semibold tw-px-2 tw-pt-1;
@@ -326,8 +390,14 @@ function act(run: () => void) {
   }
   // the actions under a plain full-width rule
   &__views-modified {
-    @apply tw-flex tw-flex-col tw-gap-0.5 tw-pt-1 tw-mt-1;
+    @apply tw-flex tw-flex-col tw-gap-0.5 tw-pt-1.5 tw-mt-1;
+    margin-inline: -6px;
+    padding-inline: 6px;
     border-top: 1px solid var(--neutrals-200);
   }
+}
+// The blade header clips what overflows its title line: there the ring is drawn inside the button
+.vc-blade-header .vc-button.vc-search-bar__view-btn:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--button-focus-ring-color);
 }
 </style>

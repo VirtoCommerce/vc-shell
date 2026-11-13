@@ -122,6 +122,14 @@ describe("NumberEditor", () => {
     expect(w.emitted("update:value")).toEqual([[{ op: "gte", min: 5 }], [{ op: "lte", max: 9 }]]);
   });
 
+  it("a From above To applies as the range in order", async () => {
+    const w = mount(NumberEditor, { props: { field, value: undefined }, global });
+    await inputs(w)[0].setValue("500");
+    await inputs(w)[1].setValue("50");
+    await inputs(w)[1].trigger("keydown", { key: "Enter" });
+    expect(w.emitted("update:value")).toEqual([[{ op: "between", min: 50, max: 500 }]]);
+  });
+
   it("blur does not apply; non-numeric input never applies", async () => {
     const w = mount(NumberEditor, { props: { field, value: undefined }, global });
     await inputs(w)[0].setValue("7");

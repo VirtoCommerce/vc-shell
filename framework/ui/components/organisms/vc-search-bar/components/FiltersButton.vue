@@ -96,6 +96,9 @@ const showNames = computed(() => !!props.names && props.count > 0 && props.mode 
       @apply tw-inline-flex tw-items-center tw-gap-1.5 tw-min-w-0;
     }
   }
+  &__filters-main:focus-visible {
+    @apply tw-relative tw-z-[1];
+  }
   &__filters-names {
     @apply tw-truncate;
     max-width: 200px;

@@ -19,7 +19,7 @@
       :aria-controls="open ? listId : undefined"
       :aria-activedescendant="open ? `${listId}-${active}` : undefined"
       :aria-label="label"
-      :placeholder="label"
+      :placeholder="short ? t('COMPONENTS.ORGANISMS.VC_SEARCH_BAR.SEARCH_PLACEHOLDER') : label"
       :value="modelValue"
       :disabled="disabled"
       @input="onInput(($event.target as HTMLInputElement).value)"
@@ -27,23 +27,26 @@
       @focus="focused = true"
       @blur="focused = false"
     />
-    <kbd
-      v-if="!hideHint && !modelValue && !focused && !disabled"
-      class="vc-search-bar__search-hint"
-      aria-hidden="true"
-      >/</kbd
-    >
-    <VcButton
-      v-if="modelValue"
-      class="vc-search-bar__search-clear"
-      variant="ghost"
-      size="icon-sm"
-      icon="lucide-x"
-      icon-size="xs"
-      :aria-label="$t('COMPONENTS.ORGANISMS.VC_SEARCH_BAR.CLEAR_SEARCH')"
-      :disabled="disabled"
-      @click="clearText"
-    />
+    <!-- one fixed slot for the key hint and the clear button: the input keeps its width while typing -->
+    <span class="vc-search-bar__search-end">
+      <kbd
+        v-if="!hideHint && !modelValue && !focused && !disabled"
+        class="vc-search-bar__search-hint"
+        aria-hidden="true"
+        >/</kbd
+      >
+      <VcButton
+        v-if="modelValue"
+        class="vc-search-bar__search-clear"
+        variant="ghost"
+        size="icon-sm"
+        icon="lucide-x"
+        icon-size="xs"
+        :aria-label="$t('COMPONENTS.ORGANISMS.VC_SEARCH_BAR.CLEAR_SEARCH')"
+        :disabled="disabled"
+        @click="clearText"
+      />
+    </span>
     <div
       v-if="open"
       class="vc-search-bar__suggest"
@@ -111,6 +114,8 @@ const props = defineProps<{
   disabled?: boolean;
   /** No `/` key hint (a phone has no keyboard shortcut) */
   hideHint?: boolean;
+  /** A narrow bar: the short default placeholder; the given one stays the accessible name */
+  short?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -252,6 +257,10 @@ defineExpose({ focus: () => input.value?.focus() });
   &__search-hint {
     width: 18px;
     padding: 0;
+  }
+  &__search-end {
+    @apply tw-inline-flex tw-items-center tw-justify-center tw-shrink-0;
+    width: 24px;
   }
   &__search-clear {
     --button-ghost-text-color: var(--neutrals-500);

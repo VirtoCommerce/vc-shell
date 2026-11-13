@@ -275,8 +275,9 @@ describe("VcSearchBar", () => {
       await wrapper.get(SEARCH).setValue("acme status:a ");
       const changes = wrapper.emitted("change") as SearchBarChange[][];
       expect(changes).toHaveLength(1);
-      expect(changes[0][0]).toMatchObject({ search: "acme", filters: { status: ["a"] } });
-      expect((wrapper.get(SEARCH).element as HTMLInputElement).value).toBe("acme");
+      // one space stays, as typed: the next word starts a new one
+      expect(changes[0][0]).toMatchObject({ search: "acme ", filters: { status: ["a"] } });
+      expect((wrapper.get(SEARCH).element as HTMLInputElement).value).toBe("acme ");
       expect(wrapper.findAll(CHIP).map((c) => c.text())).toEqual(["Status: A"]);
     });
 

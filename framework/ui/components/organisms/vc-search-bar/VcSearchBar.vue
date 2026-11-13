@@ -24,6 +24,7 @@
           :placeholder="placeholder"
           :disabled="disabled"
           :hide-hint="isMobile"
+          :short="buttonMode === 'narrow'"
           @update:model-value="input"
           @chip="onTypedChip"
           @backspace-empty="removeLast"
@@ -41,7 +42,7 @@
             :open="openId === f.id"
             :disabled="disabled"
             @open="openEditor(f.id, $event)"
-            @remove="removeFilter(f.id)"
+            @remove="removeChip(f.id)"
           />
           <VcButton
             v-if="hiddenChips.length"
@@ -111,6 +112,7 @@
     <!-- one menu at a time; the hosts stay mounted and animate on their own open flag -->
     <component
       :is="menuHost"
+      ref="menuHostRef"
       v-bind="menuProps"
       @update:model-value="!$event && closeEditor(true)"
       @update:show="!$event && closeEditor(true)"
@@ -131,7 +133,7 @@
         :fields="hiddenChips"
         :state="state"
         :counts="counts"
-        :initially-open="hiddenChips[0]?.id"
+        :initially-open="hiddenChips.find((f) => f.kind !== 'toggle')?.id"
         @set="setValue"
         @clear-field="clearValue"
       />
@@ -155,6 +157,7 @@
 
 <script setup lang="ts">
 import { computed, inject, nextTick, provide, ref, watch, type Component } from "vue";
+import { useEventListener } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { BladeDescriptorKey } from "@core/blade-navigation/types";
@@ -173,6 +176,7 @@ import type {
 } from "./types";
 import { useSearchBarState } from "./composables/useSearchBarState";
 import { isEmptyValue } from "./lib/values";
+import { cycleTab, focusFirst } from "./lib/focus";
 import PillEditor from "./components/PillEditor.vue";
 import SearchInput from "./components/SearchInput.vue";
 import FilterChip from "./components/FilterChip.vue";
@@ -371,12 +375,45 @@ const menuProps = computed<Record<string, unknown>>(() => {
   };
 });
 
+// The desktop popover (the phone sheet moves focus on its own)
+const menuHostRef = ref<{ panelEl?: HTMLElement | null }>();
+const menuPanel = () => (isMobile.value ? null : (menuHostRef.value?.panelEl ?? null));
+
+// A menu that opens takes the focus: a chip's editor its checked option or first control, "+N" its
+// expanded field, the Filters panel its first control
+watch([openId, list], async () => {
+  if (!hostOpen.value || isMobile.value) return;
+  await nextTick();
+  const panel = menuPanel();
+  if (!panel || panel.contains(document.activeElement)) return;
+  const content = panel.querySelector(".vc-popover__content");
+  if (shown.value.field) focusFirst(content, "input[type='checkbox']:checked, input[type='radio']:checked");
+  else if (shown.value.list === "overflow") focusFirst(content, ".vc-search-bar__acc-toggle[aria-expanded='true']");
+  else if (!focusFirst(panel.querySelector(".vc-search-bar__panel-body"))) focusFirst(panel);
+});
+
+// Tab stays inside the open popover: it is teleported to the end of the page
+useEventListener(document, "keydown", (e: KeyboardEvent) => {
+  const panel = hostOpen.value ? menuPanel() : null;
+  if (panel?.contains(e.target as Node)) cycleTab(e, panel);
+});
+
+/** Focus that would fall to the page goes to the next control of the row: "+N", Filters, the search */
+function focusRowFallback() {
+  const btn = main.value?.querySelector<HTMLElement>(".vc-search-bar__more, .vc-search-bar__filters-main");
+  if (btn && !btn.matches(":disabled")) btn.focus();
+  else searchInput.value?.focus();
+}
+
 // A menu whose anchor left the row (the "+N" button once every chip fits, a chip in a narrower mode) closes
 watch([mode, visibleCount, () => chipFields.value.length, isMobile], async () => {
   await nextTick();
   if (!hostOpen.value) return;
-  if (anchor.value && !anchor.value.isConnected) closeEditor();
-  else if (list.value === "overflow" && !hiddenChips.value.length) closeEditor();
+  const focusInMenu = !!menuPanel()?.contains(document.activeElement);
+  const gone = (anchor.value && !anchor.value.isConnected) || (list.value === "overflow" && !hiddenChips.value.length);
+  if (!gone) return;
+  closeEditor();
+  if (focusInMenu) await nextTick().then(focusRowFallback);
 });
 
 // an editor can commit on blur after it closed, so the field comes with the value
@@ -386,6 +423,18 @@ const onEditorValue = (v: SearchBarValue | undefined, id: string) =>
 function removeFilter(id: string) {
   if (openId.value === id) closeEditor();
   clearValue(id);
+}
+
+/** The x of a chip: the focus goes to the chip that takes its place, else on along the row */
+async function removeChip(id: string) {
+  const chips = () => [...(main.value?.querySelectorAll<HTMLElement>(".vc-search-bar__chip") ?? [])];
+  const at = chips().findIndex((c) => c.contains(document.activeElement));
+  removeFilter(id);
+  if (at < 0) return;
+  await nextTick();
+  const next = chips()[at]?.querySelector<HTMLElement>("button:not(:disabled)");
+  if (next) next.focus();
+  else focusRowFallback();
 }
 
 function removeLast() {
@@ -448,6 +497,11 @@ function onTypedChip(c: { fieldId: string; value: unknown; rest: string }) {
   &__editor {
     @apply tw-flex tw-flex-col tw-gap-2 tw-p-3;
   }
+}
+
+// the editors' option labels read at the 13px of the bar's rows (VcCheckbox and VcRadioButton set 14px)
+.vc-search-bar-editor :is(.vc-checkbox__text, .vc-radio-button__label) {
+  font-size: 13px;
 }
 
 // The bar's buttons sit edge to edge (a chip and its ×, stacked menu rows): VcButton's 44px hit area would

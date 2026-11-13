@@ -13,6 +13,7 @@ import {
   encodeQueryState,
   type ITableQueryStateService,
 } from "@core/blade-navigation/table-query-state";
+import { registerExternalSearchFilters, unregisterExternalSearchFilters } from "@core/services/search-filters-service";
 import type { GlobalFilterConfig, SearchBarNotFoundSlotProps, SearchBarSlotProps } from "./types";
 
 const { mobile } = vi.hoisted(() => ({ mobile: { value: false } }));
@@ -295,6 +296,84 @@ describe("VcDataTable search bar slots", () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  describe("URL values of a field that registers late", () => {
+    const registerLate = () =>
+      registerExternalSearchFilters({
+        id: "late-region",
+        targetBlades: ["Orders"],
+        fields: [{ id: "region", label: "Region", filter: true }],
+      });
+    afterEach(() => unregisterExternalSearchFilters("late-region"));
+
+    it("clearAll drops them, so they do not come back when the field arrives", async () => {
+      query.orders_filters = "status:Paid;region:eu";
+      const { seen, slot } = actionsSlot();
+      mountTable({ searchName: "Orders" }, { "search-header-actions": slot });
+      await nextTick();
+      expect(query.orders_filters).toBe("status:Paid;region:eu");
+      // the footer's Clear all goes the same way: the table writes v-model
+      seen.props!.clearAll();
+      await nextTick();
+      expect(query.orders_filters ?? "").toBe("");
+      const before = filterEvents().length;
+      registerLate();
+      await nextTick();
+      expect(filterEvents().length).toBe(before);
+      expect(seen.props!.filterCount).toBe(0);
+    });
+
+    it("clearFilters from the not-found slot drops them too", async () => {
+      query.orders_filters = "status:Paid;region:eu";
+      let clearFilters: (() => void) | undefined;
+      mountTable(
+        { searchName: "Orders" },
+        {
+          "not-found": (p: SearchBarNotFoundSlotProps) => {
+            clearFilters = p.clearFilters;
+            return h("p", "none");
+          },
+        },
+      );
+      await nextTick();
+      clearFilters!();
+      await nextTick();
+      expect(query.orders_filters ?? "").toBe("");
+      const before = filterEvents().length;
+      registerLate();
+      await nextTick();
+      expect(filterEvents().length).toBe(before);
+    });
+  });
+
+  it("an actions slot that appears after mount shows in the bar's row, not in the old header", async () => {
+    const show = ref(false);
+    const Host = defineComponent({
+      setup: () => () =>
+        h(
+          VcDataTable as never,
+          { items: [], stateKey: "orders", searchBar: true, searchable: false, searchDebounce: 0 },
+          show.value ? { "search-header-actions": () => h("button", { class: "custom-action" }, "New") } : {},
+        ),
+    });
+    wrapper = mount(Host, {
+      global: {
+        stubs: { VcInput: InputStub, VcIcon: true },
+        provide: { [IsMobileKey as symbol]: ref(false) },
+        directives: { loading: { mounted() {}, updated() {} } },
+        mocks: { $t: (k: string) => k },
+      },
+      attachTo: document.body,
+    });
+    expect(wrapper.find(".vc-data-table__search-header").exists()).toBe(false);
+    show.value = true;
+    await nextTick();
+    expect(wrapper.find(".vc-data-table__search-header .custom-action").exists()).toBe(true);
+    expect(wrapper.find(".vc-table-search-header").exists()).toBe(false);
+    show.value = false;
+    await nextTick();
+    expect(wrapper.find(".vc-data-table__search-header").exists()).toBe(false);
   });
 
   describe("#not-found props", () => {

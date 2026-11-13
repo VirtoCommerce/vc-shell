@@ -24,12 +24,11 @@
       class="vc-search-bar__summary-part"
       >{{ $t(`${K}FILTER_COUNT`, { count: filterCount }, filterCount) }}</span
     >
-    <template v-if="filterCount">
-      <span
-        class="vc-search-bar__summary-sep"
-        aria-hidden="true"
-        >·</span
-      >
+    <!-- the separator goes with Clear all, so a wrapped line does not end in "·" -->
+    <span
+      v-if="filterCount"
+      class="vc-search-bar__summary-part vc-search-bar__summary-action"
+    >
       <VcButton
         class="vc-search-bar__summary-clear"
         variant="link"
@@ -39,7 +38,7 @@
       >
         {{ $t(`${K}CLEAR_ALL`) }}
       </VcButton>
-    </template>
+    </span>
   </div>
 </template>
 
@@ -69,18 +68,28 @@ const hasCount = computed(() => props.resultCount !== undefined);
 
 <style lang="scss">
 .vc-search-bar {
+  // Every part leads with its "·" in a 12px start padding; the line shifts back by it and clips the first
+  // 9px, so the part that starts a line (the first, or one that wrapped) shows no separator
   &__summary {
-    @apply tw-flex tw-flex-wrap tw-items-center tw-gap-x-1.5 tw-pt-1.5;
+    @apply tw-flex tw-flex-wrap tw-items-center tw-pt-1.5;
+    margin-inline-start: -12px;
+    clip-path: inset(-8px -8px -8px 9px);
     font-size: 12.5px;
     color: var(--neutrals-500);
   }
-  &__summary-part + &__summary-part::before {
-    content: "·";
-    margin-inline-end: 6px;
+  &__summary-part {
+    @apply tw-relative tw-whitespace-nowrap;
+    padding-inline-start: 12px;
+
+    &::before {
+      @apply tw-absolute;
+      content: "·";
+      inset-inline-start: 3px;
+      color: var(--neutrals-400);
+    }
   }
-  &__summary-part::before,
-  &__summary-sep {
-    color: var(--neutrals-400);
+  &__summary-action {
+    @apply tw-inline-flex tw-items-center;
   }
   &__summary-count {
     @apply tw-font-medium;
@@ -90,5 +99,8 @@ const hasCount = computed(() => props.resultCount !== undefined);
   &__summary-clear {
     --button-2xs-padding-hor: 0;
   }
+}
+[dir="rtl"] .vc-search-bar__summary {
+  clip-path: inset(-8px 9px -8px -8px);
 }
 </style>

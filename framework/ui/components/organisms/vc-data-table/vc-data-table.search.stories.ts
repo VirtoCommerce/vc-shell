@@ -374,8 +374,8 @@ export const SearchHeaderWithAndWithoutBar: Story = {
 };
 
 // `#search-header-actions` and `#not-found` slot props with `search-bar`
-const slotsTable = (width: string) => `
-  <div style="height: 260px; width: ${width}" class="tw-overflow-hidden tw-border tw-border-solid tw-border-[var(--neutrals-200)]">
+const slotsTable = (width: string, height = 260) => `
+  <div style="height: ${height}px; width: ${width}" class="tw-overflow-hidden tw-border tw-border-solid tw-border-[var(--neutrals-200)]">
     <VcDataTable :items="products" :state-key="stateKey + '${width}'" searchable search-bar :global-filters="stockFilters">
       <template #search-header-actions="{ mode }">
         <VcButton v-if="mode === 'narrow' || mode === 'phone'" icon="lucide-download" size="sm" variant="outline" aria-label="Export" />
@@ -405,7 +405,8 @@ export const SearchBarActionsByModePhone: Story = {
   render: () => ({
     components: { VcDataTable, VcColumn, VcButton },
     setup: slotsSetup,
-    template: slotsTable("100%"),
+    // phone cards are taller than rows: room for the three of them
+    template: slotsTable("100%", 520),
   }),
 };
 

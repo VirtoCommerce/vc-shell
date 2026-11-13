@@ -1,6 +1,6 @@
 import { computed, provide, reactive, ref } from "vue";
 import type { Decorator } from "@storybook/vue3-vite";
-import { ToolbarServiceKey, WidgetServiceKey } from "@framework/injection-keys";
+import { BladeBackButtonKey, ToolbarServiceKey, WidgetServiceKey } from "@framework/injection-keys";
 import { createToolbarService } from "@core/services/toolbar-service";
 import { createWidgetService } from "@core/services/widget-service";
 import { BladeBannersKey, BladeDescriptorKey, BladeMessagingKey, BladeStackKey } from "@core/blade-navigation/types";
@@ -132,6 +132,8 @@ export function provideStoryBlade(name = "OrdersList") {
   provide(BladeMessagingKey, { callParent: async () => undefined, onParentCall: () => () => {} } as never);
   provide(BladeBannersKey, ref([]));
   provide(BladeDescriptorKey, descriptor);
+  // a blade outside the shell's stack has no back button
+  provide(BladeBackButtonKey, undefined);
 }
 
 /** Stand-in for the blade's URL query service, with the real namespaced serialization */

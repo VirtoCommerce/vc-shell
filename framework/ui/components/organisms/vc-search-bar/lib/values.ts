@@ -11,7 +11,6 @@ export const RELATIVE_DATES = [
   { id: "30d", key: "LAST_30", days: 29 },
 ] as const satisfies readonly { id: RelativeDate["relative"]; key: string; days: number }[];
 const relativeOf = (id: RelativeDate["relative"]) => RELATIVE_DATES.find((r) => r.id === id)!;
-const COLLAPSE_AFTER = 2;
 
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
 const isRelative = (v: unknown): v is RelativeDate => isObject(v) && "relative" in v;
@@ -82,7 +81,7 @@ export const toYmd = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-$
 /** YYYY-MM-DD to a local midnight Date for the date picker */
 export const toDate = (s?: string) => (s ? new Date(`${s}T00:00`) : null);
 
-export function resolveRelative(r: RelativeDate, today: Date): { start: string; end: string } {
+function resolveRelative(r: RelativeDate, today: Date): { start: string; end: string } {
   const start = new Date(today.getFullYear(), today.getMonth(), today.getDate() - relativeOf(r.relative).days);
   return { start: toYmd(start), end: toYmd(today) };
 }
@@ -118,45 +117,42 @@ function optionLabel(field: BarField, value: unknown): string {
   return opt?.label ?? String(value);
 }
 
-function listLabel(field: BarField, items: unknown[]): string {
-  const shown = items.slice(0, COLLAPSE_AFTER).map((i) => optionLabel(field, i));
-  const rest = items.length - COLLAPSE_AFTER;
-  return rest > 0 ? `${shown.join(", ")} +${rest}` : shown.join(", ");
-}
+// Dates read as the date picker shows them: in the browser's locale
+const DAY: Intl.DateTimeFormatOptions = { year: "numeric", month: "numeric", day: "numeric" };
+const dayLabel = (ymd?: string) => (ymd ? new Intl.DateTimeFormat(navigator.language, DAY).format(toDate(ymd)!) : "");
 
-function numberLabel(v: NumberValue): string {
+function numberLabel(v: NumberValue, locale?: string): string {
+  const num = (n?: number) => (n === undefined ? "" : new Intl.NumberFormat(locale).format(n));
   switch (v.op) {
     case "gte":
-      return `≥ ${v.min}`;
+      return `≥ ${num(v.min)}`;
     case "lte":
-      return `≤ ${v.max}`;
+      return `≤ ${num(v.max)}`;
     case "eq":
-      return `= ${v.min}`;
+      return `= ${num(v.min)}`;
     default:
-      return `${v.min} – ${v.max}`;
+      return `${num(v.min)} – ${num(v.max)}`;
   }
 }
 
-export function pillLabel(field: BarField, value: SearchBarValue, t: (k: string) => string): string {
+/** A single value's label; lists are labelled by chipLabel */
+function valueLabel(field: BarField, value: SearchBarValue, t: (k: string) => string, locale?: string): string {
   switch (field.kind) {
     case "dateRange": {
       if (isRelative(value)) return t(`COMPONENTS.ORGANISMS.VC_SEARCH_BAR.DATE.${relativeOf(value.relative).key}`);
       const { start, end } = value as DateRangeValue;
-      return `${start ?? ""} – ${end ?? ""}`.trim();
+      return `${dayLabel(start)} – ${dayLabel(end)}`.trim();
     }
     case "toggle":
       return field.label;
     case "number":
-      return numberLabel(value as NumberValue);
+      return numberLabel(value as NumberValue, locale);
     case "custom": {
       const filter = field.source.filter as { label: (v: unknown) => string };
       return filter.label(value);
     }
-    default: {
-      if (isNot(value)) return listLabel(field, value.not);
-      if (Array.isArray(value)) return listLabel(field, value);
+    default:
       return optionLabel(field, value);
-    }
   }
 }
 
@@ -165,12 +161,14 @@ export function chipLabel(
   field: BarField,
   value: SearchBarValue,
   t: (k: string) => string,
+  /** The app's language: numbers group their digits as the screen's own labels do */
+  locale?: string,
 ): { text: string; title: string } {
   const not = isNot(value);
   const items = not ? value.not : Array.isArray(value) ? value : undefined;
   const prefix = not ? `${t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.OPERATOR.NOT")} ` : "";
   if (!items || field.kind === "custom") {
-    const label = prefix + pillLabel(field, value, t);
+    const label = prefix + valueLabel(field, value, t, locale);
     return { text: label, title: label };
   }
   const labels = items.map((i) => optionLabel(field, i));
@@ -178,7 +176,7 @@ export function chipLabel(
   return { text: `${prefix}${labels[0] ?? ""}${more}`, title: prefix + labels.join(", ") };
 }
 
-export type NumberOp = NumberValue["op"];
+type NumberOp = NumberValue["op"];
 
 const finite = (s: string | number | null | undefined): number | undefined => {
   const trimmed = String(s ?? "").trim();
@@ -201,7 +199,10 @@ export function buildNumber(
     case "lte":
       return a === undefined ? undefined : { op, max: a };
     default:
-      return a === undefined || b === undefined ? undefined : { op: "between", min: a, max: b };
+      // bounds typed the wrong way round still mean that range
+      return a === undefined || b === undefined
+        ? undefined
+        : { op: "between", min: Math.min(a, b), max: Math.max(a, b) };
   }
 }
 

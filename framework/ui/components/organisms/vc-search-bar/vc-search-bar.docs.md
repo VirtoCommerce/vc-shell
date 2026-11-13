@@ -59,7 +59,7 @@ The layout follows the bar's own width:
 | ----------- | ------------------------------------------------------------------------------------------------------------------- |
 | 720px+      | Wide: chips in the row (`variant="inline"`), or the applied field names on the Filters button (`variant="summary"`) |
 | 480-719px   | Medium: no chips; the Filters button holds the count and the × that clears all                                      |
-| under 480px | Narrow: the Filters button is a funnel icon with a count badge                                                      |
+| under 480px | Narrow: the Filters button is a funnel icon with a count badge; the search shows the short default placeholder      |
 
 ::storybook id="data-display-vcsearchbar--medium-blade"
 
@@ -74,6 +74,8 @@ The layout follows the bar's own width:
 - `/` focuses the search of the active blade (or of a bar outside blades) when no text field has focus.
 - Backspace in an empty search removes the last chip.
 - Esc closes the suggestions, then clears the text, then leaves the search. It never closes the blade.
+- A chip's editor, "+N", the Filters panel and the views menu take the focus when they open; Tab stays inside them, Esc closes them and returns the focus to their button. ↑, ↓, Home and End move through the views menu.
+- Removing a chip with its × moves the focus to the next chip, else to "+N", the Filters button or the search.
 
 ## Filters Panel
 
@@ -130,7 +132,7 @@ While modified, the view menu offers "Save changes to “X”" (not for "All"; f
 | `viewCounts`      | `Record<string, number>`                 | -          | Result count per view id, shown in the view menu                                      |
 | `resultCount`     | `number`                                 | -          | Result count of the current filters: the panel footer and "Show N results"            |
 | `unfilteredCount` | `number`                                 | -          | Rows without the bar's filters and search: "filtered from M" in the phone summary     |
-| `placeholder`     | `string`                                 | -          | Search placeholder and accessible name                                                |
+| `placeholder`     | `string`                                 | -          | Search placeholder and accessible name; a narrow bar shows the short default instead  |
 | `searchDebounce`  | `number`                                 | `300`      | Delay in ms before the typed text reaches the state, `change` and `search`            |
 | `name`            | `string`                                 | -          | Target of external filters and views; defaults to the name of the blade the bar is in |
 | `searchable`      | `boolean`                                | `true`     | Show the search input                                                                 |

@@ -13,6 +13,7 @@
     <span
       v-if="field.kind === 'toggle'"
       class="vc-search-bar__chip-main vc-search-bar__chip-static"
+      :class="{ 'vc-search-bar__chip-static--disabled': disabled }"
     >
       <span class="vc-search-bar__chip-value">{{ field.label }}</span>
     </span>
@@ -53,11 +54,11 @@ import type { SearchBarValue } from "../types";
 
 const props = defineProps<{ field: BarField; value: SearchBarValue; open?: boolean; disabled?: boolean }>();
 const emit = defineEmits<{ open: [anchor: HTMLElement]; remove: [] }>();
-const { t } = useI18n({ useScope: "global" });
+const { t, locale } = useI18n({ useScope: "global" });
 
 const root = ref<ComponentPublicInstance>();
 const rootEl = computed(() => root.value?.$el as HTMLElement | undefined);
-const label = computed(() => chipLabel(props.field, props.value, t));
+const label = computed(() => chipLabel(props.field, props.value, t, locale?.value));
 const title = computed(() =>
   props.field.kind === "toggle" ? props.field.label : `${props.field.label}: ${label.value.title}`,
 );
@@ -84,6 +85,14 @@ const title = computed(() =>
     border-color: var(--button-tonal-border-color);
     background: var(--button-tonal-background-color);
     color: var(--button-tonal-text-color);
+  }
+  // dimmed like the disabled buttons beside it
+  &__chip-static--disabled {
+    @apply tw-opacity-50;
+  }
+  // the focus ring of a segment shows over the attached x next to it
+  &__chip-main:focus-visible {
+    @apply tw-relative tw-z-[1];
   }
   &__chip-field {
     white-space: pre;

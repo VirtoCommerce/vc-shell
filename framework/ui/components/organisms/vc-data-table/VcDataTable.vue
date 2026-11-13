@@ -15,7 +15,7 @@
 
     <!-- Search bar (opt-in): the bar (search, filters as chips, views), then custom actions in the same row -->
     <div
-      v-if="showSearchBar"
+      v-if="searchBar && (barHasContent || $slots['search-header-actions'])"
       ref="searchHeaderRef"
       class="vc-data-table__search-header"
       :class="{ 'vc-data-table__search-header--with-actions': $slots['search-header-actions'] }"
@@ -732,7 +732,7 @@ defineSlots<{
 // Internationalization
 // ============================================================================
 
-const { t } = useI18n({ useScope: "global" });
+const { t, locale } = useI18n({ useScope: "global" });
 
 const emptyTitle = computed(() => t("COMPONENTS.ORGANISMS.VC_TABLE.EMPTY_TITLE"));
 const emptyDescription = computed(() => t("COMPONENTS.ORGANISMS.VC_TABLE.EMPTY_DESCRIPTION"));
@@ -1249,14 +1249,9 @@ const barFields = useSearchBarFields(
   () => props.searchName,
 );
 const hasExternalBarFields = computed(() => barFields.value.hasExternalFields);
-const showSearchBar = computed(
-  () =>
-    props.searchBar &&
-    (props.searchable ||
-      !!props.globalFilters?.length ||
-      hasExternalBarFields.value ||
-      !!slots["search-header-actions"]),
-);
+// The bar's search or fields; an actions slot alone also shows the row, checked in the template (slots are not reactive)
+const barHasContent = computed(() => props.searchable || !!props.globalFilters?.length || hasExternalBarFields.value);
+const showSearchBar = computed(() => props.searchBar && barHasContent.value);
 
 // It starts with the table's search and no values, so the bar takes its values from the URL
 const barState = ref<SearchBarState>({ search: internalSearchValue.value, values: {} });
@@ -1304,7 +1299,7 @@ const barApplied = computed((): SearchBarAppliedField[] => {
     .map((f) => ({
       id: f.id,
       label: f.label,
-      text: f.kind === "toggle" ? f.label : `${f.label}: ${chipLabel(f, values[f.id], t).title}`,
+      text: f.kind === "toggle" ? f.label : `${f.label}: ${chipLabel(f, values[f.id], t, locale?.value).title}`,
     }));
 });
 const barFiltered = computed(() => barApplied.value.length > 0 || barSearch.value !== "");

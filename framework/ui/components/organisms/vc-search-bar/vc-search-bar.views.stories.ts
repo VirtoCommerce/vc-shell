@@ -59,13 +59,16 @@ const inBlade =
           document.querySelector<HTMLElement>(sel)?.click();
         }
       });
-      return { args, storageKey, width: o.width ?? 900 };
+      // a single blade fills its container: the frame sets its width
+      return { args, storageKey, frame: o.width ? `${o.width}px` : "100%" };
     },
     template: `
       <div style="height: 520px; display: flex">
-        <VcBlade title="Orders" :width="width">
-          <VcSearchBar v-bind="args" :storage-key="storageKey" />
-        </VcBlade>
+        <div :style="{ width: frame, maxWidth: '100%', display: 'flex' }">
+          <VcBlade title="Orders">
+            <VcSearchBar v-bind="args" :storage-key="storageKey" />
+          </VcBlade>
+        </div>
       </div>`,
   });
 

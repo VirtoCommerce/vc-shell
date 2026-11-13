@@ -61,7 +61,6 @@ export const orderFields: SearchBarField[] = [
   {
     id: "status",
     label: "Status",
-    operators: ["any", "not"],
     filter: { options: ORDER_STATUSES.map((s) => ({ value: s, label: s })), multiple: true },
   },
   { id: "customer", label: "Customer", filter: { options: CUSTOMERS.map((c) => ({ value: c, label: c })) } },

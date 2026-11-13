@@ -273,9 +273,10 @@ describe("VcDataTable search bar header", () => {
       onFilter: (e: { filters: Record<string, unknown> }) => log.push(`filter ${JSON.stringify(e.filters)}`),
     });
     await w.find(SEARCH).setValue("acme status:paid ");
-    expect(log).toEqual(["search acme", 'filter {"status":["Paid"]}']);
+    // the text keeps its one space, as typed, so the next word does not glue onto it
+    expect(log).toEqual(["search acme ", 'filter {"status":["Paid"]}']);
     vi.advanceTimersByTime(1000);
-    expect(log).toEqual(["search acme", 'filter {"status":["Paid"]}']);
+    expect(log).toEqual(["search acme ", 'filter {"status":["Paid"]}']);
   });
 
   describe("dev warnings", () => {

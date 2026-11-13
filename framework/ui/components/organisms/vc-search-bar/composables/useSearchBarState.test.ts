@@ -202,6 +202,26 @@ describe("useSearchBarState", () => {
       expect(api.state.value.values).toEqual({});
     });
 
+    it("a host write that replaces the values drops URL filters still waiting for their fields", () => {
+      const { service, store } = fakeQueryState({ k: { filters: "name:a;late:x" } });
+      const fields = ref<SearchBarField[]>([text("name")]);
+      const { api, model } = setup({ fields, storageKey: "k", queryState: service });
+      model.value = { search: "", values: {} };
+      expect(store.k.filters).toBe("");
+      fields.value = [text("name"), text("late")];
+      expect(api.state.value.values).toEqual({});
+    });
+
+    it("a host write of the search only keeps URL filters still waiting for their fields", () => {
+      const { service, store } = fakeQueryState({ k: { filters: "name:a;late:x" } });
+      const fields = ref<SearchBarField[]>([text("name")]);
+      const { api, model } = setup({ fields, storageKey: "k", queryState: service });
+      model.value = { search: "abc", values: { name: "a" } };
+      expect(store.k.filters).toBe("name:a;late:x");
+      fields.value = [text("name"), text("late")];
+      expect(api.state.value.values).toEqual({ name: "a", late: "x" });
+    });
+
     it("without a key nothing is read or written", () => {
       const { service } = fakeQueryState({ "": { filters: "name:a" } });
       const { api, changes } = setup({ queryState: service });

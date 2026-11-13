@@ -174,8 +174,10 @@ export function useSearchBarState(opts: UseSearchBarStateOptions): UseSearchBarS
       searchText.value = m.search;
       if (sameState(m, state.value)) return;
       const known = new Set(fields.value.map((f) => f.id));
-      const values = Object.entries(cloneValue(m.values)).filter(([id]) => known.has(id));
-      state.value = { search: m.search, values: Object.fromEntries(values) };
+      const values = Object.fromEntries(Object.entries(cloneValue(m.values)).filter(([id]) => known.has(id)));
+      // new values replace the waiting URL ones too (a clear from the table); a search-only write keeps them
+      if (!sameState({ search: "", values }, { search: "", values: state.value.values })) unresolved = [];
+      state.value = { search: m.search, values };
       persist(state.value);
     },
     { flush: "sync" },

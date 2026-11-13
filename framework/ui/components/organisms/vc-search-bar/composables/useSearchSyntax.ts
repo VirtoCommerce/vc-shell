@@ -98,7 +98,9 @@ export function chipFromTyped(
   if (!field) return null;
   const value = resolveValue(field, m[3]);
   if (value === undefined) return null;
-  return { fieldId: field.id, value, rest: next.slice(0, m.index).trimEnd() };
+  // one space stays after the text left, so the next typed word starts a new one
+  const before = next.slice(0, m.index).trimEnd();
+  return { fieldId: field.id, value, rest: before && `${before} ` };
 }
 
 /** `field:value ` whose value is the prefix of several options: the space waits for a pick */

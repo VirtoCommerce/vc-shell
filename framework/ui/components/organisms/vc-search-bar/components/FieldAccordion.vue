@@ -15,8 +15,13 @@
           :aria-controls="f.kind === 'toggle' ? undefined : bodyId(f.id)"
           @click="f.kind !== 'toggle' && flip(f.id)"
         >
+          <span
+            v-if="f.kind === 'toggle'"
+            class="vc-search-bar__acc-chevron"
+            aria-hidden="true"
+          />
           <VcIcon
-            v-if="f.kind !== 'toggle'"
+            v-else
             icon="lucide-chevron-down"
             :custom-size="14"
             class="vc-search-bar__acc-chevron"
@@ -91,7 +96,7 @@ const props = defineProps<{
 const emit = defineEmits<{ set: [id: string, value: SearchBarValue]; "clear-field": [id: string] }>();
 
 const K = "COMPONENTS.ORGANISMS.VC_SEARCH_BAR.";
-const { t } = useI18n({ useScope: "global" });
+const { t, locale } = useI18n({ useScope: "global" });
 const uid = `vc-search-bar-acc-${useId()}`;
 
 // One field open at a time: opening another closes it, clicking the open one closes it
@@ -123,7 +128,7 @@ const release = (el: Element) => {
 };
 
 const isSet = (id: string) => !isEmptyValue(props.state.values[id]);
-const summary = (f: BarField) => chipLabel(f, props.state.values[f.id], t);
+const summary = (f: BarField) => chipLabel(f, props.state.values[f.id], t, locale?.value);
 
 const onValue = (v: SearchBarValue | undefined, id: string) =>
   isEmptyValue(v) ? emit("clear-field", id) : emit("set", id, v);
@@ -151,6 +156,7 @@ const onValue = (v: SearchBarValue | undefined, id: string) =>
   }
   &__acc-chevron {
     @apply tw-shrink-0 tw-transition-transform;
+    width: 14px;
     color: var(--neutrals-500);
   }
   &__acc-chevron--closed {

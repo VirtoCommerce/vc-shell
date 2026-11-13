@@ -1,14 +1,6 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { reactive } from "vue";
-import {
-  cloneValue,
-  isEmptyValue,
-  pickerToRange,
-  resolveRelative,
-  toFlatFilters,
-  pillLabel,
-  chipLabel,
-} from "./values";
+import { cloneValue, isEmptyValue, pickerToRange, toFlatFilters, chipLabel } from "./values";
 import { normalizeFields } from "./fields";
 import type { SearchBarField } from "../types";
 
@@ -57,14 +49,15 @@ describe("isEmptyValue", () => {
   });
 });
 
-describe("resolveRelative", () => {
-  it("resolves in local calendar days", () => {
+describe("relative dates", () => {
+  it("resolve in local calendar days", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date(2026, 10, 7, 23, 30));
     const today = new Date();
-    expect(resolveRelative({ relative: "today" }, today)).toEqual({ start: "2026-11-07", end: "2026-11-07" });
-    expect(resolveRelative({ relative: "7d" }, today)).toEqual({ start: "2026-11-01", end: "2026-11-07" });
-    expect(resolveRelative({ relative: "30d" }, today)).toEqual({ start: "2026-10-09", end: "2026-11-07" });
+    const flat = (relative: string) => toFlatFilters(bar, { createdDate: { relative } }, today);
+    expect(flat("today")).toEqual({ startDate: "2026-11-07", endDate: "2026-11-07" });
+    expect(flat("7d")).toEqual({ startDate: "2026-11-01", endDate: "2026-11-07" });
+    expect(flat("30d")).toEqual({ startDate: "2026-10-09", endDate: "2026-11-07" });
   });
 });
 
@@ -120,47 +113,45 @@ describe("chipLabel", () => {
   });
 });
 
-describe("pillLabel", () => {
-  it("joins option labels and collapses after 2", () => {
-    expect(pillLabel(byId("status"), ["Paid", "New"], t)).toBe("Paid, New");
-    expect(pillLabel(byId("status"), ["Paid", "New", "Shipped", "Void"], t)).toBe("Paid, New +2");
-  });
-  it("uses option labels, not values", () => {
-    const f = normalizeFields([
-      { id: "s", label: "S", filter: { options: [{ value: "p", label: "Paid" }], multiple: true } },
-    ])[0];
-    expect(pillLabel(f, ["p"], t)).toBe("Paid");
-  });
-  it("labels not values", () => {
-    expect(pillLabel(byId("status"), { not: ["Void"] }, t)).toBe("Void");
-  });
+describe("chipLabel of single values", () => {
+  const label = (id: string, v: unknown) => chipLabel(byId(id), v as never, t).text;
+  const day = (ymd: string) =>
+    new Intl.DateTimeFormat(navigator.language, { year: "numeric", month: "numeric", day: "numeric" }).format(
+      new Date(`${ymd}T00:00`),
+    );
   it("labels dates", () => {
-    expect(pillLabel(byId("createdDate"), { relative: "today" }, t)).toBe(
-      "COMPONENTS.ORGANISMS.VC_SEARCH_BAR.DATE.TODAY",
+    expect(label("createdDate", { relative: "today" })).toBe("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.DATE.TODAY");
+    expect(label("createdDate", { relative: "7d" })).toBe("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.DATE.LAST_7");
+    expect(label("createdDate", { relative: "30d" })).toBe("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.DATE.LAST_30");
+  });
+  it("shows a custom range in the date picker's local format", () => {
+    expect(label("createdDate", { start: "2026-01-01", end: "2026-01-31" })).toBe(
+      `${day("2026-01-01")} – ${day("2026-01-31")}`,
     );
-    expect(pillLabel(byId("createdDate"), { relative: "7d" }, t)).toBe(
-      "COMPONENTS.ORGANISMS.VC_SEARCH_BAR.DATE.LAST_7",
-    );
-    expect(pillLabel(byId("createdDate"), { relative: "30d" }, t)).toBe(
-      "COMPONENTS.ORGANISMS.VC_SEARCH_BAR.DATE.LAST_30",
-    );
-    expect(pillLabel(byId("createdDate"), { start: "2026-01-01", end: "2026-01-31" }, t)).toBe(
-      "2026-01-01 – 2026-01-31",
-    );
-    expect(pillLabel(byId("createdDate"), { start: "2026-01-01" }, t)).toBe("2026-01-01 –");
-    expect(pillLabel(byId("createdDate"), { end: "2026-01-31" }, t)).toBe("– 2026-01-31");
+    expect(label("createdDate", { start: "2026-01-01" })).toBe(`${day("2026-01-01")} –`);
+    expect(label("createdDate", { end: "2026-01-31" })).toBe(`– ${day("2026-01-31")}`);
+    expect(label("createdDate", { start: "2026-01-01" })).not.toContain("2026-01-01");
   });
   it("labels number and custom", () => {
-    expect(pillLabel(byId("total"), { op: "gte", min: 5 }, t)).toBe("≥ 5");
-    expect(pillLabel(byId("total"), { op: "lte", max: 9 }, t)).toBe("≤ 9");
-    expect(pillLabel(byId("total"), { op: "eq", min: 3 }, t)).toBe("= 3");
-    expect(pillLabel(byId("total"), { op: "between", min: 1, max: 9 }, t)).toBe("1 – 9");
-    expect(pillLabel(byId("cust"), 7, t)).toBe("C:7");
+    expect(label("total", { op: "gte", min: 5 })).toBe("≥ 5");
+    expect(label("total", { op: "lte", max: 9 })).toBe("≤ 9");
+    expect(label("total", { op: "eq", min: 3 })).toBe("= 3");
+    expect(label("total", { op: "between", min: 1, max: 9 })).toBe("1 – 9");
+    expect(label("cust", 7)).toBe("C:7");
+  });
+  it("groups the digits of numbers in the app's language, like the presets' labels", () => {
+    const total = byId("total");
+    expect(chipLabel(total, { op: "between", min: 100, max: 1000 }, t, "en").text).toBe("100 – 1,000");
+    expect(chipLabel(total, { op: "gte", min: 25000 }, t, "de").text).toBe("≥ 25.000");
+  });
+  it("uses option labels, not values", () => {
+    const f = normalizeFields([{ id: "s", label: "S", filter: { options: [{ value: "p", label: "Paid" }] } }])[0];
+    expect(chipLabel(f, "p", t).text).toBe("Paid");
   });
   it("labels select, text, toggle", () => {
-    expect(pillLabel(byId("status"), "Paid", t)).toBe("Paid");
-    expect(pillLabel(byId("keyword"), "abc", t)).toBe("abc");
-    expect(pillLabel(byId("vip"), true, t)).toBe("VIP");
+    expect(label("status", "Paid")).toBe("Paid");
+    expect(label("keyword", "abc")).toBe("abc");
+    expect(label("vip", true)).toBe("VIP");
   });
 });
 

@@ -50,7 +50,8 @@ describe("VcSearchBar phone", () => {
 
   const S = "COMPONENTS.ORGANISMS.VC_SEARCH_BAR.PHONE.";
   const summary = () => wrapper!.find(".vc-search-bar__summary");
-  const parts = () => wrapper!.findAll(".vc-search-bar__summary-part").map((p) => p.text());
+  const parts = () =>
+    wrapper!.findAll(".vc-search-bar__summary-part:not(.vc-search-bar__summary-action)").map((p) => p.text());
 
   it("phone: the search and an icon Filters button with a badge whose panel opens in a sheet", async () => {
     wrapper = mountPhone({ modelValue: { search: "", values: { status: ["a"] } } });

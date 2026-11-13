@@ -55,6 +55,50 @@ describe("ViewSelector", () => {
     expect(rows(w)[0].find(".vc-search-bar__view-check--on").exists()).toBe(false);
   });
 
+  describe("keyboard", () => {
+    const key = (k: string, shiftKey = false) =>
+      (document.activeElement as HTMLElement).dispatchEvent(
+        new KeyboardEvent("keydown", { key: k, shiftKey, bubbles: true, cancelable: true }),
+      );
+
+    it("opening moves the focus to the current view", async () => {
+      const { views } = makeViews();
+      views.select("paid");
+      const w = mountSelector(views);
+      await open(w);
+      expect(document.activeElement).toBe(rows(w)[1].element);
+    });
+
+    it("arrow keys, Home and End move through the menu's rows", async () => {
+      const { views, setValues } = makeViews();
+      const w = mountSelector(views);
+      setValues({ urgent: true });
+      await nextTick();
+      await open(w);
+      const items = () => [...document.querySelectorAll<HTMLElement>(".popover-stub .vc-search-bar__menu-row")];
+      expect(document.activeElement).toBe(items()[0]);
+      key("ArrowDown");
+      expect(document.activeElement).toBe(items()[1]);
+      key("ArrowUp");
+      key("ArrowUp");
+      expect(document.activeElement).toBe(items().at(-1));
+      key("Home");
+      expect(document.activeElement).toBe(items()[0]);
+      key("End");
+      expect(document.activeElement).toBe(items().at(-1));
+    });
+
+    it("Tab past the last row comes back to the first", async () => {
+      const { views } = makeViews();
+      const w = mountSelector(views);
+      await open(w);
+      const items = [...document.querySelectorAll<HTMLElement>(".popover-stub button")];
+      items.at(-1)!.focus();
+      key("Tab");
+      expect(document.activeElement).toBe(items[0]);
+    });
+  });
+
   it("shows counts only when given", async () => {
     const { views } = makeViews();
     const w = mountSelector(views);

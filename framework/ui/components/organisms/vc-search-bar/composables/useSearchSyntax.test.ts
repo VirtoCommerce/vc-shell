@@ -59,7 +59,12 @@ describe("getSuggestions", () => {
 
 describe("chipFromTyped", () => {
   it("status:new + space becomes a chip and leaves the rest of the text", () => {
-    expect(chipFromTyped("acme status:new ", fields)).toEqual({ fieldId: "status", value: ["new"], rest: "acme" });
+    expect(chipFromTyped("acme status:new ", fields)).toEqual({ fieldId: "status", value: ["new"], rest: "acme " });
+  });
+
+  it("keeps one space after the text left, so the next word does not glue onto it", () => {
+    expect(chipFromTyped("acme   status:new ", fields)?.rest).toBe("acme ");
+    expect(chipFromTyped("status:new ", fields)?.rest).toBe("");
   });
 
   it("matches labels, unique prefixes, the key and the case", () => {

@@ -100,7 +100,7 @@ import { computed, ref, useId, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { VcButton, VcIcon } from "@ui/components/atoms";
 import type { BarField } from "../lib/fields";
-import { chipFromTyped, getSuggestions, type Suggestion } from "../composables/useSearchSyntax";
+import { chipFromTyped, getSuggestions, isAmbiguousTyped, type Suggestion } from "../composables/useSearchSyntax";
 
 const props = defineProps<{
   modelValue: string;
@@ -150,6 +150,12 @@ watch(
 function onInput(next: string) {
   dismissed.value = false;
   const chip = chipFromTyped(next, props.fields);
+  if (!chip && isAmbiguousTyped(next, props.fields)) {
+    // the space would close the suggestions of a value that names several options
+    const typed = next.slice(0, -1);
+    if (input.value) input.value.value = typed;
+    return emit("update:modelValue", typed);
+  }
   if (!chip) return emit("update:modelValue", next);
   // the typed word is gone even when the text before it equals the old value
   if (input.value) input.value.value = chip.rest;

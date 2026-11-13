@@ -272,6 +272,61 @@ describe("VcSearchBar", () => {
       expect((input.element as HTMLInputElement).value).toBe("");
     });
 
+    const pq: SearchBarField[] = [
+      {
+        id: "status",
+        label: "Status",
+        filter: {
+          options: [
+            { value: "pending", label: "Pending" },
+            { value: "paid", label: "Paid" },
+            { value: "new", label: "New" },
+          ],
+        },
+      },
+    ];
+
+    it("a space after a prefix of several values keeps the word and the suggestions; a unique one commits", async () => {
+      wrapper = mountBar({ fields: pq });
+      const input = wrapper.get(SEARCH);
+      await input.trigger("focus");
+      await input.setValue("status:p ");
+      expect(wrapper.emitted("change")).toBeUndefined();
+      expect(wrapper.find(CHIP).exists()).toBe(false);
+      expect((input.element as HTMLInputElement).value).toBe("status:p");
+      expect(input.attributes("aria-expanded")).toBe("true");
+      expect(wrapper.findAll(".vc-search-bar__suggest-token").map((t) => t.text())).toEqual([
+        "status:pending",
+        "status:paid",
+      ]);
+      await input.setValue("status:pe ");
+      expect(lastChange(wrapper).filters).toEqual({ status: "pending" });
+    });
+
+    it("ArrowDown/ArrowUp move through the value suggestions and Enter adds the active one", async () => {
+      wrapper = mountBar({ fields: pq });
+      const input = wrapper.get(SEARCH);
+      await input.trigger("focus");
+      await input.setValue("status:");
+      const active = () => wrapper!.get(".vc-search-bar__suggest-item--active .vc-search-bar__suggest-token").text();
+      expect(active()).toBe("status:pending");
+      await input.trigger("keydown", { key: "ArrowDown" });
+      await input.trigger("keydown", { key: "ArrowDown" });
+      expect(active()).toBe("status:new");
+      await input.trigger("keydown", { key: "ArrowDown" });
+      expect(active()).toBe("status:pending");
+      await input.trigger("keydown", { key: "ArrowUp" });
+      expect(active()).toBe("status:new");
+      await input.trigger("keydown", { key: "ArrowUp" });
+      expect(active()).toBe("status:paid");
+      expect(input.attributes("aria-activedescendant")).toBe(
+        wrapper.get(".vc-search-bar__suggest-item--active").attributes("id"),
+      );
+      await input.trigger("keydown", { key: "Enter" });
+      expect(lastChange(wrapper).filters).toEqual({ status: "paid" });
+      expect(input.attributes("aria-expanded")).toBe("false");
+    });
+
     it("the suggestions header carries the add hint; the value already selected gets a check", async () => {
       wrapper = mountBar({ modelValue: { search: "", values: { status: ["a"] } } });
       const input = wrapper.get(SEARCH);

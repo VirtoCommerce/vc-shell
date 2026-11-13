@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { normalizeFields } from "../lib/fields";
 import type { SearchBarField } from "../types";
-import { chipFromTyped, getSuggestions } from "./useSearchSyntax";
+import { chipFromTyped, getSuggestions, isAmbiguousTyped } from "./useSearchSyntax";
 
 const fields = normalizeFields([
   {
@@ -62,7 +62,7 @@ describe("chipFromTyped", () => {
     expect(chipFromTyped("acme status:new ", fields)).toEqual({ fieldId: "status", value: ["new"], rest: "acme" });
   });
 
-  it("matches labels, prefixes, the key and the case", () => {
+  it("matches labels, unique prefixes, the key and the case", () => {
     expect(chipFromTyped("Status:PAI ", fields)?.value).toEqual(["paid"]);
     expect(chipFromTyped("shop:main ", fields)).toEqual({ fieldId: "store", value: 1, rest: "" });
   });
@@ -70,6 +70,30 @@ describe("chipFromTyped", () => {
   it("reads toggles and relative dates", () => {
     expect(chipFromTyped("overdue:on ", fields)?.value).toBe(true);
     expect(chipFromTyped("created:7d ", fields)?.value).toEqual({ relative: "7d" });
+  });
+
+  it("an ambiguous prefix stays text; an exact match wins over other prefixes", () => {
+    const f = normalizeFields([
+      {
+        id: "status",
+        label: "Status",
+        filter: {
+          options: [
+            { value: "pending", label: "Pending" },
+            { value: "paid", label: "Paid" },
+            { value: "pa", label: "PA" },
+            { value: "partial", label: "Partial" },
+          ],
+        },
+      },
+    ] as SearchBarField[]);
+    expect(chipFromTyped("status:p ", f)).toBeNull();
+    expect(chipFromTyped("status:par ", f)?.value).toBe("partial");
+    expect(chipFromTyped("status:PA ", f)?.value).toBe("pa");
+    expect(chipFromTyped("status:Pending ", f)?.value).toBe("pending");
+    expect(isAmbiguousTyped("status:p ", f)).toBe(true);
+    expect(isAmbiguousTyped("status:par ", f)).toBe(false);
+    expect(isAmbiguousTyped("status:xyz ", f)).toBe(false);
   });
 
   it("unknown field or value stays search text", () => {

@@ -78,21 +78,32 @@ function resolveValue(f: BarField, typed: string): unknown {
     return r ? { relative: r.id } : undefined;
   }
   const exact = f.options.find((o) => lower(o.value) === v || lower(o.label) === v);
-  const option = exact ?? f.options.find((o) => lower(o.value).startsWith(v) || lower(o.label).startsWith(v));
+  const prefixed = f.options.filter((o) => lower(o.value).startsWith(v) || lower(o.label).startsWith(v));
+  // a prefix commits only when it names one option: "p" of Pending/Paid stays text
+  const option = exact ?? (prefixed.length === 1 ? prefixed[0] : undefined);
   if (!option) return undefined;
   return f.kind === "multiselect" ? [option.value] : option.value;
 }
+
+const TYPED_RE = /(^|\s)([^\s:]+):(\S+) $/;
 
 /** `field:value` followed by a space at the end of `next` becomes a chip; unknown fields or values stay text */
 export function chipFromTyped(
   next: string,
   fields: BarField[],
 ): { fieldId: string; value: unknown; rest: string } | null {
-  const m = /(^|\s)([^\s:]+):(\S+) $/.exec(next);
+  const m = TYPED_RE.exec(next);
   if (!m) return null;
   const field = byKey(fields, m[2]);
   if (!field) return null;
   const value = resolveValue(field, m[3]);
   if (value === undefined) return null;
   return { fieldId: field.id, value, rest: next.slice(0, m.index).trimEnd() };
+}
+
+/** `field:value ` whose value is the prefix of several options: the space waits for a pick */
+export function isAmbiguousTyped(next: string, fields: BarField[]): boolean {
+  const m = TYPED_RE.exec(next);
+  const field = m && byKey(fields, m[2]);
+  return !!field && !chipFromTyped(next, fields) && valueSuggestions(field, m[3], undefined).length > 1;
 }

@@ -17,6 +17,39 @@ const isObject = (v: unknown): v is Record<string, unknown> => typeof v === "obj
 const isRelative = (v: unknown): v is RelativeDate => isObject(v) && "relative" in v;
 export const isNot = (v: unknown): v is NotValue => isObject(v) && Array.isArray(v.not);
 
+const UNSAFE_KEYS = new Set(["__proto__", "constructor", "prototype"]);
+
+/** @internal An object key that could reach a prototype */
+export const isUnsafeKey = (k: string) => UNSAFE_KEYS.has(k);
+
+const isPrimitive = (v: unknown) =>
+  v === null || typeof v === "string" || typeof v === "boolean" || (typeof v === "number" && Number.isFinite(v));
+const isPrimitiveList = (v: unknown) => Array.isArray(v) && v.every(isPrimitive);
+
+/**
+ * @internal A value of the shapes the built-in editors produce: a primitive, an array of primitives,
+ * or a plain object whose entries are those (no prototype keys)
+ */
+export function isPlainValue(v: unknown): boolean {
+  if (isPrimitive(v) || isPrimitiveList(v)) return true;
+  if (!isObject(v) || Object.getPrototypeOf(v) !== Object.prototype) return false;
+  return Object.entries(v).every(([k, x]) => !isUnsafeKey(k) && (isPrimitive(x) || isPrimitiveList(x)));
+}
+
+/**
+ * @internal A value read back from the URL or a stored view, as the field accepts it:
+ * a custom field's `parse` decides, other fields take plain values only
+ */
+export function acceptValue(field: BarField, raw: unknown): SearchBarValue | undefined {
+  const parse = field.kind === "custom" ? (field.source.filter as { parse?: (r: unknown) => unknown }).parse : undefined;
+  if (!parse) return isPlainValue(raw) ? raw : undefined;
+  try {
+    return parse(raw) ?? undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export function isEmptyValue(v: unknown): boolean {
   if (v === null || v === undefined || v === "" || v === false) return true;
   if (Array.isArray(v)) return v.length === 0;

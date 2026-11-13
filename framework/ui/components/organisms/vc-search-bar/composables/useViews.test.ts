@@ -303,3 +303,24 @@ describe("useViews", () => {
     expect(localStorage.length).toBe(0);
   });
 });
+
+describe("useViews: stored values", () => {
+  it("a stored view applies only values of known fields that pass the field's check", () => {
+    createLocalViewStore("orders").save({
+      id: "u",
+      name: "Mine",
+      values: { urgent: true, gone: ["x"], status: { a: { b: { c: 1 } } } },
+      scope: "user",
+    });
+    const { api, apply } = setup({ moduleViews: [] });
+    api.select("u");
+    expect(apply).toHaveBeenLastCalledWith({ search: "", values: { urgent: true } });
+  });
+
+  it("a stored override of a module view goes through the same check", () => {
+    createLocalViewStore("orders").save({ id: "paid", name: "Paid", values: { gone: 1, urgent: true }, scope: "module" });
+    const { api, apply } = setup({ moduleViews: [MODULE[0]] });
+    api.select("paid");
+    expect(apply).toHaveBeenLastCalledWith({ search: "", values: { urgent: true } });
+  });
+});

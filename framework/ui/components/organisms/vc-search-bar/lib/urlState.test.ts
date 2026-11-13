@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { normalizeFields } from "./fields";
 import { stateToUrl, unknownSegments, urlToState } from "./urlState";
 import type { SearchBarField, SearchBarState, SearchBarValue } from "../types";
@@ -169,5 +169,70 @@ describe("unknownSegments", () => {
     expect(unknownSegments(fields, "~late:x")).toEqual([]);
     expect(unknownSegments(fields, "")).toEqual([]);
     expect(unknownSegments(fields, "late;:x")).toEqual([]);
+  });
+});
+
+describe("urlToState: option values of 'is not'", () => {
+  const numeric = normalizeFields([
+    {
+      id: "grade",
+      label: "Grade",
+      filter: {
+        options: [
+          { value: 1, label: "One" },
+          { value: 2, label: "Two" },
+        ],
+        multiple: true,
+      },
+      operators: ["any", "not"],
+    },
+  ] satisfies SearchBarField[]);
+
+  it("maps negated items back to the option values, as positive ones are", () => {
+    expect(urlToState(numeric, "!grade:1,2")).toEqual(state({ grade: { not: [1, 2] } }));
+    expect(urlToState(numeric, stateToUrl(numeric, state({ grade: { not: [1] } })))).toEqual(
+      state({ grade: { not: [1] } }),
+    );
+    expect(urlToState(numeric, "!grade:9")).toEqual(state({ grade: { not: ["9"] } }));
+  });
+});
+
+describe("urlToState: custom values", () => {
+  it.each([
+    ['{"__proto__":{"polluted":1}}', "__proto__ key"],
+    ['{"constructor":{"prototype":1}}', "constructor key"],
+    ['{"a":{"b":{"c":1}}}', "an object nested in an object"],
+    ['[[1,[2]]]', "a nested array"],
+    ['[{"a":1}]', "an object in an array"],
+  ])("without a parser drops %s (%s)", (json) => {
+    const raw = `cust:${json.replace(/[\;,:]/g, "\\$&")}`;
+    expect(urlToState(fields, `${raw};overdue:1`)).toEqual(state({ overdue: true }));
+    expect(({} as Record<string, unknown>).polluted).toBeUndefined();
+  });
+
+  it("without a parser keeps primitives, arrays of primitives and plain objects of those", () => {
+    expect(roundTrip({ cust: "x" })).toEqual(state({ cust: "x" }));
+    expect(roundTrip({ cust: 5 })).toEqual(state({ cust: 5 }));
+    expect(roundTrip({ cust: [1, "a", null] })).toEqual(state({ cust: [1, "a", null] }));
+    expect(roundTrip({ cust: { a: 1, b: ["x"] } })).toEqual(state({ cust: { a: 1, b: ["x"] } }));
+  });
+
+  it("a field's parse decides: its result is the value, undefined or a throw drops it", () => {
+    const parse = vi.fn((raw: unknown) =>
+      raw && typeof raw === "object" && typeof (raw as { id?: unknown }).id === "string"
+        ? { id: (raw as { id: string }).id, deep: { ok: true } }
+        : undefined,
+    );
+    const withParse = normalizeFields([
+      { id: "cust", label: "Cust", filter: { component: {} as never, label: (v) => String(v), parse } },
+      { id: "overdue", label: "Overdue", filter: { toggle: true } },
+    ] satisfies SearchBarField[]);
+    expect(urlToState(withParse, 'cust:{"id"\\:"7"}')).toEqual(state({ cust: { id: "7", deep: { ok: true } } }));
+    expect(parse).toHaveBeenCalledWith({ id: "7" });
+    expect(urlToState(withParse, "cust:5;overdue:1")).toEqual(state({ overdue: true }));
+    parse.mockImplementationOnce(() => {
+      throw new Error("bad");
+    });
+    expect(urlToState(withParse, 'cust:{"id"\\:"7"};overdue:1')).toEqual(state({ overdue: true }));
   });
 });

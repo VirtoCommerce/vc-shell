@@ -75,6 +75,12 @@ export type CustomFilterConfig = {
   component: Component;
   label: (v: unknown) => string;
   toPhrase?: (v: unknown) => string;
+  /**
+   * Checks a value read back from the URL or a saved view (already JSON-parsed): return the value
+   * to apply, or undefined to drop it. Without it only primitives, arrays of primitives and plain
+   * objects of those are accepted.
+   */
+  parse?: (raw: unknown) => SearchBarValue | undefined;
 };
 
 export type EnumOperator = "any" | "not";

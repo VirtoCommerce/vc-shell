@@ -1,4 +1,5 @@
 import type { SearchBarView } from "../types";
+import { isUnsafeKey } from "./values";
 
 const storageKey = (key: string) => `VC_SEARCHBAR_${key.toUpperCase()}`;
 
@@ -29,12 +30,25 @@ function isStoredView(v: unknown): v is StoredView {
   );
 }
 
+/** No `__proto__`/`constructor`/`prototype` key at any depth */
+function hasSafeKeys(v: unknown): boolean {
+  if (Array.isArray(v)) return v.every(hasSafeKeys);
+  if (!v || typeof v !== "object") return true;
+  return Object.entries(v).every(([k, x]) => !isUnsafeKey(k) && hasSafeKeys(x));
+}
+
+// Values with prototype keys are dropped here; the field checks (acceptValue) run when the view is applied
+const withSafeValues = (v: StoredView): StoredView => ({
+  ...v,
+  values: Object.fromEntries(Object.entries(v.values).filter(([id, x]) => !isUnsafeKey(id) && hasSafeKeys(x))),
+});
+
 // `v: 2` entries; a `v: 1` entry (presets of older versions) reads as empty and is replaced on save
 function readViews(key: string): StoredView[] {
   try {
     const parsed = JSON.parse(localStorage.getItem(storageKey(key)) ?? "null");
     if (isPlainObject(parsed) && parsed.v === 2 && Array.isArray(parsed.views))
-      return parsed.views.filter(isStoredView);
+      return parsed.views.filter(isStoredView).map(withSafeValues);
   } catch {
     // unavailable or malformed storage reads as empty
   }

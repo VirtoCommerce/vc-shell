@@ -64,3 +64,41 @@ describe("view store", () => {
     expect(s.list()).toEqual([]);
   });
 });
+
+describe("view store values", () => {
+  it("drops values holding prototype keys at any depth, keeps the view (field checks run when it is applied)", () => {
+    localStorage.setItem(
+      VIEWS_RAW,
+      JSON.stringify({
+        v: 2,
+        views: [
+          {
+            id: "u",
+            name: "u",
+            scope: "user",
+            values: {
+              ok: ["a"],
+              num: { op: "gte", min: 1 },
+              not: { not: [1] },
+              deep: { a: { b: { c: 1 } } },
+              bad: JSON.parse('{"__proto__":{"x":1}}'),
+              ctor: { constructor: 1 },
+            },
+          },
+        ],
+      }),
+    );
+    const [v] = createLocalViewStore(K).list();
+    expect(Object.keys(v.values)).toEqual(["ok", "num", "not", "deep"]);
+  });
+
+  it("drops a __proto__ field id", () => {
+    localStorage.setItem(
+      VIEWS_RAW,
+      `{"v":2,"views":[{"id":"u","name":"u","scope":"user","values":{"__proto__":["a"],"x":["b"]}}]}`,
+    );
+    const [v] = createLocalViewStore(K).list();
+    expect(Object.keys(v.values)).toEqual(["x"]);
+    expect(Object.getPrototypeOf(v.values)).toBe(Object.prototype);
+  });
+});

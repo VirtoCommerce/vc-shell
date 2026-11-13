@@ -2,7 +2,7 @@ import { computed, ref, shallowRef, watch, type ComputedRef, type Ref } from "vu
 import type { ITableQueryStateService } from "@core/blade-navigation/table-query-state";
 import type { SearchBarState, SearchBarValue, SearchBarView } from "../types";
 import type { BarField } from "../lib/fields";
-import { cloneValue, isEmptyValue } from "../lib/values";
+import { acceptValue, cloneValue, isEmptyValue } from "../lib/values";
 import { SYSTEM_VIEW_ID, isViewModified, type BarView } from "../lib/views";
 import { createLocalViewStore, type StoredView, type ViewStore } from "../lib/storage";
 
@@ -88,6 +88,19 @@ export function useViews(o: UseViewsOptions): ViewsApi {
   const applyValues = (values: Record<string, SearchBarValue>) =>
     o.apply({ search: o.state.value.search, values: cloneValue(values) });
 
+  // Values read from storage (user views, module overrides): only known fields, through the field's check
+  function viewValues(view: BarView): Record<string, SearchBarValue> {
+    if (!stored.value.some((v) => v.id === view.id)) return view.values;
+    const byId = new Map(o.fields().map((f) => [f.id, f]));
+    const out: Record<string, SearchBarValue> = {};
+    for (const [id, raw] of Object.entries(view.values)) {
+      const field = byId.get(id);
+      const value = field && acceptValue(field, raw);
+      if (value !== undefined) out[id] = value;
+    }
+    return out;
+  }
+
   // Empty values are not stored: they equal absent ones
   const currentValues = () =>
     Object.fromEntries(Object.entries(cloneValue(o.state.value.values)).filter(([, v]) => !isEmptyValue(v)));
@@ -96,7 +109,7 @@ export function useViews(o: UseViewsOptions): ViewsApi {
     const view = find(id);
     if (!view) return;
     currentId.value = id;
-    applyValues(view.values);
+    applyValues(viewValues(view));
   }
 
   function userView(id: string): StoredView | undefined {
@@ -119,7 +132,7 @@ export function useViews(o: UseViewsOptions): ViewsApi {
     if (!url.filters && isEmptyState()) {
       const linked = url.view;
       const applyLinked = (view: BarView | undefined) => {
-        if (view && hasValues(view) && currentId.value === linked && isEmptyState()) applyValues(view.values);
+        if (view && hasValues(view) && currentId.value === linked && isEmptyState()) applyValues(viewValues(view));
       };
       const view = find(linked);
       if (view) applyLinked(view);
@@ -137,7 +150,7 @@ export function useViews(o: UseViewsOptions): ViewsApi {
   } else if (fallback && !url.filters && isEmptyState()) {
     // values the bar starts with (v-model or URL) win; the system view then reads modified
     currentId.value = fallback.id;
-    applyValues(fallback.values);
+    applyValues(viewValues(fallback));
   }
 
   // A view whose last value was removed ends on the system view, as Clear all does: the URL then never
@@ -180,7 +193,7 @@ export function useViews(o: UseViewsOptions): ViewsApi {
       refresh();
       currentId.value = id;
     },
-    revert: () => applyValues(current.value.values),
+    revert: () => applyValues(viewValues(current.value)),
     rename(id, name) {
       const view = userView(id);
       if (!view) return;

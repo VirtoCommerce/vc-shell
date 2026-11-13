@@ -1,6 +1,6 @@
 import type { NumberValue, SearchBarState, SearchBarValue } from "../types";
 import type { BarField } from "./fields";
-import { RELATIVE_DATES, isEmptyValue, isNot } from "./values";
+import { RELATIVE_DATES, acceptValue, isEmptyValue, isNot } from "./values";
 
 // The applied filters as one readable URL value: `status:Paid,New;!type:A;created:7d;total:>=100`.
 // `\` escapes `\ ; , :` inside ids and values; the search words are not part of it.
@@ -133,8 +133,8 @@ function decodeValue(field: BarField, raw: string, negated: boolean): SearchBarV
         .map(unescape)
         .filter((x) => x !== "");
       if (!items.length) return undefined;
-      if (negated) return { not: items };
       const values = items.map((x) => field.options.find((o) => String(o.value) === x)?.value ?? x);
+      if (negated) return { not: values };
       if (field.kind === "multiselect") return values;
       return values.length === 1 ? values[0] : undefined;
     }
@@ -144,12 +144,15 @@ function decodeValue(field: BarField, raw: string, negated: boolean): SearchBarV
       return raw === "1" ? true : undefined;
     case "number":
       return decodeNumber(raw);
-    case "custom":
+    case "custom": {
+      let parsed: unknown;
       try {
-        return JSON.parse(unescape(raw));
+        parsed = JSON.parse(unescape(raw));
       } catch {
         return undefined;
       }
+      return acceptValue(field, parsed);
+    }
   }
 }
 

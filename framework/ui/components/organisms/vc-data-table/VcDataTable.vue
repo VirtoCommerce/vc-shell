@@ -1250,9 +1250,12 @@ let barText = internalSearchValue.value;
 const onBarInput = (v: string) => {
   barText = v;
   internalSearchValue.value = v;
-  emit("update:searchValue", v);
 };
-const onBarSearch = (v: string) => emit("search", v);
+// v-model:searchValue follows the bar after the search pause too: screens load on its change
+const onBarSearch = (v: string) => {
+  emit("update:searchValue", v);
+  emit("search", v);
+};
 
 /** The table's own change to the bar (Clear all, the empty state): the search goes out first, as with the bar's */
 function updateBar(values: Record<string, SearchBarValue>, search = barText) {

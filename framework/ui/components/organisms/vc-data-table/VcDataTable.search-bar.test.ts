@@ -205,13 +205,14 @@ describe("VcDataTable search bar header", () => {
     expect(w.findComponent({ name: "VcSearchBar" }).props("name")).toBe("OrdersList");
   });
 
-  it("typing emits update:searchValue at once and a single search per pause, no filter", async () => {
+  it("typing emits update:searchValue and search once per pause, no filter", async () => {
     const w = mountTable({ searchable: true, globalFilters, searchDebounce: 300 });
     await w.find(SEARCH).setValue("a");
     await w.find(SEARCH).setValue("ab");
-    expect(w.emitted("update:searchValue")).toEqual([["a"], ["ab"]]);
+    expect(w.emitted("update:searchValue")).toBeUndefined();
     expect(w.emitted("search")).toBeUndefined();
     vi.advanceTimersByTime(300);
+    expect(w.emitted("update:searchValue")).toEqual([["ab"]]);
     expect(w.emitted("search")).toEqual([["ab"]]);
     expect(w.emitted("filter")).toBeUndefined();
   });

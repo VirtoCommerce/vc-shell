@@ -1092,7 +1092,7 @@ const orderViews: SearchBarView[] = [
 ```
 
 - **Header.** The bar sits in a header with the table's `--table-header-bg` and `--table-header-border`. Content of the `search-header-actions` slot sits at the end of the bar's row (see [Search bar slots](#search-bar-slots)).
-- **Search.** Typing emits `update:searchValue` at once and one debounced `search` per pause, as with the classic header. A change that moves the search and the filters together ("Clear all", a typed `field:value` chip) emits `search` right before `filter`, not after the pause. The table owns the search text: `searchValue` from the parent shows in the bar.
+- **Search.** Typing emits `update:searchValue` and `search` once per pause (`searchDebounce`), so a screen that loads on `v-model:search-value` does not load on every keystroke. A change that moves the search and the filters together ("Clear all", a typed `field:value` chip) emits `search` right before `filter`, not after the pause. The table owns the search text: `searchValue` from the parent shows in the bar.
 - **Filters.** `global-filters` become the bar's fields. The `@filter` payload is the same flat object, merged with column filters; date ranges are split into their two fields. Column filters stay outside the bar: they are not counted, not shown as chips and not cleared by the bar.
 - **Wide bar layout.** `search-bar-variant="inline"` (default) shows applied filters as chips in the row; `"summary"` shows the applied field names on the Filters button instead.
 - **Counts.** `filter-counts` gives a result count per option value, per filter id (`{ status: { Paid: 12 } }`); the Filters panel shows them when given.

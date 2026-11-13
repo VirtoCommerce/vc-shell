@@ -103,6 +103,9 @@ export function useViews(o: UseViewsOptions): ViewsApi {
     return stored.value.find((v) => v.id === id && v.scope === "user" && find(id)?.scope === "user");
   }
 
+  const isEmptyState = () => Object.values(o.state.value.values).every(isEmptyValue);
+  const hasValues = (v: BarView) => !Object.values(v.values).every(isEmptyValue);
+
   // Initial view: the URL's (an id not registered yet shows as system until it arrives, filters
   // from the URL stay); else the module default, applied only when the bar starts with no values; else system
   const k = urlKey();
@@ -111,11 +114,37 @@ export function useViews(o: UseViewsOptions): ViewsApi {
   const fallback = moduleViews.value.find((v) => v.default);
   if (url.view) {
     currentId.value = url.view;
-  } else if (fallback && !url.filters && Object.values(o.state.value.values).every(isEmptyValue)) {
+    // A link that names only the view (a dashboard's `orders_view=overdue`) opens it with its values;
+    // a view not registered yet applies when it arrives, unless something was set meanwhile
+    if (!url.filters && isEmptyState()) {
+      const linked = url.view;
+      const applyLinked = (view: BarView | undefined) => {
+        if (view && hasValues(view) && currentId.value === linked && isEmptyState()) applyValues(view.values);
+      };
+      const view = find(linked);
+      if (view) applyLinked(view);
+      else {
+        const stop = watch(
+          () => find(linked),
+          (v) => {
+            if (!v) return;
+            stop();
+            applyLinked(v);
+          },
+        );
+      }
+    }
+  } else if (fallback && !url.filters && isEmptyState()) {
     // values the bar starts with (v-model or URL) win; the system view then reads modified
     currentId.value = fallback.id;
     applyValues(fallback.values);
   }
+
+  // A view whose last value was removed ends on the system view, as Clear all does: the URL then never
+  // holds a view with no filters, which a reload would read as "open the view with its values"
+  watch(isEmptyState, (empty) => {
+    if (empty && current.value.scope !== "system" && hasValues(current.value)) currentId.value = SYSTEM_VIEW_ID;
+  });
 
   // A missing key opens the default view, so with one the system view is written explicitly
   const hasDefault = computed(() => moduleViews.value.some((v) => v.default));

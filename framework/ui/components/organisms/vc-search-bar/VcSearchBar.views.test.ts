@@ -69,6 +69,54 @@ describe("VcSearchBar views and URL", () => {
     expect(wrapper.get(".vc-search-bar__view-btn-name").text()).toBe("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.VIEWS.ALL");
   });
 
+  it("a link with only the view applies its values in the one setup change", () => {
+    const views = [{ id: "late", name: "Late", values: { overdue: true } }];
+    const url = fakeQueryState({ orders: { view: "late" } });
+    wrapper = mountBar({ storageKey: "orders", views }, url.provide);
+    expect(wrapper.emitted("change")).toHaveLength(1);
+    expect(lastChange(wrapper).filters).toEqual({ overdue: true });
+    expect(wrapper.get(".vc-search-bar__view-btn-name").text()).toBe("Late");
+    expect(wrapper.find(".vc-search-bar__view-badge").exists()).toBe(false);
+    expect(url.store.orders).toMatchObject({ filters: "overdue:1", view: "late" });
+  });
+
+  it("a view registered after setup applies when it arrives, if nothing was set meanwhile", async () => {
+    const views = ref<{ id: string; name: string; values: Record<string, unknown> }[]>([]);
+    const url = fakeQueryState({ orders: { view: "late" } });
+    wrapper = mountBar({ storageKey: "orders", views: views.value }, url.provide);
+    expect(wrapper.emitted("change")).toBeUndefined();
+    await wrapper.setProps({ views: [{ id: "late", name: "Late", values: { overdue: true } }] });
+    expect(wrapper.emitted("change")).toHaveLength(1);
+    expect(lastChange(wrapper).filters).toEqual({ overdue: true });
+    expect(wrapper.get(".vc-search-bar__view-btn-name").text()).toBe("Late");
+  });
+
+  it.each([
+    ["without a default view", false, undefined],
+    ["with a default view", true, "all"],
+  ])("removing the last chip of a view switches to the system view (%s); a reload stays there", async (_n, withDefault, written) => {
+    const views = [
+      { id: "late", name: "Late", values: { overdue: true } },
+      ...(withDefault ? [{ id: "paid", name: "Paid", values: { status: ["a"] }, default: true }] : []),
+    ];
+    const url = fakeQueryState({ orders: { view: "late", filters: "overdue:1" } });
+    wrapper = mountBar({ storageKey: "orders", views }, url.provide);
+    await wrapper.get(`${CHIP} .vc-search-bar__chip-x`).trigger("click");
+    await nextTick();
+    expect(lastChange(wrapper).filters).toEqual({});
+    expect(wrapper.get(".vc-search-bar__view-btn-name").text()).toBe("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.VIEWS.ALL");
+    expect(wrapper.find(".vc-search-bar__view-badge").exists()).toBe(false);
+    expect(url.store.orders.view).toBe(written);
+    expect(url.store.orders.filters).toBe("");
+    wrapper.unmount();
+
+    const reload = fakeQueryState({ orders: { ...url.store.orders } });
+    wrapper = mountBar({ storageKey: "orders", views }, reload.provide);
+    expect(wrapper.emitted("change")).toBeUndefined();
+    expect(wrapper.get(".vc-search-bar__view-btn-name").text()).toBe("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.VIEWS.ALL");
+    expect(wrapper.find(CHIP).exists()).toBe(false);
+  });
+
   it("registers the view selector with the blade; renders it in the row without a blade", async () => {
     const unregister = vi.fn();
     let render: (() => VNode) | undefined;

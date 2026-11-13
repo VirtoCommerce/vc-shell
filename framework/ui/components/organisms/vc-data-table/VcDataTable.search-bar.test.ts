@@ -277,6 +277,41 @@ describe("VcDataTable search bar header", () => {
       });
     });
 
+    it("a link with only `<key>_view` applies the view's values: one filter, the view not modified", async () => {
+      url.query.orders_view = "paid";
+      const w = mountTable({
+        searchable: true,
+        globalFilters,
+        searchViews: [{ id: "paid", name: "Paid", values: { status: ["Paid"] } }],
+      });
+      await nextTick();
+      vi.advanceTimersByTime(1000);
+      await nextTick();
+      expect(filterEvents()).toHaveLength(1);
+      expect(filterEvents()[0][0].filters).toEqual({ status: ["Paid"] });
+      expect(w.get(".vc-search-bar__view-btn-name").text()).toBe("Paid");
+      expect(w.find(".vc-search-bar__view-badge").exists()).toBe(false);
+      expect(url.query.orders_filters).toBe("status:Paid");
+    });
+
+    it("`<key>_view` with `<key>_filters` restores both with exactly one filter", async () => {
+      url.query.orders_view = "paid";
+      url.query.orders_filters = "status:New";
+      const w = mountTable({
+        searchable: true,
+        globalFilters,
+        searchViews: [{ id: "paid", name: "Paid", values: { status: ["Paid"] } }],
+      });
+      await nextTick();
+      vi.advanceTimersByTime(1000);
+      await nextTick();
+      expect(filterEvents()).toHaveLength(1);
+      expect(filterEvents()[0][0].filters).toEqual({ status: ["New"] });
+      expect(w.get(".vc-search-bar__view-btn-name").text()).toBe("Paid");
+      expect(w.find(".vc-search-bar__view-badge").exists()).toBe(true);
+      expect(url.query.orders_view).toBe("paid");
+    });
+
     it("emits the restored filter after the screen's own onMounted", async () => {
       url.query.orders_filters = "status:Paid";
       const log: string[] = [];

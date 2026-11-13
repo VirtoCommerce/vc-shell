@@ -16,7 +16,15 @@ import {
   type FilterEvent,
 } from "./VcDataTable.search-header.test-helpers";
 
-const { headerAttrs } = vi.hoisted(() => ({ headerAttrs: { current: {} as Record<string, unknown> } }));
+const { headerAttrs, loggerWarn } = vi.hoisted(() => ({
+  headerAttrs: { current: {} as Record<string, unknown> },
+  loggerWarn: vi.fn(),
+}));
+
+vi.mock("@core/utilities", async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn: loggerWarn, error: vi.fn() }),
+}));
 
 vi.mock("@ui/components/organisms/vc-data-table/components", async (importOriginal) => {
   const { defineComponent: dc } = await import("vue");
@@ -268,6 +276,31 @@ describe("VcDataTable search bar header", () => {
     expect(log).toEqual(["search acme", 'filter {"status":["Paid"]}']);
     vi.advanceTimersByTime(1000);
     expect(log).toEqual(["search acme", 'filter {"status":["Paid"]}']);
+  });
+
+  describe("dev warnings", () => {
+    const warned = (part: string) => loggerWarn.mock.calls.filter((c) => c.join(" ").includes(part)).length;
+    beforeEach(() => loggerWarn.mockClear());
+
+    it("a search bar without stateKey warns once that its filters and views are not kept", () => {
+      mountTable({ searchable: true, stateKey: undefined });
+      wrapper!.unmount();
+      mountTable({ searchable: true, stateKey: undefined });
+      expect(warned("without stateKey")).toBe(1);
+      wrapper!.unmount();
+      mountTable({ searchable: true });
+      expect(warned("without stateKey")).toBe(1);
+    });
+
+    it("searchName without the search bar warns once; nothing for a plain table", () => {
+      mountTable({ searchBar: false, searchName: "orphan-list" });
+      wrapper!.unmount();
+      mountTable({ searchBar: false, searchName: "orphan-list" });
+      expect(warned("orphan-list")).toBe(1);
+      wrapper!.unmount();
+      mountTable({ searchBar: false, stateKey: undefined, searchable: true });
+      expect(loggerWarn).toHaveBeenCalledTimes(1);
+    });
   });
 
   it("searchValue from the parent shows in the bar input", async () => {

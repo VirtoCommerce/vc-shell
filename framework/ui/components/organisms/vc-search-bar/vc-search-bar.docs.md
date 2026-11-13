@@ -65,7 +65,7 @@ The layout follows the bar's own width:
 
 ### Search syntax
 
-- Typing `field:` suggests the field's values; `field:value` followed by a space becomes a chip. The field name is the field's `key` (default: its `id`).
+- Typing `field:` suggests the field's values; `field:value` followed by a space becomes a chip when the value matches an option's value or label exactly (any case), or is the start of only one of them. A start shared by several options (`status:p` for Pending and Paid) stays text and keeps the suggestions open. The field name is the field's `key` (default: its `id`).
 - A word of 2 or more letters suggests the fields it matches. ↑ and ↓ move through the suggestions, Enter picks one.
 - An unknown field or value (`foo:bar`, `status:xyz`) stays search text.
 
@@ -103,7 +103,7 @@ const orderViews: SearchBarView[] = [
 ];
 ```
 
-Selecting a view replaces the filters. Any other change keeps the current view and marks it **Modified**; changing it back (in any order) clears the mark. The selector never switches to another view on its own because the filters happen to match it. Clear all selects "All".
+Selecting a view replaces the filters. Any other change keeps the current view and marks it **Modified**; changing it back (in any order) clears the mark. The selector never switches to another view on its own because the filters happen to match it, with one exception: removing the last filter of a view selects "All", as Clear all does.
 
 While modified, the view menu offers "Save changes to “X”" (not for "All"; for a module view it stores the change in this browser), "Save as new view…" and "Revert to “X”".
 
@@ -177,12 +177,19 @@ type RelativeDate = { relative: "today" | "7d" | "30d" };
 
 A custom field gives a component and two functions. The component receives `modelValue` and emits `update:modelValue`. `label(value)` is the text on the chip after `Name:`; `toPhrase(value)` is the phrase fragment (without it the phrase gets `key:value`).
 
+A value read back from the URL or from a saved view is untrusted input. Give `parse(raw)` to check it: `raw` is the JSON-parsed value, return the value to apply or `undefined` to drop it (a throw drops it too). Without `parse` the bar accepts only a primitive, an array of primitives or a plain object whose entries are those, and drops anything with a `__proto__`, `constructor` or `prototype` key.
+
 ```ts
 const fields: SearchBarField[] = [
   {
     id: "rating",
     label: "Rating",
-    filter: { component: StarsEditor, label: (v) => `${v}+ stars`, toPhrase: (v) => `rating:[${v} TO]` },
+    filter: {
+      component: StarsEditor,
+      label: (v) => `${v}+ stars`,
+      toPhrase: (v) => `rating:[${v} TO]`,
+      parse: (raw) => (typeof raw === "number" && raw >= 1 && raw <= 5 ? raw : undefined),
+    },
   },
 ];
 ```
@@ -196,7 +203,8 @@ const fields: SearchBarField[] = [
 Inside a blade that has a URL, the applied filters go to the URL query under `<storage-key>_filters` and the current view under `<storage-key>_view`, next to the table's `_sort`, `_search` and `_page`. A link to the screen opens it with the same filters and view, and a reload keeps them.
 
 - On mount, `v-model` comes first, then the URL, then the default view. Values the bar starts with win over the default view: it is not applied, and the view reads as "All", modified, unless the URL names a view.
-- If filters were restored (or a default view applied), the bar emits `change` once so the data can be loaded; it emits nothing when there is nothing to apply.
+- A link that names a view but has no filters (`orders_view=overdue` from a dashboard) opens the view with its values. A view registered after mount applies when it arrives, unless a filter was set meanwhile.
+- If filters were restored (or a view applied), the bar emits `change` once so the data can be loaded; it emits nothing when there is nothing to apply.
 - Every applied change rewrites the value; with nothing applied the parameter is removed. "All" is written as `_view=all` when the bar has a default view, so a reload does not reopen the default.
 - A view id that no longer exists (a deleted user view) shows as "All", modified while its filters apply; the filters still apply.
 - A blade without a URL, a bar outside a blade, or a bar without `storage-key` remembers nothing.
@@ -214,7 +222,7 @@ The value is short and readable: fields are separated by `;`, each one is `id:va
 | Text                 | `name:Acme`                                                  |
 | Custom editor        | the value as JSON                                            |
 
-Relative dates stay relative: a link with `created:7d` opened next week shows that week's last 7 days. A `;`, `,`, `:` or `\` inside a value is escaped with `\`. Malformed parts are skipped. A part for a field the bar does not have yet stays in the URL and applies when the field appears.
+Relative dates stay relative: a link with `created:7d` opened next week shows that week's last 7 days. A `;`, `,`, `:` or `\` inside a value is escaped with `\`. Malformed parts are skipped. A part for a field the bar does not have yet stays in the URL and applies when the field appears. A field that goes away (an external registration removed) leaves `change.filters`, but its part stays in the URL and its value comes back with the field.
 
 ## On a Phone
 
@@ -263,7 +271,6 @@ unregisterExternalSearchFilters("reviews-rating");
 - User views keep object and array values by reference: treat view values as immutable. Custom values must be cloneable to be saved in a view.
 - Two bars with the same `storage-key` on one page keep separate caches and can overwrite each other.
 - Views use `localStorage` even when `VcDataTable` has `state-storage="session"`.
-- Filters from the URL are kept only for fields known at mount. Fields whose ids arrive later (for example `globalFilters` loaded asynchronously) lose their values.
 - Back and forward navigation inside an open blade does not update the bar: the URL is read when the bar mounts.
 - In the table, the restored `@filter` is sent after the screen's own `onMounted`, but a screen that starts its own unfiltered load there can still race with it: whichever response arrives last fills the table.
 - The date editor's relative ranges have no arrow-key navigation.
@@ -273,7 +280,7 @@ unregisterExternalSearchFilters("reviews-rating");
 
 - Putting a `VcSearchBar` into `#header` and also setting `search-bar` on the table: the table renders its own bar as well. Use one.
 - Passing `v-model` and `search` that disagree: the parent value of `search` wins for the text.
-- Expecting user views or URL filters without `storage-key`: views live in memory and nothing goes to the URL.
+- Expecting user views or URL filters without `storage-key`: views live in memory and nothing goes to the URL. `VcDataTable` with `search-bar` and no `state-key` warns about it in development.
 - Passing `v-model` with values and expecting the default view: values the bar starts with win.
 - Targeting external filters with a module name instead of the blade name.
 

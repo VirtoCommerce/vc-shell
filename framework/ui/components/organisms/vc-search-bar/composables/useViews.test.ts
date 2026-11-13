@@ -318,7 +318,12 @@ describe("useViews: stored values", () => {
   });
 
   it("a stored override of a module view goes through the same check", () => {
-    createLocalViewStore("orders").save({ id: "paid", name: "Paid", values: { gone: 1, urgent: true }, scope: "module" });
+    createLocalViewStore("orders").save({
+      id: "paid",
+      name: "Paid",
+      values: { gone: 1, urgent: true },
+      scope: "module",
+    });
     const { api, apply } = setup({ moduleViews: [MODULE[0]] });
     api.select("paid");
     expect(apply).toHaveBeenLastCalledWith({ search: "", values: { urgent: true } });

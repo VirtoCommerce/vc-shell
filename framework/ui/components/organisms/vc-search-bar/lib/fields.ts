@@ -1,4 +1,5 @@
 import type { EnumOperator, FilterOption, SearchBarField } from "@core/types/search-bar";
+import { warnOnce } from "./warn";
 
 export type FieldKind = "text" | "select" | "multiselect" | "dateRange" | "toggle" | "number" | "custom";
 
@@ -55,7 +56,8 @@ export function normalizeFields(list: SearchBarField[]): BarField[] {
     // `filter: false` means no filter UI, as in the old filters panel
     if (f.filter === false) continue;
     if (seen.has(f.id)) {
-      console.warn(`[VcSearchBar] duplicate field id "${f.id}" ignored`);
+      // normalizeFields runs inside a computed: once per id, not on every recompute
+      warnOnce(`duplicate:${f.id}`, `duplicate field id "${f.id}" ignored`);
       continue;
     }
     seen.add(f.id);

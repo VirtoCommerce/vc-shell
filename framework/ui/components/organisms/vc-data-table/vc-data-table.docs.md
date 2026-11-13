@@ -1092,7 +1092,7 @@ const orderViews: SearchBarView[] = [
 ```
 
 - **Header.** The bar sits in a header with the table's `--table-header-bg` and `--table-header-border`. Content of the `search-header-actions` slot sits at the end of the bar's row (see [Search bar slots](#search-bar-slots)).
-- **Search.** Typing emits `update:searchValue` at once and one debounced `search` per pause, as with the classic header. The table owns the search text: `searchValue` from the parent shows in the bar.
+- **Search.** Typing emits `update:searchValue` at once and one debounced `search` per pause, as with the classic header. A change that moves the search and the filters together ("Clear all", a typed `field:value` chip) emits `search` right before `filter`, not after the pause. The table owns the search text: `searchValue` from the parent shows in the bar.
 - **Filters.** `global-filters` become the bar's fields. The `@filter` payload is the same flat object, merged with column filters; date ranges are split into their two fields. Column filters stay outside the bar: they are not counted, not shown as chips and not cleared by the bar.
 - **Wide bar layout.** `search-bar-variant="inline"` (default) shows applied filters as chips in the row; `"summary"` shows the applied field names on the Filters button instead.
 - **Counts.** `filter-counts` gives a result count per option value, per filter id (`{ status: { Paid: 12 } }`); the Filters panel shows them when given.
@@ -1151,7 +1151,7 @@ Without a `state-key` the bar remembers nothing: if it unmounts (no `searchable`
 
 ### Filters from other modules (`searchName`)
 
-With `search-bar`, modules can add fields and views to a list with `registerExternalSearchFilters({ id, targetBlades, fields, views })`. By default the table's bar answers to the blade's name; set `search-name` to address it by another name (a table outside a blade, or two tables in one blade). A table without `search-bar` ignores these registrations. Registered fields show the bar even on a table without `searchable` and `global-filters`.
+With `search-bar`, modules can add fields and views to a list with `registerExternalSearchFilters({ id, targetBlades, fields, views })`. By default the table's bar answers to the blade's name; set `search-name` to address it by another name (a table outside a blade, or two tables in one blade). A table without `search-bar` ignores these registrations (in development, `search-name` without `search-bar` logs a warning). Registered fields show the bar even on a table without `searchable` and `global-filters`.
 
 ### VcTableAdapter
 

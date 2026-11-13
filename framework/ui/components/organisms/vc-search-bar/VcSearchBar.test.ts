@@ -56,6 +56,35 @@ describe("VcSearchBar", () => {
       expect(panel()).toBeNull();
     });
 
+    it("Esc closes the Filters panel and the +N popover and returns focus to the button that opened it", async () => {
+      const resize = fakeResizeObserver();
+      fakeWidths();
+      wrapper = mountBar();
+      await setThree();
+      await resize(760, 600);
+      const escape = async () => {
+        document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+        await nextTick();
+        await nextTick();
+        vi.advanceTimersByTime(500);
+        await nextTick();
+      };
+
+      const filtersBtn = wrapper.get(".vc-search-bar__filters-main");
+      await filtersBtn.trigger("click");
+      expect(panel()).not.toBeNull();
+      await escape();
+      expect(panel()).toBeNull();
+      expect(document.activeElement).toBe(filtersBtn.element);
+
+      const more = wrapper.get(".vc-search-bar__more");
+      await more.trigger("click");
+      expect(accLabels()).toEqual(["Status", "Overdue"]);
+      await escape();
+      expect(accLabels()).toEqual([]);
+      expect(document.activeElement).toBe(more.element);
+    });
+
     it("+N opens an accordion of the hidden fields with the first one expanded", async () => {
       const resize = fakeResizeObserver();
       fakeWidths();

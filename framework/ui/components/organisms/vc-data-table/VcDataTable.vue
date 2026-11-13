@@ -490,6 +490,7 @@ import {
   SearchBarControllerScope,
 } from "@ui/components/organisms/vc-search-bar/composables/useSearchBarController";
 import { useHasExternalSearchFields } from "@ui/components/organisms/vc-search-bar/composables/useHasExternalSearchFields";
+import { warnOnce } from "@ui/components/organisms/vc-search-bar/lib/warn";
 import { useDataTableOrchestrator } from "@ui/components/organisms/vc-data-table/composables/useDataTableOrchestrator";
 import { useSearchActionsHint } from "@ui/components/organisms/vc-data-table/composables/useSearchActionsHint";
 import { ColumnCollector, type ColumnInstance } from "@ui/components/organisms/vc-data-table/utils/ColumnCollector";
@@ -1281,6 +1282,17 @@ onMounted(() => {
 
 /** Fields registered by other modules for the bar's name (searchName, else the blade's) mount the bar too */
 const hasExternalBarFields = useHasExternalSearchFields(() => props.searchName);
+
+// Setup mistakes that fail silently (warnOnce: development only, once per key)
+if (props.searchBar && !props.stateKey) {
+  warnOnce("no-state-key", "VcDataTable: search-bar without stateKey keeps its filters and views in memory only");
+}
+if (!props.searchBar && props.searchName) {
+  warnOnce(
+    `search-name:${props.searchName}`,
+    `VcDataTable: searchName "${props.searchName}" has no effect without search-bar; filters registered for it are not shown`,
+  );
+}
 const barResultCount = computed(() => props.totalCount ?? props.items.length);
 /** The bar's status for the footer and the empty state, and its actions; empty without the bar */
 const barController = createSearchBarController();

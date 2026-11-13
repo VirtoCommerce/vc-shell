@@ -7,6 +7,7 @@ import { nextTick, ref } from "vue";
 import VcDataTable from "./VcDataTable.vue";
 import VcTableAdapter from "./VcTableAdapter.vue";
 import { registerExternalSearchFilters, unregisterExternalSearchFilters } from "@core/services/search-filters-service";
+import { TableQueryStateKey, type ITableQueryStateService } from "@core/blade-navigation/table-query-state";
 import {
   global,
   globalFilters,
@@ -124,6 +125,33 @@ describe("VcDataTable without searchBar (the v2.11.0 search header)", () => {
     expect(events.at(-1)![0].filters).toEqual({ name: "Acme", status: ["New"] });
     w.findComponent({ name: "GlobalFiltersPanel" }).vm.$emit("clear");
     expect((w.emitted("filter") as FilterEvent[]).at(-1)![0].filters).toEqual({ name: "Acme" });
+  });
+
+  it("writes no `<key>_filters` or `<key>_view` to the URL; the panel payload goes out as is", async () => {
+    const url = urlQueryState();
+    const writes: unknown[] = [];
+    const service = url.provide[TableQueryStateKey as symbol] as ITableQueryStateService;
+    const spied: ITableQueryStateService = {
+      read: service.read,
+      write: (key, patch) => {
+        writes.push(patch);
+        service.write(key, patch);
+      },
+    };
+    wrapper = mount(VcDataTable as never, {
+      props: { items: [], stateKey: "orders", searchable: true, globalFilters },
+      global: { ...global, provide: { ...global.provide, [TableQueryStateKey as symbol]: spied } },
+      attachTo: document.body,
+    });
+    const payload = { status: ["New"], startDate: "2026-01-01", endDate: "2026-01-31" };
+    wrapper.findComponent({ name: "GlobalFiltersPanel" }).vm.$emit("apply", payload);
+    await nextTick();
+    expect((wrapper.emitted("filter") as FilterEvent[]).at(-1)![0].filters).toEqual(payload);
+    wrapper.findComponent({ name: "GlobalFiltersPanel" }).vm.$emit("clear");
+    await nextTick();
+    expect((wrapper.emitted("filter") as FilterEvent[]).at(-1)![0].filters).toEqual({});
+    expect(writes.filter((p) => "filters" in (p as object) || "view" in (p as object))).toEqual([]);
+    expect(Object.keys(url.query).filter((k) => k === "orders_filters" || k === "orders_view")).toEqual([]);
   });
 
   it("typing in the old header emits update:searchValue and a debounced search", async () => {

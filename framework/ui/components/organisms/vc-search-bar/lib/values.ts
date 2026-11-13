@@ -41,7 +41,8 @@ export function isPlainValue(v: unknown): boolean {
  * a custom field's `parse` decides, other fields take plain values only
  */
 export function acceptValue(field: BarField, raw: unknown): SearchBarValue | undefined {
-  const parse = field.kind === "custom" ? (field.source.filter as { parse?: (r: unknown) => unknown }).parse : undefined;
+  const parse =
+    field.kind === "custom" ? (field.source.filter as { parse?: (r: unknown) => unknown }).parse : undefined;
   if (!parse) return isPlainValue(raw) ? raw : undefined;
   try {
     return parse(raw) ?? undefined;

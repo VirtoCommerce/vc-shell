@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, expectTypeOf } from "vitest";
 import { defineComponent } from "vue";
+
+const { warn } = vi.hoisted(() => ({ warn: vi.fn() }));
+vi.mock("@core/utilities", async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  createLogger: () => ({ debug: vi.fn(), info: vi.fn(), warn, error: vi.fn() }),
+}));
 import { normalizeField, normalizeFields } from "./fields";
 import type { SearchBarField } from "../types";
 import type { GlobalFilterConfig } from "../../vc-data-table/types";
@@ -68,16 +74,20 @@ describe("normalizeField", () => {
 });
 
 describe("normalizeFields", () => {
-  it("drops duplicate ids, first wins, and warns", () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
-    const res = normalizeFields([
-      { id: "a", label: "first", filter: true },
-      { id: "a", label: "second", filter: true },
-    ]);
+  it("drops duplicate ids, first wins, and warns through the logger once per id", () => {
+    const consoleWarn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const list = [
+      { id: "dup", label: "first", filter: true },
+      { id: "dup", label: "second", filter: true },
+    ] satisfies SearchBarField[];
+    const res = normalizeFields(list);
     expect(res).toHaveLength(1);
     expect(res[0].label).toBe("first");
+    normalizeFields(list);
     expect(warn).toHaveBeenCalledOnce();
-    warn.mockRestore();
+    expect(warn.mock.calls[0].join(" ")).toContain('"dup"');
+    expect(consoleWarn).not.toHaveBeenCalled();
+    consoleWarn.mockRestore();
   });
 
   it("skips a field with filter: false (no pill), like the old panel", () => {

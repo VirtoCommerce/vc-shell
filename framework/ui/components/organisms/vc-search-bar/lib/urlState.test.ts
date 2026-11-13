@@ -202,7 +202,7 @@ describe("urlToState: custom values", () => {
     ['{"__proto__":{"polluted":1}}', "__proto__ key"],
     ['{"constructor":{"prototype":1}}', "constructor key"],
     ['{"a":{"b":{"c":1}}}', "an object nested in an object"],
-    ['[[1,[2]]]', "a nested array"],
+    ["[[1,[2]]]", "a nested array"],
     ['[{"a":1}]', "an object in an array"],
   ])("without a parser drops %s (%s)", (json) => {
     const raw = `cust:${json.replace(/[\;,:]/g, "\\$&")}`;

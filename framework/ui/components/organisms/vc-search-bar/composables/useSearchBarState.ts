@@ -140,13 +140,24 @@ export function useSearchBarState(opts: UseSearchBarStateOptions): UseSearchBarS
     return arrived;
   }
 
+  // A field that goes away takes its value out of the filter, but its URL segment waits with the
+  // unresolved ones, so the value comes back with the field
+  let prevFields = fields.value;
   watch(
     () => fields.value.map((f) => f.id),
     (ids) => {
       const known = new Set(ids);
-      const kept = Object.entries(state.value.values).filter(([id]) => known.has(id));
+      const entries = Object.entries(state.value.values);
+      const kept = entries.filter(([id]) => known.has(id));
+      const dropped = entries.filter(([id]) => !known.has(id));
+      const before = prevFields;
+      prevFields = fields.value;
       const arrived = takeArrived();
-      if (kept.length === Object.keys(state.value.values).length && !arrived) return;
+      if (!dropped.length && !arrived) return;
+      if (!state.value.query) {
+        const left = dropped.map(([id, v]) => stateToUrl(before, { search: "", values: { [id]: v } }));
+        unresolved = [...unresolved, ...left.filter(Boolean)];
+      }
       commit({ ...state.value, values: { ...Object.fromEntries(kept), ...arrived?.values } });
     },
     { flush: "sync" },

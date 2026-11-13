@@ -157,6 +157,28 @@ describe("useSearchBarState", () => {
       expect(changes).toHaveLength(1);
     });
 
+    it("a field that goes away leaves the filter but keeps its value in the URL; it returns with one change", () => {
+      const { service, store } = fakeQueryState();
+      const fields = ref<SearchBarField[]>([text("name"), text("late")]);
+      const { api, changes } = setup({ fields, storageKey: "k", queryState: service });
+      api.setValue("name", "a");
+      api.setValue("late", "x;y");
+      expect(store.k.filters).toBe("name:a;late:x\\;y");
+      const before = changes.length;
+
+      fields.value = [text("name")];
+      expect(api.state.value.values).toEqual({ name: "a" });
+      expect(changes).toHaveLength(before + 1);
+      expect(changes.at(-1)!.filters).toEqual({ name: "a" });
+      expect(store.k.filters).toBe("name:a;late:x\\;y");
+
+      fields.value = [text("name"), text("late")];
+      expect(api.state.value.values).toEqual({ name: "a", late: "x;y" });
+      expect(changes).toHaveLength(before + 2);
+      expect(changes.at(-1)!.filters).toEqual({ name: "a", late: "x;y" });
+      expect(store.k.filters).toBe("name:a;late:x\\;y");
+    });
+
     it("clearAll drops URL filters still waiting for their fields", () => {
       const { service, store } = fakeQueryState({ k: { filters: "name:a;late:x" } });
       const fields = ref<SearchBarField[]>([text("name")]);

@@ -1115,6 +1115,7 @@ const handleSearchInput = (value: string) => {
 
   if (searchTimer) clearTimeout(searchTimer);
   searchTimer = setTimeout(() => {
+    searchTimer = null;
     emit("search", value);
   }, props.searchDebounce ?? 300);
 };
@@ -1255,8 +1256,18 @@ const handleSearchBarChange = (change: SearchBarChange) => {
   const filtersKey = JSON.stringify(change.filters);
   if (filtersKey === lastBarFilters) return;
   lastBarFilters = filtersKey;
-  if (tableMounted) emitFilterPayload();
-  else restoredFilterPending = true;
+  if (!tableMounted) {
+    restoredFilterPending = true;
+    return;
+  }
+  // A change that also moved the search (Clear all, a typed chip): its @search goes first, not after
+  // the pause, so a screen that loads on both does not request with the old words
+  if (searchTimer) {
+    clearTimeout(searchTimer);
+    searchTimer = null;
+    emit("search", internalSearchValue.value);
+  }
+  emitFilterPayload();
 };
 onMounted(() => {
   tableMounted = true;

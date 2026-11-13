@@ -255,6 +255,21 @@ describe("VcDataTable search bar header", () => {
     }
   });
 
+  it("a typed field:value chip sends the rest of the text as the search with the filter change", async () => {
+    const log: string[] = [];
+    const w = mountTable({
+      searchable: true,
+      globalFilters,
+      searchDebounce: 300,
+      onSearch: (v: string) => log.push(`search ${v}`),
+      onFilter: (e: { filters: Record<string, unknown> }) => log.push(`filter ${JSON.stringify(e.filters)}`),
+    });
+    await w.find(SEARCH).setValue("acme status:paid ");
+    expect(log).toEqual(["search acme", 'filter {"status":["Paid"]}']);
+    vi.advanceTimersByTime(1000);
+    expect(log).toEqual(["search acme", 'filter {"status":["Paid"]}']);
+  });
+
   it("searchValue from the parent shows in the bar input", async () => {
     const w = mountTable({ searchable: true, searchValue: "abc" });
     expect((w.find(SEARCH).element as HTMLInputElement).value).toBe("abc");

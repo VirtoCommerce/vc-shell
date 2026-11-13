@@ -264,6 +264,39 @@ describe("VcDataTable search bar slots", () => {
     });
   });
 
+  it("clearAll sends the cleared search with the filter change, not after the search pause", async () => {
+    vi.useFakeTimers();
+    try {
+      query.orders_filters = "status:Paid";
+      const log: string[] = [];
+      const { slot } = actionsSlot();
+      let clearAll: (() => void) | undefined;
+      mountTable(
+        {
+          searchValue: "acme",
+          searchDebounce: 300,
+          onSearch: (v: string) => log.push(`search ${JSON.stringify(v)}`),
+          onFilter: (e: { filters: Record<string, unknown> }) => log.push(`filter ${JSON.stringify(e.filters)}`),
+        },
+        {
+          "search-header-actions": (p: SearchBarSlotProps) => {
+            clearAll = p.clearAll;
+            return slot(p);
+          },
+        },
+      );
+      await nextTick();
+      vi.advanceTimersByTime(1000);
+      log.length = 0;
+      clearAll!();
+      expect(log).toEqual(['search ""', "filter {}"]);
+      vi.advanceTimersByTime(1000);
+      expect(log).toEqual(['search ""', "filter {}"]);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   describe("#not-found props", () => {
     const notFoundSlot = () => {
       const seen: { props: SearchBarNotFoundSlotProps | undefined } = { props: undefined };

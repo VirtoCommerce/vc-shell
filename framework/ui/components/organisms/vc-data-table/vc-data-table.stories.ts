@@ -5,11 +5,14 @@ import { VcInput } from "@ui/components/molecules";
 import { useDataTablePagination } from "@ui/composables/useDataTablePagination";
 import { useDataTableSort } from "@ui/composables/useDataTableSort";
 import { Product, mockProducts } from "./vc-data-table.stories.helpers";
+import { withDesktopView } from "../../../../../.storybook/decorators";
 
 const meta = {
   title: "Data Display/VcDataTable",
   component: VcDataTable,
   tags: ["autodocs"],
+  // Docs story iframes are narrower than the desktop breakpoint; keep the desktop layout there.
+  decorators: [withDesktopView],
   parameters: {
     docs: {
       description: {

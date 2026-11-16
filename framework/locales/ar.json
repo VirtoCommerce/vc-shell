@@ -514,6 +514,85 @@
         "DELETE": "حذف",
         "EDIT": "تعديل"
       }
+    },
+    "FOLDER": {
+      "TITLE": "الملفات",
+      "SEARCH_PLACEHOLDER": "البحث في هذا المجلد",
+      "TOOLBAR": {
+        "REFRESH": "تحديث",
+        "NEW_FOLDER": "مجلد جديد",
+        "UPLOAD": "رفع",
+        "UPLOAD_FROM_URL": "رفع من رابط",
+        "DELETE": "حذف"
+      },
+      "TABLE": {
+        "HEADER": {
+          "NAME": "الاسم",
+          "SIZE": "الحجم",
+          "MODIFIED_DATE": "تاريخ التعديل"
+        }
+      },
+      "ACTIONS": {
+        "DOWNLOAD": "تنزيل",
+        "COPY_LINK": "نسخ الرابط",
+        "DELETE": "حذف"
+      },
+      "EMPTY": {
+        "TITLE": "هذا المجلد فارغ",
+        "UPLOAD": "رفع"
+      },
+      "NOT_FOUND": "لا شيء في هذا المجلد يطابق بحثك",
+      "CONFIRM_DELETE": "هل تريد حذف {items}؟ لا يمكن التراجع عن هذا الإجراء.",
+      "CONFIRM_DELETE_FOLDERS": "هل تريد حذف {items}؟ سيتم أيضًا حذف كل محتويات المجلدات المحددة. لا يمكن التراجع عن هذا الإجراء.",
+      "ITEMS_COUNT": "{count} عناصر",
+      "NEW_FOLDER_POPUP": {
+        "TITLE": "مجلد جديد",
+        "NAME": "اسم المجلد",
+        "CREATE": "إنشاء",
+        "CANCEL": "إلغاء",
+        "INVALID": "أدخل اسمًا بدون \"/\""
+      },
+      "URL_POPUP": {
+        "TITLE": "رفع من رابط",
+        "URL": "رابط الملف",
+        "UPLOAD": "رفع",
+        "CANCEL": "إلغاء",
+        "INVALID": "أدخل رابط http(s) صالحًا"
+      },
+      "OVERWRITE_POPUP": {
+        "TITLE": "الملف موجود بالفعل",
+        "MESSAGE": "\"{name}\" موجود بالفعل في هذا المجلد.",
+        "NAME": "اسم الملف",
+        "OVERWRITE": "استبدال",
+        "RENAME": "إعادة تسمية",
+        "SKIP": "تخطي"
+      },
+      "NOTIFY": {
+        "LINK_COPIED": "تم نسخ الرابط",
+        "UPLOAD_FAILED": "فشل رفع {failed} من أصل {total} ملفات",
+        "REQUEST_FAILED": "فشل الطلب: {message}"
+      },
+      "VIEW": {
+        "TABLE": "عرض الجدول",
+        "GRID": "عرض الشبكة"
+      },
+      "FOLDER_LABEL": "مجلد",
+      "GRID": {
+        "MORE": "المزيد من الإجراءات",
+        "SELECT": "تحديد {name}"
+      },
+      "DETAILS": {
+        "FIELDS": {
+          "NAME": "الاسم",
+          "TYPE": "النوع",
+          "SIZE": "الحجم",
+          "DIMENSIONS": "الأبعاد",
+          "CREATED": "تاريخ الإنشاء",
+          "MODIFIED": "تاريخ التعديل",
+          "URL": "URL"
+        },
+        "INFO_FAILED": "تعذر تحميل المعلومات الإضافية"
+      }
     }
   },
   "ASSETS": {

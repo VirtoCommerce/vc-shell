@@ -514,6 +514,85 @@
         "DELETE": "Delete",
         "EDIT": "Edit"
       }
+    },
+    "FOLDER": {
+      "TITLE": "Files",
+      "SEARCH_PLACEHOLDER": "Search in this folder",
+      "TOOLBAR": {
+        "REFRESH": "Refresh",
+        "NEW_FOLDER": "New folder",
+        "UPLOAD": "Upload",
+        "UPLOAD_FROM_URL": "Upload from URL",
+        "DELETE": "Delete"
+      },
+      "TABLE": {
+        "HEADER": {
+          "NAME": "Name",
+          "SIZE": "Size",
+          "MODIFIED_DATE": "Modified"
+        }
+      },
+      "ACTIONS": {
+        "DOWNLOAD": "Download",
+        "COPY_LINK": "Copy link",
+        "DELETE": "Delete"
+      },
+      "EMPTY": {
+        "TITLE": "This folder is empty",
+        "UPLOAD": "Upload"
+      },
+      "NOT_FOUND": "Nothing in this folder matches your search",
+      "CONFIRM_DELETE": "Delete {items}? This cannot be undone.",
+      "CONFIRM_DELETE_FOLDERS": "Delete {items}? Everything inside the selected folders will be deleted too. This cannot be undone.",
+      "ITEMS_COUNT": "{count} items",
+      "NEW_FOLDER_POPUP": {
+        "TITLE": "New folder",
+        "NAME": "Folder name",
+        "CREATE": "Create",
+        "CANCEL": "Cancel",
+        "INVALID": "Enter a name without \"/\""
+      },
+      "URL_POPUP": {
+        "TITLE": "Upload from URL",
+        "URL": "File URL",
+        "UPLOAD": "Upload",
+        "CANCEL": "Cancel",
+        "INVALID": "Enter a valid http(s) URL"
+      },
+      "OVERWRITE_POPUP": {
+        "TITLE": "File already exists",
+        "MESSAGE": "\"{name}\" already exists in this folder.",
+        "NAME": "File name",
+        "OVERWRITE": "Overwrite",
+        "RENAME": "Rename",
+        "SKIP": "Skip"
+      },
+      "NOTIFY": {
+        "LINK_COPIED": "Link copied",
+        "UPLOAD_FAILED": "{failed} of {total} files failed to upload",
+        "REQUEST_FAILED": "Request failed: {message}"
+      },
+      "VIEW": {
+        "TABLE": "Table view",
+        "GRID": "Grid view"
+      },
+      "FOLDER_LABEL": "Folder",
+      "GRID": {
+        "MORE": "More actions",
+        "SELECT": "Select {name}"
+      },
+      "DETAILS": {
+        "FIELDS": {
+          "NAME": "Name",
+          "TYPE": "Type",
+          "SIZE": "Size",
+          "DIMENSIONS": "Dimensions",
+          "CREATED": "Created",
+          "MODIFIED": "Modified",
+          "URL": "URL"
+        },
+        "INFO_FAILED": "Could not load additional information"
+      }
     }
   },
   "ASSETS": {

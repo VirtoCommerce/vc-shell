@@ -514,6 +514,85 @@
         "DELETE": "Excluir",
         "EDIT": "Editar"
       }
+    },
+    "FOLDER": {
+      "TITLE": "Arquivos",
+      "SEARCH_PLACEHOLDER": "Pesquisar nesta pasta",
+      "TOOLBAR": {
+        "REFRESH": "Atualizar",
+        "NEW_FOLDER": "Nova pasta",
+        "UPLOAD": "Carregar",
+        "UPLOAD_FROM_URL": "Carregar de URL",
+        "DELETE": "Excluir"
+      },
+      "TABLE": {
+        "HEADER": {
+          "NAME": "Nome",
+          "SIZE": "Tamanho",
+          "MODIFIED_DATE": "Modificado"
+        }
+      },
+      "ACTIONS": {
+        "DOWNLOAD": "Baixar",
+        "COPY_LINK": "Copiar link",
+        "DELETE": "Excluir"
+      },
+      "EMPTY": {
+        "TITLE": "Esta pasta está vazia",
+        "UPLOAD": "Carregar"
+      },
+      "NOT_FOUND": "Nada nesta pasta corresponde à sua pesquisa",
+      "CONFIRM_DELETE": "Excluir {items}? Esta ação não pode ser desfeita.",
+      "CONFIRM_DELETE_FOLDERS": "Excluir {items}? Todo o conteúdo das pastas selecionadas também será excluído. Esta ação não pode ser desfeita.",
+      "ITEMS_COUNT": "{count} itens",
+      "NEW_FOLDER_POPUP": {
+        "TITLE": "Nova pasta",
+        "NAME": "Nome da pasta",
+        "CREATE": "Criar",
+        "CANCEL": "Cancelar",
+        "INVALID": "Insira um nome sem \"/\""
+      },
+      "URL_POPUP": {
+        "TITLE": "Carregar de URL",
+        "URL": "URL do arquivo",
+        "UPLOAD": "Carregar",
+        "CANCEL": "Cancelar",
+        "INVALID": "Insira uma URL http(s) válida"
+      },
+      "OVERWRITE_POPUP": {
+        "TITLE": "O arquivo já existe",
+        "MESSAGE": "\"{name}\" já existe nesta pasta.",
+        "NAME": "Nome do arquivo",
+        "OVERWRITE": "Substituir",
+        "RENAME": "Renomear",
+        "SKIP": "Ignorar"
+      },
+      "NOTIFY": {
+        "LINK_COPIED": "Link copiado",
+        "UPLOAD_FAILED": "Falha ao carregar {failed} de {total} arquivos",
+        "REQUEST_FAILED": "Falha na solicitação: {message}"
+      },
+      "VIEW": {
+        "TABLE": "Visualização em tabela",
+        "GRID": "Visualização em grade"
+      },
+      "FOLDER_LABEL": "Pasta",
+      "GRID": {
+        "MORE": "Mais ações",
+        "SELECT": "Selecionar {name}"
+      },
+      "DETAILS": {
+        "FIELDS": {
+          "NAME": "Nome",
+          "TYPE": "Tipo",
+          "SIZE": "Tamanho",
+          "DIMENSIONS": "Dimensões",
+          "CREATED": "Criado",
+          "MODIFIED": "Modificado",
+          "URL": "URL"
+        },
+        "INFO_FAILED": "Não foi possível carregar as informações adicionais"
+      }
     }
   },
   "ASSETS": {

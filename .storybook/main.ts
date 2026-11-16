@@ -73,7 +73,11 @@ const preventGlobalsPlugin = (): Plugin => {
 };
 
 export default {
-  stories: ["../framework/ui/components/**/*.stories.ts", "../framework/shell/**/*.stories.ts"],
+  stories: [
+    "../framework/ui/components/**/*.stories.ts",
+    "../framework/shell/**/*.stories.ts",
+    "../framework/modules/**/*.stories.ts",
+  ],
 
   addons: [
     getAbsolutePath("@storybook/addon-links"),

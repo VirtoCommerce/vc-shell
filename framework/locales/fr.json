@@ -514,6 +514,85 @@
         "DELETE": "Supprimer",
         "EDIT": "Modifier"
       }
+    },
+    "FOLDER": {
+      "TITLE": "Fichiers",
+      "SEARCH_PLACEHOLDER": "Rechercher dans ce dossier",
+      "TOOLBAR": {
+        "REFRESH": "Actualiser",
+        "NEW_FOLDER": "Nouveau dossier",
+        "UPLOAD": "Téléverser",
+        "UPLOAD_FROM_URL": "Téléverser depuis une URL",
+        "DELETE": "Supprimer"
+      },
+      "TABLE": {
+        "HEADER": {
+          "NAME": "Nom",
+          "SIZE": "Taille",
+          "MODIFIED_DATE": "Modifié"
+        }
+      },
+      "ACTIONS": {
+        "DOWNLOAD": "Télécharger",
+        "COPY_LINK": "Copier le lien",
+        "DELETE": "Supprimer"
+      },
+      "EMPTY": {
+        "TITLE": "Ce dossier est vide",
+        "UPLOAD": "Téléverser"
+      },
+      "NOT_FOUND": "Aucun élément de ce dossier ne correspond à votre recherche",
+      "CONFIRM_DELETE": "Supprimer {items} ? Cette action est irréversible.",
+      "CONFIRM_DELETE_FOLDERS": "Supprimer {items} ? Tout le contenu des dossiers sélectionnés sera également supprimé. Cette action est irréversible.",
+      "ITEMS_COUNT": "{count} éléments",
+      "NEW_FOLDER_POPUP": {
+        "TITLE": "Nouveau dossier",
+        "NAME": "Nom du dossier",
+        "CREATE": "Créer",
+        "CANCEL": "Annuler",
+        "INVALID": "Saisissez un nom sans \"/\""
+      },
+      "URL_POPUP": {
+        "TITLE": "Téléverser depuis une URL",
+        "URL": "URL du fichier",
+        "UPLOAD": "Téléverser",
+        "CANCEL": "Annuler",
+        "INVALID": "Saisissez une URL http(s) valide"
+      },
+      "OVERWRITE_POPUP": {
+        "TITLE": "Le fichier existe déjà",
+        "MESSAGE": "\"{name}\" existe déjà dans ce dossier.",
+        "NAME": "Nom du fichier",
+        "OVERWRITE": "Remplacer",
+        "RENAME": "Renommer",
+        "SKIP": "Ignorer"
+      },
+      "NOTIFY": {
+        "LINK_COPIED": "Lien copié",
+        "UPLOAD_FAILED": "{failed} fichier(s) sur {total} n'ont pas pu être téléversés",
+        "REQUEST_FAILED": "Échec de la requête : {message}"
+      },
+      "VIEW": {
+        "TABLE": "Vue tableau",
+        "GRID": "Vue grille"
+      },
+      "FOLDER_LABEL": "Dossier",
+      "GRID": {
+        "MORE": "Plus d'actions",
+        "SELECT": "Sélectionner {name}"
+      },
+      "DETAILS": {
+        "FIELDS": {
+          "NAME": "Nom",
+          "TYPE": "Type",
+          "SIZE": "Taille",
+          "DIMENSIONS": "Dimensions",
+          "CREATED": "Créé",
+          "MODIFIED": "Modifié",
+          "URL": "URL"
+        },
+        "INFO_FAILED": "Impossible de charger les informations supplémentaires"
+      }
     }
   },
   "ASSETS": {

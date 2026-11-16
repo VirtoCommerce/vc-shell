@@ -514,6 +514,85 @@
         "DELETE": "Ta bort",
         "EDIT": "Redigera"
       }
+    },
+    "FOLDER": {
+      "TITLE": "Filer",
+      "SEARCH_PLACEHOLDER": "Sök i den här mappen",
+      "TOOLBAR": {
+        "REFRESH": "Uppdatera",
+        "NEW_FOLDER": "Ny mapp",
+        "UPLOAD": "Ladda upp",
+        "UPLOAD_FROM_URL": "Ladda upp från URL",
+        "DELETE": "Ta bort"
+      },
+      "TABLE": {
+        "HEADER": {
+          "NAME": "Namn",
+          "SIZE": "Storlek",
+          "MODIFIED_DATE": "Ändrad"
+        }
+      },
+      "ACTIONS": {
+        "DOWNLOAD": "Ladda ned",
+        "COPY_LINK": "Kopiera länk",
+        "DELETE": "Ta bort"
+      },
+      "EMPTY": {
+        "TITLE": "Den här mappen är tom",
+        "UPLOAD": "Ladda upp"
+      },
+      "NOT_FOUND": "Inget i den här mappen matchar din sökning",
+      "CONFIRM_DELETE": "Ta bort {items}? Det går inte att ångra.",
+      "CONFIRM_DELETE_FOLDERS": "Ta bort {items}? Allt innehåll i de markerade mapparna tas också bort. Det går inte att ångra.",
+      "ITEMS_COUNT": "{count} objekt",
+      "NEW_FOLDER_POPUP": {
+        "TITLE": "Ny mapp",
+        "NAME": "Mappnamn",
+        "CREATE": "Skapa",
+        "CANCEL": "Avbryt",
+        "INVALID": "Ange ett namn utan \"/\""
+      },
+      "URL_POPUP": {
+        "TITLE": "Ladda upp från URL",
+        "URL": "Filens URL",
+        "UPLOAD": "Ladda upp",
+        "CANCEL": "Avbryt",
+        "INVALID": "Ange en giltig http(s)-URL"
+      },
+      "OVERWRITE_POPUP": {
+        "TITLE": "Filen finns redan",
+        "MESSAGE": "\"{name}\" finns redan i den här mappen.",
+        "NAME": "Filnamn",
+        "OVERWRITE": "Skriv över",
+        "RENAME": "Byt namn",
+        "SKIP": "Hoppa över"
+      },
+      "NOTIFY": {
+        "LINK_COPIED": "Länk kopierad",
+        "UPLOAD_FAILED": "{failed} av {total} filer kunde inte laddas upp",
+        "REQUEST_FAILED": "Begäran misslyckades: {message}"
+      },
+      "VIEW": {
+        "TABLE": "Tabellvy",
+        "GRID": "Rutnätsvy"
+      },
+      "FOLDER_LABEL": "Mapp",
+      "GRID": {
+        "MORE": "Fler åtgärder",
+        "SELECT": "Markera {name}"
+      },
+      "DETAILS": {
+        "FIELDS": {
+          "NAME": "Namn",
+          "TYPE": "Typ",
+          "SIZE": "Storlek",
+          "DIMENSIONS": "Mått",
+          "CREATED": "Skapad",
+          "MODIFIED": "Ändrad",
+          "URL": "URL"
+        },
+        "INFO_FAILED": "Det gick inte att läsa in ytterligare information"
+      }
     }
   },
   "ASSETS": {

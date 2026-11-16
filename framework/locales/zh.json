@@ -514,6 +514,85 @@
         "DELETE": "删除",
         "EDIT": "编辑"
       }
+    },
+    "FOLDER": {
+      "TITLE": "文件",
+      "SEARCH_PLACEHOLDER": "在此文件夹中搜索",
+      "TOOLBAR": {
+        "REFRESH": "刷新",
+        "NEW_FOLDER": "新建文件夹",
+        "UPLOAD": "上传",
+        "UPLOAD_FROM_URL": "从 URL 上传",
+        "DELETE": "删除"
+      },
+      "TABLE": {
+        "HEADER": {
+          "NAME": "名称",
+          "SIZE": "大小",
+          "MODIFIED_DATE": "修改时间"
+        }
+      },
+      "ACTIONS": {
+        "DOWNLOAD": "下载",
+        "COPY_LINK": "复制链接",
+        "DELETE": "删除"
+      },
+      "EMPTY": {
+        "TITLE": "此文件夹为空",
+        "UPLOAD": "上传"
+      },
+      "NOT_FOUND": "此文件夹中没有与搜索匹配的内容",
+      "CONFIRM_DELETE": "删除 {items}？此操作无法撤销。",
+      "CONFIRM_DELETE_FOLDERS": "删除 {items}？所选文件夹中的所有内容也将被删除。此操作无法撤销。",
+      "ITEMS_COUNT": "{count} 项",
+      "NEW_FOLDER_POPUP": {
+        "TITLE": "新建文件夹",
+        "NAME": "文件夹名称",
+        "CREATE": "创建",
+        "CANCEL": "取消",
+        "INVALID": "请输入不含 \"/\" 的名称"
+      },
+      "URL_POPUP": {
+        "TITLE": "从 URL 上传",
+        "URL": "文件 URL",
+        "UPLOAD": "上传",
+        "CANCEL": "取消",
+        "INVALID": "请输入有效的 http(s) URL"
+      },
+      "OVERWRITE_POPUP": {
+        "TITLE": "文件已存在",
+        "MESSAGE": "\"{name}\" 已存在于此文件夹中。",
+        "NAME": "文件名",
+        "OVERWRITE": "覆盖",
+        "RENAME": "重命名",
+        "SKIP": "跳过"
+      },
+      "NOTIFY": {
+        "LINK_COPIED": "链接已复制",
+        "UPLOAD_FAILED": "{total} 个文件中有 {failed} 个上传失败",
+        "REQUEST_FAILED": "请求失败：{message}"
+      },
+      "VIEW": {
+        "TABLE": "表格视图",
+        "GRID": "网格视图"
+      },
+      "FOLDER_LABEL": "文件夹",
+      "GRID": {
+        "MORE": "更多操作",
+        "SELECT": "选择 {name}"
+      },
+      "DETAILS": {
+        "FIELDS": {
+          "NAME": "名称",
+          "TYPE": "类型",
+          "SIZE": "大小",
+          "DIMENSIONS": "尺寸",
+          "CREATED": "创建时间",
+          "MODIFIED": "修改时间",
+          "URL": "URL"
+        },
+        "INFO_FAILED": "无法加载其他信息"
+      }
     }
   },
   "ASSETS": {

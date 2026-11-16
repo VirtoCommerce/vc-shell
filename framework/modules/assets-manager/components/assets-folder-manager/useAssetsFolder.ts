@@ -1,6 +1,6 @@
 import { computed, readonly, ref, toValue, type MaybeRefOrGetter } from "vue";
 import * as api from "./api";
-import { hasNameCollision, type CollisionDecision, type UploadResult } from "./collisions";
+import { hasNameCollision, isValidEntryName, type CollisionDecision, type UploadResult } from "./collisions";
 import type { BlobEntry } from "./types";
 
 export interface Breadcrumb {
@@ -97,7 +97,7 @@ export function useAssetsFolder(rootUrl: string, rootName: MaybeRefOrGetter<stri
 
   async function createFolder(name: string): Promise<void> {
     const trimmed = name.trim();
-    if (!trimmed || trimmed.includes("/")) throw new Error("invalid-name");
+    if (!isValidEntryName(trimmed)) throw new Error("invalid-name");
     await mutate(() => api.createFolder(currentUrl.value, trimmed));
   }
 
@@ -148,7 +148,8 @@ export function useAssetsFolder(rootUrl: string, rootName: MaybeRefOrGetter<stri
           overwrite = true;
           break;
         }
-        name = decision.name;
+        // An unusable name keeps the collision, so the user is asked again.
+        if (isValidEntryName(decision.name)) name = decision.name;
       }
       if (skip) {
         skipped++;

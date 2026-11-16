@@ -38,6 +38,7 @@
 </template>
 
 <script setup lang="ts">
+import { isValidEntryName } from "../collisions";
 import { ref } from "vue";
 import { VcButton, VcInput, VcPopup } from "@ui/components";
 
@@ -52,7 +53,7 @@ const invalid = ref(false);
 // Same rule as useAssetsFolder.createFolder, checked here so the popup can stay open.
 function submit() {
   const value = String(name.value ?? "").trim();
-  invalid.value = !value || value.includes("/");
+  invalid.value = !isValidEntryName(value);
   if (!invalid.value) emit("confirm", value);
 }
 </script>

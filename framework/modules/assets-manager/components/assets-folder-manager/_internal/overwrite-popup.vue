@@ -49,7 +49,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { VcButton, VcInput, VcPopup } from "@ui/components";
-import type { CollisionDecision } from "../collisions";
+import { isValidEntryName, type CollisionDecision } from "../collisions";
 
 const props = defineProps<{
   name: string;
@@ -66,7 +66,7 @@ const invalid = ref(false);
 function rename() {
   const name = String(newName.value ?? "").trim();
   // A separator would put the file into another folder.
-  invalid.value = !name || /[/\\]/.test(name);
+  invalid.value = !isValidEntryName(name);
   if (!invalid.value) emit("confirm", { action: "rename", name });
 }
 </script>

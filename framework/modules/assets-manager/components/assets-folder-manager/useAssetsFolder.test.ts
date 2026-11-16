@@ -230,6 +230,19 @@ describe("useAssetsFolder", () => {
       expect(uploaded.name).toBe("c.md");
     });
 
+    it("an unusable rename name asks again instead of uploading it", async () => {
+      const { upload } = await setup([blob("a.md")]);
+      const resolve = vi
+        .fn()
+        .mockResolvedValueOnce({ action: "rename", name: "../escape.md" })
+        .mockResolvedValueOnce({ action: "skip" });
+      const result = await upload([file("a.md")], resolve);
+      expect(resolve).toHaveBeenCalledTimes(2);
+      expect(resolve).toHaveBeenNthCalledWith(2, expect.any(File), "a.md");
+      expect(uploadFile).not.toHaveBeenCalled();
+      expect(result.skipped).toBe(1);
+    });
+
     it("names renamed earlier in the batch count as taken", async () => {
       const { upload } = await setup([blob("a.md"), blob("b.md")]);
       const resolve = vi
@@ -299,7 +312,7 @@ describe("useAssetsFolder", () => {
       expect(list).toHaveBeenCalledTimes(1);
     });
 
-    it.each(["", "  ", "a/b"])("createFolder rejects invalid name %j", async (name) => {
+    it.each(["", "  ", "a/b", "a\\b", ".", ".."])("createFolder rejects invalid name %j", async (name) => {
       const { createFolder: create } = await setup();
       await expect(create(name)).rejects.toThrow("invalid-name");
       expect(createFolder).not.toHaveBeenCalled();

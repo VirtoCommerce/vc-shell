@@ -11,13 +11,13 @@ const schema = z
     placement: z.enum(["index"]).optional(),
     internal: z.boolean().optional(),
   })
-  .refine(
-    (data) => ALLOWED_GROUPS[data.category]?.includes(data.group) ?? false,
-    (data) => ({
-      message: `group "${data.group}" is not allowed for category "${data.category}". Allowed: ${ALLOWED_GROUPS[data.category]?.join(", ") ?? "none"}`,
-      path: ["group"],
-    }),
-  )
+  .refine((data) => ALLOWED_GROUPS[data.category]?.includes(data.group) ?? false, {
+    path: ["group"],
+    error: (issue) => {
+      const data = issue.input as { category: keyof typeof ALLOWED_GROUPS; group: string };
+      return `group "${data.group}" is not allowed for category "${data.category}". Allowed: ${ALLOWED_GROUPS[data.category]?.join(", ") ?? "none"}`;
+    },
+  })
   .refine((data) => !(data.placement === "index" && data.group === "root"), {
     message: "placement: index requires a named group, not 'root'",
     path: ["placement"],

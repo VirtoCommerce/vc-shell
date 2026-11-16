@@ -124,7 +124,7 @@ export const Default: Story = {
       return { args };
     },
     template: `
-      <div class="tw-bg-gray-100 tw-p-4 tw-inline-block">
+      <div class="tw-bg-[var(--neutrals-100)] tw-p-4 tw-inline-block">
         <vc-widget v-bind="args" @click="onClick" />
       </div>
     `,
@@ -149,7 +149,7 @@ export const Horizontal: Story = {
       return { args };
     },
     template: `
-      <div class="tw-bg-gray-100 tw-p-4 tw-inline-block">
+      <div class="tw-bg-[var(--neutrals-100)] tw-p-4 tw-inline-block">
         <vc-widget v-bind="args" @click="onClick" />
       </div>
     `,
@@ -174,7 +174,7 @@ export const Disabled: Story = {
       return { args };
     },
     template: `
-      <div class="tw-bg-gray-100 tw-p-4 tw-inline-block">
+      <div class="tw-bg-[var(--neutrals-100)] tw-p-4 tw-inline-block">
         <vc-widget v-bind="args" />
       </div>
     `,
@@ -194,7 +194,7 @@ export const LargeBadgeCount: Story = {
       return { args };
     },
     template: `
-      <div class="tw-bg-gray-100 tw-p-4 tw-inline-block">
+      <div class="tw-bg-[var(--neutrals-100)] tw-p-4 tw-inline-block">
         <vc-widget v-bind="args" @click="onClick" />
       </div>
     `,
@@ -219,7 +219,7 @@ export const Expanded: Story = {
       return { args };
     },
     template: `
-      <div class="tw-bg-gray-100 tw-p-4 tw-inline-block">
+      <div class="tw-bg-[var(--neutrals-100)] tw-p-4 tw-inline-block">
         <vc-widget v-bind="args" @click="onClick" />
       </div>
     `,
@@ -246,7 +246,7 @@ export const DifferentIcon: Story = {
       return { args };
     },
     template: `
-      <div class="tw-bg-gray-100 tw-p-4 tw-inline-block">
+      <div class="tw-bg-[var(--neutrals-100)] tw-p-4 tw-inline-block">
         <vc-widget v-bind="args" @click="onClick" />
       </div>
     `,
@@ -276,7 +276,7 @@ export const SidebarLayout: Story = {
       return { widgets };
     },
     template: `
-      <div class="tw-bg-gray-100 tw-p-4 tw-inline-flex tw-flex-col tw-gap-4">
+      <div class="tw-bg-[var(--neutrals-100)] tw-p-4 tw-inline-flex tw-flex-col tw-gap-4">
         <vc-widget
           v-for="(widget, index) in widgets"
           :key="index"
@@ -317,7 +317,7 @@ export const WithAlertDot: Story = {
       return { Provider, severities: ["info", "warning", "error"] };
     },
     template: `
-      <div class="tw-bg-gray-100 tw-p-4 tw-inline-flex tw-gap-4">
+      <div class="tw-bg-[var(--neutrals-100)] tw-p-4 tw-inline-flex tw-gap-4">
         <component :is="Provider" v-for="s in severities" :key="s" :severity="s">
           <vc-widget icon="lucide-bell" :title="s" :value="3" />
         </component>
@@ -343,7 +343,7 @@ export const BadgeChanged: Story = {
       return { count };
     },
     template: `
-      <div class="tw-bg-gray-100 tw-p-4 tw-inline-flex tw-gap-4 tw-items-center">
+      <div class="tw-bg-[var(--neutrals-100)] tw-p-4 tw-inline-flex tw-gap-4 tw-items-center">
         <vc-widget icon="lucide-mail" title="Messages" :value="count" />
         <button class="tw-border tw-px-2" @click="count++">Increment</button>
       </div>
@@ -370,7 +370,7 @@ export const BadgeVariants: Story = {
       return { items };
     },
     template: `
-      <div class="tw-bg-gray-100 tw-p-4 tw-inline-flex tw-gap-4">
+      <div class="tw-bg-[var(--neutrals-100)] tw-p-4 tw-inline-flex tw-gap-4">
         <vc-widget
           v-for="item in items"
           :key="item.title"

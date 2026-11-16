@@ -290,7 +290,7 @@ export const WithDetailsSlot: Story = {
           :placeholder="args.placeholder"
         >
           <template #details>
-            <div style="margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px;">
+            <div style="margin-top: 10px; border-top: 1px solid var(--neutrals-100); padding-top: 10px;">
               <p>Based on 128 customer reviews</p>
               <div style="display: flex; justify-content: space-between;">
                 <span>5 stars</span>
@@ -332,32 +332,32 @@ export const ComparisonTable: Story = {
         <table style="width: 100%; border-collapse: collapse;">
           <thead>
             <tr>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px solid #e2e8f0;">Variant</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px solid #e2e8f0;">Example</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px solid #e2e8f0;">Use Case</th>
+              <th style="text-align: start; padding: 8px; border-bottom: 1px solid var(--neutrals-200);">Variant</th>
+              <th style="text-align: start; padding: 8px; border-bottom: 1px solid var(--neutrals-200);">Example</th>
+              <th style="text-align: start; padding: 8px; border-bottom: 1px solid var(--neutrals-200);">Use Case</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">stars</td>
-              <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">
+              <td style="padding: 8px; border-bottom: 1px solid var(--neutrals-200);">stars</td>
+              <td style="padding: 8px; border-bottom: 1px solid var(--neutrals-200);">
                 <VcRating :modelValue="4" variant="stars" />
               </td>
-              <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">Visual representation for quick scanning</td>
+              <td style="padding: 8px; border-bottom: 1px solid var(--neutrals-200);">Visual representation for quick scanning</td>
             </tr>
             <tr>
-              <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">star-and-text</td>
-              <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">
+              <td style="padding: 8px; border-bottom: 1px solid var(--neutrals-200);">star-and-text</td>
+              <td style="padding: 8px; border-bottom: 1px solid var(--neutrals-200);">
                 <VcRating :modelValue="4" variant="star-and-text" />
               </td>
-              <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">Combined visual and textual representation</td>
+              <td style="padding: 8px; border-bottom: 1px solid var(--neutrals-200);">Combined visual and textual representation</td>
             </tr>
             <tr>
-              <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">text</td>
-              <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">
+              <td style="padding: 8px; border-bottom: 1px solid var(--neutrals-200);">text</td>
+              <td style="padding: 8px; border-bottom: 1px solid var(--neutrals-200);">
                 <VcRating :modelValue="4" variant="text" />
               </td>
-              <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">Simple text representation for minimal interfaces</td>
+              <td style="padding: 8px; border-bottom: 1px solid var(--neutrals-200);">Simple text representation for minimal interfaces</td>
             </tr>
           </tbody>
         </table>

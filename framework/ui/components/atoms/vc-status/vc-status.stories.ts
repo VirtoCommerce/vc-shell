@@ -20,14 +20,6 @@ const meta = {
         defaultValue: { summary: "info" },
       },
     },
-    outline: {
-      description: "DEPRECATED: Whether to show only the outline of the status indicator",
-      control: "boolean",
-      table: {
-        type: { summary: "boolean" },
-        defaultValue: { summary: "false" },
-      },
-    },
     extend: {
       description: "Whether to use an extended layout with more padding and square corners",
       control: "boolean",
@@ -55,7 +47,6 @@ const meta = {
   },
   args: {
     variant: "info",
-    outline: false,
     extend: false,
     dot: false,
   },

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { VcSelect } from "@ui/components/molecules/vc-select";
 import { ref, provide } from "vue";
 import { BladeLoadingKey } from "@framework/injection-keys";
@@ -398,6 +399,17 @@ export const Basic: Story = {
       </div>
     `,
   }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const body = within(canvasElement.ownerDocument.body);
+    const combobox = await canvas.findByRole("combobox");
+    await expect(canvas.getByText("null")).toBeInTheDocument();
+    await userEvent.click(combobox);
+    await waitFor(() => expect(combobox).toHaveAttribute("aria-expanded", "true"));
+    await userEvent.click(await body.findByRole("option", { name: "Option 2" }));
+    await waitFor(() => expect(canvas.queryByText("null")).toBeNull());
+    await expect(canvas.getByText("Option 2")).toBeInTheDocument();
+  },
 };
 
 /**
@@ -532,7 +544,7 @@ export const AsyncOptions: Story = {
           v-model="value"
           :options="fetchUsers"
         />
-        <div class="tw-mt-4 tw-text-sm tw-text-gray-600">
+        <div class="tw-mt-4 tw-text-sm tw-text-[var(--neutrals-600)]">
           Type to search for users. Results are loaded asynchronously.
         </div>
       </div>
@@ -735,7 +747,7 @@ export const CustomizingWithSlots: Story = {
           <template #option="{ opt, selected }">
             <div class="tw-flex tw-items-center tw-justify-between tw-w-full tw-px-1">
               <div class="tw-flex tw-items-center">
-                <span class="tw-w-2 tw-h-2 tw-rounded-full tw-bg-gray-400 tw-me-2"></span>
+                <span class="tw-w-2 tw-h-2 tw-rounded-full tw-bg-[var(--neutrals-400)] tw-me-2"></span>
                 {{ opt.title }}
               </div>
               <VcIcon
@@ -764,7 +776,7 @@ export const CustomizingWithSlots: Story = {
 
           <!-- Custom "no options" message -->
           <template #no-options>
-            <div class="tw-text-center tw-py-3 tw-text-gray-500">
+            <div class="tw-text-center tw-py-3 tw-text-[var(--neutrals-500)]">
               <VcIcon icon="lucide-circle-alert" class="tw-mb-2" />
               <p>No matching options found</p>
             </div>
@@ -813,7 +825,7 @@ export const CustomControl: Story = {
               <div class="tw-flex tw-items-center">
                 <VcIcon icon="lucide-list" class="tw-me-2" size="s" />
                 <span v-if="value">Option {{ value }} selected</span>
-                <span v-else class="tw-text-gray-500">Click to select an option</span>
+                <span v-else class="tw-text-[var(--neutrals-500)]">Click to select an option</span>
               </div>
               <VcIcon icon="lucide-chevron-down" size="s" />
             </button>
@@ -964,7 +976,7 @@ export const CustomOptionSlot: Story = {
 
       const getStatusColor = (color) => {
         const colors = {
-          gray: "tw-bg-gray-200 tw-text-gray-800",
+          gray: "tw-bg-[var(--neutrals-200)] tw-text-[var(--neutrals-800)]",
           green: "tw-bg-green-100 tw-text-green-800",
           amber: "tw-bg-amber-100 tw-text-amber-800",
           red: "tw-bg-red-100 tw-text-red-800",
@@ -991,7 +1003,7 @@ export const CustomOptionSlot: Story = {
                 </div>
                 <div>
                   <div class="tw-font-medium">{{ opt.title }}</div>
-                  <div class="tw-text-xs tw-text-gray-500">Status ID: {{ opt.id }}</div>
+                  <div class="tw-text-xs tw-text-[var(--neutrals-500)]">Status ID: {{ opt.id }}</div>
                 </div>
               </div>
               <VcIcon
@@ -1004,9 +1016,9 @@ export const CustomOptionSlot: Story = {
       </template>
         </VcSelect>
 
-        <div class="tw-mt-4 tw-text-sm tw-bg-gray-50 tw-p-3 tw-rounded">
-          <p class="tw-text-gray-700 tw-mb-2"><strong>Selected value:</strong> {{ value }}</p>
-          <p class="tw-text-gray-500">The option slot above customizes each dropdown item with an icon, label, and description.</p>
+        <div class="tw-mt-4 tw-text-sm tw-bg-[var(--neutrals-50)] tw-p-3 tw-rounded">
+          <p class="tw-text-[var(--neutrals-700)] tw-mb-2"><strong>Selected value:</strong> {{ value }}</p>
+          <p class="tw-text-[var(--neutrals-500)]">The option slot above customizes each dropdown item with an icon, label, and description.</p>
         </div>
       </div>
     `,
@@ -1075,7 +1087,7 @@ export const CustomSelectedItemSlot: Story = {
                   :style="{ backgroundColor: opt.hex }"
                 ></span>
                 {{ opt.title }}
-                <span class="tw-text-xs tw-ms-2 tw-text-gray-500">{{ opt.hex }}</span>
+                <span class="tw-text-xs tw-ms-2 tw-text-[var(--neutrals-500)]">{{ opt.hex }}</span>
               </div>
               <VcIcon
                 v-if="selected"
@@ -1087,9 +1099,9 @@ export const CustomSelectedItemSlot: Story = {
           </template>
         </VcSelect>
 
-        <div class="tw-mt-4 tw-text-sm tw-bg-gray-50 tw-p-3 tw-rounded">
-          <p class="tw-text-gray-700 tw-mb-2"><strong>Selected values:</strong> {{ value.join(', ') }}</p>
-          <p class="tw-text-gray-500">The selected-item slot above customizes how each selected color is displayed as a badge.</p>
+        <div class="tw-mt-4 tw-text-sm tw-bg-[var(--neutrals-50)] tw-p-3 tw-rounded">
+          <p class="tw-text-[var(--neutrals-700)] tw-mb-2"><strong>Selected values:</strong> {{ value.join(', ') }}</p>
+          <p class="tw-text-[var(--neutrals-500)]">The selected-item slot above customizes how each selected color is displayed as a badge.</p>
         </div>
       </div>
     `,
@@ -1133,7 +1145,7 @@ export const InnerSlots: Story = {
         >
           <!-- Adding a search icon at the beginning of the field -->
           <template #prepend-inner>
-            <div class="tw-flex tw-items-center tw-text-gray-500">
+            <div class="tw-flex tw-items-center tw-text-[var(--neutrals-500)]">
               <VcIcon icon="lucide-search" size="s" />
             </div>
           </template>
@@ -1142,7 +1154,7 @@ export const InnerSlots: Story = {
       <template #append-inner>
             <div
               v-if="value"
-              class="tw-flex tw-items-center tw-text-gray-400 hover:tw-text-gray-700 tw-cursor-pointer"
+              class="tw-flex tw-items-center tw-text-[var(--neutrals-400)] hover:tw-text-[var(--neutrals-700)] tw-cursor-pointer"
               @click.stop="resetValue"
             >
               <VcIcon icon="lucide-circle-x" size="s" />
@@ -1150,9 +1162,9 @@ export const InnerSlots: Story = {
       </template>
         </VcSelect>
 
-        <div class="tw-mt-4 tw-text-sm tw-bg-gray-50 tw-p-3 tw-rounded">
-          <p class="tw-text-gray-700 tw-mb-2"><strong>How it works:</strong></p>
-          <ul class="tw-text-gray-500 tw-list-disc tw-ps-5 tw-space-y-1">
+        <div class="tw-mt-4 tw-text-sm tw-bg-[var(--neutrals-50)] tw-p-3 tw-rounded">
+          <p class="tw-text-[var(--neutrals-700)] tw-mb-2"><strong>How it works:</strong></p>
+          <ul class="tw-text-[var(--neutrals-500)] tw-list-disc tw-ps-5 tw-space-y-1">
             <li>The <code>prepend-inner</code> slot adds a search icon inside the field at the beginning</li>
             <li>The <code>append-inner</code> slot adds a custom clear button that appears when a value is selected</li>
           </ul>
@@ -1197,8 +1209,8 @@ export const OuterSlots: Story = {
           >
             <!-- Adding an input field before the select -->
       <template #prepend>
-              <div class="tw-flex tw-items-center tw-border tw-border-e-0 tw-border-gray-300 tw-rounded-s tw-px-3 tw-h-[36px] tw-bg-white">
-                <span class="tw-text-gray-500">$</span>
+              <div class="tw-flex tw-items-center tw-border tw-border-e-0 tw-border-[var(--neutrals-300)] tw-rounded-s tw-px-3 tw-h-[36px] tw-bg-[var(--additional-50)]">
+                <span class="tw-text-[var(--neutrals-500)]">$</span>
               </div>
       </template>
 
@@ -1211,9 +1223,9 @@ export const OuterSlots: Story = {
       </template>
           </VcSelect>
 
-          <div class="tw-mt-4 tw-text-sm tw-bg-gray-50 tw-p-3 tw-rounded">
-            <p class="tw-text-gray-700 tw-mb-2"><strong>How it works:</strong></p>
-            <ul class="tw-text-gray-500 tw-list-disc tw-ps-5 tw-space-y-1">
+          <div class="tw-mt-4 tw-text-sm tw-bg-[var(--neutrals-50)] tw-p-3 tw-rounded">
+            <p class="tw-text-[var(--neutrals-700)] tw-mb-2"><strong>How it works:</strong></p>
+            <ul class="tw-text-[var(--neutrals-500)] tw-list-disc tw-ps-5 tw-space-y-1">
               <li>The <code>prepend</code> slot adds a currency symbol outside the field</li>
               <li>The <code>append</code> slot adds a conversion button after the field</li>
               <li>These outer slots help create a compound control with attached elements</li>
@@ -1230,8 +1242,8 @@ export const OuterSlots: Story = {
         >
           <!-- Adding a select-category label before the field -->
           <template #prepend>
-            <div class="tw-px-3 tw-flex tw-items-center tw-bg-gray-100 tw-border tw-border-e-0 tw-border-gray-300 tw-rounded-s tw-h-[36px]">
-              <span class="tw-text-gray-700 tw-text-sm">Category</span>
+            <div class="tw-px-3 tw-flex tw-items-center tw-bg-[var(--neutrals-100)] tw-border tw-border-e-0 tw-border-[var(--neutrals-300)] tw-rounded-s tw-h-[36px]">
+              <span class="tw-text-[var(--neutrals-700)] tw-text-sm">Category</span>
             </div>
       </template>
 
@@ -1319,9 +1331,9 @@ export const CustomMessagingSlots: Story = {
       </template>
         </VcSelect>
 
-        <div class="tw-mt-4 tw-text-sm tw-bg-gray-50 tw-p-3 tw-rounded">
-          <p class="tw-text-gray-700 tw-mb-2"><strong>How it works:</strong></p>
-          <ul class="tw-text-gray-500 tw-list-disc tw-ps-5 tw-space-y-1">
+        <div class="tw-mt-4 tw-text-sm tw-bg-[var(--neutrals-50)] tw-p-3 tw-rounded">
+          <p class="tw-text-[var(--neutrals-700)] tw-mb-2"><strong>How it works:</strong></p>
+          <ul class="tw-text-[var(--neutrals-500)] tw-list-disc tw-ps-5 tw-space-y-1">
             <li>The <code>error</code> slot replaces the standard error message with a custom component</li>
             <li>The <code>hint</code> slot replaces the standard hint with a more detailed explanation</li>
             <li>Use the toggle button to switch between error and hint states</li>
@@ -1367,10 +1379,10 @@ export const CustomNoOptionsSlot: Story = {
             <div class="tw-py-4 tw-px-3 tw-text-center">
               <VcIcon
                 icon="lucide-search"
-                class="tw-text-gray-400 tw-mb-2 tw-text-2xl"
+                class="tw-text-[var(--neutrals-400)] tw-mb-2 tw-text-2xl"
               />
-              <p class="tw-text-gray-600 tw-font-medium">No matching products found</p>
-              <p class="tw-text-gray-500 tw-text-sm">Try different search terms or browse all categories</p>
+              <p class="tw-text-[var(--neutrals-600)] tw-font-medium">No matching products found</p>
+              <p class="tw-text-[var(--neutrals-500)] tw-text-sm">Try different search terms or browse all categories</p>
               <button
                 class="tw-mt-2 tw-px-3 tw-py-1 tw-bg-blue-100 tw-text-blue-700 tw-rounded tw-text-sm hover:tw-bg-blue-200"
               >
@@ -1380,10 +1392,10 @@ export const CustomNoOptionsSlot: Story = {
           </template>
         </VcSelect>
 
-        <div class="tw-mt-4 tw-text-sm tw-bg-gray-50 tw-p-3 tw-rounded">
-          <p class="tw-text-gray-700 tw-mb-2"><strong>How to test:</strong></p>
-          <p class="tw-text-gray-500">Type a search term that doesn't match any options (like "xyz") to see the custom no-options slot in action.</p>
-          <p class="tw-mt-2 tw-text-gray-500">The custom no-options slot provides:
+        <div class="tw-mt-4 tw-text-sm tw-bg-[var(--neutrals-50)] tw-p-3 tw-rounded">
+          <p class="tw-text-[var(--neutrals-700)] tw-mb-2"><strong>How to test:</strong></p>
+          <p class="tw-text-[var(--neutrals-500)]">Type a search term that doesn't match any options (like "xyz") to see the custom no-options slot in action.</p>
+          <p class="tw-mt-2 tw-text-[var(--neutrals-500)]">The custom no-options slot provides:
             <ul class="tw-list-disc tw-ps-5 tw-mt-1 tw-space-y-1">
               <li>A more helpful message to guide users</li>
               <li>Visual indication with an icon</li>
@@ -1452,12 +1464,12 @@ export const ComprehensiveSlotExample: Story = {
         >
           <!-- Custom control wrapper -->
           <template #control="{ toggleHandler }">
-            <div class="tw-border tw-border-gray-300 tw-rounded-lg tw-overflow-hidden tw-shadow-sm">
+            <div class="tw-border tw-border-[var(--neutrals-300)] tw-rounded-lg tw-overflow-hidden tw-shadow-sm">
               <!-- Custom header -->
-              <div class="tw-bg-gray-50 tw-px-3 tw-py-2 tw-border-b tw-border-gray-300 tw-flex tw-justify-between tw-items-center">
+              <div class="tw-bg-[var(--neutrals-50)] tw-px-3 tw-py-2 tw-border-b tw-border-[var(--neutrals-300)] tw-flex tw-justify-between tw-items-center">
                 <div class="tw-flex tw-items-center">
-                  <VcIcon icon="lucide-tags" class="tw-text-gray-600 tw-me-2" size="s" />
-                  <span class="tw-font-medium tw-text-gray-700">B2B Category Selector</span>
+                  <VcIcon icon="lucide-tags" class="tw-text-[var(--neutrals-600)] tw-me-2" size="s" />
+                  <span class="tw-font-medium tw-text-[var(--neutrals-700)]">B2B Category Selector</span>
                 </div>
                 <div class="tw-flex tw-gap-2">
                   <button
@@ -1467,7 +1479,7 @@ export const ComprehensiveSlotExample: Story = {
                     All
                   </button>
                   <button
-                    class="tw-px-2 tw-py-1 tw-text-xs tw-bg-gray-100 tw-text-gray-700 tw-rounded hover:tw-bg-gray-200"
+                    class="tw-px-2 tw-py-1 tw-text-xs tw-bg-[var(--neutrals-100)] tw-text-[var(--neutrals-700)] tw-rounded hover:tw-bg-[var(--neutrals-200)]"
                     @click.stop="clearAll"
                   >
                     Clear
@@ -1477,11 +1489,11 @@ export const ComprehensiveSlotExample: Story = {
 
               <!-- Custom selection area -->
               <div
-                class="tw-px-3 tw-py-2 tw-bg-white tw-min-h-[40px] tw-flex tw-flex-wrap tw-gap-2 tw-cursor-pointer"
+                class="tw-px-3 tw-py-2 tw-bg-[var(--additional-50)] tw-min-h-[40px] tw-flex tw-flex-wrap tw-gap-2 tw-cursor-pointer"
                 @click.stop="toggleHandler"
               >
                 <template v-if="value.length === 0">
-                  <span class="tw-text-gray-400 tw-text-sm">Click to select categories...</span>
+                  <span class="tw-text-[var(--neutrals-400)] tw-text-sm">Click to select categories...</span>
       </template>
                 <template v-else>
                   <div
@@ -1508,11 +1520,11 @@ export const ComprehensiveSlotExample: Story = {
               </div>
 
               <!-- Custom footer -->
-              <div class="tw-bg-gray-50 tw-px-3 tw-py-2 tw-border-t tw-border-gray-300 tw-flex tw-justify-between tw-items-center">
-                <span class="tw-text-xs tw-text-gray-500">Selected: {{ value.length }} of {{ args.options.length }}</span>
+              <div class="tw-bg-[var(--neutrals-50)] tw-px-3 tw-py-2 tw-border-t tw-border-[var(--neutrals-300)] tw-flex tw-justify-between tw-items-center">
+                <span class="tw-text-xs tw-text-[var(--neutrals-500)]">Selected: {{ value.length }} of {{ args.options.length }}</span>
                 <VcIcon
                   icon="lucide-chevron-down"
-                  class="tw-text-gray-400"
+                  class="tw-text-[var(--neutrals-400)]"
                   size="s"
                 />
               </div>
@@ -1522,7 +1534,7 @@ export const ComprehensiveSlotExample: Story = {
           <!-- Custom option rendering -->
           <template #option="{ opt, selected, toggleOption }">
             <div
-              class="tw-flex tw-items-center tw-justify-between tw-w-full tw-p-2 tw-cursor-pointer hover:tw-bg-gray-50"
+              class="tw-flex tw-items-center tw-justify-between tw-w-full tw-p-2 tw-cursor-pointer hover:tw-bg-[var(--neutrals-50)]"
               @click.stop="toggleOption(opt)"
             >
               <div class="tw-flex tw-items-center">
@@ -1545,7 +1557,7 @@ export const ComprehensiveSlotExample: Story = {
               </div>
               <div
                 class="tw-w-5 tw-h-5 tw-rounded-sm tw-flex tw-items-center tw-justify-center"
-                :class="selected ? 'tw-bg-blue-500' : 'tw-border tw-border-gray-300'"
+                :class="selected ? 'tw-bg-blue-500' : 'tw-border tw-border-[var(--neutrals-300)]'"
               >
                 <VcIcon
                   v-if="selected"
@@ -1559,10 +1571,10 @@ export const ComprehensiveSlotExample: Story = {
 
           <!-- Custom no-options message -->
           <template #no-options>
-            <div class="tw-p-4 tw-text-center tw-border-t tw-border-gray-200">
-              <VcIcon icon="lucide-search" class="tw-text-gray-400 tw-mb-2" />
-              <p class="tw-text-gray-600">No matching categories found</p>
-              <p class="tw-text-xs tw-text-gray-500 tw-mt-1">Try searching for other product types or industries</p>
+            <div class="tw-p-4 tw-text-center tw-border-t tw-border-[var(--neutrals-200)]">
+              <VcIcon icon="lucide-search" class="tw-text-[var(--neutrals-400)] tw-mb-2" />
+              <p class="tw-text-[var(--neutrals-600)]">No matching categories found</p>
+              <p class="tw-text-xs tw-text-[var(--neutrals-500)] tw-mt-1">Try searching for other product types or industries</p>
             </div>
           </template>
 
@@ -1570,7 +1582,7 @@ export const ComprehensiveSlotExample: Story = {
           <template #hint>
             <div class="tw-flex tw-items-start tw-mt-2">
               <VcIcon icon="lucide-lightbulb" class="tw-text-yellow-500 tw-me-2 tw-mt-0.5" size="s" />
-              <div class="tw-text-sm tw-text-gray-600">
+              <div class="tw-text-sm tw-text-[var(--neutrals-600)]">
                 Select the product categories available in your marketplace to help buyers find relevant offerings.
               </div>
             </div>
@@ -1663,11 +1675,11 @@ export const Accessibility: Story = {
     template: `
       <div class="tw-space-y-8 tw-max-w-lg">
         <div>
-          <h3 class="tw-text-sm tw-font-semibold tw-mb-2 tw-text-gray-600">With hint (inspect: aria-describedby → hint id)</h3>
+          <h3 class="tw-text-sm tw-font-semibold tw-mb-2 tw-text-[var(--neutrals-600)]">With hint (inspect: aria-describedby → hint id)</h3>
           <VcSelect v-model="val1" label="Category" placeholder="Select category..." :options="opts" optionValue="id" optionLabel="title" hint="Choose the main product category" />
         </div>
         <div>
-          <h3 class="tw-text-sm tw-font-semibold tw-mb-2 tw-text-gray-600">With error (inspect: aria-invalid + aria-describedby → error id)</h3>
+          <h3 class="tw-text-sm tw-font-semibold tw-mb-2 tw-text-[var(--neutrals-600)]">With error (inspect: aria-invalid + aria-describedby → error id)</h3>
           <VcSelect v-model="val2" label="Status" placeholder="Select status..." :options="opts" optionValue="id" optionLabel="title" :error="true" errorMessage="Status is required" />
         </div>
       </div>

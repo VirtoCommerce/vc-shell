@@ -279,7 +279,7 @@ export const RestrictedFileTypes: Story = {
     },
     template: `
       <div class="tw-p-4 tw-max-w-md">
-        <p class="tw-mb-2 tw-text-sm tw-text-gray-600">Only PDF and Word documents (.pdf, .doc, .docx) are accepted</p>
+        <p class="tw-mb-2 tw-text-sm tw-text-[var(--neutrals-600)]">Only PDF and Word documents (.pdf, .doc, .docx) are accepted</p>
         <VcFileUpload
           v-bind="args"
           @upload="handleUpload"
@@ -309,14 +309,14 @@ export const MultipleFiles: Story = {
     },
     template: `
       <div class="tw-p-4 tw-max-w-md">
-        <p class="tw-mb-2 tw-text-sm tw-text-gray-600">You can select multiple files at once</p>
+        <p class="tw-mb-2 tw-text-sm tw-text-[var(--neutrals-600)]">You can select multiple files at once</p>
         <VcFileUpload
           v-bind="args"
           @upload="handleUpload"
         />
         <div v-if="uploadedFiles.length" class="tw-mt-4">
           <h4 class="tw-text-sm tw-font-medium tw-mb-1">Uploaded files:</h4>
-          <ul class="tw-text-sm tw-text-gray-600 tw-list-disc tw-ps-5">
+          <ul class="tw-text-sm tw-text-[var(--neutrals-600)] tw-list-disc tw-ps-5">
             <li v-for="file in uploadedFiles" :key="file">{{ file }}</li>
           </ul>
         </div>

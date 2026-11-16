@@ -123,8 +123,13 @@ export function useGridstack(widgets: Ref<IDashboardWidget[]>, options: UseGrids
     const savedLayout = loadLayoutFromStorage();
     layout.value = mergeLayoutWithWidgets(widgets.value, savedLayout);
 
-    // Initialize Gridstack
-    grid.value = GridStack.init(mergedOptions, element);
+    // Initialize Gridstack. Its rtl: "auto" only reads the element's inline style, so a right-to-left page
+    // (<html dir="rtl">) would get a left-to-right grid; pass the page direction unless the app set one.
+    const rtl =
+      mergedOptions.rtl === undefined || mergedOptions.rtl === "auto"
+        ? element.closest("[dir]")?.getAttribute("dir")?.toLowerCase() === "rtl"
+        : mergedOptions.rtl;
+    grid.value = GridStack.init({ ...mergedOptions, rtl }, element);
 
     // Bind event handlers
     grid.value.on("change", handleChange);

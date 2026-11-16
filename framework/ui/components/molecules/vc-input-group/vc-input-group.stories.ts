@@ -149,7 +149,7 @@ export const FormFields: Story = {
           />
         </VcInputGroup>
 
-        <div class="tw-text-sm tw-text-gray-600">
+        <div class="tw-text-sm tw-text-[var(--neutrals-600)]">
           Value: {{ { firstName, country } }}
         </div>
       </div>
@@ -217,7 +217,7 @@ export const Checkboxes: Story = {
           <VcCheckbox v-model="selected" value="pickup">Store pickup</VcCheckbox>
           <VcCheckbox v-model="selected" value="postal">Postal service</VcCheckbox>
         </VcInputGroup>
-        <div class="tw-text-sm tw-text-gray-600">Selected: {{ selected }}</div>
+        <div class="tw-text-sm tw-text-[var(--neutrals-600)]">Selected: {{ selected }}</div>
       </div>
     `,
   }),
@@ -247,7 +247,7 @@ export const RadiosHorizontal: Story = {
           <VcRadioButton v-model="value" value="invoice" label="Invoice" />
           <VcRadioButton v-model="value" value="cash" label="Cash" />
         </VcInputGroup>
-        <div class="tw-text-sm tw-text-gray-600">Selected: {{ value }}</div>
+        <div class="tw-text-sm tw-text-[var(--neutrals-600)]">Selected: {{ value }}</div>
       </div>
     `,
   }),

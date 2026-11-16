@@ -94,7 +94,7 @@ export const Default: Story = {
       return { args, items };
     },
     template: `
-      <div style="height: 250px; width: 300px; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+      <div style="height: 250px; width: 300px; border: 1px solid var(--neutrals-200); border-radius: 8px; overflow: hidden;">
         <VcScrollableContainer v-bind="args">
           <div
             v-for="item in items"
@@ -127,7 +127,7 @@ export const NoOverflow: Story = {
       return { args };
     },
     template: `
-      <div style="height: 250px; width: 300px; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+      <div style="height: 250px; width: 300px; border: 1px solid var(--neutrals-200); border-radius: 8px; overflow: hidden;">
         <VcScrollableContainer v-bind="args">
           <div class="tw-px-3 tw-py-2 tw-text-sm">
             Only one item -- no overflow, no arrows.
@@ -164,7 +164,7 @@ export const CustomSpeed: Story = {
       <div class="tw-flex tw-gap-6">
         <div>
           <p class="tw-text-xs tw-font-medium tw-mb-2 tw-text-[var(--neutrals-600)]">speed: 10 (fast)</p>
-          <div style="height: 250px; width: 260px; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+          <div style="height: 250px; width: 260px; border: 1px solid var(--neutrals-200); border-radius: 8px; overflow: hidden;">
             <VcScrollableContainer v-bind="args">
               <div
                 v-for="item in items"
@@ -178,7 +178,7 @@ export const CustomSpeed: Story = {
         </div>
         <div>
           <p class="tw-text-xs tw-font-medium tw-mb-2 tw-text-[var(--neutrals-600)]">speed: 2 (default)</p>
-          <div style="height: 250px; width: 260px; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+          <div style="height: 250px; width: 260px; border: 1px solid var(--neutrals-200); border-radius: 8px; overflow: hidden;">
             <VcScrollableContainer>
               <div
                 v-for="item in items"

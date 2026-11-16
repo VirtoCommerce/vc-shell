@@ -1,7 +1,36 @@
-import { ref, defineComponent } from "vue";
+import { ref, defineComponent, h, onMounted, onBeforeUnmount } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcToast } from ".";
 import { notification } from "@core/notifications/notification";
+
+/**
+ * A toast is `position: absolute` (the notification container stacks them), so a toast rendered
+ * on its own gives the story no height, and a tall one is cut off at the story's edge.
+ * The frame takes the height of the toasts inside it.
+ */
+const ToastFrame = defineComponent({
+  setup(_, { slots }) {
+    const el = ref<HTMLElement>();
+    const height = ref<number>();
+    let observer: ResizeObserver | undefined;
+    const measure = () => {
+      const toasts = [...(el.value?.querySelectorAll<HTMLElement>(".vc-notification") ?? [])];
+      height.value = toasts.length ? Math.max(...toasts.map((t) => t.offsetTop + t.offsetHeight)) + 20 : undefined;
+    };
+    onMounted(() => {
+      observer = new ResizeObserver(measure);
+      el.value?.querySelectorAll(".vc-notification").forEach((t) => observer?.observe(t));
+      measure();
+    });
+    onBeforeUnmount(() => observer?.disconnect());
+    return () =>
+      h(
+        "div",
+        { ref: el, style: { position: "relative", minHeight: height.value ? `${height.value}px` : undefined } },
+        slots.default?.(),
+      );
+  },
+});
 
 /**
  * `VcToast` is a component for displaying toast notifications to users.
@@ -11,6 +40,7 @@ const meta = {
   title: "Overlay/VcToast",
   component: VcToast,
   tags: ["autodocs"],
+  decorators: [() => ({ components: { ToastFrame }, template: "<ToastFrame><story /></ToastFrame>" })],
   args: {
     content: "This is a notification message",
     type: "default",

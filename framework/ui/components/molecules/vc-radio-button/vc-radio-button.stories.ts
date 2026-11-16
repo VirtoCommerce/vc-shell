@@ -177,7 +177,7 @@ export const Group: Story = {
             :label="product.name"
           />
         </div>
-        <div class="tw-mt-4 tw-p-3 tw-bg-gray-100 tw-rounded">
+        <div class="tw-mt-4 tw-p-3 tw-bg-[var(--neutrals-100)] tw-rounded">
           <p><strong>Selected product:</strong> {{ selectedProduct }}</p>
         </div>
       </div>
@@ -205,7 +205,7 @@ export const StringGroup: Story = {
             :label="option"
           />
         </div>
-        <div class="tw-mt-4 tw-p-3 tw-bg-gray-100 tw-rounded">
+        <div class="tw-mt-4 tw-p-3 tw-bg-[var(--neutrals-100)] tw-rounded">
           <p><strong>Selected option:</strong> {{ selectedOption }}</p>
         </div>
       </div>
@@ -251,7 +251,7 @@ export const Binary: Story = {
           :binary="true"
           label="I accept the terms and conditions"
         />
-        <div class="tw-mt-4 tw-p-3 tw-bg-gray-100 tw-rounded">
+        <div class="tw-mt-4 tw-p-3 tw-bg-[var(--neutrals-100)] tw-rounded">
           <p><strong>Terms accepted:</strong> {{ accepted ? 'Yes' : 'No' }}</p>
         </div>
       </div>
@@ -282,7 +282,7 @@ export const HorizontalGroup: Story = {
             />
           </div>
         </div>
-        <div class="tw-mt-4 tw-p-3 tw-bg-gray-100 tw-rounded">
+        <div class="tw-mt-4 tw-p-3 tw-bg-[var(--neutrals-100)] tw-rounded">
           <p><strong>Selected size:</strong> {{ selectedSize }}</p>
         </div>
       </div>

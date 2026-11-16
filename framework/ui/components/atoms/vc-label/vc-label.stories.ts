@@ -129,7 +129,7 @@ export const WithFormField: Story = {
         <template #tooltip>{{args.tooltip}}</template>
       </vc-label>
       <input
-        class="tw-border tw-border-gray-300 tw-rounded tw-px-3 tw-py-2 tw-w-full"
+        class="tw-border tw-border-[var(--neutrals-300)] tw-rounded tw-px-3 tw-py-2 tw-w-full"
         placeholder="Enter value"
       />
     </div>`,

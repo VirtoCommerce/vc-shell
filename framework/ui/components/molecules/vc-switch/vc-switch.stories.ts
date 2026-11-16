@@ -1,4 +1,5 @@
 import { ref, provide } from "vue";
+import { expect, userEvent, within } from "storybook/test";
 import { BladeLoadingKey } from "@framework/injection-keys";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import VcSwitch from "@ui/components/molecules/vc-switch/vc-switch.vue";
@@ -133,6 +134,14 @@ export const Default: Story = {
       />
     `,
   }),
+  play: async ({ canvasElement }) => {
+    const toggle = await within(canvasElement).findByRole("switch");
+    const initial = (toggle as HTMLInputElement).checked;
+    await userEvent.click(toggle);
+    await expect((toggle as HTMLInputElement).checked).toBe(!initial);
+    await userEvent.click(toggle);
+    await expect((toggle as HTMLInputElement).checked).toBe(initial);
+  },
 };
 
 /**

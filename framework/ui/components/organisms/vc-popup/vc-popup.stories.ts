@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { ref } from "vue";
 import { VcPopup } from ".";
 import VcButton from "@ui/components/atoms/vc-button/vc-button.vue";
@@ -208,6 +209,14 @@ export const Default: Story = {
       },
     },
   },
+  play: async ({ canvasElement }) => {
+    const body = within(canvasElement.ownerDocument.body);
+    await userEvent.click(await within(canvasElement).findByRole("button", { name: "Open Default Popup" }));
+    const dialog = await body.findByRole("dialog");
+    await expect(within(dialog).getByText("Default Popup")).toBeInTheDocument();
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(body.queryByRole("dialog")).toBeNull(), { timeout: 3000 });
+  },
 };
 
 /**
@@ -326,7 +335,7 @@ export const Fullscreen: Story = {
         <VcButton @click="openPopup">Open Fullscreen Popup</VcButton>
         <VcPopup v-if="showPopup" v-bind="args" @close="closePopup" >
           <template #content>
-            <div class="tw-p-4 tw-bg-gray-100 tw-h-full tw-w-full tw-flex tw-items-center tw-justify-center">
+            <div class="tw-p-4 tw-bg-[var(--neutrals-100)] tw-h-full tw-w-full tw-flex tw-items-center tw-justify-center">
               <p>This popup is in fullscreen mode.</p>
             </div>
           </template>

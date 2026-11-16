@@ -118,7 +118,7 @@ export const Default: Story = {
         <template v-slot:default="{slide}">
           <vc-image :src="slide.url" class="tw-rounded-md"></vc-image>
           <div class="tw-mt-2 tw-font-medium">{{ slide.title }}</div>
-          <div class="tw-text-sm tw-text-gray-500">{{ slide.name }}</div>
+          <div class="tw-text-sm tw-text-[var(--neutrals-500)]">{{ slide.name }}</div>
         </template>
       </vc-slider>
     `,

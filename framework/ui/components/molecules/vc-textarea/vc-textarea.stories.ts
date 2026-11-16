@@ -319,7 +319,7 @@ export const Interactive: Story = {
         />
         <div class="tw-mt-4">
           <p><strong>Current value:</strong></p>
-          <pre class="tw-bg-gray-100 tw-p-2 tw-rounded tw-mt-2">{{ value }}</pre>
+          <pre class="tw-bg-[var(--neutrals-100)] tw-p-2 tw-rounded tw-mt-2">{{ value }}</pre>
         </div>
       </div>
     `,

@@ -674,7 +674,7 @@ export const CustomShellFromParts: StoryFn = () => {
                   <div class="tw-flex tw-flex-wrap tw-gap-2">
                     <button
                       type="button"
-                      class="tw-px-3 tw-py-2 tw-rounded tw-border tw-border-neutrals-300 tw-bg-white hover:tw-bg-neutrals-100"
+                      class="tw-px-3 tw-py-2 tw-rounded tw-border tw-border-neutrals-300 tw-bg-[var(--additional-50)] hover:tw-bg-neutrals-100"
                       @click="sidebar.togglePin"
                     >
                       {{ isSidebarPinned ? "Unpin sidebar" : "Pin sidebar" }}
@@ -690,15 +690,15 @@ export const CustomShellFromParts: StoryFn = () => {
                 </div>
 
                 <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-3">
-                  <div class="tw-rounded-lg tw-bg-white tw-border tw-border-neutrals-200 tw-p-4">
+                  <div class="tw-rounded-lg tw-bg-[var(--additional-50)] tw-border tw-border-neutrals-200 tw-p-4">
                     <p class="tw-text-xs tw-text-neutrals-500">Active menu group</p>
                     <p class="tw-text-lg tw-font-semibold">{{ activeSection }}</p>
                   </div>
-                  <div class="tw-rounded-lg tw-bg-white tw-border tw-border-neutrals-200 tw-p-4">
+                  <div class="tw-rounded-lg tw-bg-[var(--additional-50)] tw-border tw-border-neutrals-200 tw-p-4">
                     <p class="tw-text-xs tw-text-neutrals-500">Sidebar mode</p>
                     <p class="tw-text-lg tw-font-semibold">{{ isSidebarPinned ? "Pinned" : "Collapsible" }}</p>
                   </div>
-                  <div class="tw-rounded-lg tw-bg-white tw-border tw-border-neutrals-200 tw-p-4">
+                  <div class="tw-rounded-lg tw-bg-[var(--additional-50)] tw-border tw-border-neutrals-200 tw-p-4">
                     <p class="tw-text-xs tw-text-neutrals-500">Shell menu</p>
                     <p class="tw-text-lg tw-font-semibold">{{ isShellMenuOpened ? "Opened" : "Closed" }}</p>
                   </div>
@@ -854,7 +854,7 @@ export const CustomMenuSlot: StoryFn = () => {
           ".cnav__sub { display: flex; align-items: center; gap: 10px; padding: 6px 14px 6px 44px; margin: 0 6px; border-radius: 6px; cursor: pointer; transition: background 0.15s; color: var(--neutrals-600); font-size: 13px; font-weight: 400; line-height: 1.4; width: calc(100% - 12px); background: none; border: none; font-family: inherit; }",
           ".cnav__sub:hover { background: var(--neutrals-100); }",
           ".cnav__sub--active { background: var(--secondary-100); color: var(--neutrals-700); }",
-          ".cnav__lbl { flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }",
+          ".cnav__lbl { flex: 1; text-align: start; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }",
           ".cnav__ico { flex-shrink: 0; }",
           ".cftr { display: flex; flex-direction: column; padding: 0 18px; }",
           ".cftr__user { display: flex; align-items: center; gap: 10px; padding: 8px 0; }",

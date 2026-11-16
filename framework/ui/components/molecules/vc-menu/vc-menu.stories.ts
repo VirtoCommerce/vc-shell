@@ -285,7 +285,7 @@ export const ExpandToggle: Story = {
       <div>
         <button
           @click="expanded = !expanded"
-          style="margin-bottom: 12px; padding: 6px 16px; background: #3b82f6; color: white; border-radius: 6px; border: none; cursor: pointer;"
+          style="margin-bottom: 12px; padding: 6px 16px; background: var(--primary-500); color: white; border-radius: 6px; border: none; cursor: pointer;"
         >
           {{ expanded ? 'Collapse' : 'Expand' }}
         </button>

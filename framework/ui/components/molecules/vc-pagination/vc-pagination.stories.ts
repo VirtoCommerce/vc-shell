@@ -1,4 +1,5 @@
 import { ref } from "vue";
+import { expect, userEvent, within } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { VcPagination } from "@ui/components/molecules/vc-pagination";
 
@@ -256,4 +257,11 @@ export const Interactive: Story = {
       </div>
     `,
   }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByRole("button", { name: "Page 5" })).toHaveAttribute("aria-current", "page");
+    await userEvent.click(canvas.getByRole("button", { name: "Next page" }));
+    await expect(canvas.getByText("Current Page: 6 of 15")).toBeInTheDocument();
+    await expect(canvas.getByRole("button", { name: "Page 6" })).toHaveAttribute("aria-current", "page");
+  },
 };

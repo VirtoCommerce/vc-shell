@@ -61,7 +61,7 @@ VcInputDropdown, VcPopover, VcCheckboxGroup, VcRadioGroup, VcImageTile
 | Event argTypes       | With `action()` and `table.category: "Events"`                                    |
 | Category grouping    | `"Model"`, `"Data"`, `"Appearance"`, `"State"`, `"Layout"`, `"Events"`, `"Slots"` |
 | Story: States        | disabled, loading, error, required                                                |
-| Story: Interactive   | Uses `ref`, responds to user actions                                              |
+| Story: Interactive   | Uses `ref`, responds to user actions; a `play` function asserts the behaviour     |
 | Story: Accessibility | Demonstrates aria-label, keyboard navigation                                      |
 | Story: Form Context  | Component used within a form (if applicable)                                      |
 

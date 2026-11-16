@@ -92,7 +92,7 @@ export const FormFieldHint: Story = {
         <label style="display: block; margin-bottom: 4px; font-weight: 500;">Email address</label>
         <input
           type="email"
-          style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 4px;"
+          style="width: 100%; padding: 8px; border: 1px solid var(--neutrals-300); border-radius: 4px; margin-bottom: 4px;"
           placeholder="Enter your email"
         />
         <vc-hint>We'll never share your email with anyone else.</vc-hint>

@@ -103,11 +103,11 @@ export const InlineEditingWithValidation: Story = {
     },
     template: `
     <div style="max-width: 800px; margin: 0 auto;">
-      <div style="background: #f0f9ff; padding: 12px 16px; border-radius: 8px 8px 0 0; border: 1px solid #bae6fd;">
+      <div style="background: var(--info-50); padding: 12px 16px; border-radius: 8px 8px 0 0; border: 1px solid var(--info-200);">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
           <div>
             <strong>Inline Editing with Validation</strong>
-            <div style="font-size: 12px; color: #0369a1; margin-top: 4px;">
+            <div style="font-size: 12px; color: var(--info-700); margin-top: 4px;">
               {{ isEditing ? 'Editing mode - make changes and save' : 'View mode - click Edit to start' }}
             </div>
           </div>
@@ -130,7 +130,7 @@ export const InlineEditingWithValidation: Story = {
       </div>
 
       <!-- Status bar -->
-      <div v-if="isEditing" style="background: #fef3c7; padding: 8px 16px; font-size: 12px; color: #92400e; border-left: 1px solid #fcd34d; border-right: 1px solid #fcd34d;">
+      <div v-if="isEditing" style="background: var(--warning-50); padding: 8px 16px; font-size: 12px; color: var(--warning-800); border-left: 1px solid var(--warning-300); border-right: 1px solid var(--warning-300);">
         <strong>Editing:</strong>
         isDirty: {{ editingIsDirty }} |
         isValid: {{ editingIsValid }} |
@@ -138,11 +138,11 @@ export const InlineEditingWithValidation: Story = {
       </div>
 
       <!-- Action Log -->
-      <div v-if="actionLog.length" style="background: #f1f5f9; padding: 8px 16px; font-size: 12px; color: #475569; border-left: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0;">
+      <div v-if="actionLog.length" style="background: var(--neutrals-100); padding: 8px 16px; font-size: 12px; color: var(--neutrals-600); border-left: 1px solid var(--neutrals-200); border-right: 1px solid var(--neutrals-200);">
         <strong>Log:</strong> {{ actionLog.join(' → ') }}
       </div>
 
-      <div style="height: 250px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 8px 8px; overflow: hidden;">
+      <div style="height: 250px; border: 1px solid var(--neutrals-200); border-top: none; border-radius: 0 0 8px 8px; overflow: hidden;">
         <VcDataTable
           ref="tableRef"
           :items="items"
@@ -156,15 +156,15 @@ export const InlineEditingWithValidation: Story = {
         </VcDataTable>
       </div>
 
-      <div style="margin-top: 16px; padding: 12px; background: #f8fafc; border-radius: 8px; font-size: 13px; color: #475569;">
+      <div style="margin-top: 16px; padding: 12px; background: var(--neutrals-50); border-radius: 8px; font-size: 13px; color: var(--neutrals-600);">
         <strong>VeeValidate Rules (on VcColumn):</strong>
-        <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+        <ul style="margin: 8px 0 0 0; padding-inline-start: 20px;">
           <li><strong>Name:</strong> <code>:rules="{ required: true, min: 3 }"</code></li>
           <li><strong>Price:</strong> <code>:rules="{ required: true, min_value: 0.01 }"</code></li>
           <li><strong>Stock:</strong> <code>:rules="{ required: true, min_value: 0, integer: true }"</code></li>
         </ul>
         <strong style="display: block; margin-top: 12px;">API Usage:</strong>
-        <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+        <ul style="margin: 8px 0 0 0; padding-inline-start: 20px;">
           <li><code>tableRef.startEditing()</code> - Enter edit mode</li>
           <li><code>tableRef.saveChanges()</code> - Validate and save</li>
           <li><code>tableRef.cancelEditing()</code> - Discard changes</li>
@@ -229,20 +229,20 @@ export const CustomAddRowButton: Story = {
     },
     template: `
     <div style="max-width: 800px; margin: 0 auto;">
-      <div style="background: #f0f9ff; padding: 12px 16px; border-radius: 8px 8px 0 0; border: 1px solid #bae6fd;">
+      <div style="background: var(--info-50); padding: 12px 16px; border-radius: 8px 8px 0 0; border: 1px solid var(--info-200);">
         <strong>Custom Add Row Buttons</strong>
-        <div style="font-size: 12px; color: #0369a1; margin-top: 4px;">
+        <div style="font-size: 12px; color: var(--info-700); margin-top: 4px;">
           Add different product types with pre-filled data
         </div>
       </div>
 
-      <div style="height: 250px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 8px 8px; overflow: hidden;">
+      <div style="height: 250px; border: 1px solid var(--neutrals-200); border-top: none; border-radius: 0 0 8px 8px; overflow: hidden;">
         <VcDataTable
           ref="tableRef"
           :items="items"
         >
           <template #header>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid #e2e8f0; background: #fafafa;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--neutrals-200); background: var(--neutrals-50);">
               <h3 style="margin: 0; font-size: 16px; font-weight: 600;">Products</h3>
               <div style="display: flex; gap: 8px;">
                 <VcButton @click="addElectronics" small>
@@ -261,7 +261,7 @@ export const CustomAddRowButton: Story = {
         </VcDataTable>
       </div>
 
-      <div style="margin-top: 16px; padding: 12px; background: #f8fafc; border-radius: 8px; font-size: 13px; color: #475569;">
+      <div style="margin-top: 16px; padding: 12px; background: var(--neutrals-50); border-radius: 8px; font-size: 13px; color: var(--neutrals-600);">
         <strong>Pattern:</strong> Use <code>#header</code> slot for custom add buttons.
         Each button calls <code>tableRef.addRow()</code> with different defaults.
         Set <code>:add-row="{ enabled: false }"</code> to hide the built-in button.

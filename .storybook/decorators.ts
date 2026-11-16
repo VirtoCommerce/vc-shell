@@ -1,6 +1,6 @@
 import { Decorator } from "@storybook/vue3-vite";
 import { ref, provide, getCurrentInstance, onUnmounted } from "vue";
-import { IsMobileKey, IsDesktopKey } from "../framework/injection-keys";
+import { IsMobileKey, IsDesktopKey, IsPhoneKey, IsTabletKey } from "../framework/injection-keys";
 import { mockGlobals } from "./storybook-globals";
 
 /**
@@ -94,6 +94,27 @@ export const withMobileView: Decorator = (story, context) => {
       // Provide responsive inject keys for components that use inject.
       provide(IsMobileKey, ref(true));
       provide(IsDesktopKey, ref(false));
+
+      return { args: context.args };
+    },
+  };
+};
+
+/**
+ * Decorator that forces desktop view through the responsive inject keys.
+ * Docs renders `inline: false` stories in iframes narrower than the 1024px
+ * desktop breakpoint, so without it they fall back to the mobile layout.
+ * A story-level withMobileView still wins: it provides deeper in the tree.
+ */
+export const withDesktopView: Decorator = (story, context) => {
+  return {
+    components: { story },
+    template: "<story />",
+    setup() {
+      provide(IsMobileKey, ref(false));
+      provide(IsDesktopKey, ref(true));
+      provide(IsPhoneKey, ref(false));
+      provide(IsTabletKey, ref(false));
 
       return { args: context.args };
     },

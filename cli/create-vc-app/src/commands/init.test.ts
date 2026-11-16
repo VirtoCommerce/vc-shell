@@ -395,6 +395,20 @@ describe("initCommand — dynamic-module", () => {
     const enJson = JSON.parse(readGenerated(root, "src/modules/locales/en.json"));
     expect(enJson.REVIEWS).toBeDefined();
   });
+
+  it("declares every package vite.config imports, including the peers of @vc-shell/mf-module", async () => {
+    await initCommand({ _: [root], type: "dynamic-module", overwrite: true }, templateRoot);
+
+    const pkg = JSON.parse(readGenerated(root, "package.json"));
+    const declared = { ...pkg.dependencies, ...pkg.devDependencies };
+    const viteConfig = readGenerated(root, "vite.config.mts");
+    const imported = [...viteConfig.matchAll(/from "([^"]+)"/g)].map(([, name]) => name);
+
+    expect(imported).toContain("@vc-shell/mf-module");
+    for (const name of [...imported, "@vitejs/plugin-vue", "@vc-shell/config-generator", "vite"]) {
+      expect(declared, name).toHaveProperty([name]);
+    }
+  });
 });
 
 // Templates are `.ejs`, so `yarn lint` and `yarn format` cannot see them —

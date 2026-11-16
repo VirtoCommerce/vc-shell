@@ -1,0 +1,664 @@
+{
+  "CORE": {
+    "ERRORS": {
+      "SESSION_EXPIRED": "Ingen tilgang: Økten din er utløpt, eller du har ikke de nødvendige tillatelsene.\nLogg inn på nytt eller kontakt administratoren for hjelp.",
+      "NETWORK_UNAVAILABLE": "Nettverket er utilgjengelig. Kontroller tilkoblingen.",
+      "SESSION_CHECK_FAILED": "Kunne ikke bekrefte økten. Prøv igjen."
+    },
+    "THEMES": {
+      "LIGHT": "Lyst",
+      "DARK": "Mørkt"
+    },
+    "NOTIFICATIONS": {
+      "CLEAR_ALL": "Fjern alle"
+    }
+  },
+  "SHELL": {
+    "NAVIGATION_ARIA_LABEL": "Hovednavigasjon",
+    "SIDEBAR": {
+      "SEARCH_PLACEHOLDER": "Søk etter nøkkelord"
+    },
+    "USER": {
+      "ROLE": {
+        "ADMINISTRATOR": "Administrator"
+      }
+    },
+    "ACCOUNT": {
+      "SETTINGS": "Innstillinger",
+      "CHANGE_PASSWORD": "Endre passord",
+      "PROFILE": "Profil",
+      "LOGOUT": "Logg ut"
+    }
+  },
+  "COMPONENTS": {
+    "CONTROLS": {
+      "CLEAR": "Tøm",
+      "CLEAR_ALL": "Tøm alle",
+      "CLOSE": "Lukk",
+      "TOGGLE_DROPDOWN": "Vis/skjul nedtrekksliste",
+      "SEARCH_OPTIONS": "Søk i alternativer",
+      "SELECT_OPTION": "Velg alternativ",
+      "CLEAR_SELECTION": "Fjern utvalg",
+      "COPY_TO_CLIPBOARD": "Kopier til utklippstavlen",
+      "DELETE_ITEM": "Slett element",
+      "SHOW_PASSWORD": "Vis passord",
+      "HIDE_PASSWORD": "Skjul passord"
+    },
+    "ATOMS": {
+      "VC_IMAGE": {
+        "LABEL": "Bilde"
+      },
+      "VC_BANNER": {
+        "SHOW_MORE": "Vis mer",
+        "SHOW_LESS": "Vis mindre"
+      },
+      "VC_SCROLLABLE_CONTAINER": {
+        "LABEL": "Rullbart innhold"
+      },
+      "VC_VIDEO": {
+        "NO_SOURCE": "Ingen videokilde"
+      }
+    },
+    "MOLECULES": {
+      "VC_SELECT": {
+        "CLICK_TO_SELECT": "Klikk for å velge...",
+        "LOADING": "Laster inn...",
+        "LOADING_MORE": "Laster inn flere...",
+        "NO_OPTIONS": "Ingen alternativer"
+      },
+      "VC_FILE_UPLOAD": {
+        "DRAG_HERE": "Dra og slipp filen her, eller",
+        "BROWSE": "bla gjennom filene dine",
+        "TAP_TO_UPLOAD": "Trykk for å velge filer",
+        "UPLOADING": "Laster opp..."
+      },
+      "VC_INPUT": {
+        "DATE_PLACEHOLDER": "Velg dato",
+        "DATE_TIME_PLACEHOLDER": "Velg dato og klokkeslett"
+      },
+      "VC_PAGINATION": {
+        "JUMP": "Gå til side:",
+        "LABEL": "Sidenummerering",
+        "FIRST": "Første side",
+        "PREVIOUS": "Forrige side",
+        "NEXT": "Neste side",
+        "LAST": "Siste side",
+        "PAGE": "Side {page}"
+      },
+      "VC_MULTIVALUE": {
+        "ADD": "Legg til"
+      },
+      "VC_BREADCRUMBS": {
+        "BACK": "Tilbake",
+        "LABEL": "Brødsmulesti",
+        "SHOW_MORE": "Vis hele brødsmulestien"
+      },
+      "VC_COLOR_INPUT": {
+        "CLEAR": "Fjern farge"
+      },
+      "VC_DATE_PICKER": {
+        "CLEAR": "Fjern dato",
+        "ARIA": {
+          "TOGGLE_OVERLAY": "Vis eller skjul velgeren",
+          "MENU": "Meny for datovelger",
+          "INPUT": "Datofelt",
+          "OPEN_TIME_PICKER": "Åpne tidsvelgeren",
+          "CLOSE_TIME_PICKER": "Lukk tidsvelgeren",
+          "INCREMENT": "Øk {unit}",
+          "DECREMENT": "Reduser {unit}",
+          "OPEN_TIME_OVERLAY": "Velg {unit}",
+          "AM_PM": "Bytt AM/PM",
+          "OPEN_YEARS": "Velg et år",
+          "OPEN_MONTHS": "Velg en måned",
+          "NEXT_MONTH": "Neste måned",
+          "PREV_MONTH": "Forrige måned",
+          "NEXT_YEAR": "Neste år",
+          "PREV_YEAR": "Forrige år",
+          "CALENDAR_ICON": "Åpne kalenderen",
+          "TIME_PICKER": "Tidsvelger",
+          "MONTH_PICKER": "Månedsvelger",
+          "MONTH_PICKER_OVERLAY": "Liste over måneder",
+          "YEAR_PICKER": "Årsvelger",
+          "YEAR_PICKER_OVERLAY": "Liste over år",
+          "TIME_OVERLAY": "Velger for {unit}",
+          "UNITS": {
+            "hours": "timer",
+            "minutes": "minutter",
+            "seconds": "sekunder"
+          }
+        }
+      },
+      "VC_SLIDER": {
+        "PREVIOUS": "Forrige lysbilde",
+        "NEXT": "Neste lysbilde"
+      },
+      "VC_TOAST": {
+        "DISMISS": "Lukk varsel"
+      },
+      "VC_EDITOR": {
+        "TOOLBAR": {
+          "LABEL": "Tekstformatering",
+          "BOLD": "Fet",
+          "ITALIC": "Kursiv",
+          "UNDERLINE": "Understreking",
+          "STRIKETHROUGH": "Gjennomstreking",
+          "HEADING_1": "Overskrift 1",
+          "HEADING_2": "Overskrift 2",
+          "HEADING_3": "Overskrift 3",
+          "BULLET_LIST": "Punktliste",
+          "NUMBERED_LIST": "Nummerert liste",
+          "BLOCKQUOTE": "Sitat",
+          "INSERT_LINK": "Sett inn lenke",
+          "INSERT_IMAGE": "Sett inn bilde",
+          "INSERT_TABLE": "Sett inn tabell",
+          "DELETE_TABLE": "Slett tabell",
+          "ADD_COLUMN_BEFORE": "Legg til kolonne før",
+          "ADD_COLUMN_AFTER": "Legg til kolonne etter",
+          "ADD_ROW_BEFORE": "Legg til rad over",
+          "ADD_ROW_AFTER": "Legg til rad under",
+          "DELETE_COLUMN": "Slett kolonne",
+          "DELETE_ROW": "Slett rad"
+        },
+        "FONT_SIZE": "Skriftstørrelse",
+        "VIEW": {
+          "PREVIEW": "Forhåndsvisning",
+          "SPLIT": "Side ved side",
+          "SOURCE": "Kildekode"
+        }
+      }
+    },
+    "ORGANISMS": {
+      "VC_DYNAMIC_PROPERTY": {
+        "ADD": "Legg til verdi",
+        "VALUE_TYPE": {
+          "COLOR": {
+            "PLACEHOLDER": "Fargekode",
+            "NAME": "Fargenavn"
+          }
+        }
+      },
+      "VC_GALLERY": {
+        "INTERNAL": {
+          "VC_GALLERY_ITEM": {
+            "FULLSCREEN": "Fullskjerm",
+            "EDIT": "Rediger",
+            "DELETE": "Slett"
+          },
+          "VC_GALLERY_PREVIEW": {
+            "COPY_IMAGE_LINK": "kopier bildelenke"
+          },
+          "VC_GALLERY_FILMSTRIP": {
+            "PREVIOUS": "Forrige bilder",
+            "NEXT": "Neste bilder"
+          }
+        },
+        "GALLERY_IS_EMPTY": "Galleriet er tomt",
+        "DROP_TO_UPLOAD": "Slipp for å laste opp",
+        "DRAG_IMAGES_HERE": "Dra bilder hit, eller",
+        "BROWSE_IMAGES": "bla gjennom filene dine",
+        "UPLOAD": "Last opp",
+        "OR_DROP_HERE": "eller slipp her",
+        "SHOW_ALL": "Vis alle ({count})",
+        "COLLAPSE": "Skjul"
+      },
+      "VC_APP": {
+        "NOTIFICATIONS": "Varsler",
+        "OPEN_MENU": "Åpne meny",
+        "CLOSE_MENU": "Lukk meny",
+        "INTERNAL": {
+          "VC_APP_BAR": {
+            "BACK": "Tilbake"
+          },
+          "MOBILE_LAYOUT": {
+            "TAB_MENU": "Meny",
+            "TAB_HUB": "Hub"
+          },
+          "APP_HUB": {
+            "SEARCH_PLACEHOLDER": "Søk etter applikasjoner og widgeter",
+            "APPLICATIONS": "Applikasjoner",
+            "WIDGETS": "Widgeter",
+            "NO_APPLICATIONS": "Fant ingen applikasjoner",
+            "NO_WIDGETS": "Fant ingen widgeter",
+            "LIST_VIEW": "Listevisning",
+            "TILE_VIEW": "Flisvisning"
+          }
+        }
+      },
+      "BLADE_NAVIGATION": {
+        "ARIA_LABEL": "Panelnavigasjon"
+      },
+      "VC_BLADE": {
+        "SEE_DETAILS": "Se detaljer",
+        "UNSAVED_CHANGES": "Har ulagrede endringer",
+        "ERROR_POPUP": {
+          "TITLE": "Feildetaljer",
+          "COPY_ERROR": "kopier innhold",
+          "CLOSE": "lukk"
+        },
+        "MORE": "Mer",
+        "TOOLBAR": "Verktøylinjehandlinger",
+        "CLOSE_MENU": "Lukk meny",
+        "PANEL": "Panel",
+        "WIDGETS": {
+          "ALERTS_TITLE": "{title}: krever oppmerksomhet",
+          "OPEN": "Åpne",
+          "ALERTS_COUNT": "Varsler som krever oppmerksomhet: {count}",
+          "MORE_WIDGETS": "Flere widgeter",
+          "MORE_WIDGETS_ALERTS": "Flere widgeter, varsler som krever oppmerksomhet: {count}",
+          "CUSTOMIZE": "Tilpass",
+          "DONE": "Ferdig",
+          "RESET": "Tilbakestill",
+          "NOT_ON_BLADE": "Skjulte widgeter",
+          "ON_BLADE": "På panelet · opptil {max}",
+          "ALL_ON_BLADE": "Dra en widget hit for å skjule den",
+          "STRIP_EMPTY": "Dra en widget hit for å vise den",
+          "REMOVE": "Fjern {title} fra panelet",
+          "ADD": "Legg til {title} på panelet",
+          "REORDER": "Flytt {title}"
+        }
+      },
+      "VC_BLADE_HEADER": {
+        "UNSAVED_CHANGES": "Har ulagrede endringer",
+        "NO_CHANGES": "Ingen ulagrede endringer",
+        "CLOSE": "Lukk",
+        "MAXIMIZE": "Maksimer",
+        "RESTORE": "Gjenopprett"
+      },
+      "VC_TABLE": {
+        "SELECT_ROW": "Velg rad",
+        "SELECT_ALL_ROWS": "Velg alle rader",
+        "EXPAND_ROW": "Vis/skjul raddetaljer",
+        "CURRENT_PAGE_SELECTED": "Alle elementer på denne siden er valgt.",
+        "SELECT_ALL": "Velg alle elementer",
+        "ALL_SELECTED": "Alle elementer er valgt.",
+        "ALL_SELECTED_COUNT": "Alle {count} elementer er valgt",
+        "SELECT_ALL_COUNT": "Velg alle {count} elementer",
+        "CANCEL": "Fjern utvalg",
+        "ALL_ACTIONS": "Alle handlinger",
+        "MORE": "Mer",
+        "ALL_FILTERS": "Filtre",
+        "SEARCH": "Søk...",
+        "EMPTY": "Listen er tom.",
+        "EMPTY_TITLE": "Ingen data",
+        "EMPTY_DESCRIPTION": "Ingen elementer å vise",
+        "NOT_FOUND": "Ingenting funnet.",
+        "NOT_FOUND_TITLE": "Ingen resultater",
+        "NOT_FOUND_DESCRIPTION": "Prøv å justere søket eller filtrene",
+        "TOTALS": "Totalt:",
+        "ACTIONS": "Handlinger",
+        "NOT_SET": "Ikke angitt",
+        "SELECTED": "Valgt",
+        "SELECT_ALL_TRUNCATED": "Velg alle",
+        "PULL_TO_REFRESH": "Dra for å oppdatere",
+        "RELEASE_TO_REFRESH": "Slipp for å oppdatere",
+        "REFRESHING": "Oppdaterer...",
+        "ADD_ROW": "Legg til rad",
+        "LOADING": "Laster inn...",
+        "PAGE_INFO": "Side {current} av {total}",
+        "COLUMN_FILTER": {
+          "APPLY": "Bruk",
+          "CLEAR": "Tøm",
+          "FROM": "Fra",
+          "TO": "Til",
+          "TITLE": "Filtrer kolonne"
+        },
+        "GLOBAL_FILTERS": {
+          "BUTTON": "Filtre",
+          "TITLE": "Filtre"
+        },
+        "COLUMN_SWITCHER": {
+          "BUTTON": "Kolonner",
+          "TITLE": "Vis/skjul kolonner",
+          "SHOW_ALL": "Vis alle",
+          "RESET": "Tilbakestill"
+        },
+        "OF": "av",
+        "PAGE": "Side"
+      },
+      "VC_POPUP": {
+        "OK": "OK",
+        "CONFIRM": "Bekreft",
+        "CANCEL": "Avbryt",
+        "CLOSE": "Lukk",
+        "TITLE": {
+          "CONFIRMATION": "Bekreftelse",
+          "ERROR": "Feil",
+          "INFO": "Informasjon"
+        }
+      }
+    },
+    "THEME_SELECTOR": {
+      "THEME_CHANGED": " tema",
+      "THEME_SELECTOR": "Tema"
+    },
+    "CHANGE_PASSWORD": {
+      "TITLE": "Endre passord",
+      "TITLE_FORCED": "Passordet er utløpt",
+      "SUBTITLE_FORCED": "Angi et nytt passord",
+      "FORCED": {
+        "LABEL": "Passordet ditt er utløpt. Du må endre passordet for å fortsette å bruke administrasjonsverktøyet."
+      },
+      "CURRENT_PASSWORD": {
+        "LABEL": "Nåværende passord",
+        "PLACEHOLDER": "Skriv inn passord"
+      },
+      "NEW_PASSWORD": {
+        "LABEL": "Nytt passord",
+        "PLACEHOLDER": "Skriv inn passord"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Bekreft passord",
+        "PLACEHOLDER": "Bekreft passord"
+      },
+      "CANCEL": "Avbryt",
+      "SAVE": "Oppdater",
+      "ERRORS": {
+        "Repeat-password": "Passordene er ikke like",
+        "Equal-passwords": "Det nye passordet kan ikke være det samme som det gamle",
+        "Invalid-token": "Tokenet er ugyldig eller utløpt",
+        "Password-too-weak": "Det nye passordet oppfyller ikke én eller flere passordregler:",
+        "PasswordTooShort": "Passordet er for kort",
+        "PasswordRequiresUniqueChars": "Passordet må inneholde forskjellige tegn",
+        "PasswordRequiresLower": "Passordet må inneholde minst én liten bokstav ('a'-'z')",
+        "PasswordRequiresUpper": "Passordet må inneholde minst én stor bokstav ('A'-'Z')",
+        "PasswordRequiresDigit": "Passordet må inneholde minst ett siffer ('0'-'9')",
+        "PasswordRequiresNonAlphanumeric": "Passordet må inneholde minst ett tegn som ikke er en bokstav eller et siffer",
+        "Incorrect password.": "Du skrev inn feil passord",
+        "You have used this password in the past. Choose another one.": "Du har brukt dette passordet tidligere. Velg et annet."
+      }
+    },
+    "APP_HUB": {
+      "TITLE": "Applikasjoner"
+    },
+    "NOTIFICATION_DROPDOWN": {
+      "TITLE": "Varsler",
+      "EMPTY": "Ingen varsler ennå"
+    },
+    "LANGUAGE_SELECTOR": {
+      "TITLE": "Språk"
+    },
+    "FILTERS": {
+      "APPLY": "Bruk filtre",
+      "RESET": "Tilbakestill"
+    }
+  },
+  "INVITATION": {
+    "TITLE": "Du er invitert!",
+    "SUBTITLE": "Angi et passord for kontoen din",
+    "FIELDS": {
+      "EMAIL": {
+        "LABEL": "E-post"
+      },
+      "PASSWORD": {
+        "LABEL": "Nytt passord",
+        "PLACEHOLDER": "Skriv inn passord"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Bekreft passord",
+        "PLACEHOLDER": "Bekreft passord"
+      }
+    },
+    "ACCEPT_INVITATION": "Aktiver",
+    "ERRORS": {
+      "Repeat-password": "Passordene er ikke like",
+      "Invalid-token": "Tokenet er ugyldig eller utløpt",
+      "Password-too-weak": "Det nye passordet oppfyller ikke én eller flere passordregler:",
+      "PasswordTooShort": "Passordet er for kort",
+      "PasswordRequiresUniqueChars": "Passordet må inneholde forskjellige tegn",
+      "PasswordRequiresLower": "Passordet må inneholde minst én liten bokstav ('a'-'z')",
+      "PasswordRequiresUpper": "Passordet må inneholde minst én stor bokstav ('A'-'Z')",
+      "PasswordRequiresDigit": "Passordet må inneholde minst ett siffer ('0'-'9')",
+      "PasswordRequiresNonAlphanumeric": "Passordet må inneholde minst ett tegn som ikke er en bokstav eller et siffer",
+      "recentPasswordUsed": "Du har brukt dette passordet tidligere. Velg et annet."
+    }
+  },
+  "LOGIN": {
+    "TITLE": "Velkommen tilbake",
+    "SUBTITLE": "Logg inn på kontoen din for å fortsette",
+    "FIELDS": {
+      "LOGIN": {
+        "LABEL": "E-post",
+        "PLACEHOLDER": "Skriv inn e-postadressen din"
+      },
+      "PASSWORD": {
+        "LABEL": "Passord",
+        "PLACEHOLDER": "Skriv inn passordet ditt"
+      },
+      "REMEMBER_ME": {
+        "LABEL": "Husk meg"
+      },
+      "FORGOT_PASSWORD": {
+        "TITLE": "Glemt passord",
+        "LABEL": "E-post",
+        "PLACEHOLDER": "Skriv inn e-postadressen din"
+      }
+    },
+    "FORGOT_PASSWORD_BUTTON": "Glemt passordet?",
+    "BUTTON": "Logg inn",
+    "OR": "eller",
+    "FORGOT_BUTTON": "Send",
+    "BACK_BUTTON": "Tilbake",
+    "BUTTON_OK": "OK",
+    "RESET_EMAIL_TEXT": "Vi sender deg en e-post med instruksjoner for hvordan du tilbakestiller passordet.",
+    "RESET_EMAIL_SENT": "En e-post med instruksjoner er sendt til deg.",
+    "SSO_NO_PROVIDERS_ERROR": "SSO-autentisering er ikke konfigurert. Kontakt administratoren.",
+    "ERRORS": {
+      "INVALID_CREDENTIALS": "Brukernavnet eller passordet er feil.",
+      "AUTH_WITH_CODE": "Autentiseringsfeil (kode: {code}).",
+      "AUTH_GENERIC": "Autentiseringsfeil: {detail}"
+    }
+  },
+  "FORGOT_PASSWORD": {
+    "TITLE": "Tilbakestill passordet",
+    "SUBTITLE": "Skriv inn e-postadressen din, så sender vi deg en lenke for tilbakestilling",
+    "FIELDS": {
+      "EMAIL": {
+        "LABEL": "E-post",
+        "PLACEHOLDER": "Skriv inn e-postadressen din"
+      }
+    },
+    "SEND_BUTTON": "Send lenke for tilbakestilling",
+    "BACK_TO_LOGIN": "Tilbake til innlogging",
+    "SUCCESS_TITLE": "Sjekk e-posten din",
+    "SUCCESS_TEXT": "Vi har sendt en lenke for tilbakestilling til {email}"
+  },
+  "PASSWORDRESET": {
+    "TITLE": "Angi nytt passord",
+    "SUBTITLE": "Skriv inn det nye passordet nedenfor",
+    "FIELDS": {
+      "PASSWORD": {
+        "LABEL": "Nytt passord",
+        "PLACEHOLDER": "Skriv inn passord"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Bekreft passord",
+        "PLACEHOLDER": "Bekreft passord"
+      }
+    },
+    "SAVE_PASSWORD": "Lagre",
+    "ERRORS": {
+      "Repeat-password": "Passordene er ikke like",
+      "Invalid-token": "Tokenet er ugyldig eller utløpt",
+      "Password-too-weak": "Det nye passordet oppfyller ikke én eller flere passordregler:",
+      "PasswordTooShort": "Passordet er for kort",
+      "PasswordRequiresUniqueChars": "Passordet må inneholde forskjellige tegn",
+      "PasswordRequiresLower": "Passordet må inneholde minst én liten bokstav ('a'-'z')",
+      "PasswordRequiresUpper": "Passordet må inneholde minst én stor bokstav ('A'-'Z')",
+      "PasswordRequiresDigit": "Passordet må inneholde minst ett siffer ('0'-'9')",
+      "PasswordRequiresNonAlphanumeric": "Passordet må inneholde minst ett tegn som ikke er en bokstav eller et siffer",
+      "recentPasswordUsed": "Du har brukt dette passordet tidligere. Velg et annet."
+    }
+  },
+  "ASSETS_MANAGER": {
+    "TITLE": "Ressurser",
+    "TOOLBAR": {
+      "SAVE": "Lagre",
+      "REFRESH": "Oppdater",
+      "ADD": "Legg til",
+      "DELETE": "Slett valgte"
+    },
+    "EMPTY": {
+      "NO_ASSETS": "Ingen ressurser",
+      "UPLOAD_ASSETS": "Dra og slipp ressurser her, eller klikk på «Last opp»-knappen",
+      "UPLOAD": "Last opp"
+    },
+    "TABLE": {
+      "HEADER": {
+        "IMAGE": "Bilde",
+        "NAME": "Navn",
+        "SIZE": "Størrelse",
+        "SORT_ORDER": "Sorteringsrekkefølge",
+        "CREATED_DATE": "Opprettet dato"
+      },
+      "ACTIONS": {
+        "DELETE": "Slett",
+        "EDIT": "Rediger"
+      }
+    }
+  },
+  "ASSETS": {
+    "PAGES": {
+      "DETAILS": {
+        "SUBTITLE": "Rediger ressurs",
+        "TOOLBAR": {
+          "SAVE": "Lagre",
+          "DELETE": "Slett"
+        },
+        "FIELDS": {
+          "SIZE": "Størrelse",
+          "CREATED_DATE": "Opprettet dato",
+          "URL": "URL",
+          "COPY": "Kopier lenke",
+          "NAME": {
+            "TITLE": "Ressursnavn",
+            "PLACEHOLDER": "Skriv inn ressursnavn"
+          },
+          "ALT": {
+            "TITLE": "Alternativ tekst for bilde",
+            "PLACEHOLDER": "Skriv inn alternativ tekst for bildet",
+            "TOOLTIP": "Denne teksten vises hvis bildet på siden er deaktivert eller ikke lastes inn"
+          },
+          "DESCRIPTION": {
+            "TITLE": "Metabeskrivelse",
+            "PLACEHOLDER": "Skriv inn metabeskrivelse"
+          }
+        }
+      }
+    }
+  },
+  "messages": {
+    "_default": "{field} er ikke gyldig",
+    "alpha": "Feltet {field} kan bare inneholde bokstaver",
+    "alpha_num": "Feltet {field} kan bare inneholde bokstaver og tall",
+    "alpha_dash": "Feltet {field} kan inneholde bokstaver, tall, bindestreker og understreker",
+    "alpha_spaces": "Feltet {field} kan bare inneholde bokstaver og mellomrom",
+    "between": "Feltet {field} må være mellom 0:{min} og 1:{max}",
+    "confirmed": "Bekreftelsen av feltet {field} stemmer ikke",
+    "digits": "Feltet {field} må være numerisk og inneholde nøyaktig 0:{length} sifre",
+    "dimensions": "Feltet {field} må være 0:{width} ganger 1:{height} piksler",
+    "email": "Feltet {field} må være en gyldig e-postadresse",
+    "not_one_of": "Feltet {field} har en ugyldig verdi",
+    "ext": "Feltet {field} er ikke en gyldig fil",
+    "image": "Feltet {field} må være et bilde",
+    "integer": "Feltet {field} må være et heltall",
+    "length": "Feltet {field} må være 0:{length} tegn langt",
+    "max_value": "Feltet {field} må være 0:{max} eller mindre",
+    "max": "Feltet {field} kan ikke være lengre enn 0:{length} tegn",
+    "mimes": "Feltet {field} må ha en gyldig filtype",
+    "min_value": "Feltet {field} må være 0:{min} eller mer",
+    "min": "Feltet {field} må inneholde minst 0:{length} tegn",
+    "numeric": "Feltet {field} kan bare inneholde tall",
+    "one_of": "Feltet {field} har en ugyldig verdi",
+    "regex": "Formatet til feltet {field} er ugyldig",
+    "required_if": "Feltet {field} er obligatorisk",
+    "required": "Feltet {field} er obligatorisk",
+    "size": "Størrelsen på feltet {field} må være mindre enn 0:{size} kB",
+    "url": "Feltet {field} er ikke en gyldig URL",
+    "min_dimensions": {
+      "error": "Bildedimensjonene må være større enn {height}*{width}",
+      "not_image_error": "Filen er ikke et bilde"
+    },
+    "file_weight": "Filstørrelsen kan være maksimalt {size} kB",
+    "before": "Sluttdatoen må være før startdatoen",
+    "after": "Sluttdatoen må være etter startdatoen",
+    "bigint": "Tallet støttes ikke"
+  },
+  "PERMISSION_MESSAGES": {
+    "ACCESS_RESTRICTED": "Begrenset tilgang"
+  },
+  "AI_AGENT": {
+    "LOADING": "Laster inn Virto OZ..."
+  },
+  "VC_SCHEDULER": {
+    "AGENDA": "Agenda",
+    "ALL_DAY": "Hele dagen",
+    "CANCEL": "Avbryt",
+    "CLOSE": "Lukk",
+    "COLOR": "Farge",
+    "COLOR_DEFAULT": "Standardfarge",
+    "COLOR_CUSTOM": "Egendefinert farge",
+    "COLOR_BLUE": "Blå",
+    "COLOR_GREEN": "Grønn",
+    "COLOR_AMBER": "Rav",
+    "COLOR_RED": "Rød",
+    "COLOR_PURPLE": "Lilla",
+    "COLOR_PINK": "Rosa",
+    "COLOR_TEAL": "Blågrønn",
+    "COLOR_SLATE": "Skifergrå",
+    "DAY": "Dag",
+    "DAY_N_OF_M": "Dag {n} av {total}",
+    "DELETE": "Slett",
+    "DELETE_CONFIRM_BODY": "Slette «{title}»? Dette kan ikke angres.",
+    "DELETE_CONFIRM_TITLE": "Slett hendelse",
+    "EDIT": "Rediger",
+    "EDIT_EVENT": "Rediger hendelse",
+    "EMPTY": "Ingen hendelser i dette tidsrommet",
+    "EMPTY_HINT": "Ingen hendelser ennå. Klikk på en dag for å legge til en.",
+    "END": "Slutt",
+    "LOADING": "Laster inn hendelser…",
+    "MORE": "+{count} til",
+    "MORE_EVENTS": "Flere hendelser",
+    "MONTH": "Måned",
+    "MORE_OPTIONS": "Flere alternativer",
+    "NEW_EVENT": "Ny hendelse",
+    "NEXT": "Neste",
+    "PREVIOUS": "Forrige",
+    "RECUR_SCOPE_ALL": "Alle hendelser",
+    "RECUR_SCOPE_BODY_DELETE": "Denne hendelsen er en del av en gjentakende serie. Vil du slette bare denne hendelsen eller alle hendelsene i serien?",
+    "RECUR_SCOPE_BODY_EDIT": "Denne hendelsen er en del av en gjentakende serie. Vil du redigere bare denne hendelsen eller alle hendelsene i serien?",
+    "RECUR_SCOPE_THIS": "Denne hendelsen",
+    "RECUR_SCOPE_TITLE": "Gjentakende hendelse",
+    "REPEAT": "Gjenta",
+    "REPEAT_DAILY": "Daglig",
+    "REPEAT_END": "Slutter",
+    "REPEAT_END_COUNT": "Etter",
+    "REPEAT_END_NEVER": "Aldri",
+    "REPEAT_END_UNTIL": "På dato",
+    "REPEAT_EVERY": "Gjenta hver",
+    "REPEAT_UNIT_DAYS": "dag(er)",
+    "REPEAT_UNIT_WEEKS": "uke(r)",
+    "REPEAT_UNIT_MONTHS": "måned(er)",
+    "REPEAT_UNIT_YEARS": "år",
+    "REPEAT_MONTHLY": "Månedlig",
+    "REPEAT_NONE": "Gjentas ikke",
+    "REPEAT_OCCURRENCES": "gang(er)",
+    "REPEAT_ON": "Gjenta på",
+    "REPEAT_WEEKLY": "Ukentlig",
+    "REPEAT_YEARLY": "Årlig",
+    "SAVE": "Lagre",
+    "START": "Start",
+    "TIMELINE": "Tidslinje",
+    "TIMELINE_DAY": "Tidslinje – dag",
+    "TIMELINE_WEEK": "Tidslinje – uke",
+    "TITLE": "Tittel",
+    "TODAY": "I dag",
+    "WEEK": "Uke",
+    "WORK_WEEK": "Arbeidsuke",
+    "ZOOM_IN": "Zoom inn",
+    "ZOOM_OUT": "Zoom ut",
+    "EVENT_DETAILS": "Hendelsesdetaljer"
+  },
+  "common": {
+    "no_options": "Ingen alternativer"
+  }
+}

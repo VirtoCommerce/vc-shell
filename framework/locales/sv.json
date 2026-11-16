@@ -1,0 +1,664 @@
+{
+  "CORE": {
+    "ERRORS": {
+      "SESSION_EXPIRED": "Åtkomst nekad: Din session har gått ut eller så saknar du nödvändiga behörigheter.\nLogga in igen eller kontakta administratören för hjälp.",
+      "NETWORK_UNAVAILABLE": "Nätverket är inte tillgängligt. Kontrollera din anslutning.",
+      "SESSION_CHECK_FAILED": "Det gick inte att verifiera sessionen. Försök igen."
+    },
+    "THEMES": {
+      "LIGHT": "Ljust",
+      "DARK": "Mörkt"
+    },
+    "NOTIFICATIONS": {
+      "CLEAR_ALL": "Rensa alla"
+    }
+  },
+  "SHELL": {
+    "NAVIGATION_ARIA_LABEL": "Huvudnavigering",
+    "SIDEBAR": {
+      "SEARCH_PLACEHOLDER": "Sök nyckelord"
+    },
+    "USER": {
+      "ROLE": {
+        "ADMINISTRATOR": "Administratör"
+      }
+    },
+    "ACCOUNT": {
+      "SETTINGS": "Inställningar",
+      "CHANGE_PASSWORD": "Ändra lösenord",
+      "PROFILE": "Profil",
+      "LOGOUT": "Logga ut"
+    }
+  },
+  "COMPONENTS": {
+    "CONTROLS": {
+      "CLEAR": "Rensa",
+      "CLEAR_ALL": "Rensa alla",
+      "CLOSE": "Stäng",
+      "TOGGLE_DROPDOWN": "Visa/dölj listruta",
+      "SEARCH_OPTIONS": "Sök alternativ",
+      "SELECT_OPTION": "Välj alternativ",
+      "CLEAR_SELECTION": "Rensa markering",
+      "COPY_TO_CLIPBOARD": "Kopiera till urklipp",
+      "DELETE_ITEM": "Ta bort objekt",
+      "SHOW_PASSWORD": "Visa lösenord",
+      "HIDE_PASSWORD": "Dölj lösenord"
+    },
+    "ATOMS": {
+      "VC_IMAGE": {
+        "LABEL": "Bild"
+      },
+      "VC_BANNER": {
+        "SHOW_MORE": "Visa mer",
+        "SHOW_LESS": "Visa mindre"
+      },
+      "VC_SCROLLABLE_CONTAINER": {
+        "LABEL": "Rullningsbart innehåll"
+      },
+      "VC_VIDEO": {
+        "NO_SOURCE": "Ingen videokälla"
+      }
+    },
+    "MOLECULES": {
+      "VC_SELECT": {
+        "CLICK_TO_SELECT": "Klicka för att välja...",
+        "LOADING": "Läser in...",
+        "LOADING_MORE": "Läser in fler...",
+        "NO_OPTIONS": "Inga alternativ"
+      },
+      "VC_FILE_UPLOAD": {
+        "DRAG_HERE": "Dra och släpp filen här eller",
+        "BROWSE": "bläddra bland dina filer",
+        "TAP_TO_UPLOAD": "Tryck för att välja filer",
+        "UPLOADING": "Laddar upp..."
+      },
+      "VC_INPUT": {
+        "DATE_PLACEHOLDER": "Välj datum",
+        "DATE_TIME_PLACEHOLDER": "Välj datum och tid"
+      },
+      "VC_PAGINATION": {
+        "JUMP": "Gå till sida:",
+        "LABEL": "Sidnumrering",
+        "FIRST": "Första sidan",
+        "PREVIOUS": "Föregående sida",
+        "NEXT": "Nästa sida",
+        "LAST": "Sista sidan",
+        "PAGE": "Sida {page}"
+      },
+      "VC_MULTIVALUE": {
+        "ADD": "Lägg till"
+      },
+      "VC_BREADCRUMBS": {
+        "BACK": "Tillbaka",
+        "LABEL": "Brödsmulor",
+        "SHOW_MORE": "Visa fler brödsmulor"
+      },
+      "VC_COLOR_INPUT": {
+        "CLEAR": "Rensa färg"
+      },
+      "VC_DATE_PICKER": {
+        "CLEAR": "Rensa datum",
+        "ARIA": {
+          "TOGGLE_OVERLAY": "Visa eller dölj väljaren",
+          "MENU": "Meny för datumväljare",
+          "INPUT": "Datumfält",
+          "OPEN_TIME_PICKER": "Öppna tidsväljaren",
+          "CLOSE_TIME_PICKER": "Stäng tidsväljaren",
+          "INCREMENT": "Öka {unit}",
+          "DECREMENT": "Minska {unit}",
+          "OPEN_TIME_OVERLAY": "Välj {unit}",
+          "AM_PM": "Växla AM/PM",
+          "OPEN_YEARS": "Välj ett år",
+          "OPEN_MONTHS": "Välj en månad",
+          "NEXT_MONTH": "Nästa månad",
+          "PREV_MONTH": "Föregående månad",
+          "NEXT_YEAR": "Nästa år",
+          "PREV_YEAR": "Föregående år",
+          "CALENDAR_ICON": "Öppna kalendern",
+          "TIME_PICKER": "Tidsväljare",
+          "MONTH_PICKER": "Månadsväljare",
+          "MONTH_PICKER_OVERLAY": "Lista över månader",
+          "YEAR_PICKER": "Årsväljare",
+          "YEAR_PICKER_OVERLAY": "Lista över år",
+          "TIME_OVERLAY": "Väljare för {unit}",
+          "UNITS": {
+            "hours": "timmar",
+            "minutes": "minuter",
+            "seconds": "sekunder"
+          }
+        }
+      },
+      "VC_SLIDER": {
+        "PREVIOUS": "Föregående bild",
+        "NEXT": "Nästa bild"
+      },
+      "VC_TOAST": {
+        "DISMISS": "Stäng notis"
+      },
+      "VC_EDITOR": {
+        "TOOLBAR": {
+          "LABEL": "Textformatering",
+          "BOLD": "Fet",
+          "ITALIC": "Kursiv",
+          "UNDERLINE": "Understruken",
+          "STRIKETHROUGH": "Genomstruken",
+          "HEADING_1": "Rubrik 1",
+          "HEADING_2": "Rubrik 2",
+          "HEADING_3": "Rubrik 3",
+          "BULLET_LIST": "Punktlista",
+          "NUMBERED_LIST": "Numrerad lista",
+          "BLOCKQUOTE": "Citat",
+          "INSERT_LINK": "Infoga länk",
+          "INSERT_IMAGE": "Infoga bild",
+          "INSERT_TABLE": "Infoga tabell",
+          "DELETE_TABLE": "Ta bort tabell",
+          "ADD_COLUMN_BEFORE": "Lägg till kolumn före",
+          "ADD_COLUMN_AFTER": "Lägg till kolumn efter",
+          "ADD_ROW_BEFORE": "Lägg till rad ovanför",
+          "ADD_ROW_AFTER": "Lägg till rad nedanför",
+          "DELETE_COLUMN": "Ta bort kolumn",
+          "DELETE_ROW": "Ta bort rad"
+        },
+        "FONT_SIZE": "Teckenstorlek",
+        "VIEW": {
+          "PREVIEW": "Förhandsgranska",
+          "SPLIT": "Sida vid sida",
+          "SOURCE": "Källkod"
+        }
+      }
+    },
+    "ORGANISMS": {
+      "VC_DYNAMIC_PROPERTY": {
+        "ADD": "Lägg till värde",
+        "VALUE_TYPE": {
+          "COLOR": {
+            "PLACEHOLDER": "Färgkod",
+            "NAME": "Färgnamn"
+          }
+        }
+      },
+      "VC_GALLERY": {
+        "INTERNAL": {
+          "VC_GALLERY_ITEM": {
+            "FULLSCREEN": "Helskärm",
+            "EDIT": "Redigera",
+            "DELETE": "Ta bort"
+          },
+          "VC_GALLERY_PREVIEW": {
+            "COPY_IMAGE_LINK": "kopiera bildlänk"
+          },
+          "VC_GALLERY_FILMSTRIP": {
+            "PREVIOUS": "Föregående bilder",
+            "NEXT": "Nästa bilder"
+          }
+        },
+        "GALLERY_IS_EMPTY": "Galleriet är tomt",
+        "DROP_TO_UPLOAD": "Släpp för att ladda upp",
+        "DRAG_IMAGES_HERE": "Dra bilder hit eller",
+        "BROWSE_IMAGES": "bläddra bland dina filer",
+        "UPLOAD": "Ladda upp",
+        "OR_DROP_HERE": "eller släpp här",
+        "SHOW_ALL": "Visa alla ({count})",
+        "COLLAPSE": "Fäll ihop"
+      },
+      "VC_APP": {
+        "NOTIFICATIONS": "Notiser",
+        "OPEN_MENU": "Öppna meny",
+        "CLOSE_MENU": "Stäng meny",
+        "INTERNAL": {
+          "VC_APP_BAR": {
+            "BACK": "Tillbaka"
+          },
+          "MOBILE_LAYOUT": {
+            "TAB_MENU": "Meny",
+            "TAB_HUB": "Hubb"
+          },
+          "APP_HUB": {
+            "SEARCH_PLACEHOLDER": "Sök program och widgetar",
+            "APPLICATIONS": "Program",
+            "WIDGETS": "Widgetar",
+            "NO_APPLICATIONS": "Inga program hittades",
+            "NO_WIDGETS": "Inga widgetar hittades",
+            "LIST_VIEW": "Listvy",
+            "TILE_VIEW": "Panelvy"
+          }
+        }
+      },
+      "BLADE_NAVIGATION": {
+        "ARIA_LABEL": "Panelnavigering"
+      },
+      "VC_BLADE": {
+        "SEE_DETAILS": "Visa detaljer",
+        "UNSAVED_CHANGES": "Har osparade ändringar",
+        "ERROR_POPUP": {
+          "TITLE": "Felinformation",
+          "COPY_ERROR": "kopiera innehåll",
+          "CLOSE": "stäng"
+        },
+        "MORE": "Mer",
+        "TOOLBAR": "Verktygsfältsåtgärder",
+        "CLOSE_MENU": "Stäng meny",
+        "PANEL": "Panel",
+        "WIDGETS": {
+          "ALERTS_TITLE": "{title}: kräver uppmärksamhet",
+          "OPEN": "Öppna",
+          "ALERTS_COUNT": "Aviseringar som kräver uppmärksamhet: {count}",
+          "MORE_WIDGETS": "Fler widgetar",
+          "MORE_WIDGETS_ALERTS": "Fler widgetar, aviseringar som kräver uppmärksamhet: {count}",
+          "CUSTOMIZE": "Anpassa",
+          "DONE": "Klar",
+          "RESET": "Återställ",
+          "NOT_ON_BLADE": "Dolda widgetar",
+          "ON_BLADE": "På panelen · upp till {max}",
+          "ALL_ON_BLADE": "Dra en widget hit för att dölja den",
+          "STRIP_EMPTY": "Dra en widget hit för att visa den",
+          "REMOVE": "Ta bort {title} från panelen",
+          "ADD": "Lägg till {title} på panelen",
+          "REORDER": "Flytta {title}"
+        }
+      },
+      "VC_BLADE_HEADER": {
+        "UNSAVED_CHANGES": "Har osparade ändringar",
+        "NO_CHANGES": "Inga osparade ändringar",
+        "CLOSE": "Stäng",
+        "MAXIMIZE": "Maximera",
+        "RESTORE": "Återställ"
+      },
+      "VC_TABLE": {
+        "SELECT_ROW": "Markera rad",
+        "SELECT_ALL_ROWS": "Markera alla rader",
+        "EXPAND_ROW": "Visa/dölj raddetaljer",
+        "CURRENT_PAGE_SELECTED": "Alla objekt på den här sidan är markerade.",
+        "SELECT_ALL": "Markera alla objekt",
+        "ALL_SELECTED": "Alla objekt är markerade.",
+        "ALL_SELECTED_COUNT": "Alla {count} objekt markerade",
+        "SELECT_ALL_COUNT": "Markera alla {count} objekt",
+        "CANCEL": "Rensa markering",
+        "ALL_ACTIONS": "Alla åtgärder",
+        "MORE": "Mer",
+        "ALL_FILTERS": "Filter",
+        "SEARCH": "Sök...",
+        "EMPTY": "Listan är tom.",
+        "EMPTY_TITLE": "Inga data",
+        "EMPTY_DESCRIPTION": "Inga objekt att visa",
+        "NOT_FOUND": "Inget hittades.",
+        "NOT_FOUND_TITLE": "Inga resultat hittades",
+        "NOT_FOUND_DESCRIPTION": "Prova att ändra sökningen eller filtren",
+        "TOTALS": "Summa:",
+        "ACTIONS": "Åtgärder",
+        "NOT_SET": "Inte angivet",
+        "SELECTED": "Markerade",
+        "SELECT_ALL_TRUNCATED": "Markera alla",
+        "PULL_TO_REFRESH": "Dra för att uppdatera",
+        "RELEASE_TO_REFRESH": "Släpp för att uppdatera",
+        "REFRESHING": "Uppdaterar...",
+        "ADD_ROW": "Lägg till rad",
+        "LOADING": "Läser in...",
+        "PAGE_INFO": "Sida {current} av {total}",
+        "COLUMN_FILTER": {
+          "APPLY": "Tillämpa",
+          "CLEAR": "Rensa",
+          "FROM": "Från",
+          "TO": "Till",
+          "TITLE": "Filtrera kolumn"
+        },
+        "GLOBAL_FILTERS": {
+          "BUTTON": "Filter",
+          "TITLE": "Filter"
+        },
+        "COLUMN_SWITCHER": {
+          "BUTTON": "Kolumner",
+          "TITLE": "Visa/dölj kolumner",
+          "SHOW_ALL": "Visa alla",
+          "RESET": "Återställ"
+        },
+        "OF": "av",
+        "PAGE": "Sida"
+      },
+      "VC_POPUP": {
+        "OK": "OK",
+        "CONFIRM": "Bekräfta",
+        "CANCEL": "Avbryt",
+        "CLOSE": "Stäng",
+        "TITLE": {
+          "CONFIRMATION": "Bekräftelse",
+          "ERROR": "Fel",
+          "INFO": "Information"
+        }
+      }
+    },
+    "THEME_SELECTOR": {
+      "THEME_CHANGED": " tema",
+      "THEME_SELECTOR": "Tema"
+    },
+    "CHANGE_PASSWORD": {
+      "TITLE": "Ändra lösenord",
+      "TITLE_FORCED": "Lösenordet har gått ut",
+      "SUBTITLE_FORCED": "Ange ett nytt lösenord",
+      "FORCED": {
+        "LABEL": "Ditt lösenord har gått ut. Du måste ändra lösenordet för att fortsätta använda hanteraren."
+      },
+      "CURRENT_PASSWORD": {
+        "LABEL": "Nuvarande lösenord",
+        "PLACEHOLDER": "Ange lösenord"
+      },
+      "NEW_PASSWORD": {
+        "LABEL": "Nytt lösenord",
+        "PLACEHOLDER": "Ange lösenord"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Bekräfta lösenord",
+        "PLACEHOLDER": "Bekräfta lösenord"
+      },
+      "CANCEL": "Avbryt",
+      "SAVE": "Uppdatera",
+      "ERRORS": {
+        "Repeat-password": "Lösenorden matchar inte",
+        "Equal-passwords": "Det nya lösenordet får inte vara samma som det gamla",
+        "Invalid-token": "Token är ogiltig eller har gått ut",
+        "Password-too-weak": "Det nya lösenordet uppfyller inte en eller flera lösenordsprinciper:",
+        "PasswordTooShort": "Lösenordet är för kort",
+        "PasswordRequiresUniqueChars": "Lösenordet måste innehålla olika tecken",
+        "PasswordRequiresLower": "Lösenordet måste innehålla minst en gemen ('a'-'z')",
+        "PasswordRequiresUpper": "Lösenordet måste innehålla minst en versal ('A'-'Z')",
+        "PasswordRequiresDigit": "Lösenordet måste innehålla minst en siffra ('0'-'9')",
+        "PasswordRequiresNonAlphanumeric": "Lösenordet måste innehålla minst ett tecken som inte är en bokstav eller siffra",
+        "Incorrect password.": "Du angav ett felaktigt lösenord",
+        "You have used this password in the past. Choose another one.": "Du har använt det här lösenordet tidigare. Välj ett annat."
+      }
+    },
+    "APP_HUB": {
+      "TITLE": "Program"
+    },
+    "NOTIFICATION_DROPDOWN": {
+      "TITLE": "Notiser",
+      "EMPTY": "Inga notiser ännu"
+    },
+    "LANGUAGE_SELECTOR": {
+      "TITLE": "Språk"
+    },
+    "FILTERS": {
+      "APPLY": "Tillämpa filter",
+      "RESET": "Återställ"
+    }
+  },
+  "INVITATION": {
+    "TITLE": "Du är inbjuden!",
+    "SUBTITLE": "Ange ett lösenord för ditt konto",
+    "FIELDS": {
+      "EMAIL": {
+        "LABEL": "E-post"
+      },
+      "PASSWORD": {
+        "LABEL": "Nytt lösenord",
+        "PLACEHOLDER": "Ange lösenord"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Bekräfta lösenord",
+        "PLACEHOLDER": "Bekräfta lösenord"
+      }
+    },
+    "ACCEPT_INVITATION": "Aktivera",
+    "ERRORS": {
+      "Repeat-password": "Lösenorden matchar inte",
+      "Invalid-token": "Token är ogiltig eller har gått ut",
+      "Password-too-weak": "Det nya lösenordet uppfyller inte en eller flera lösenordsprinciper:",
+      "PasswordTooShort": "Lösenordet är för kort",
+      "PasswordRequiresUniqueChars": "Lösenordet måste innehålla olika tecken",
+      "PasswordRequiresLower": "Lösenordet måste innehålla minst en gemen ('a'-'z')",
+      "PasswordRequiresUpper": "Lösenordet måste innehålla minst en versal ('A'-'Z')",
+      "PasswordRequiresDigit": "Lösenordet måste innehålla minst en siffra ('0'-'9')",
+      "PasswordRequiresNonAlphanumeric": "Lösenordet måste innehålla minst ett tecken som inte är en bokstav eller siffra",
+      "recentPasswordUsed": "Du har använt det här lösenordet tidigare. Välj ett annat."
+    }
+  },
+  "LOGIN": {
+    "TITLE": "Välkommen tillbaka",
+    "SUBTITLE": "Logga in på ditt konto för att fortsätta",
+    "FIELDS": {
+      "LOGIN": {
+        "LABEL": "E-post",
+        "PLACEHOLDER": "Ange din e-postadress"
+      },
+      "PASSWORD": {
+        "LABEL": "Lösenord",
+        "PLACEHOLDER": "Ange ditt lösenord"
+      },
+      "REMEMBER_ME": {
+        "LABEL": "Kom ihåg mig"
+      },
+      "FORGOT_PASSWORD": {
+        "TITLE": "Glömt lösenord",
+        "LABEL": "E-post",
+        "PLACEHOLDER": "Ange din e-postadress"
+      }
+    },
+    "FORGOT_PASSWORD_BUTTON": "Glömt lösenordet?",
+    "BUTTON": "Logga in",
+    "OR": "eller",
+    "FORGOT_BUTTON": "Skicka",
+    "BACK_BUTTON": "Tillbaka",
+    "BUTTON_OK": "OK",
+    "RESET_EMAIL_TEXT": "Vi skickar ett e-postmeddelande med instruktioner för hur du återställer ditt lösenord.",
+    "RESET_EMAIL_SENT": "Ett e-postmeddelande med instruktioner har skickats till dig.",
+    "SSO_NO_PROVIDERS_ERROR": "SSO-autentisering är inte konfigurerad. Kontakta administratören.",
+    "ERRORS": {
+      "INVALID_CREDENTIALS": "Inloggningsnamnet eller lösenordet är felaktigt.",
+      "AUTH_WITH_CODE": "Autentiseringsfel (kod: {code}).",
+      "AUTH_GENERIC": "Autentiseringsfel: {detail}"
+    }
+  },
+  "FORGOT_PASSWORD": {
+    "TITLE": "Återställ ditt lösenord",
+    "SUBTITLE": "Ange din e-postadress så skickar vi en återställningslänk",
+    "FIELDS": {
+      "EMAIL": {
+        "LABEL": "E-post",
+        "PLACEHOLDER": "Ange din e-postadress"
+      }
+    },
+    "SEND_BUTTON": "Skicka återställningslänk",
+    "BACK_TO_LOGIN": "Tillbaka till inloggningen",
+    "SUCCESS_TITLE": "Kontrollera din e-post",
+    "SUCCESS_TEXT": "Vi har skickat en återställningslänk till {email}"
+  },
+  "PASSWORDRESET": {
+    "TITLE": "Ange nytt lösenord",
+    "SUBTITLE": "Ange ditt nya lösenord nedan",
+    "FIELDS": {
+      "PASSWORD": {
+        "LABEL": "Nytt lösenord",
+        "PLACEHOLDER": "Ange lösenord"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Bekräfta lösenord",
+        "PLACEHOLDER": "Bekräfta lösenord"
+      }
+    },
+    "SAVE_PASSWORD": "Spara",
+    "ERRORS": {
+      "Repeat-password": "Lösenorden matchar inte",
+      "Invalid-token": "Token är ogiltig eller har gått ut",
+      "Password-too-weak": "Det nya lösenordet uppfyller inte en eller flera lösenordsprinciper:",
+      "PasswordTooShort": "Lösenordet är för kort",
+      "PasswordRequiresUniqueChars": "Lösenordet måste innehålla olika tecken",
+      "PasswordRequiresLower": "Lösenordet måste innehålla minst en gemen ('a'-'z')",
+      "PasswordRequiresUpper": "Lösenordet måste innehålla minst en versal ('A'-'Z')",
+      "PasswordRequiresDigit": "Lösenordet måste innehålla minst en siffra ('0'-'9')",
+      "PasswordRequiresNonAlphanumeric": "Lösenordet måste innehålla minst ett tecken som inte är en bokstav eller siffra",
+      "recentPasswordUsed": "Du har använt det här lösenordet tidigare. Välj ett annat."
+    }
+  },
+  "ASSETS_MANAGER": {
+    "TITLE": "Tillgångar",
+    "TOOLBAR": {
+      "SAVE": "Spara",
+      "REFRESH": "Uppdatera",
+      "ADD": "Lägg till",
+      "DELETE": "Ta bort markerade"
+    },
+    "EMPTY": {
+      "NO_ASSETS": "Inga tillgångar",
+      "UPLOAD_ASSETS": "Dra och släpp tillgångar här eller klicka på knappen ”Ladda upp”",
+      "UPLOAD": "Ladda upp"
+    },
+    "TABLE": {
+      "HEADER": {
+        "IMAGE": "Bild",
+        "NAME": "Namn",
+        "SIZE": "Storlek",
+        "SORT_ORDER": "Sorteringsordning",
+        "CREATED_DATE": "Skapad den"
+      },
+      "ACTIONS": {
+        "DELETE": "Ta bort",
+        "EDIT": "Redigera"
+      }
+    }
+  },
+  "ASSETS": {
+    "PAGES": {
+      "DETAILS": {
+        "SUBTITLE": "Redigera tillgång",
+        "TOOLBAR": {
+          "SAVE": "Spara",
+          "DELETE": "Ta bort"
+        },
+        "FIELDS": {
+          "SIZE": "Storlek",
+          "CREATED_DATE": "Skapad den",
+          "URL": "URL",
+          "COPY": "Kopiera länk",
+          "NAME": {
+            "TITLE": "Tillgångens namn",
+            "PLACEHOLDER": "Ange tillgångens namn"
+          },
+          "ALT": {
+            "TITLE": "Alternativ text för bild",
+            "PLACEHOLDER": "Ange alternativ text för bilden",
+            "TOOLTIP": "Den här texten visas om bilden på sidan är inaktiverad eller inte har lästs in"
+          },
+          "DESCRIPTION": {
+            "TITLE": "Metabeskrivning",
+            "PLACEHOLDER": "Ange metabeskrivning"
+          }
+        }
+      }
+    }
+  },
+  "messages": {
+    "_default": "{field} är inte giltigt",
+    "alpha": "Fältet {field} får bara innehålla bokstäver",
+    "alpha_num": "Fältet {field} får bara innehålla bokstäver och siffror",
+    "alpha_dash": "Fältet {field} får innehålla bokstäver, siffror, bindestreck och understreck",
+    "alpha_spaces": "Fältet {field} får bara innehålla bokstäver och mellanslag",
+    "between": "Fältet {field} måste vara mellan 0:{min} och 1:{max}",
+    "confirmed": "Bekräftelsen av fältet {field} matchar inte",
+    "digits": "Fältet {field} måste vara numeriskt och innehålla exakt 0:{length} siffror",
+    "dimensions": "Fältet {field} måste vara 0:{width} gånger 1:{height} pixlar",
+    "email": "Fältet {field} måste vara en giltig e-postadress",
+    "not_one_of": "Fältet {field} har ett ogiltigt värde",
+    "ext": "Fältet {field} är inte en giltig fil",
+    "image": "Fältet {field} måste vara en bild",
+    "integer": "Fältet {field} måste vara ett heltal",
+    "length": "Fältet {field} måste vara 0:{length} tecken långt",
+    "max_value": "Fältet {field} måste vara 0:{max} eller mindre",
+    "max": "Fältet {field} får inte vara längre än 0:{length} tecken",
+    "mimes": "Fältet {field} måste ha en giltig filtyp",
+    "min_value": "Fältet {field} måste vara 0:{min} eller mer",
+    "min": "Fältet {field} måste innehålla minst 0:{length} tecken",
+    "numeric": "Fältet {field} får bara innehålla siffror",
+    "one_of": "Fältet {field} har ett ogiltigt värde",
+    "regex": "Formatet för fältet {field} är ogiltigt",
+    "required_if": "Fältet {field} är obligatoriskt",
+    "required": "Fältet {field} är obligatoriskt",
+    "size": "Storleken på fältet {field} måste vara mindre än 0:{size} kB",
+    "url": "Fältet {field} är inte en giltig URL",
+    "min_dimensions": {
+      "error": "Bildens mått måste vara större än {height}*{width}",
+      "not_image_error": "Filen är inte en bild"
+    },
+    "file_weight": "Filstorleken får vara högst {size} kB",
+    "before": "Slutdatumet måste vara tidigare än startdatumet",
+    "after": "Slutdatumet måste vara senare än startdatumet",
+    "bigint": "Talet stöds inte"
+  },
+  "PERMISSION_MESSAGES": {
+    "ACCESS_RESTRICTED": "Begränsad åtkomst"
+  },
+  "AI_AGENT": {
+    "LOADING": "Läser in Virto OZ..."
+  },
+  "VC_SCHEDULER": {
+    "AGENDA": "Agenda",
+    "ALL_DAY": "Heldag",
+    "CANCEL": "Avbryt",
+    "CLOSE": "Stäng",
+    "COLOR": "Färg",
+    "COLOR_DEFAULT": "Standardfärg",
+    "COLOR_CUSTOM": "Anpassad färg",
+    "COLOR_BLUE": "Blå",
+    "COLOR_GREEN": "Grön",
+    "COLOR_AMBER": "Bärnsten",
+    "COLOR_RED": "Röd",
+    "COLOR_PURPLE": "Lila",
+    "COLOR_PINK": "Rosa",
+    "COLOR_TEAL": "Blågrön",
+    "COLOR_SLATE": "Skiffergrå",
+    "DAY": "Dag",
+    "DAY_N_OF_M": "Dag {n} av {total}",
+    "DELETE": "Ta bort",
+    "DELETE_CONFIRM_BODY": "Ta bort ”{title}”? Detta kan inte ångras.",
+    "DELETE_CONFIRM_TITLE": "Ta bort händelse",
+    "EDIT": "Redigera",
+    "EDIT_EVENT": "Redigera händelse",
+    "EMPTY": "Inga händelser i det här intervallet",
+    "EMPTY_HINT": "Inga händelser ännu. Klicka på en dag för att lägga till en.",
+    "END": "Slut",
+    "LOADING": "Läser in händelser…",
+    "MORE": "+{count} till",
+    "MORE_EVENTS": "Fler händelser",
+    "MONTH": "Månad",
+    "MORE_OPTIONS": "Fler alternativ",
+    "NEW_EVENT": "Ny händelse",
+    "NEXT": "Nästa",
+    "PREVIOUS": "Föregående",
+    "RECUR_SCOPE_ALL": "Alla händelser",
+    "RECUR_SCOPE_BODY_DELETE": "Den här händelsen ingår i en återkommande serie. Vill du ta bort bara den här händelsen eller alla händelser i serien?",
+    "RECUR_SCOPE_BODY_EDIT": "Den här händelsen ingår i en återkommande serie. Vill du redigera bara den här händelsen eller alla händelser i serien?",
+    "RECUR_SCOPE_THIS": "Den här händelsen",
+    "RECUR_SCOPE_TITLE": "Återkommande händelse",
+    "REPEAT": "Upprepa",
+    "REPEAT_DAILY": "Dagligen",
+    "REPEAT_END": "Slutar",
+    "REPEAT_END_COUNT": "Efter",
+    "REPEAT_END_NEVER": "Aldrig",
+    "REPEAT_END_UNTIL": "Datum",
+    "REPEAT_EVERY": "Upprepa var",
+    "REPEAT_UNIT_DAYS": "dag(ar)",
+    "REPEAT_UNIT_WEEKS": "vecka/veckor",
+    "REPEAT_UNIT_MONTHS": "månad(er)",
+    "REPEAT_UNIT_YEARS": "år",
+    "REPEAT_MONTHLY": "Månadsvis",
+    "REPEAT_NONE": "Upprepas inte",
+    "REPEAT_OCCURRENCES": "gång(er)",
+    "REPEAT_ON": "Upprepa på",
+    "REPEAT_WEEKLY": "Veckovis",
+    "REPEAT_YEARLY": "Årligen",
+    "SAVE": "Spara",
+    "START": "Start",
+    "TIMELINE": "Tidslinje",
+    "TIMELINE_DAY": "Tidslinje dag",
+    "TIMELINE_WEEK": "Tidslinje vecka",
+    "TITLE": "Rubrik",
+    "TODAY": "Idag",
+    "WEEK": "Vecka",
+    "WORK_WEEK": "Arbetsvecka",
+    "ZOOM_IN": "Zooma in",
+    "ZOOM_OUT": "Zooma ut",
+    "EVENT_DETAILS": "Händelseinformation"
+  },
+  "common": {
+    "no_options": "Inga alternativ"
+  }
+}

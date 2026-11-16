@@ -20,8 +20,9 @@ describe("package.json metadata", () => {
       "./globals",
       "./package.json",
       "./dist/index.css",
-      "./locales/en",
-      "./locales/de",
+      ...["ar", "de", "en", "es", "fi", "fr", "he", "it", "ja", "no", "pl", "pt", "ru", "sv", "zh"].map(
+        (lang) => `./locales/${lang}`,
+      ),
       "./locales/types",
       "./tailwind.config",
     ];

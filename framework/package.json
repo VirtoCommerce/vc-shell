@@ -51,6 +51,58 @@
       "types": "./dist/locales/de.d.ts",
       "import": "./dist/locales/de.js"
     },
+    "./locales/ar": {
+      "types": "./dist/locales/ar.d.ts",
+      "import": "./dist/locales/ar.js"
+    },
+    "./locales/es": {
+      "types": "./dist/locales/es.d.ts",
+      "import": "./dist/locales/es.js"
+    },
+    "./locales/fi": {
+      "types": "./dist/locales/fi.d.ts",
+      "import": "./dist/locales/fi.js"
+    },
+    "./locales/fr": {
+      "types": "./dist/locales/fr.d.ts",
+      "import": "./dist/locales/fr.js"
+    },
+    "./locales/he": {
+      "types": "./dist/locales/he.d.ts",
+      "import": "./dist/locales/he.js"
+    },
+    "./locales/it": {
+      "types": "./dist/locales/it.d.ts",
+      "import": "./dist/locales/it.js"
+    },
+    "./locales/ja": {
+      "types": "./dist/locales/ja.d.ts",
+      "import": "./dist/locales/ja.js"
+    },
+    "./locales/no": {
+      "types": "./dist/locales/no.d.ts",
+      "import": "./dist/locales/no.js"
+    },
+    "./locales/pl": {
+      "types": "./dist/locales/pl.d.ts",
+      "import": "./dist/locales/pl.js"
+    },
+    "./locales/pt": {
+      "types": "./dist/locales/pt.d.ts",
+      "import": "./dist/locales/pt.js"
+    },
+    "./locales/ru": {
+      "types": "./dist/locales/ru.d.ts",
+      "import": "./dist/locales/ru.js"
+    },
+    "./locales/sv": {
+      "types": "./dist/locales/sv.d.ts",
+      "import": "./dist/locales/sv.js"
+    },
+    "./locales/zh": {
+      "types": "./dist/locales/zh.d.ts",
+      "import": "./dist/locales/zh.js"
+    },
     "./locales/types": {
       "types": "./dist/locales/types.d.ts"
     },

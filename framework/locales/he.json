@@ -1,0 +1,664 @@
+{
+  "CORE": {
+    "ERRORS": {
+      "SESSION_EXPIRED": "הגישה נדחתה: פג תוקף ההתחברות או שאין הרשאות מתאימות.\nיש להיכנס שוב או לפנות למנהל המערכת לקבלת עזרה.",
+      "NETWORK_UNAVAILABLE": "הרשת אינה זמינה. יש לבדוק את החיבור.",
+      "SESSION_CHECK_FAILED": "לא ניתן לאמת את ההפעלה. יש לנסות שוב."
+    },
+    "THEMES": {
+      "LIGHT": "בהיר",
+      "DARK": "כהה"
+    },
+    "NOTIFICATIONS": {
+      "CLEAR_ALL": "ניקוי הכול"
+    }
+  },
+  "SHELL": {
+    "NAVIGATION_ARIA_LABEL": "ניווט ראשי",
+    "SIDEBAR": {
+      "SEARCH_PLACEHOLDER": "חיפוש לפי מילת מפתח"
+    },
+    "USER": {
+      "ROLE": {
+        "ADMINISTRATOR": "מנהל מערכת"
+      }
+    },
+    "ACCOUNT": {
+      "SETTINGS": "הגדרות",
+      "CHANGE_PASSWORD": "שינוי סיסמה",
+      "PROFILE": "פרופיל",
+      "LOGOUT": "יציאה"
+    }
+  },
+  "COMPONENTS": {
+    "CONTROLS": {
+      "CLEAR": "ניקוי",
+      "CLEAR_ALL": "ניקוי הכול",
+      "CLOSE": "סגירה",
+      "TOGGLE_DROPDOWN": "פתיחה או סגירה של הרשימה",
+      "SEARCH_OPTIONS": "חיפוש אפשרויות",
+      "SELECT_OPTION": "בחירת אפשרות",
+      "CLEAR_SELECTION": "ניקוי הבחירה",
+      "COPY_TO_CLIPBOARD": "העתקה ללוח",
+      "DELETE_ITEM": "מחיקת פריט",
+      "SHOW_PASSWORD": "הצגת הסיסמה",
+      "HIDE_PASSWORD": "הסתרת הסיסמה"
+    },
+    "ATOMS": {
+      "VC_IMAGE": {
+        "LABEL": "תמונה"
+      },
+      "VC_BANNER": {
+        "SHOW_MORE": "הצגת עוד",
+        "SHOW_LESS": "הצגת פחות"
+      },
+      "VC_SCROLLABLE_CONTAINER": {
+        "LABEL": "תוכן נגלל"
+      },
+      "VC_VIDEO": {
+        "NO_SOURCE": "אין מקור וידאו"
+      }
+    },
+    "MOLECULES": {
+      "VC_SELECT": {
+        "CLICK_TO_SELECT": "יש ללחוץ לבחירה...",
+        "LOADING": "בטעינה...",
+        "LOADING_MORE": "טעינת פריטים נוספים...",
+        "NO_OPTIONS": "אין אפשרויות"
+      },
+      "VC_FILE_UPLOAD": {
+        "DRAG_HERE": "יש לגרור ולשחרר קובץ לכאן או",
+        "BROWSE": "לעיין בקבצים",
+        "TAP_TO_UPLOAD": "יש להקיש לבחירת קבצים",
+        "UPLOADING": "בהעלאה..."
+      },
+      "VC_INPUT": {
+        "DATE_PLACEHOLDER": "בחירת תאריך",
+        "DATE_TIME_PLACEHOLDER": "בחירת תאריך ושעה"
+      },
+      "VC_PAGINATION": {
+        "JUMP": "מעבר לעמוד:",
+        "LABEL": "עימוד",
+        "FIRST": "העמוד הראשון",
+        "PREVIOUS": "העמוד הקודם",
+        "NEXT": "העמוד הבא",
+        "LAST": "העמוד האחרון",
+        "PAGE": "עמוד {page}"
+      },
+      "VC_MULTIVALUE": {
+        "ADD": "הוספה"
+      },
+      "VC_BREADCRUMBS": {
+        "BACK": "חזרה",
+        "LABEL": "נתיב ניווט",
+        "SHOW_MORE": "הצגת הנתיב המלא"
+      },
+      "VC_COLOR_INPUT": {
+        "CLEAR": "ניקוי הצבע"
+      },
+      "VC_DATE_PICKER": {
+        "CLEAR": "ניקוי התאריך",
+        "ARIA": {
+          "TOGGLE_OVERLAY": "הצגה או הסתרה של הבורר",
+          "MENU": "תפריט בחירת תאריך",
+          "INPUT": "שדה תאריך",
+          "OPEN_TIME_PICKER": "פתיחת בורר השעה",
+          "CLOSE_TIME_PICKER": "סגירת בורר השעה",
+          "INCREMENT": "הגדלת {unit}",
+          "DECREMENT": "הקטנת {unit}",
+          "OPEN_TIME_OVERLAY": "בחירת {unit}",
+          "AM_PM": "מעבר בין AM/PM",
+          "OPEN_YEARS": "בחירת שנה",
+          "OPEN_MONTHS": "בחירת חודש",
+          "NEXT_MONTH": "החודש הבא",
+          "PREV_MONTH": "החודש הקודם",
+          "NEXT_YEAR": "השנה הבאה",
+          "PREV_YEAR": "השנה הקודמת",
+          "CALENDAR_ICON": "פתיחת לוח השנה",
+          "TIME_PICKER": "בורר שעה",
+          "MONTH_PICKER": "בורר חודש",
+          "MONTH_PICKER_OVERLAY": "רשימת חודשים",
+          "YEAR_PICKER": "בורר שנה",
+          "YEAR_PICKER_OVERLAY": "רשימת שנים",
+          "TIME_OVERLAY": "בורר {unit}",
+          "UNITS": {
+            "hours": "שעות",
+            "minutes": "דקות",
+            "seconds": "שניות"
+          }
+        }
+      },
+      "VC_SLIDER": {
+        "PREVIOUS": "השקופית הקודמת",
+        "NEXT": "השקופית הבאה"
+      },
+      "VC_TOAST": {
+        "DISMISS": "סגירת ההתראה"
+      },
+      "VC_EDITOR": {
+        "TOOLBAR": {
+          "LABEL": "עיצוב טקסט",
+          "BOLD": "מודגש",
+          "ITALIC": "נטוי",
+          "UNDERLINE": "קו תחתון",
+          "STRIKETHROUGH": "קו חוצה",
+          "HEADING_1": "כותרת 1",
+          "HEADING_2": "כותרת 2",
+          "HEADING_3": "כותרת 3",
+          "BULLET_LIST": "רשימת תבליטים",
+          "NUMBERED_LIST": "רשימה ממוספרת",
+          "BLOCKQUOTE": "ציטוט",
+          "INSERT_LINK": "הוספת קישור",
+          "INSERT_IMAGE": "הוספת תמונה",
+          "INSERT_TABLE": "הוספת טבלה",
+          "DELETE_TABLE": "מחיקת טבלה",
+          "ADD_COLUMN_BEFORE": "הוספת עמודה לפני",
+          "ADD_COLUMN_AFTER": "הוספת עמודה אחרי",
+          "ADD_ROW_BEFORE": "הוספת שורה לפני",
+          "ADD_ROW_AFTER": "הוספת שורה אחרי",
+          "DELETE_COLUMN": "מחיקת עמודה",
+          "DELETE_ROW": "מחיקת שורה"
+        },
+        "FONT_SIZE": "גודל גופן",
+        "VIEW": {
+          "PREVIEW": "תצוגה מקדימה",
+          "SPLIT": "תצוגה זה לצד זה",
+          "SOURCE": "קוד מקור"
+        }
+      }
+    },
+    "ORGANISMS": {
+      "VC_DYNAMIC_PROPERTY": {
+        "ADD": "הוספת ערך",
+        "VALUE_TYPE": {
+          "COLOR": {
+            "PLACEHOLDER": "קוד צבע",
+            "NAME": "שם הצבע"
+          }
+        }
+      },
+      "VC_GALLERY": {
+        "INTERNAL": {
+          "VC_GALLERY_ITEM": {
+            "FULLSCREEN": "מסך מלא",
+            "EDIT": "עריכה",
+            "DELETE": "מחיקה"
+          },
+          "VC_GALLERY_PREVIEW": {
+            "COPY_IMAGE_LINK": "העתקת קישור לתמונה"
+          },
+          "VC_GALLERY_FILMSTRIP": {
+            "PREVIOUS": "התמונות הקודמות",
+            "NEXT": "התמונות הבאות"
+          }
+        },
+        "GALLERY_IS_EMPTY": "הגלריה ריקה",
+        "DROP_TO_UPLOAD": "יש לשחרר כדי להעלות",
+        "DRAG_IMAGES_HERE": "יש לגרור תמונות לכאן או",
+        "BROWSE_IMAGES": "לעיין בקבצים",
+        "UPLOAD": "העלאה",
+        "OR_DROP_HERE": "או לשחרר כאן",
+        "SHOW_ALL": "הרחבה ({count})",
+        "COLLAPSE": "כיווץ"
+      },
+      "VC_APP": {
+        "NOTIFICATIONS": "התראות",
+        "OPEN_MENU": "פתיחת התפריט",
+        "CLOSE_MENU": "סגירת התפריט",
+        "INTERNAL": {
+          "VC_APP_BAR": {
+            "BACK": "חזרה"
+          },
+          "MOBILE_LAYOUT": {
+            "TAB_MENU": "תפריט",
+            "TAB_HUB": "מרכז"
+          },
+          "APP_HUB": {
+            "SEARCH_PLACEHOLDER": "חיפוש יישומים ווידג'טים",
+            "APPLICATIONS": "יישומים",
+            "WIDGETS": "וידג'טים",
+            "NO_APPLICATIONS": "לא נמצאו יישומים",
+            "NO_WIDGETS": "לא נמצאו וידג'טים",
+            "LIST_VIEW": "תצוגת רשימה",
+            "TILE_VIEW": "תצוגת אריחים"
+          }
+        }
+      },
+      "BLADE_NAVIGATION": {
+        "ARIA_LABEL": "ניווט בין חלוניות"
+      },
+      "VC_BLADE": {
+        "SEE_DETAILS": "הצגת פרטים",
+        "UNSAVED_CHANGES": "יש שינויים שלא נשמרו",
+        "ERROR_POPUP": {
+          "TITLE": "פרטי השגיאה",
+          "COPY_ERROR": "העתקת התוכן",
+          "CLOSE": "סגירה"
+        },
+        "MORE": "עוד",
+        "TOOLBAR": "פעולות סרגל הכלים",
+        "CLOSE_MENU": "סגירת התפריט",
+        "PANEL": "חלונית",
+        "WIDGETS": {
+          "ALERTS_TITLE": "{title}: דורש תשומת לב",
+          "OPEN": "פתיחה",
+          "ALERTS_COUNT": "התראות הדורשות תשומת לב: {count}",
+          "MORE_WIDGETS": "וידג'טים נוספים",
+          "MORE_WIDGETS_ALERTS": "וידג'טים נוספים, התראות הדורשות תשומת לב: {count}",
+          "CUSTOMIZE": "התאמה אישית",
+          "DONE": "סיום",
+          "RESET": "איפוס",
+          "NOT_ON_BLADE": "וידג'טים מוסתרים",
+          "ON_BLADE": "בחלונית · עד {max}",
+          "ALL_ON_BLADE": "יש לגרור וידג'ט לכאן כדי להסתיר אותו",
+          "STRIP_EMPTY": "יש לגרור וידג'ט לכאן כדי להציג אותו",
+          "REMOVE": "הסרת {title} מהחלונית",
+          "ADD": "הוספת {title} לחלונית",
+          "REORDER": "שינוי הסדר של {title}"
+        }
+      },
+      "VC_BLADE_HEADER": {
+        "UNSAVED_CHANGES": "יש שינויים שלא נשמרו",
+        "NO_CHANGES": "אין שינויים שלא נשמרו",
+        "CLOSE": "סגירה",
+        "MAXIMIZE": "הגדלה",
+        "RESTORE": "שחזור גודל"
+      },
+      "VC_TABLE": {
+        "SELECT_ROW": "בחירת שורה",
+        "SELECT_ALL_ROWS": "בחירת כל השורות",
+        "EXPAND_ROW": "הצגה או הסתרה של פרטי השורה",
+        "CURRENT_PAGE_SELECTED": "כל הפריטים בעמוד זה נבחרו.",
+        "SELECT_ALL": "בחירת כל הפריטים",
+        "ALL_SELECTED": "כל הפריטים נבחרו.",
+        "ALL_SELECTED_COUNT": "כל הפריטים נבחרו ({count})",
+        "SELECT_ALL_COUNT": "בחירת כל הפריטים ({count})",
+        "CANCEL": "ניקוי הבחירה",
+        "ALL_ACTIONS": "כל הפעולות",
+        "MORE": "עוד",
+        "ALL_FILTERS": "מסננים",
+        "SEARCH": "חיפוש...",
+        "EMPTY": "הרשימה ריקה.",
+        "EMPTY_TITLE": "אין נתונים",
+        "EMPTY_DESCRIPTION": "אין פריטים להצגה",
+        "NOT_FOUND": "לא נמצאו תוצאות.",
+        "NOT_FOUND_TITLE": "לא נמצאו תוצאות",
+        "NOT_FOUND_DESCRIPTION": "יש לנסות לשנות את החיפוש או את המסננים",
+        "TOTALS": "סה״כ:",
+        "ACTIONS": "פעולות",
+        "NOT_SET": "לא הוגדר",
+        "SELECTED": "נבחרו",
+        "SELECT_ALL_TRUNCATED": "בחירת הכול",
+        "PULL_TO_REFRESH": "יש למשוך כדי לרענן",
+        "RELEASE_TO_REFRESH": "יש לשחרר כדי לרענן",
+        "REFRESHING": "ברענון...",
+        "ADD_ROW": "הוספת שורה",
+        "LOADING": "בטעינה...",
+        "PAGE_INFO": "עמוד {current} מתוך {total}",
+        "COLUMN_FILTER": {
+          "APPLY": "החלה",
+          "CLEAR": "ניקוי",
+          "FROM": "מ-",
+          "TO": "עד",
+          "TITLE": "סינון עמודה"
+        },
+        "GLOBAL_FILTERS": {
+          "BUTTON": "מסננים",
+          "TITLE": "מסננים"
+        },
+        "COLUMN_SWITCHER": {
+          "BUTTON": "עמודות",
+          "TITLE": "הצגה או הסתרה של עמודות",
+          "SHOW_ALL": "הצגת הכול",
+          "RESET": "איפוס"
+        },
+        "OF": "מתוך",
+        "PAGE": "עמוד"
+      },
+      "VC_POPUP": {
+        "OK": "אישור",
+        "CONFIRM": "אישור",
+        "CANCEL": "ביטול",
+        "CLOSE": "סגירה",
+        "TITLE": {
+          "CONFIRMATION": "אישור",
+          "ERROR": "שגיאה",
+          "INFO": "מידע"
+        }
+      }
+    },
+    "THEME_SELECTOR": {
+      "THEME_CHANGED": " ערכת נושא",
+      "THEME_SELECTOR": "ערכת נושא"
+    },
+    "CHANGE_PASSWORD": {
+      "TITLE": "שינוי סיסמה",
+      "TITLE_FORCED": "פג תוקף הסיסמה",
+      "SUBTITLE_FORCED": "יש להגדיר סיסמה חדשה",
+      "FORCED": {
+        "LABEL": "פג תוקף הסיסמה. יש לשנות את הסיסמה כדי להמשיך להשתמש במערכת הניהול."
+      },
+      "CURRENT_PASSWORD": {
+        "LABEL": "הסיסמה הנוכחית",
+        "PLACEHOLDER": "יש להזין סיסמה"
+      },
+      "NEW_PASSWORD": {
+        "LABEL": "סיסמה חדשה",
+        "PLACEHOLDER": "יש להזין סיסמה"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "אימות סיסמה",
+        "PLACEHOLDER": "יש להזין שוב את הסיסמה"
+      },
+      "CANCEL": "ביטול",
+      "SAVE": "עדכון",
+      "ERRORS": {
+        "Repeat-password": "הסיסמאות אינן תואמות",
+        "Equal-passwords": "הסיסמה החדשה חייבת להיות שונה מהסיסמה הקודמת",
+        "Invalid-token": "האסימון אינו תקף או שפג תוקפו",
+        "Password-too-weak": "הסיסמה החדשה אינה עומדת במדיניות אבטחת סיסמאות אחת או יותר:",
+        "PasswordTooShort": "הסיסמה קצרה מדי",
+        "PasswordRequiresUniqueChars": "הסיסמה חייבת לכלול תווים שונים",
+        "PasswordRequiresLower": "הסיסמה חייבת לכלול לפחות אות קטנה אחת ('a'-'z')",
+        "PasswordRequiresUpper": "הסיסמה חייבת לכלול לפחות אות גדולה אחת ('A'-'Z')",
+        "PasswordRequiresDigit": "הסיסמה חייבת לכלול לפחות ספרה אחת ('0'-'9')",
+        "PasswordRequiresNonAlphanumeric": "הסיסמה חייבת לכלול לפחות תו אחד שאינו אות או ספרה",
+        "Incorrect password.": "הסיסמה שהוזנה שגויה",
+        "You have used this password in the past. Choose another one.": "סיסמה זו כבר שימשה בעבר. יש לבחור סיסמה אחרת."
+      }
+    },
+    "APP_HUB": {
+      "TITLE": "יישומים"
+    },
+    "NOTIFICATION_DROPDOWN": {
+      "TITLE": "התראות",
+      "EMPTY": "אין התראות עדיין"
+    },
+    "LANGUAGE_SELECTOR": {
+      "TITLE": "שפה"
+    },
+    "FILTERS": {
+      "APPLY": "החלת מסננים",
+      "RESET": "איפוס"
+    }
+  },
+  "INVITATION": {
+    "TITLE": "הוזמנת!",
+    "SUBTITLE": "יש להגדיר סיסמה לחשבון",
+    "FIELDS": {
+      "EMAIL": {
+        "LABEL": "דוא״ל"
+      },
+      "PASSWORD": {
+        "LABEL": "סיסמה חדשה",
+        "PLACEHOLDER": "יש להזין סיסמה"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "אימות סיסמה",
+        "PLACEHOLDER": "יש להזין שוב את הסיסמה"
+      }
+    },
+    "ACCEPT_INVITATION": "הפעלה",
+    "ERRORS": {
+      "Repeat-password": "הסיסמאות אינן תואמות",
+      "Invalid-token": "האסימון אינו תקף או שפג תוקפו",
+      "Password-too-weak": "הסיסמה החדשה אינה עומדת במדיניות אבטחת סיסמאות אחת או יותר:",
+      "PasswordTooShort": "הסיסמה קצרה מדי",
+      "PasswordRequiresUniqueChars": "הסיסמה חייבת לכלול תווים שונים",
+      "PasswordRequiresLower": "הסיסמה חייבת לכלול לפחות אות קטנה אחת ('a'-'z')",
+      "PasswordRequiresUpper": "הסיסמה חייבת לכלול לפחות אות גדולה אחת ('A'-'Z')",
+      "PasswordRequiresDigit": "הסיסמה חייבת לכלול לפחות ספרה אחת ('0'-'9')",
+      "PasswordRequiresNonAlphanumeric": "הסיסמה חייבת לכלול לפחות תו אחד שאינו אות או ספרה",
+      "recentPasswordUsed": "סיסמה זו כבר שימשה בעבר. יש לבחור סיסמה אחרת."
+    }
+  },
+  "LOGIN": {
+    "TITLE": "ברוכים השבים",
+    "SUBTITLE": "יש להיכנס לחשבון כדי להמשיך",
+    "FIELDS": {
+      "LOGIN": {
+        "LABEL": "דוא״ל",
+        "PLACEHOLDER": "יש להזין כתובת דוא״ל"
+      },
+      "PASSWORD": {
+        "LABEL": "סיסמה",
+        "PLACEHOLDER": "יש להזין סיסמה"
+      },
+      "REMEMBER_ME": {
+        "LABEL": "לזכור אותי"
+      },
+      "FORGOT_PASSWORD": {
+        "TITLE": "שכחתי סיסמה",
+        "LABEL": "דוא״ל",
+        "PLACEHOLDER": "יש להזין כתובת דוא״ל"
+      }
+    },
+    "FORGOT_PASSWORD_BUTTON": "שכחת את הסיסמה?",
+    "BUTTON": "כניסה",
+    "OR": "או",
+    "FORGOT_BUTTON": "שליחה",
+    "BACK_BUTTON": "חזרה",
+    "BUTTON_OK": "אישור",
+    "RESET_EMAIL_TEXT": "תישלח אליך הודעת דוא״ל עם הוראות לאיפוס הסיסמה.",
+    "RESET_EMAIL_SENT": "הודעת דוא״ל עם הוראות נשלחה אליך.",
+    "SSO_NO_PROVIDERS_ERROR": "אימות SSO אינו מוגדר. יש לפנות למנהל המערכת.",
+    "ERRORS": {
+      "INVALID_CREDENTIALS": "שם המשתמש או הסיסמה שגויים.",
+      "AUTH_WITH_CODE": "שגיאת אימות (קוד: {code}).",
+      "AUTH_GENERIC": "שגיאת אימות: {detail}"
+    }
+  },
+  "FORGOT_PASSWORD": {
+    "TITLE": "איפוס סיסמה",
+    "SUBTITLE": "יש להזין כתובת דוא״ל, ונשלח אליה קישור לאיפוס",
+    "FIELDS": {
+      "EMAIL": {
+        "LABEL": "דוא״ל",
+        "PLACEHOLDER": "יש להזין כתובת דוא״ל"
+      }
+    },
+    "SEND_BUTTON": "שליחת קישור לאיפוס",
+    "BACK_TO_LOGIN": "חזרה לכניסה",
+    "SUCCESS_TITLE": "יש לבדוק את תיבת הדואר",
+    "SUCCESS_TEXT": "קישור לאיפוס נשלח אל {email}"
+  },
+  "PASSWORDRESET": {
+    "TITLE": "הגדרת סיסמה חדשה",
+    "SUBTITLE": "יש להזין סיסמה חדשה",
+    "FIELDS": {
+      "PASSWORD": {
+        "LABEL": "סיסמה חדשה",
+        "PLACEHOLDER": "יש להזין סיסמה"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "אימות סיסמה",
+        "PLACEHOLDER": "יש להזין שוב את הסיסמה"
+      }
+    },
+    "SAVE_PASSWORD": "שמירה",
+    "ERRORS": {
+      "Repeat-password": "הסיסמאות אינן תואמות",
+      "Invalid-token": "האסימון אינו תקף או שפג תוקפו",
+      "Password-too-weak": "הסיסמה החדשה אינה עומדת במדיניות אבטחת סיסמאות אחת או יותר:",
+      "PasswordTooShort": "הסיסמה קצרה מדי",
+      "PasswordRequiresUniqueChars": "הסיסמה חייבת לכלול תווים שונים",
+      "PasswordRequiresLower": "הסיסמה חייבת לכלול לפחות אות קטנה אחת ('a'-'z')",
+      "PasswordRequiresUpper": "הסיסמה חייבת לכלול לפחות אות גדולה אחת ('A'-'Z')",
+      "PasswordRequiresDigit": "הסיסמה חייבת לכלול לפחות ספרה אחת ('0'-'9')",
+      "PasswordRequiresNonAlphanumeric": "הסיסמה חייבת לכלול לפחות תו אחד שאינו אות או ספרה",
+      "recentPasswordUsed": "סיסמה זו כבר שימשה בעבר. יש לבחור סיסמה אחרת."
+    }
+  },
+  "ASSETS_MANAGER": {
+    "TITLE": "נכסים",
+    "TOOLBAR": {
+      "SAVE": "שמירה",
+      "REFRESH": "רענון",
+      "ADD": "הוספה",
+      "DELETE": "מחיקת הפריטים שנבחרו"
+    },
+    "EMPTY": {
+      "NO_ASSETS": "אין נכסים",
+      "UPLOAD_ASSETS": "יש לגרור ולשחרר נכסים לכאן או ללחוץ על 'העלאה'",
+      "UPLOAD": "העלאה"
+    },
+    "TABLE": {
+      "HEADER": {
+        "IMAGE": "תמונה",
+        "NAME": "שם",
+        "SIZE": "גודל",
+        "SORT_ORDER": "סדר מיון",
+        "CREATED_DATE": "תאריך יצירה"
+      },
+      "ACTIONS": {
+        "DELETE": "מחיקה",
+        "EDIT": "עריכה"
+      }
+    }
+  },
+  "ASSETS": {
+    "PAGES": {
+      "DETAILS": {
+        "SUBTITLE": "עריכת נכס",
+        "TOOLBAR": {
+          "SAVE": "שמירה",
+          "DELETE": "מחיקה"
+        },
+        "FIELDS": {
+          "SIZE": "גודל",
+          "CREATED_DATE": "תאריך יצירה",
+          "URL": "URL",
+          "COPY": "העתקת קישור",
+          "NAME": {
+            "TITLE": "שם הנכס",
+            "PLACEHOLDER": "יש להזין שם נכס"
+          },
+          "ALT": {
+            "TITLE": "טקסט חלופי לתמונה",
+            "PLACEHOLDER": "יש להזין טקסט חלופי לתמונה",
+            "TOOLTIP": "טקסט זה יוצג בדף אם התמונה מושבתת או לא נטענה"
+          },
+          "DESCRIPTION": {
+            "TITLE": "תיאור מטא",
+            "PLACEHOLDER": "יש להזין תיאור מטא"
+          }
+        }
+      }
+    }
+  },
+  "messages": {
+    "_default": "הערך בשדה {field} אינו תקין",
+    "alpha": "השדה {field} יכול להכיל אותיות בלבד",
+    "alpha_num": "השדה {field} יכול להכיל אותיות וספרות בלבד",
+    "alpha_dash": "השדה {field} יכול להכיל אותיות, ספרות, מקפים וקווים תחתונים",
+    "alpha_spaces": "השדה {field} יכול להכיל אותיות ורווחים בלבד",
+    "between": "ערך השדה {field} חייב להיות בין 0:{min} ל-1:{max}",
+    "confirmed": "אימות השדה {field} אינו תואם",
+    "digits": "השדה {field} חייב להיות מספרי, ומספר הספרות בו חייב להיות בדיוק 0:{length}",
+    "dimensions": "מידות השדה {field} חייבות להיות 0:{width} על 1:{height} פיקסלים",
+    "email": "השדה {field} חייב להכיל כתובת דוא״ל תקינה",
+    "not_one_of": "ערך השדה {field} אינו תקין",
+    "ext": "השדה {field} אינו קובץ תקין",
+    "image": "השדה {field} חייב להיות תמונה",
+    "integer": "השדה {field} חייב להיות מספר שלם",
+    "length": "אורך השדה {field} חייב להיות 0:{length}",
+    "max_value": "ערך השדה {field} חייב להיות 0:{max} או פחות",
+    "max": "מספר התווים בשדה {field} לא יכול לעלות על 0:{length}",
+    "mimes": "סוג הקובץ בשדה {field} אינו תקין",
+    "min_value": "ערך השדה {field} חייב להיות 0:{min} או יותר",
+    "min": "מספר התווים בשדה {field} חייב להיות 0:{length} לפחות",
+    "numeric": "השדה {field} יכול להכיל ספרות בלבד",
+    "one_of": "ערך השדה {field} אינו תקין",
+    "regex": "הפורמט של השדה {field} אינו תקין",
+    "required_if": "השדה {field} הוא שדה חובה",
+    "required": "השדה {field} הוא שדה חובה",
+    "size": "גודל השדה {field} חייב להיות קטן מ-0:{size}KB",
+    "url": "השדה {field} אינו כתובת URL תקינה",
+    "min_dimensions": {
+      "error": "מידות התמונה חייבות להיות גדולות מ-{height}*{width}",
+      "not_image_error": "הקובץ אינו תמונה"
+    },
+    "file_weight": "גודל הקובץ חייב להיות {size} קילובייט לכל היותר",
+    "before": "תאריך הסיום חייב להיות מוקדם מתאריך ההתחלה",
+    "after": "תאריך הסיום חייב להיות מאוחר מתאריך ההתחלה",
+    "bigint": "מספר לא נתמך"
+  },
+  "PERMISSION_MESSAGES": {
+    "ACCESS_RESTRICTED": "הגישה מוגבלת"
+  },
+  "AI_AGENT": {
+    "LOADING": "טעינת Virto OZ..."
+  },
+  "VC_SCHEDULER": {
+    "AGENDA": "סדר יום",
+    "ALL_DAY": "כל היום",
+    "CANCEL": "ביטול",
+    "CLOSE": "סגירה",
+    "COLOR": "צבע",
+    "COLOR_DEFAULT": "צבע ברירת מחדל",
+    "COLOR_CUSTOM": "צבע מותאם אישית",
+    "COLOR_BLUE": "כחול",
+    "COLOR_GREEN": "ירוק",
+    "COLOR_AMBER": "ענבר",
+    "COLOR_RED": "אדום",
+    "COLOR_PURPLE": "סגול",
+    "COLOR_PINK": "ורוד",
+    "COLOR_TEAL": "טורקיז",
+    "COLOR_SLATE": "אפור כהה",
+    "DAY": "יום",
+    "DAY_N_OF_M": "יום {n} מתוך {total}",
+    "DELETE": "מחיקה",
+    "DELETE_CONFIRM_BODY": "האם למחוק את \"{title}\"? לא ניתן לבטל פעולה זו.",
+    "DELETE_CONFIRM_TITLE": "מחיקת אירוע",
+    "EDIT": "עריכה",
+    "EDIT_EVENT": "עריכת אירוע",
+    "EMPTY": "אין אירועים בטווח זה",
+    "EMPTY_HINT": "אין אירועים עדיין. יש ללחוץ על יום כדי להוסיף אירוע.",
+    "END": "סיום",
+    "LOADING": "טעינת אירועים…",
+    "MORE": "עוד {count}",
+    "MORE_EVENTS": "אירועים נוספים",
+    "MONTH": "חודש",
+    "MORE_OPTIONS": "אפשרויות נוספות",
+    "NEW_EVENT": "אירוע חדש",
+    "NEXT": "הבא",
+    "PREVIOUS": "הקודם",
+    "RECUR_SCOPE_ALL": "כל האירועים",
+    "RECUR_SCOPE_BODY_DELETE": "אירוע זה הוא חלק מסדרה חוזרת. האם למחוק רק את האירוע הזה או את כל האירועים בסדרה?",
+    "RECUR_SCOPE_BODY_EDIT": "אירוע זה הוא חלק מסדרה חוזרת. האם לערוך רק את האירוע הזה או את כל האירועים בסדרה?",
+    "RECUR_SCOPE_THIS": "אירוע זה",
+    "RECUR_SCOPE_TITLE": "אירוע חוזר",
+    "REPEAT": "חזרתיות",
+    "REPEAT_DAILY": "מדי יום",
+    "REPEAT_END": "סיום",
+    "REPEAT_END_COUNT": "לאחר",
+    "REPEAT_END_NEVER": "אף פעם",
+    "REPEAT_END_UNTIL": "בתאריך",
+    "REPEAT_EVERY": "חזרה כל",
+    "REPEAT_UNIT_DAYS": "יום/ימים",
+    "REPEAT_UNIT_WEEKS": "שבוע/שבועות",
+    "REPEAT_UNIT_MONTHS": "חודש/חודשים",
+    "REPEAT_UNIT_YEARS": "שנה/שנים",
+    "REPEAT_MONTHLY": "מדי חודש",
+    "REPEAT_NONE": "ללא חזרה",
+    "REPEAT_OCCURRENCES": "מופע/מופעים",
+    "REPEAT_ON": "חזרה בימים",
+    "REPEAT_WEEKLY": "מדי שבוע",
+    "REPEAT_YEARLY": "מדי שנה",
+    "SAVE": "שמירה",
+    "START": "התחלה",
+    "TIMELINE": "ציר זמן",
+    "TIMELINE_DAY": "ציר זמן – יום",
+    "TIMELINE_WEEK": "ציר זמן – שבוע",
+    "TITLE": "כותרת",
+    "TODAY": "היום",
+    "WEEK": "שבוע",
+    "WORK_WEEK": "שבוע עבודה",
+    "ZOOM_IN": "הגדלת התצוגה",
+    "ZOOM_OUT": "הקטנת התצוגה",
+    "EVENT_DETAILS": "פרטי האירוע"
+  },
+  "common": {
+    "no_options": "אין אפשרויות"
+  }
+}

@@ -1,0 +1,664 @@
+{
+  "CORE": {
+    "ERRORS": {
+      "SESSION_EXPIRED": "访问被拒绝：您的会话已过期，或您没有所需的权限。\n请重新登录或联系管理员获取帮助。",
+      "NETWORK_UNAVAILABLE": "网络不可用。请检查您的网络连接。",
+      "SESSION_CHECK_FAILED": "无法验证会话。请重试。"
+    },
+    "THEMES": {
+      "LIGHT": "浅色",
+      "DARK": "深色"
+    },
+    "NOTIFICATIONS": {
+      "CLEAR_ALL": "全部清除"
+    }
+  },
+  "SHELL": {
+    "NAVIGATION_ARIA_LABEL": "主导航",
+    "SIDEBAR": {
+      "SEARCH_PLACEHOLDER": "搜索关键字"
+    },
+    "USER": {
+      "ROLE": {
+        "ADMINISTRATOR": "管理员"
+      }
+    },
+    "ACCOUNT": {
+      "SETTINGS": "设置",
+      "CHANGE_PASSWORD": "更改密码",
+      "PROFILE": "个人资料",
+      "LOGOUT": "退出登录"
+    }
+  },
+  "COMPONENTS": {
+    "CONTROLS": {
+      "CLEAR": "清除",
+      "CLEAR_ALL": "全部清除",
+      "CLOSE": "关闭",
+      "TOGGLE_DROPDOWN": "展开/收起下拉列表",
+      "SEARCH_OPTIONS": "搜索选项",
+      "SELECT_OPTION": "选择选项",
+      "CLEAR_SELECTION": "清除选择",
+      "COPY_TO_CLIPBOARD": "复制到剪贴板",
+      "DELETE_ITEM": "删除项目",
+      "SHOW_PASSWORD": "显示密码",
+      "HIDE_PASSWORD": "隐藏密码"
+    },
+    "ATOMS": {
+      "VC_IMAGE": {
+        "LABEL": "图片"
+      },
+      "VC_BANNER": {
+        "SHOW_MORE": "显示更多",
+        "SHOW_LESS": "收起"
+      },
+      "VC_SCROLLABLE_CONTAINER": {
+        "LABEL": "可滚动内容"
+      },
+      "VC_VIDEO": {
+        "NO_SOURCE": "无视频源"
+      }
+    },
+    "MOLECULES": {
+      "VC_SELECT": {
+        "CLICK_TO_SELECT": "点击选择...",
+        "LOADING": "加载中...",
+        "LOADING_MORE": "正在加载更多...",
+        "NO_OPTIONS": "无选项"
+      },
+      "VC_FILE_UPLOAD": {
+        "DRAG_HERE": "将文件拖放到此处，或",
+        "BROWSE": "浏览文件",
+        "TAP_TO_UPLOAD": "点按以选择文件",
+        "UPLOADING": "上传中..."
+      },
+      "VC_INPUT": {
+        "DATE_PLACEHOLDER": "选择日期",
+        "DATE_TIME_PLACEHOLDER": "选择日期和时间"
+      },
+      "VC_PAGINATION": {
+        "JUMP": "跳转到页面：",
+        "LABEL": "分页",
+        "FIRST": "第一页",
+        "PREVIOUS": "上一页",
+        "NEXT": "下一页",
+        "LAST": "最后一页",
+        "PAGE": "第 {page} 页"
+      },
+      "VC_MULTIVALUE": {
+        "ADD": "添加"
+      },
+      "VC_BREADCRUMBS": {
+        "BACK": "返回",
+        "LABEL": "面包屑导航",
+        "SHOW_MORE": "显示更多导航路径"
+      },
+      "VC_COLOR_INPUT": {
+        "CLEAR": "清除颜色"
+      },
+      "VC_DATE_PICKER": {
+        "CLEAR": "清除日期",
+        "ARIA": {
+          "TOGGLE_OVERLAY": "显示或隐藏选择器",
+          "MENU": "日期选择器菜单",
+          "INPUT": "日期输入",
+          "OPEN_TIME_PICKER": "打开时间选择器",
+          "CLOSE_TIME_PICKER": "关闭时间选择器",
+          "INCREMENT": "增加{unit}",
+          "DECREMENT": "减少{unit}",
+          "OPEN_TIME_OVERLAY": "选择{unit}",
+          "AM_PM": "切换上午/下午",
+          "OPEN_YEARS": "选择年份",
+          "OPEN_MONTHS": "选择月份",
+          "NEXT_MONTH": "下个月",
+          "PREV_MONTH": "上个月",
+          "NEXT_YEAR": "下一年",
+          "PREV_YEAR": "上一年",
+          "CALENDAR_ICON": "打开日历",
+          "TIME_PICKER": "时间选择器",
+          "MONTH_PICKER": "月份选择器",
+          "MONTH_PICKER_OVERLAY": "月份列表",
+          "YEAR_PICKER": "年份选择器",
+          "YEAR_PICKER_OVERLAY": "年份列表",
+          "TIME_OVERLAY": "{unit}选择器",
+          "UNITS": {
+            "hours": "小时",
+            "minutes": "分钟",
+            "seconds": "秒"
+          }
+        }
+      },
+      "VC_SLIDER": {
+        "PREVIOUS": "上一张",
+        "NEXT": "下一张"
+      },
+      "VC_TOAST": {
+        "DISMISS": "关闭通知"
+      },
+      "VC_EDITOR": {
+        "TOOLBAR": {
+          "LABEL": "文本格式",
+          "BOLD": "粗体",
+          "ITALIC": "斜体",
+          "UNDERLINE": "下划线",
+          "STRIKETHROUGH": "删除线",
+          "HEADING_1": "标题 1",
+          "HEADING_2": "标题 2",
+          "HEADING_3": "标题 3",
+          "BULLET_LIST": "项目符号列表",
+          "NUMBERED_LIST": "编号列表",
+          "BLOCKQUOTE": "引用",
+          "INSERT_LINK": "插入链接",
+          "INSERT_IMAGE": "插入图片",
+          "INSERT_TABLE": "插入表格",
+          "DELETE_TABLE": "删除表格",
+          "ADD_COLUMN_BEFORE": "在左侧插入列",
+          "ADD_COLUMN_AFTER": "在右侧插入列",
+          "ADD_ROW_BEFORE": "在上方插入行",
+          "ADD_ROW_AFTER": "在下方插入行",
+          "DELETE_COLUMN": "删除列",
+          "DELETE_ROW": "删除行"
+        },
+        "FONT_SIZE": "字号",
+        "VIEW": {
+          "PREVIEW": "预览",
+          "SPLIT": "并排视图",
+          "SOURCE": "源代码"
+        }
+      }
+    },
+    "ORGANISMS": {
+      "VC_DYNAMIC_PROPERTY": {
+        "ADD": "添加值",
+        "VALUE_TYPE": {
+          "COLOR": {
+            "PLACEHOLDER": "颜色代码",
+            "NAME": "颜色名称"
+          }
+        }
+      },
+      "VC_GALLERY": {
+        "INTERNAL": {
+          "VC_GALLERY_ITEM": {
+            "FULLSCREEN": "全屏",
+            "EDIT": "编辑",
+            "DELETE": "删除"
+          },
+          "VC_GALLERY_PREVIEW": {
+            "COPY_IMAGE_LINK": "复制图片链接"
+          },
+          "VC_GALLERY_FILMSTRIP": {
+            "PREVIOUS": "上一组图片",
+            "NEXT": "下一组图片"
+          }
+        },
+        "GALLERY_IS_EMPTY": "图库为空",
+        "DROP_TO_UPLOAD": "松开即可上传",
+        "DRAG_IMAGES_HERE": "将图片拖到此处，或",
+        "BROWSE_IMAGES": "浏览文件",
+        "UPLOAD": "上传",
+        "OR_DROP_HERE": "或拖放到此处",
+        "SHOW_ALL": "展开 ({count})",
+        "COLLAPSE": "收起"
+      },
+      "VC_APP": {
+        "NOTIFICATIONS": "通知",
+        "OPEN_MENU": "打开菜单",
+        "CLOSE_MENU": "关闭菜单",
+        "INTERNAL": {
+          "VC_APP_BAR": {
+            "BACK": "返回"
+          },
+          "MOBILE_LAYOUT": {
+            "TAB_MENU": "菜单",
+            "TAB_HUB": "中心"
+          },
+          "APP_HUB": {
+            "SEARCH_PLACEHOLDER": "搜索应用程序和小组件",
+            "APPLICATIONS": "应用程序",
+            "WIDGETS": "小组件",
+            "NO_APPLICATIONS": "未找到应用程序",
+            "NO_WIDGETS": "未找到小组件",
+            "LIST_VIEW": "列表视图",
+            "TILE_VIEW": "平铺视图"
+          }
+        }
+      },
+      "BLADE_NAVIGATION": {
+        "ARIA_LABEL": "面板导航"
+      },
+      "VC_BLADE": {
+        "SEE_DETAILS": "查看详情",
+        "UNSAVED_CHANGES": "有未保存的更改",
+        "ERROR_POPUP": {
+          "TITLE": "错误详情",
+          "COPY_ERROR": "复制内容",
+          "CLOSE": "关闭"
+        },
+        "MORE": "更多",
+        "TOOLBAR": "工具栏操作",
+        "CLOSE_MENU": "关闭菜单",
+        "PANEL": "面板",
+        "WIDGETS": {
+          "ALERTS_TITLE": "{title}：需要关注",
+          "OPEN": "打开",
+          "ALERTS_COUNT": "需要关注的提醒：{count}",
+          "MORE_WIDGETS": "更多小组件",
+          "MORE_WIDGETS_ALERTS": "更多小组件，需要关注的提醒：{count}",
+          "CUSTOMIZE": "自定义",
+          "DONE": "完成",
+          "RESET": "重置",
+          "NOT_ON_BLADE": "已隐藏的小组件",
+          "ON_BLADE": "在面板上 · 最多 {max} 个",
+          "ALL_ON_BLADE": "将小组件拖到此处即可隐藏",
+          "STRIP_EMPTY": "将小组件拖到此处即可显示",
+          "REMOVE": "从面板中移除 {title}",
+          "ADD": "将 {title} 添加到面板",
+          "REORDER": "调整 {title} 的顺序"
+        }
+      },
+      "VC_BLADE_HEADER": {
+        "UNSAVED_CHANGES": "有未保存的更改",
+        "NO_CHANGES": "没有未保存的更改",
+        "CLOSE": "关闭",
+        "MAXIMIZE": "最大化",
+        "RESTORE": "还原"
+      },
+      "VC_TABLE": {
+        "SELECT_ROW": "选择行",
+        "SELECT_ALL_ROWS": "选择所有行",
+        "EXPAND_ROW": "展开/收起行详情",
+        "CURRENT_PAGE_SELECTED": "已选择本页所有项目。",
+        "SELECT_ALL": "选择所有项目",
+        "ALL_SELECTED": "已选择所有项目。",
+        "ALL_SELECTED_COUNT": "已选择全部 {count} 个项目",
+        "SELECT_ALL_COUNT": "选择全部 {count} 个项目",
+        "CANCEL": "清除选择",
+        "ALL_ACTIONS": "所有操作",
+        "MORE": "更多",
+        "ALL_FILTERS": "筛选",
+        "SEARCH": "搜索...",
+        "EMPTY": "列表为空。",
+        "EMPTY_TITLE": "无数据",
+        "EMPTY_DESCRIPTION": "没有可显示的项目",
+        "NOT_FOUND": "未找到任何内容。",
+        "NOT_FOUND_TITLE": "未找到结果",
+        "NOT_FOUND_DESCRIPTION": "请尝试调整搜索条件或筛选条件",
+        "TOTALS": "合计：",
+        "ACTIONS": "操作",
+        "NOT_SET": "未设置",
+        "SELECTED": "已选择",
+        "SELECT_ALL_TRUNCATED": "全选",
+        "PULL_TO_REFRESH": "下拉刷新",
+        "RELEASE_TO_REFRESH": "释放刷新",
+        "REFRESHING": "正在刷新...",
+        "ADD_ROW": "添加行",
+        "LOADING": "加载中...",
+        "PAGE_INFO": "第 {current} 页，共 {total} 页",
+        "COLUMN_FILTER": {
+          "APPLY": "应用",
+          "CLEAR": "清除",
+          "FROM": "从",
+          "TO": "至",
+          "TITLE": "筛选列"
+        },
+        "GLOBAL_FILTERS": {
+          "BUTTON": "筛选",
+          "TITLE": "筛选"
+        },
+        "COLUMN_SWITCHER": {
+          "BUTTON": "列",
+          "TITLE": "显示/隐藏列",
+          "SHOW_ALL": "全部显示",
+          "RESET": "重置"
+        },
+        "OF": "/",
+        "PAGE": "页"
+      },
+      "VC_POPUP": {
+        "OK": "确定",
+        "CONFIRM": "确认",
+        "CANCEL": "取消",
+        "CLOSE": "关闭",
+        "TITLE": {
+          "CONFIRMATION": "确认",
+          "ERROR": "错误",
+          "INFO": "信息"
+        }
+      }
+    },
+    "THEME_SELECTOR": {
+      "THEME_CHANGED": "主题",
+      "THEME_SELECTOR": "主题"
+    },
+    "CHANGE_PASSWORD": {
+      "TITLE": "更改密码",
+      "TITLE_FORCED": "密码已过期",
+      "SUBTITLE_FORCED": "请设置新密码",
+      "FORCED": {
+        "LABEL": "您的密码已过期。您必须更改密码才能继续使用管理器。"
+      },
+      "CURRENT_PASSWORD": {
+        "LABEL": "当前密码",
+        "PLACEHOLDER": "输入密码"
+      },
+      "NEW_PASSWORD": {
+        "LABEL": "新密码",
+        "PLACEHOLDER": "输入密码"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "确认密码",
+        "PLACEHOLDER": "确认密码"
+      },
+      "CANCEL": "取消",
+      "SAVE": "更新",
+      "ERRORS": {
+        "Repeat-password": "两次输入的密码不一致",
+        "Equal-passwords": "新密码不能与旧密码相同",
+        "Invalid-token": "令牌无效或已过期",
+        "Password-too-weak": "新密码不符合以下一项或多项密码安全策略：",
+        "PasswordTooShort": "密码太短",
+        "PasswordRequiresUniqueChars": "密码必须使用不同的字符",
+        "PasswordRequiresLower": "密码必须至少包含一个小写字母 ('a'-'z')",
+        "PasswordRequiresUpper": "密码必须至少包含一个大写字母 ('A'-'Z')",
+        "PasswordRequiresDigit": "密码必须至少包含一个数字 ('0'-'9')",
+        "PasswordRequiresNonAlphanumeric": "密码必须至少包含一个非字母数字字符",
+        "Incorrect password.": "您输入的密码不正确",
+        "You have used this password in the past. Choose another one.": "您以前使用过此密码。请选择其他密码。"
+      }
+    },
+    "APP_HUB": {
+      "TITLE": "应用程序"
+    },
+    "NOTIFICATION_DROPDOWN": {
+      "TITLE": "通知",
+      "EMPTY": "暂无通知"
+    },
+    "LANGUAGE_SELECTOR": {
+      "TITLE": "语言"
+    },
+    "FILTERS": {
+      "APPLY": "应用筛选",
+      "RESET": "重置"
+    }
+  },
+  "INVITATION": {
+    "TITLE": "您已受到邀请！",
+    "SUBTITLE": "为您的帐户设置密码",
+    "FIELDS": {
+      "EMAIL": {
+        "LABEL": "电子邮件"
+      },
+      "PASSWORD": {
+        "LABEL": "新密码",
+        "PLACEHOLDER": "输入密码"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "确认密码",
+        "PLACEHOLDER": "确认密码"
+      }
+    },
+    "ACCEPT_INVITATION": "激活",
+    "ERRORS": {
+      "Repeat-password": "两次输入的密码不一致",
+      "Invalid-token": "令牌无效或已过期",
+      "Password-too-weak": "新密码不符合以下一项或多项密码安全策略：",
+      "PasswordTooShort": "密码太短",
+      "PasswordRequiresUniqueChars": "密码必须使用不同的字符",
+      "PasswordRequiresLower": "密码必须至少包含一个小写字母 ('a'-'z')",
+      "PasswordRequiresUpper": "密码必须至少包含一个大写字母 ('A'-'Z')",
+      "PasswordRequiresDigit": "密码必须至少包含一个数字 ('0'-'9')",
+      "PasswordRequiresNonAlphanumeric": "密码必须至少包含一个非字母数字字符",
+      "recentPasswordUsed": "您以前使用过此密码。请选择其他密码。"
+    }
+  },
+  "LOGIN": {
+    "TITLE": "欢迎回来",
+    "SUBTITLE": "登录您的帐户以继续",
+    "FIELDS": {
+      "LOGIN": {
+        "LABEL": "电子邮件",
+        "PLACEHOLDER": "输入您的电子邮件"
+      },
+      "PASSWORD": {
+        "LABEL": "密码",
+        "PLACEHOLDER": "输入您的密码"
+      },
+      "REMEMBER_ME": {
+        "LABEL": "记住我"
+      },
+      "FORGOT_PASSWORD": {
+        "TITLE": "忘记密码",
+        "LABEL": "电子邮件",
+        "PLACEHOLDER": "请输入您的电子邮件"
+      }
+    },
+    "FORGOT_PASSWORD_BUTTON": "忘记密码？",
+    "BUTTON": "登录",
+    "OR": "或",
+    "FORGOT_BUTTON": "提交",
+    "BACK_BUTTON": "返回",
+    "BUTTON_OK": "确定",
+    "RESET_EMAIL_TEXT": "我们将向您发送一封电子邮件，说明如何重置密码。",
+    "RESET_EMAIL_SENT": "包含操作说明的电子邮件已发送给您。",
+    "SSO_NO_PROVIDERS_ERROR": "未配置 SSO 身份验证。请联系管理员。",
+    "ERRORS": {
+      "INVALID_CREDENTIALS": "登录名或密码不正确。",
+      "AUTH_WITH_CODE": "身份验证错误（代码：{code}）。",
+      "AUTH_GENERIC": "身份验证错误：{detail}"
+    }
+  },
+  "FORGOT_PASSWORD": {
+    "TITLE": "重置密码",
+    "SUBTITLE": "输入您的电子邮件，我们将向您发送重置链接",
+    "FIELDS": {
+      "EMAIL": {
+        "LABEL": "电子邮件",
+        "PLACEHOLDER": "输入您的电子邮件地址"
+      }
+    },
+    "SEND_BUTTON": "发送重置链接",
+    "BACK_TO_LOGIN": "返回登录",
+    "SUCCESS_TITLE": "请查收电子邮件",
+    "SUCCESS_TEXT": "我们已将重置链接发送至 {email}"
+  },
+  "PASSWORDRESET": {
+    "TITLE": "设置新密码",
+    "SUBTITLE": "请在下方输入新密码",
+    "FIELDS": {
+      "PASSWORD": {
+        "LABEL": "新密码",
+        "PLACEHOLDER": "输入密码"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "确认密码",
+        "PLACEHOLDER": "确认密码"
+      }
+    },
+    "SAVE_PASSWORD": "保存",
+    "ERRORS": {
+      "Repeat-password": "两次输入的密码不一致",
+      "Invalid-token": "令牌无效或已过期",
+      "Password-too-weak": "新密码不符合以下一项或多项密码安全策略：",
+      "PasswordTooShort": "密码太短",
+      "PasswordRequiresUniqueChars": "密码必须使用不同的字符",
+      "PasswordRequiresLower": "密码必须至少包含一个小写字母 ('a'-'z')",
+      "PasswordRequiresUpper": "密码必须至少包含一个大写字母 ('A'-'Z')",
+      "PasswordRequiresDigit": "密码必须至少包含一个数字 ('0'-'9')",
+      "PasswordRequiresNonAlphanumeric": "密码必须至少包含一个非字母数字字符",
+      "recentPasswordUsed": "您以前使用过此密码。请选择其他密码。"
+    }
+  },
+  "ASSETS_MANAGER": {
+    "TITLE": "资源",
+    "TOOLBAR": {
+      "SAVE": "保存",
+      "REFRESH": "刷新",
+      "ADD": "添加",
+      "DELETE": "删除所选项"
+    },
+    "EMPTY": {
+      "NO_ASSETS": "没有资源",
+      "UPLOAD_ASSETS": "将资源拖放到此处，或点击“上传”按钮",
+      "UPLOAD": "上传"
+    },
+    "TABLE": {
+      "HEADER": {
+        "IMAGE": "图片",
+        "NAME": "名称",
+        "SIZE": "大小",
+        "SORT_ORDER": "排序",
+        "CREATED_DATE": "创建日期"
+      },
+      "ACTIONS": {
+        "DELETE": "删除",
+        "EDIT": "编辑"
+      }
+    }
+  },
+  "ASSETS": {
+    "PAGES": {
+      "DETAILS": {
+        "SUBTITLE": "编辑资源",
+        "TOOLBAR": {
+          "SAVE": "保存",
+          "DELETE": "删除"
+        },
+        "FIELDS": {
+          "SIZE": "大小",
+          "CREATED_DATE": "创建日期",
+          "URL": "URL",
+          "COPY": "复制链接",
+          "NAME": {
+            "TITLE": "资源名称",
+            "PLACEHOLDER": "输入资源名称"
+          },
+          "ALT": {
+            "TITLE": "图片替代文本",
+            "PLACEHOLDER": "输入图片替代文本",
+            "TOOLTIP": "当页面上的图片被禁用或未加载时，将显示此文本"
+          },
+          "DESCRIPTION": {
+            "TITLE": "元描述",
+            "PLACEHOLDER": "输入元描述"
+          }
+        }
+      }
+    }
+  },
+  "messages": {
+    "_default": "{field} 无效",
+    "alpha": "{field} 只能包含字母",
+    "alpha_num": "{field} 只能包含字母和数字",
+    "alpha_dash": "{field} 只能包含字母、数字、短划线和下划线",
+    "alpha_spaces": "{field} 只能包含字母和空格",
+    "between": "{field} 必须介于 0:{min} 和 1:{max} 之间",
+    "confirmed": "{field} 与确认值不匹配",
+    "digits": "{field} 必须是数字，且正好为 0:{length} 位",
+    "dimensions": "{field} 必须为 0:{width} × 1:{height} 像素",
+    "email": "{field} 必须是有效的电子邮件地址",
+    "not_one_of": "{field} 的值无效",
+    "ext": "{field} 不是有效的文件",
+    "image": "{field} 必须是图片",
+    "integer": "{field} 必须是整数",
+    "length": "{field} 的长度必须为 0:{length}",
+    "max_value": "{field} 必须小于或等于 0:{max}",
+    "max": "{field} 不能超过 0:{length} 个字符",
+    "mimes": "{field} 必须是有效的文件类型",
+    "min_value": "{field} 必须大于或等于 0:{min}",
+    "min": "{field} 至少需要 0:{length} 个字符",
+    "numeric": "{field} 只能包含数字",
+    "one_of": "{field} 的值无效",
+    "regex": "{field} 的格式无效",
+    "required_if": "{field} 为必填项",
+    "required": "{field} 为必填项",
+    "size": "{field} 的大小必须小于 0:{size}KB",
+    "url": "{field} 不是有效的 URL",
+    "min_dimensions": {
+      "error": "图片尺寸必须大于 {height}*{width}",
+      "not_image_error": "不是图片文件"
+    },
+    "file_weight": "文件大小不能超过 {size} KB",
+    "before": "结束日期必须早于开始日期",
+    "after": "结束日期必须晚于开始日期",
+    "bigint": "不支持的数字"
+  },
+  "PERMISSION_MESSAGES": {
+    "ACCESS_RESTRICTED": "访问受限"
+  },
+  "AI_AGENT": {
+    "LOADING": "正在加载 Virto OZ..."
+  },
+  "VC_SCHEDULER": {
+    "AGENDA": "日程",
+    "ALL_DAY": "全天",
+    "CANCEL": "取消",
+    "CLOSE": "关闭",
+    "COLOR": "颜色",
+    "COLOR_DEFAULT": "默认颜色",
+    "COLOR_CUSTOM": "自定义颜色",
+    "COLOR_BLUE": "蓝色",
+    "COLOR_GREEN": "绿色",
+    "COLOR_AMBER": "琥珀色",
+    "COLOR_RED": "红色",
+    "COLOR_PURPLE": "紫色",
+    "COLOR_PINK": "粉色",
+    "COLOR_TEAL": "青色",
+    "COLOR_SLATE": "石板灰",
+    "DAY": "日",
+    "DAY_N_OF_M": "第 {n} 天，共 {total} 天",
+    "DELETE": "删除",
+    "DELETE_CONFIRM_BODY": "删除“{title}”？此操作无法撤消。",
+    "DELETE_CONFIRM_TITLE": "删除事件",
+    "EDIT": "编辑",
+    "EDIT_EVENT": "编辑事件",
+    "EMPTY": "此时间范围内没有事件",
+    "EMPTY_HINT": "暂无事件。点击某一天即可添加事件。",
+    "END": "结束",
+    "LOADING": "正在加载事件…",
+    "MORE": "还有 {count} 个",
+    "MORE_EVENTS": "更多事件",
+    "MONTH": "月",
+    "MORE_OPTIONS": "更多选项",
+    "NEW_EVENT": "新建事件",
+    "NEXT": "下一个",
+    "PREVIOUS": "上一个",
+    "RECUR_SCOPE_ALL": "所有事件",
+    "RECUR_SCOPE_BODY_DELETE": "此事件属于重复系列。您要仅删除此事件，还是删除该系列中的所有事件？",
+    "RECUR_SCOPE_BODY_EDIT": "此事件属于重复系列。您要仅编辑此事件，还是编辑该系列中的所有事件？",
+    "RECUR_SCOPE_THIS": "此事件",
+    "RECUR_SCOPE_TITLE": "重复事件",
+    "REPEAT": "重复",
+    "REPEAT_DAILY": "每天",
+    "REPEAT_END": "结束",
+    "REPEAT_END_COUNT": "重复次数后",
+    "REPEAT_END_NEVER": "永不",
+    "REPEAT_END_UNTIL": "指定日期",
+    "REPEAT_EVERY": "重复间隔",
+    "REPEAT_UNIT_DAYS": "天",
+    "REPEAT_UNIT_WEEKS": "周",
+    "REPEAT_UNIT_MONTHS": "个月",
+    "REPEAT_UNIT_YEARS": "年",
+    "REPEAT_MONTHLY": "每月",
+    "REPEAT_NONE": "不重复",
+    "REPEAT_OCCURRENCES": "次",
+    "REPEAT_ON": "重复日",
+    "REPEAT_WEEKLY": "每周",
+    "REPEAT_YEARLY": "每年",
+    "SAVE": "保存",
+    "START": "开始",
+    "TIMELINE": "时间线",
+    "TIMELINE_DAY": "日时间线",
+    "TIMELINE_WEEK": "周时间线",
+    "TITLE": "标题",
+    "TODAY": "今天",
+    "WEEK": "周",
+    "WORK_WEEK": "工作周",
+    "ZOOM_IN": "放大",
+    "ZOOM_OUT": "缩小",
+    "EVENT_DETAILS": "事件详情"
+  },
+  "common": {
+    "no_options": "无选项"
+  }
+}

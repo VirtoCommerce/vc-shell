@@ -1,3 +1,16 @@
-import * as en from "@locales/en.json";
+import * as ar from "@locales/ar.json";
 import * as de from "@locales/de.json";
-export { en, de };
+import * as en from "@locales/en.json";
+import * as es from "@locales/es.json";
+import * as fi from "@locales/fi.json";
+import * as fr from "@locales/fr.json";
+import * as he from "@locales/he.json";
+import * as it from "@locales/it.json";
+import * as ja from "@locales/ja.json";
+import * as no from "@locales/no.json";
+import * as pl from "@locales/pl.json";
+import * as pt from "@locales/pt.json";
+import * as ru from "@locales/ru.json";
+import * as sv from "@locales/sv.json";
+import * as zh from "@locales/zh.json";
+export { ar, de, en, es, fi, fr, he, it, ja, no, pl, pt, ru, sv, zh };

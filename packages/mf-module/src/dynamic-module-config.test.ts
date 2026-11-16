@@ -1,6 +1,8 @@
 // @vitest-environment node
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 
 vi.mock("@module-federation/vite", () => ({
@@ -123,6 +125,40 @@ describe("dynamicModuleConfiguration (MF)", () => {
       const config = dynamicModuleConfiguration(pkg, {});
       expect(config.build?.emptyOutDir).toBeUndefined();
     });
+  });
+
+  describe("build entry", () => {
+    let root: string;
+
+    beforeEach(() => {
+      root = fs.mkdtempSync(path.join(os.tmpdir(), "mf-module-"));
+    });
+
+    afterEach(() => {
+      fs.rmSync(root, { recursive: true, force: true });
+    });
+
+    it("builds from the module entry when the project has no index.html", () => {
+      const config = dynamicModuleConfiguration(pkg, { root });
+      expect(config.build?.rollupOptions?.input).toBe("./src/modules/index.ts");
+    });
+
+    it("builds from a custom entry when the project has no index.html", () => {
+      const config = dynamicModuleConfiguration(pkg, { root, entry: "./src/custom.ts" });
+      expect(config.build?.rollupOptions?.input).toBe("./src/custom.ts");
+    });
+
+    it("leaves the build input to Vite when the project ships an index.html", () => {
+      fs.writeFileSync(path.join(root, "index.html"), "<!doctype html>");
+      const config = dynamicModuleConfiguration(pkg, { root });
+      expect(config.build?.rollupOptions).toBeUndefined();
+    });
+  });
+
+  it("works without options", () => {
+    const config = dynamicModuleConfiguration(pkg);
+    const mfPlugin = (config.plugins as any[]).find((p: any) => p._config);
+    expect(mfPlugin._config.exposes["./Module"]).toBe("./src/modules/index.ts");
   });
 
   describe("remoteName — federation name override", () => {

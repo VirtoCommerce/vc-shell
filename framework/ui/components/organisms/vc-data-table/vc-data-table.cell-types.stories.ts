@@ -232,13 +232,13 @@ export const CellTypeHtml: Story = {
           id: 4,
           title: "Mixed Content",
           content:
-            '<em>Italic</em>, <u>underline</u>, and <code style="background: #f0f0f0; padding: 2px 4px; border-radius: 3px;">code</code>',
+            '<em>Italic</em>, <u>underline</u>, and <code style="background: var(--neutrals-100); padding: 2px 4px; border-radius: 3px;">code</code>',
         },
         {
           id: 5,
           title: "Badge Example",
           content:
-            '<span style="display: inline-block; padding: 2px 8px; background: #10B981; color: white; border-radius: 12px; font-size: 12px;">Active</span>',
+            '<span style="display: inline-block; padding: 2px 8px; background: var(--success-500); color: white; border-radius: 12px; font-size: 12px;">Active</span>',
         },
       ]);
 

@@ -100,7 +100,7 @@ const meta = {
       },
     },
     right: {
-      description: "Custom right position when customPosition is true",
+      description: "Offset from the end edge (right, or left in RTL) when customPosition is true",
       control: "text",
       table: {
         type: { summary: "string" },
@@ -162,7 +162,7 @@ export const Default: Story = {
     template: `
       <div class="tw-flex tw-gap-4">
         <VcBadge v-bind="args">
-          <div class="tw-w-10 tw-h-10 tw-bg-gray-200 tw-rounded tw-flex tw-items-center tw-justify-center">
+          <div class="tw-w-10 tw-h-10 tw-bg-[var(--neutrals-200)] tw-rounded tw-flex tw-items-center tw-justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="tw-h-5 tw-w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
@@ -207,7 +207,7 @@ export const Variants: Story = {
               :variant="variant.name"
               :size="args.size"
             >
-              <div class="tw-w-10 tw-h-10 tw-bg-gray-200 tw-rounded tw-flex tw-items-center tw-justify-center">
+              <div class="tw-w-10 tw-h-10 tw-bg-[var(--neutrals-200)] tw-rounded tw-flex tw-items-center tw-justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="tw-h-5 tw-w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
@@ -249,7 +249,7 @@ export const DotIndicator: Story = {
         <div class="tw-flex tw-gap-4">
           <div v-for="variant in variants" :key="variant" class="tw-flex tw-flex-col tw-items-center tw-gap-2">
             <VcBadge :isDot="true" :variant="variant">
-              <div class="tw-w-5 tw-h-5 tw-bg-gray-200 tw-rounded tw-flex tw-items-center tw-justify-center">
+              <div class="tw-w-5 tw-h-5 tw-bg-[var(--neutrals-200)] tw-rounded tw-flex tw-items-center tw-justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="tw-h-5 tw-w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
                 </svg>
@@ -293,7 +293,7 @@ export const Sizes: Story = {
               :size="size.size"
               :variant="args.variant"
             >
-              <div class="tw-w-10 tw-h-10 tw-bg-gray-200 tw-rounded tw-flex tw-items-center tw-justify-center">
+              <div class="tw-w-10 tw-h-10 tw-bg-[var(--neutrals-200)] tw-rounded tw-flex tw-items-center tw-justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="tw-h-5 tw-w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
@@ -344,7 +344,7 @@ export const Clickable: Story = {
             :variant="args.variant"
             @click="handleClick"
           >
-            <div class="tw-w-10 tw-h-10 tw-bg-gray-200 tw-rounded tw-flex tw-items-center tw-justify-center">
+            <div class="tw-w-10 tw-h-10 tw-bg-[var(--neutrals-200)] tw-rounded tw-flex tw-items-center tw-justify-center">
               <svg xmlns="http://www.w3.org/2000/svg" class="tw-h-5 tw-w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
               </svg>
@@ -390,7 +390,7 @@ export const ContentVariations: Story = {
               :variant="args.variant"
               :size="args.size"
             >
-              <div class="tw-w-10 tw-h-10 tw-bg-gray-200 tw-rounded tw-flex tw-items-center tw-justify-center">
+              <div class="tw-w-10 tw-h-10 tw-bg-[var(--neutrals-200)] tw-rounded tw-flex tw-items-center tw-justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="tw-h-5 tw-w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                 </svg>
@@ -463,7 +463,7 @@ export const UseCases: Story = {
               :variant="example.variant"
               :isDot="example.isDot"
             >
-              <div class="tw-w-8 tw-h-8 tw-bg-gray-200 tw-rounded tw-flex tw-items-center tw-justify-center">
+              <div class="tw-w-8 tw-h-8 tw-bg-[var(--neutrals-200)] tw-rounded tw-flex tw-items-center tw-justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="tw-h-6 tw-w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="example.icon" />
                 </svg>
@@ -503,7 +503,7 @@ export const CustomPositioning: Story = {
       <div class="tw-flex tw-flex-col tw-gap-4">
         <div class="tw-flex tw-gap-4">
           <VcBadge v-bind="args">
-            <div class="tw-relative tw-w-24 tw-h-24 tw-bg-gray-200 tw-rounded tw-flex tw-items-center tw-justify-center">
+            <div class="tw-relative tw-w-24 tw-h-24 tw-bg-[var(--neutrals-200)] tw-rounded tw-flex tw-items-center tw-justify-center">
               <span class="tw-text-xs">Product</span>
             </div>
           </VcBadge>

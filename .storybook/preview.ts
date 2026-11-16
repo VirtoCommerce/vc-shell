@@ -1,12 +1,14 @@
 // import "./../framework";
 import { setup, Preview } from "@storybook/vue3-vite";
-import framework, { useLanguages, useTheme } from "@vc-shell/framework";
+import framework, { useLanguages } from "@vc-shell/framework";
 import { createRouter, createWebHashHistory } from "vue-router";
 import { vueRouter } from "storybook-vue3-router";
 import * as locales from "./assets/locales";
-import { watch } from "vue";
 import { withGlobalMocks, withVcApp } from "./decorators";
 import { mockDefineExtensionPoint, mockUseExtensionPoint } from "./storybook-globals";
+import { transformSource } from "./source-snippet";
+import { DocsPage } from "./docs-page";
+import { globalTypes, initialGlobals, withGlobals } from "./globals";
 
 // Import framework styles
 // - In production (CI/CD): uses compiled CSS from framework/dist/index.css (after yarn build)
@@ -37,49 +39,21 @@ setup((app) => {
 });
 
 const preview: Preview = {
-  globalTypes: {
-    theme: {
-      description: "Global theme for components",
-      toolbar: {
-        title: "Theme",
-        icon: "circlehollow",
-        items: ["light", "dark"],
-        dynamicTitle: true,
-      },
-    },
-  },
+  globalTypes,
+  initialGlobals,
 
-  initialGlobals: {
-    theme: "light",
-  },
-
-  decorators: [
-    vueRouter(),
-    withGlobalMocks,
-    withVcApp,
-    (story, context) => {
-      const theme = context.globals.theme || "light";
-      return {
-        template: `<div>
-          <story/>
-        </div>`,
-        setup: () => {
-          const { setTheme } = useTheme();
-
-          watch(
-            () => theme,
-            (theme) => {
-              setTheme(theme);
-            },
-            { immediate: true },
-          );
-        },
-      };
-    },
-  ],
+  decorators: [vueRouter(), withGlobalMocks, withVcApp, withGlobals],
 
   parameters: {
     actions: { argTypesRegex: "^on[A-Z].*" },
+    docs: {
+      page: DocsPage,
+      // The usage guide sits below every story; the table of contents makes it reachable.
+      toc: { headingSelector: "h2, h3", title: "On this page" },
+      source: { transform: transformSource },
+      // "Code" tab next to Controls on every story, with the same snippet as "Show code".
+      codePanel: true,
+    },
     controls: {
       matchers: {
         color: /(background|color)$/i,

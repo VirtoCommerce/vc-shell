@@ -532,6 +532,17 @@ input.dp__input:disabled {
   @apply tw-font-jakarta tw-text-[14px] !important;
 }
 
+// VueDatePicker places the menu in a zero-width wrapper at `left: <menu's left edge>` and lets the menu overflow it.
+// Overflow runs toward the end of the line, so on a right-to-left page the menu landed one menu-width too far left.
+// The wrapper keeps left-to-right flow; the menu itself reads right to left.
+[dir="rtl"] .dp__outer_menu_wrap {
+  direction: ltr;
+
+  > * {
+    direction: rtl;
+  }
+}
+
 .dp--tp-wrap {
   min-width: var(--dp-menu-min-width);
   max-width: 100% !important;

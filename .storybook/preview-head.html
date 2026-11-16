@@ -48,7 +48,18 @@
 
 <style>
   /*
-  * Temporary fix for Storybook docs scrolling
+  * The framework pins html/body (position: fixed; overflow: hidden) for its full-screen app.
+  * Canvas: scroll inside body. Docs: unpin, so the window scrolls like a normal page and
+  * popups teleported to body (date picker, dropdowns) scroll with it instead of being cut off.
   */
-  .sb-main-padded.sb-show-main, #storybook-docs{ height: 100vh; overflow: auto; }
+  .sb-main-padded.sb-show-main { height: 100vh; overflow: auto; }
+
+  /*
+  * Stories sit on the surface they get in the app (blade content), so a dark-theme
+  * component is not shown on Storybook's white. White in the light theme.
+  */
+  body.sb-show-main:not(:has(> #storybook-docs:not([hidden]))),
+  .docs-story { background: var(--additional-50); }
+  html:has(#storybook-docs:not([hidden])),
+  body:has(> #storybook-docs:not([hidden])) { position: static; height: auto; overflow: visible; }
 </style>

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
+import { expect, userEvent, within } from "storybook/test";
 import { VcCheckbox } from "@ui/components/molecules/vc-checkbox";
 import { ref, provide } from "vue";
 import { BladeLoadingKey } from "@framework/injection-keys";
@@ -172,6 +173,13 @@ export const Basic: Story = {
       </div>
     `,
   }),
+  play: async ({ canvasElement }) => {
+    const checkbox = await within(canvasElement).findByRole("checkbox");
+    const initial = (checkbox as HTMLInputElement).checked;
+    await userEvent.click(checkbox);
+    await expect((checkbox as HTMLInputElement).checked).toBe(!initial);
+    await expect(within(canvasElement).getByText(`Current value: ${!initial}`)).toBeInTheDocument();
+  },
 };
 
 /**
@@ -356,7 +364,7 @@ export const CustomContent: Story = {
         @update:modelValue="(val) => console.log('Value updated:', val)">
         <div>
           <span class="tw-font-bold">Custom content</span>
-          <p class="tw-text-sm tw-text-gray-500">This is a custom content inside the checkbox</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-500)]">This is a custom content inside the checkbox</p>
         </div>
       </vc-checkbox>
     `,

@@ -113,7 +113,7 @@ export const WithFieldsets: Story = {
     template: `
       <vc-form v-bind="args" @submit.prevent="$event => console.log('Form submitted', $event)">
         <div class="tw-flex tw-flex-col tw-gap-6">
-          <fieldset class="tw-border tw-border-gray-300 tw-rounded tw-p-4">
+          <fieldset class="tw-border tw-border-[var(--neutrals-300)] tw-rounded tw-p-4">
             <legend class="tw-font-medium tw-px-2">Personal Information</legend>
             <div class="tw-flex tw-flex-col tw-gap-4">
               <vc-input label="First Name" />
@@ -121,7 +121,7 @@ export const WithFieldsets: Story = {
             </div>
           </fieldset>
 
-          <fieldset class="tw-border tw-border-gray-300 tw-rounded tw-p-4">
+          <fieldset class="tw-border tw-border-[var(--neutrals-300)] tw-rounded tw-p-4">
             <legend class="tw-font-medium tw-px-2">Contact Information</legend>
             <div class="tw-flex tw-flex-col tw-gap-4">
               <vc-input label="Email" type="email" />

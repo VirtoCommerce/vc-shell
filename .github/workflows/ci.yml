@@ -82,6 +82,9 @@ jobs:
       - name: Layer violations check
         run: yarn check:layers
 
+      - name: Story argTypes check
+        run: yarn check:story-argtypes
+
   test:
     if: ${{ !startsWith(github.event.head_commit.message, 'release:') }}
     runs-on: ubuntu-latest

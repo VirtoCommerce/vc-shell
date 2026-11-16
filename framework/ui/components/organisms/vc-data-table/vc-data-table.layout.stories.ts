@@ -399,7 +399,7 @@ export const NarrowContainer: Story = {
       <p class="tw-mb-2 tw-text-sm tw-text-neutrals-600">
         8 columns inside a 400 px container — the engine squeezes columns toward their minimum widths.
       </p>
-      <div style="width: 400px; border: 2px dashed #94a3b8; border-radius: 4px; overflow: hidden;">
+      <div style="width: 400px; border: 2px dashed var(--neutrals-400); border-radius: 4px; overflow: hidden;">
         <VcDataTable :items="products" fit-mode="fit">
           <VcColumn id="id" field="id" title="ID" width="50" />
           <VcColumn id="name" field="name" title="Name" width="120" />

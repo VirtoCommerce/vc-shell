@@ -62,7 +62,7 @@ so the overlay is correctly constrained.
   decorators: [
     () => ({
       template: `
-        <div style="position: relative; width: 100%; height: 200px; border: 1px dashed #ccc; border-radius: 8px; overflow: hidden;">
+        <div style="position: relative; width: 100%; height: 200px; border: 1px dashed var(--neutrals-300); border-radius: 8px; overflow: hidden;">
           <story />
           <div class="tw-flex tw-items-center tw-justify-center tw-h-full tw-text-sm tw-text-[var(--neutrals-400)]">
             Content behind the overlay
@@ -161,7 +161,7 @@ export const Interactive: Story = {
         >
           {{ isLoading ? 'Loading...' : 'Simulate Load (2s)' }}
         </button>
-        <div style="position: relative; width: 100%; height: 200px; border: 1px dashed #ccc; border-radius: 8px; overflow: hidden;">
+        <div style="position: relative; width: 100%; height: 200px; border: 1px dashed var(--neutrals-300); border-radius: 8px; overflow: hidden;">
           <VcLoading :active="isLoading" />
           <div class="tw-flex tw-items-center tw-justify-center tw-h-full tw-text-sm tw-text-[var(--neutrals-400)]">
             Content behind the overlay

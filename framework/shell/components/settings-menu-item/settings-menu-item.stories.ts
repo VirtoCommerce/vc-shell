@@ -179,6 +179,8 @@ export const SubmenuSlot: Story = {
  * @deprecated Use the submenu slot pattern instead
  */
 export const CascadingSubMenu: Story = {
+  // Stays in the sidebar and in story tests; hidden from the docs page so a deprecated API is not copied.
+  tags: ["deprecated", "!autodocs"],
   render: () => ({
     components: { SettingsMenuItem, VcDropdownItem },
     setup() {

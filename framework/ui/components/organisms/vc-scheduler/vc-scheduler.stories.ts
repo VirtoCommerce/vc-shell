@@ -251,14 +251,6 @@ const meta = {
       description: "Overrides the entire built-in toolbar. Receives `{ title, view }`.",
       table: { type: { summary: '#toolbar="{ title, view }"' }, category: "Slots" },
     },
-    resource: {
-      description: "Timeline-only. Overrides resource-panel cell content. Receives `{ resource }`.",
-      table: { type: { summary: '#resource="{ resource }"' }, category: "Slots" },
-    },
-    bar: {
-      description: "Timeline-only. Overrides bar content. Receives `{ bar }`.",
-      table: { type: { summary: '#bar="{ bar }"' }, category: "Slots" },
-    },
     "event-popover": {
       description:
         "Month view. Overrides the built-in quick-info popover content. Receives `{ event, close }`. Defaults to title, date range, and Edit/Delete buttons.",

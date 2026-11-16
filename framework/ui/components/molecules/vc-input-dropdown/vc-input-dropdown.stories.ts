@@ -386,7 +386,7 @@ export const Default: Story = {
           @update:option="handleOptionChange"
         />
 
-        <div class="tw-p-3 tw-bg-gray-100 tw-rounded tw-text-sm">
+        <div class="tw-p-3 tw-bg-[var(--neutrals-100)] tw-rounded tw-text-sm">
           <div class="tw-mb-2 tw-font-medium">Component State:</div>
           <div><strong>Input Value:</strong> <code>{{ inputValue }}</code></div>
           <div><strong>Selected Option:</strong> <code>{{ selectedOption }}</code></div>
@@ -467,11 +467,11 @@ export const WithObjectOptions: Story = {
           </template>
         </VcInputDropdown>
 
-        <div class="tw-p-4 tw-bg-gray-100 tw-rounded tw-text-sm">
+        <div class="tw-p-4 tw-bg-[var(--neutrals-100)] tw-rounded tw-text-sm">
           <div class="tw-mb-2 tw-font-medium">Component State:</div>
           <div><strong>Input Value:</strong> <code>{{ inputValue }}</code></div>
           <div><strong>Selected Option:</strong> <code>{{ JSON.stringify(selectedOption) }}</code></div>
-          <div class="tw-mt-2 tw-pt-2 tw-border-t tw-border-gray-200">
+          <div class="tw-mt-2 tw-pt-2 tw-border-t tw-border-[var(--neutrals-200)]">
             <strong>Formatted Output:</strong> <span class="tw-text-base tw-font-medium">{{ formattedValue }}</span>
           </div>
         </div>
@@ -556,7 +556,7 @@ export const CurrencyInput: Story = {
           </template>
         </VcInputDropdown>
 
-        <div class="tw-p-4 tw-bg-gray-100 tw-rounded">
+        <div class="tw-p-4 tw-bg-[var(--neutrals-100)] tw-rounded">
           <div><strong>Formatted Output:</strong> {{ formattedPrice }}</div>
         </div>
       </div>
@@ -649,13 +649,13 @@ export const WithCustomInput: Story = {
 
               <VcIcon
                 icon="lucide-calendar"
-                class="tw-text-gray-500"
+                class="tw-text-[var(--neutrals-500)]"
                 size="s"
               />
               <input
                 v-model="date"
                 :placeholder="placeholder"
-                class="tw-w-full tw-p-2 tw-ps-8 tw-border tw-border-solid tw-border-gray-300 tw-rounded tw-text-sm tw-outline-none"
+                class="tw-w-full tw-p-2 tw-ps-8 tw-border tw-border-solid tw-border-[var(--neutrals-300)] tw-rounded tw-text-sm tw-outline-none"
                 @blur="formatDate"
               />
 
@@ -664,7 +664,7 @@ export const WithCustomInput: Story = {
           </template>
         </VcInputDropdown>
 
-        <div class="tw-p-4 tw-bg-gray-100 tw-rounded tw-text-sm">
+        <div class="tw-p-4 tw-bg-[var(--neutrals-100)] tw-rounded tw-text-sm">
           <div><strong>Date Value:</strong> {{ date || 'empty' }}</div>
           <div><strong>Format:</strong> {{ format }}</div>
         </div>

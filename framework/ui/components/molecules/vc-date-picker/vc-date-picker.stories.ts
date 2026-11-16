@@ -46,7 +46,7 @@ export const Default: Story = {
     template: `
       <div class="tw-max-w-lg">
         <VcDatePicker v-bind="args" v-model="value" />
-        <div class="tw-mt-4 tw-p-2 tw-bg-gray-100 tw-rounded tw-text-sm">
+        <div class="tw-mt-4 tw-p-2 tw-bg-[var(--neutrals-100)] tw-rounded tw-text-sm">
           <strong>Value:</strong> {{ value ?? 'null' }}
         </div>
       </div>
@@ -69,7 +69,7 @@ export const DateTime: Story = {
     template: `
       <div class="tw-max-w-lg">
         <VcDatePicker v-bind="args" v-model="value" />
-        <div class="tw-mt-4 tw-p-2 tw-bg-gray-100 tw-rounded tw-text-sm">
+        <div class="tw-mt-4 tw-p-2 tw-bg-[var(--neutrals-100)] tw-rounded tw-text-sm">
           <strong>Value:</strong> {{ value ?? 'null' }}
         </div>
       </div>

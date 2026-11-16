@@ -8,6 +8,7 @@ import {
   syncWorkspacePackageVersions,
 } from "./release-workflow";
 import { releasePackages } from "./release-packages";
+import { generateComponentManifest } from "./generate-component-manifest";
 
 function escapeGitHubMentions(text: string): string {
   return text.replace(/@([\w-]+(?:\/[\w-]+)*)/g, "`@$1`");
@@ -59,6 +60,7 @@ async function runAfterBump(version: string) {
 
   syncSkillVersion(version);
   syncSkillDocs();
+  console.log(`  + Component manifest: ${generateComponentManifest()} components`);
 
   if (isPrereleaseVersion(version)) {
     generatePackageChangelogs(1);

@@ -98,25 +98,25 @@ export const SelectAllWithPagination: Story = {
     },
     template: `
     <div style="max-width: 800px; margin: 0 auto;">
-      <div style="background: #f0f9ff; padding: 12px 16px; border-radius: 8px 8px 0 0; border: 1px solid #bae6fd;">
+      <div style="background: var(--info-50); padding: 12px 16px; border-radius: 8px 8px 0 0; border: 1px solid var(--info-200);">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
           <div>
             <strong>Select All with Pagination Demo</strong>
-            <div style="font-size: 12px; color: #0369a1; margin-top: 4px;">
+            <div style="font-size: 12px; color: var(--info-700); margin-top: 4px;">
               Page {{ currentPage }} of {{ totalPages }} • Showing {{ pageSize }} of {{ totalCount }} items
             </div>
           </div>
           <div style="display: flex; gap: 8px; flex-wrap: wrap;">
             <button
               @click="triggerSelectAll"
-              style="padding: 6px 12px; background: #0ea5e9; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px;"
+              style="padding: 6px 12px; background: var(--info-500); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px;"
             >
               Select All {{ totalCount }}
             </button>
             <button
               v-if="selection.length > 0 || isSelectAllActive"
               @click="handleBulkDelete"
-              style="padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px;"
+              style="padding: 6px 12px; background: var(--danger-500); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px;"
             >
               Delete {{ isSelectAllActive ? totalCount : selection.length }} Items
             </button>
@@ -127,11 +127,11 @@ export const SelectAllWithPagination: Story = {
       <!-- Selection Banner is now built into VcDataTable -->
 
       <!-- Action Log -->
-      <div v-if="actionLog.length" style="background: #f1f5f9; padding: 8px 16px; font-size: 12px; color: #475569; border-left: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0;">
+      <div v-if="actionLog.length" style="background: var(--neutrals-100); padding: 8px 16px; font-size: 12px; color: var(--neutrals-600); border-left: 1px solid var(--neutrals-200); border-right: 1px solid var(--neutrals-200);">
         <strong>Log:</strong> {{ actionLog.join(' → ') }}
       </div>
 
-      <div style="height: 350px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 8px 8px; overflow: hidden;">
+      <div style="height: 350px; border: 1px solid var(--neutrals-200); border-top: none; border-radius: 0 0 8px 8px; overflow: hidden;">
         <VcDataTable
           ref="tableRef"
           :items="items"
@@ -150,9 +150,9 @@ export const SelectAllWithPagination: Story = {
         </VcDataTable>
       </div>
 
-      <div style="margin-top: 16px; padding: 12px; background: #f8fafc; border-radius: 8px; font-size: 13px; color: #475569;">
+      <div style="margin-top: 16px; padding: 12px; background: var(--neutrals-50); border-radius: 8px; font-size: 13px; color: var(--neutrals-600);">
         <strong>API Usage:</strong>
-        <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+        <ul style="margin: 8px 0 0 0; padding-inline-start: 20px;">
           <li><code>:total-count="50"</code> - Total items across all pages</li>
           <li><code>v-model:select-all-active</code> - Two-way bind "select all" state</li>
           <li><code>@select-all</code> - Event when "select all" mode changes</li>
@@ -250,11 +250,11 @@ export const AddRemoveRows: Story = {
     },
     template: `
     <div style="max-width: 800px; margin: 0 auto;">
-      <div style="background: #f0f9ff; padding: 12px 16px; border-radius: 8px 8px 0 0; border: 1px solid #bae6fd;">
+      <div style="background: var(--info-50); padding: 12px 16px; border-radius: 8px 8px 0 0; border: 1px solid var(--info-200);">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
           <div>
             <strong>Add/Remove Rows Demo</strong>
-            <div style="font-size: 12px; color: #0369a1; margin-top: 4px;">
+            <div style="font-size: 12px; color: var(--info-700); margin-top: 4px;">
               {{ items.length }} items • Built-in add button at footer
             </div>
           </div>
@@ -265,11 +265,11 @@ export const AddRemoveRows: Story = {
       </div>
 
       <!-- Action Log -->
-      <div v-if="actionLog.length" style="background: #f1f5f9; padding: 8px 16px; font-size: 12px; color: #475569; border-left: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0;">
+      <div v-if="actionLog.length" style="background: var(--neutrals-100); padding: 8px 16px; font-size: 12px; color: var(--neutrals-600); border-left: 1px solid var(--neutrals-200); border-right: 1px solid var(--neutrals-200);">
         <strong>Log:</strong> {{ actionLog.join(' → ') }}
       </div>
 
-      <div style="height: 300px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 8px 8px; overflow: hidden;">
+      <div style="height: 300px; border: 1px solid var(--neutrals-200); border-top: none; border-radius: 0 0 8px 8px; overflow: hidden;">
         <VcDataTable
           ref="tableRef"
           :items="items"
@@ -284,9 +284,9 @@ export const AddRemoveRows: Story = {
         </VcDataTable>
       </div>
 
-      <div style="margin-top: 16px; padding: 12px; background: #f8fafc; border-radius: 8px; font-size: 13px; color: #475569;">
+      <div style="margin-top: 16px; padding: 12px; background: var(--neutrals-50); border-radius: 8px; font-size: 13px; color: var(--neutrals-600);">
         <strong>API Usage:</strong>
-        <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+        <ul style="margin: 8px 0 0 0; padding-inline-start: 20px;">
           <li><code>:add-row="{ enabled: true, position: 'footer' }"</code> - Show add button at footer</li>
           <li><code>@row-add</code> - Customize defaults before row is added</li>
           <li><code>@row-remove</code> - Handle row removal (can be cancelled)</li>

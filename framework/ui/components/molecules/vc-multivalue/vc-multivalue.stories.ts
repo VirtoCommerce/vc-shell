@@ -209,7 +209,7 @@ export const Default: Story = {
         />
         <div class="tw-mt-4 tw-text-sm" v-if="selectedValues.length">
           <strong>Selected:</strong>
-          <pre class="tw-bg-gray-100 tw-p-2 tw-rounded tw-mt-1">{{ JSON.stringify(selectedValues, null, 2) }}</pre>
+          <pre class="tw-bg-[var(--neutrals-100)] tw-p-2 tw-rounded tw-mt-1">{{ JSON.stringify(selectedValues, null, 2) }}</pre>
         </div>
       </div>
     `,
@@ -408,7 +408,7 @@ export const CustomOptionDisplay: Story = {
               </div>
               <div>
                 <div class="tw-font-medium">{{ item.title }}</div>
-                <div class="tw-text-xs tw-text-gray-500">Option ID: {{ item.id }}</div>
+                <div class="tw-text-xs tw-text-[var(--neutrals-500)]">Option ID: {{ item.id }}</div>
               </div>
             </div>
           </template>
@@ -436,7 +436,7 @@ export const CustomSelectedItemDisplay: Story = {
               <span class="tw-bg-primary-100 tw-text-primary-700 tw-px-1 tw-rounded">{{ item.id }}</span>
               <span>{{ value }}</span>
               <button
-                class="tw-text-xs tw-ms-1 tw-px-1 tw-bg-gray-200 tw-rounded hover:tw-bg-gray-300"
+                class="tw-text-xs tw-ms-1 tw-px-1 tw-bg-[var(--neutrals-200)] tw-rounded hover:tw-bg-[var(--neutrals-300)]"
                 @click="remove"
               >
                 ✕
@@ -550,10 +550,10 @@ export const WithPrependAppend: Story = {
       <div style="max-width: 400px;">
         <vc-multivalue v-bind="args" v-model="selectedValues">
           <template #prepend>
-            <span class="tw-text-sm tw-text-gray-500">Tags:</span>
+            <span class="tw-text-sm tw-text-[var(--neutrals-500)]">Tags:</span>
           </template>
           <template #append>
-            <span class="tw-text-xs tw-text-gray-400 tw-whitespace-nowrap">{{ selectedValues.length }}/5</span>
+            <span class="tw-text-xs tw-text-[var(--neutrals-400)] tw-whitespace-nowrap">{{ selectedValues.length }}/5</span>
           </template>
         </vc-multivalue>
       </div>

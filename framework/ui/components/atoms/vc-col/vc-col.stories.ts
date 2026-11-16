@@ -105,17 +105,17 @@ export const WithinRow: Story = {
       return { args };
     },
     template: `
-      <div class="tw-border tw-border-gray-200 tw-p-4 tw-rounded">
+      <div class="tw-border tw-border-[var(--neutrals-200)] tw-p-4 tw-rounded">
         <vc-row class="tw-gap-4">
-          <vc-col :size="1" class="tw-p-2 tw-bg-gray-100 tw-rounded">
+          <vc-col :size="1" class="tw-p-2 tw-bg-[var(--neutrals-100)] tw-rounded">
             <div class="tw-p-2 tw-font-medium tw-mb-2">Size: 1</div>
             <vc-image src="https://picsum.photos/seed/img1/200" size="l"/>
           </vc-col>
-          <vc-col :size="2" class="tw-p-2 tw-bg-gray-100 tw-rounded">
+          <vc-col :size="2" class="tw-p-2 tw-bg-[var(--neutrals-100)] tw-rounded">
             <div class="tw-p-2 tw-font-medium tw-mb-2">Size: 2</div>
             <vc-image src="https://picsum.photos/seed/img2/200" size="l"/>
           </vc-col>
-          <vc-col :size="3" class="tw-p-2 tw-bg-gray-100 tw-rounded">
+          <vc-col :size="3" class="tw-p-2 tw-bg-[var(--neutrals-100)] tw-rounded">
             <div class="tw-p-2 tw-font-medium tw-mb-2">Size: 3</div>
             <vc-image src="https://picsum.photos/seed/img3/200" size="l"/>
           </vc-col>
@@ -143,9 +143,9 @@ export const ContentLayout: Story = {
       return { args };
     },
     template: `
-      <vc-col v-bind="args" class="tw-gap-2 tw-p-4 tw-border tw-border-gray-200 tw-rounded">
+      <vc-col v-bind="args" class="tw-gap-2 tw-p-4 tw-border tw-border-[var(--neutrals-200)] tw-rounded">
         <h2 class="tw-text-xl tw-font-bold">Article Title</h2>
-        <p class="tw-text-gray-500">Published: May 15, 2023</p>
+        <p class="tw-text-[var(--neutrals-500)]">Published: May 15, 2023</p>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi consequat felis eget felis facilisis, eget fermentum nisi varius.</p>
         <p>Pellentesque sed nunc eu odio convallis volutpat. Donec viverra, nisl vitae pretium fringilla, purus enim malesuada odio.</p>
         <div class="tw-flex tw-justify-end tw-mt-4">

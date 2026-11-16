@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { ref, computed } from "vue";
 import { VcDataTable, VcColumn } from "@ui/components/organisms/vc-data-table";
 import { VcInput } from "@ui/components/molecules";
@@ -104,6 +105,15 @@ export const WithSorting: Story = {
     </div>
   `,
   }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const price = await canvas.findByRole("columnheader", { name: /Price/ });
+    await userEvent.click(price);
+    await waitFor(() => expect(price).toHaveAttribute("aria-sort", "ascending"));
+    await expect(canvas.getByText(/^Sort: price/)).toBeInTheDocument();
+    await userEvent.click(price);
+    await waitFor(() => expect(price).toHaveAttribute("aria-sort", "descending"));
+  },
 };
 
 /**
@@ -134,6 +144,16 @@ export const WithSelection: Story = {
     </div>
   `,
   }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByText("Selected: None")).toBeInTheDocument();
+    // The first checkbox selects all rows; the next one belongs to the first row.
+    const [, firstRow] = await canvas.findAllByRole("checkbox");
+    await userEvent.click(firstRow);
+    await waitFor(() => expect(canvas.queryByText("Selected: None")).toBeNull());
+    await userEvent.click(firstRow);
+    await waitFor(() => expect(canvas.getByText("Selected: None")).toBeInTheDocument());
+  },
 };
 
 /**

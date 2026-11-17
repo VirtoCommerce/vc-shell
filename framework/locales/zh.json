@@ -168,6 +168,102 @@
       }
     },
     "ORGANISMS": {
+      "VC_SEARCH_BAR": {
+        "SEARCH_PLACEHOLDER": "搜索",
+        "FILTERS": "筛选",
+        "REMOVE_FILTER": "移除筛选条件“{label}”",
+        "CLEAR_SEARCH": "清除搜索",
+        "CLEAR_FILTERS": "清除所有筛选条件",
+        "FILTERS_APPLIED": "筛选，已应用 {count} 个",
+        "MORE_FILTERS": "另外 {count} 个筛选条件",
+        "SUGGEST": {
+          "BY": "按{field}筛选",
+          "BY_FIELD": "按字段筛选",
+          "ADD": "添加"
+        },
+        "PHONE": {
+          "CLEAR": "清除",
+          "DONE": "完成",
+          "VIEW": "视图",
+          "SHOW": "显示 {count} 条结果",
+          "SHOW_ANY": "显示结果",
+          "NO_MATCH": "没有匹配的结果",
+          "RESULTS": "{count} 条结果",
+          "ITEMS": "{count} 个项目",
+          "FILTERED_FROM": "从 {count} 条中筛选",
+          "FILTER_COUNT": "{count} 个筛选条件",
+          "CLEAR_ALL": "全部清除"
+        },
+        "DATE": {
+          "TODAY": "今天",
+          "LAST_7": "最近 7 天",
+          "LAST_30": "最近 30 天",
+          "CUSTOM_RANGE": "自定义范围",
+          "ANY": "任意时间"
+        },
+        "NUMBER": {
+          "MIN": "从",
+          "MAX": "至",
+          "APPLY": "应用",
+          "NOTE": "范围在按 Enter 后应用",
+          "NOTE_PRESETS": "范围在按 Enter 后应用，预设立即应用"
+        },
+        "VIEWS": {
+          "ALL": "全部",
+          "SELECTOR": "视图：{name}",
+          "SAVED_VIEWS": "已保存的视图",
+          "MODIFIED": "已修改",
+          "OPTIONS": "{name} 选项",
+          "SAVE_CHANGES": "保存对“{name}”的更改",
+          "SAVE_AS_NEW": "另存为新视图…",
+          "REVERT": "恢复为“{name}”",
+          "REVERT_SHORT": "恢复",
+          "RENAME": "重命名",
+          "DELETE": "删除",
+          "NEW_NAME": "新名称",
+          "UNSAVED": "未保存的筛选条件",
+          "SAVE": "保存",
+          "SAVE_AS_VIEW": "另存为视图…",
+          "NAME_PLACEHOLDER": "视图名称",
+          "CANCEL": "取消"
+        },
+        "OPERATOR": {
+          "ANY": "是以下任一项",
+          "NOT": "不是"
+        },
+        "PANEL": {
+          "ACTIVE": "{count} 个已启用",
+          "TOGGLES": "开关",
+          "ANY": "任意",
+          "RESULTS": "条结果 · 立即应用",
+          "APPLIED": "立即应用",
+          "CLEAR": "清除筛选条件"
+        },
+        "EDITOR": {
+          "FIND": "查找",
+          "NOTHING_FOUND": "未找到任何内容",
+          "ONLY": "仅",
+          "ONLY_LABEL": "仅 {label}"
+        }
+      },
+      "VC_DATA_TABLE": {
+        "STATUS": {
+          "FILTERED_FROM": "从 {count} 条中筛选",
+          "FILTERS": "{count} 个筛选条件",
+          "FILTERS_AND_SEARCH": "{count} 个筛选条件 + 搜索",
+          "SEARCH": "搜索",
+          "CLEAR_ALL": "全部清除"
+        },
+        "NO_RESULTS": {
+          "TITLE_SEARCH_FILTERS": "没有与“{query}”及 {count} 个筛选条件匹配的结果",
+          "TITLE_SEARCH": "没有与“{query}”匹配的结果",
+          "TITLE_FILTERS": "没有与 {count} 个筛选条件匹配的结果",
+          "HINT_FILTERS": "请移除下方的某个筛选条件，或全部清除。",
+          "HINT_SEARCH": "请检查拼写，或尝试其他关键字。",
+          "CLEAR_SEARCH": "清除搜索",
+          "CLEAR_FILTERS": "清除筛选条件"
+        }
+      },
       "VC_DYNAMIC_PROPERTY": {
         "ADD": "添加值",
         "VALUE_TYPE": {

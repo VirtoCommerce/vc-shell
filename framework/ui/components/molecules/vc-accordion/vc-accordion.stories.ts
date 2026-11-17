@@ -1,7 +1,9 @@
 import { ref, provide } from "vue";
 import { BladeLoadingKey } from "@framework/injection-keys";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { VcAccordion, VcAccordionItem } from ".";
+import { VcButton } from "@ui/components/atoms/vc-button";
 
 /**
  * `VcAccordion` is a flexible accordion component that supports collapsible content sections
@@ -543,4 +545,66 @@ export const Skeleton: Story = {
     },
     template: '<VcAccordion v-bind="args" />',
   }),
+};
+
+/**
+ * One open at a time, built from `VcAccordionItem`s: the chevron before the title (`icon-position="start"`),
+ * a remove button next to each header (`#actions`), and `lazy` content that mounts on open and unmounts
+ * after the close animation, so a closed item holds no focusable controls.
+ */
+export const LazyItemsWithActions: Story = {
+  render: () => ({
+    components: { VcAccordion, VcAccordionItem, VcButton },
+    setup() {
+      const sections = ref([
+        { id: "status", title: "Status", value: "New, Paid" },
+        { id: "customer", title: "Customer", value: "" },
+        { id: "country", title: "Country", value: "Norway" },
+      ]);
+      const open = ref<string | undefined>("status");
+      const flip = (id: string, expanded: boolean) => (open.value = expanded ? id : undefined);
+      const clear = (id: string) => {
+        const s = sections.value.find((x) => x.id === id);
+        if (s) s.value = "";
+      };
+      return { sections, open, flip, clear };
+    },
+    template: `
+      <VcAccordion
+        variant="bordered"
+        class="tw-max-w-md"
+        style="--accordion-item-header-padding: 10px 12px; --accordion-item-icon-margin-left: 8px; --accordion-item-transition-duration: 200ms"
+      >
+        <VcAccordionItem
+          v-for="s in sections"
+          :key="s.id"
+          lazy
+          icon-position="start"
+          :is-expanded="open === s.id"
+          @toggle="flip(s.id, $event)"
+        >
+          <template #title>
+            <span class="tw-flex tw-justify-between tw-gap-2">
+              <span>{{ s.title }}</span>
+              <span class="tw-text-[color:var(--neutrals-500)]">{{ s.value || "Any" }}</span>
+            </span>
+          </template>
+          <template v-if="s.value" #actions>
+            <VcButton variant="ghost" size="icon-sm" icon="lucide-x" :aria-label="'Remove ' + s.title" @click="clear(s.id)" />
+          </template>
+          <input :aria-label="s.title + ' value'" v-model="s.value" class="tw-border tw-px-2 tw-py-1 tw-rounded" />
+        </VcAccordionItem>
+      </VcAccordion>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // only the open item has its content mounted
+    await expect(canvas.getAllByRole("textbox")).toHaveLength(1);
+    await userEvent.click(canvas.getByRole("button", { name: /^Country/ }));
+    await waitFor(() => expect(canvas.getByRole("textbox", { name: "Country value" })).toBeInTheDocument());
+    await waitFor(() => expect(canvas.queryByRole("textbox", { name: "Status value" })).toBeNull());
+    await userEvent.click(canvas.getByRole("button", { name: "Remove Status" }));
+    await expect(canvas.queryByRole("button", { name: "Remove Status" })).toBeNull();
+  },
 };

@@ -8,3 +8,4 @@ export * from "@ui/components/organisms/vc-popup";
 export * from "@ui/components/organisms/vc-sidebar";
 export * from "@ui/components/organisms/vc-data-table";
 export * from "@ui/components/organisms/vc-scheduler";
+export * from "@ui/components/organisms/vc-search-bar";

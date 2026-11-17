@@ -168,6 +168,102 @@
       }
     },
     "ORGANISMS": {
+      "VC_SEARCH_BAR": {
+        "SEARCH_PLACEHOLDER": "Szukaj",
+        "FILTERS": "Filtry",
+        "REMOVE_FILTER": "Usuń filtr „{label}”",
+        "CLEAR_SEARCH": "Wyczyść wyszukiwanie",
+        "CLEAR_FILTERS": "Wyczyść wszystkie filtry",
+        "FILTERS_APPLIED": "Filtry, zastosowane: {count}",
+        "MORE_FILTERS": "Więcej filtrów: {count}",
+        "SUGGEST": {
+          "BY": "Filtruj według pola „{field}”",
+          "BY_FIELD": "Filtruj według pola",
+          "ADD": "aby dodać"
+        },
+        "PHONE": {
+          "CLEAR": "Wyczyść",
+          "DONE": "Gotowe",
+          "VIEW": "Widok",
+          "SHOW": "Pokaż {count} wynik | Pokaż {count} wyniki | Pokaż {count} wyników",
+          "SHOW_ANY": "Pokaż wyniki",
+          "NO_MATCH": "Brak pasujących wyników",
+          "RESULTS": "{count} wynik | {count} wyniki | {count} wyników",
+          "ITEMS": "{count} element | {count} elementy | {count} elementów",
+          "FILTERED_FROM": "przefiltrowano z {count}",
+          "FILTER_COUNT": "{count} filtr | {count} filtry | {count} filtrów",
+          "CLEAR_ALL": "Wyczyść wszystko"
+        },
+        "DATE": {
+          "TODAY": "Dzisiaj",
+          "LAST_7": "Ostatnie 7 dni",
+          "LAST_30": "Ostatnie 30 dni",
+          "CUSTOM_RANGE": "Własny zakres",
+          "ANY": "Dowolny czas"
+        },
+        "NUMBER": {
+          "MIN": "Od",
+          "MAX": "Do",
+          "APPLY": "Zastosuj",
+          "NOTE": "Zakresy są stosowane po naciśnięciu Enter",
+          "NOTE_PRESETS": "Zakresy są stosowane po naciśnięciu Enter, gotowe ustawienia od razu"
+        },
+        "VIEWS": {
+          "ALL": "Wszystkie",
+          "SELECTOR": "Widok: {name}",
+          "SAVED_VIEWS": "Zapisane widoki",
+          "MODIFIED": "Zmieniony",
+          "OPTIONS": "Opcje widoku „{name}”",
+          "SAVE_CHANGES": "Zapisz zmiany w „{name}”",
+          "SAVE_AS_NEW": "Zapisz jako nowy widok…",
+          "REVERT": "Przywróć „{name}”",
+          "REVERT_SHORT": "Przywróć",
+          "RENAME": "Zmień nazwę",
+          "DELETE": "Usuń",
+          "NEW_NAME": "Nowa nazwa",
+          "UNSAVED": "Niezapisane filtry",
+          "SAVE": "Zapisz",
+          "SAVE_AS_VIEW": "Zapisz jako widok…",
+          "NAME_PLACEHOLDER": "Nazwa widoku",
+          "CANCEL": "Anuluj"
+        },
+        "OPERATOR": {
+          "ANY": "Jest jednym z",
+          "NOT": "Nie jest"
+        },
+        "PANEL": {
+          "ACTIVE": "Aktywne: {count}",
+          "TOGGLES": "Przełączniki",
+          "ANY": "Dowolny",
+          "RESULTS": "wynik · stosowane od razu | wyniki · stosowane od razu | wyników · stosowane od razu",
+          "APPLIED": "Stosowane od razu",
+          "CLEAR": "Wyczyść filtry"
+        },
+        "EDITOR": {
+          "FIND": "Znajdź",
+          "NOTHING_FOUND": "Nic nie znaleziono",
+          "ONLY": "Tylko",
+          "ONLY_LABEL": "Tylko „{label}”"
+        }
+      },
+      "VC_DATA_TABLE": {
+        "STATUS": {
+          "FILTERED_FROM": "przefiltrowano z {count}",
+          "FILTERS": "{count} filtr | {count} filtry | {count} filtrów",
+          "FILTERS_AND_SEARCH": "{count} filtr + wyszukiwanie | {count} filtry + wyszukiwanie | {count} filtrów + wyszukiwanie",
+          "SEARCH": "wyszukiwanie",
+          "CLEAR_ALL": "Wyczyść wszystko"
+        },
+        "NO_RESULTS": {
+          "TITLE_SEARCH_FILTERS": "Brak wyników dla „{query}” z {count} filtrem | Brak wyników dla „{query}” z {count} filtrami | Brak wyników dla „{query}” z {count} filtrami",
+          "TITLE_SEARCH": "Brak wyników dla „{query}”",
+          "TITLE_FILTERS": "Brak wyników z {count} filtrem | Brak wyników z {count} filtrami | Brak wyników z {count} filtrami",
+          "HINT_FILTERS": "Usuń jeden z filtrów poniżej lub wyczyść wszystkie.",
+          "HINT_SEARCH": "Sprawdź pisownię lub spróbuj innego słowa.",
+          "CLEAR_SEARCH": "Wyczyść wyszukiwanie",
+          "CLEAR_FILTERS": "Wyczyść filtry"
+        }
+      },
       "VC_DYNAMIC_PROPERTY": {
         "ADD": "Dodaj wartość",
         "VALUE_TYPE": {

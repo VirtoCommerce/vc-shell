@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
 import VcButtonGroup from "@ui/components/atoms/vc-button/vc-button-group.vue";
+import VcButton from "@ui/components/atoms/vc-button/vc-button.vue";
 import { ButtonGroupKey } from "@ui/components/atoms/vc-button/types";
 import { defineComponent, h, inject } from "vue";
 
@@ -72,5 +73,16 @@ describe("VcButtonGroup", () => {
     });
 
     expect(injectedValue.size.value).toBeUndefined();
+  });
+
+  it("sizes its buttons 2xs", () => {
+    const wrapper = mount(VcButtonGroup as any, {
+      props: { size: "2xs", attached: true },
+      slots: {
+        default: () => [h(VcButton, () => "Field: value"), h(VcButton, { icon: "lucide-x", ariaLabel: "Remove" })],
+      },
+      global: { stubs: { VcIcon: true } },
+    });
+    expect(wrapper.findAll("button").map((b) => b.classes().includes("vc-button--2xs"))).toEqual([true, true]);
   });
 });

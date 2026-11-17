@@ -23,6 +23,7 @@
       :total-count="props.totalCount"
       :total-label="props.totalLabel"
       :searchable="showSearch"
+      :search-bar="props.searchBar"
       :search-value="props.searchValue"
       :search-placeholder="props.searchPlaceholder"
       :pagination="paginationConfig"
@@ -219,6 +220,8 @@ const props = withDefaults(
     variant?: "default" | "striped" | "bordered";
     editing?: boolean;
     addNewRowButton?: { show: boolean; title: string };
+    /** Show VcSearchBar (search only; the legacy filters button stays above it) instead of the classic header */
+    searchBar?: boolean;
   }>(),
   {
     items: () => [] as any,

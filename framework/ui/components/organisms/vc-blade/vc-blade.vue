@@ -29,6 +29,7 @@
       :modified="effectiveModified"
       :title-id="bladeTitleId"
       :loading="showSkeleton"
+      :title-addon="titleAddon"
       @close="handleClose"
       @expand="handleExpand"
       @collapse="handleCollapse"
@@ -149,6 +150,10 @@ import { VcButton } from "@ui/components/atoms/vc-button";
 import { VcBreadcrumbs } from "@ui/components/molecules/vc-breadcrumbs";
 import { BladeBackButtonKey, BladeFormKey, BladeLoadingKey } from "@framework/injection-keys";
 import WidgetContainer from "@ui/components/organisms/vc-blade/_internal/widgets/WidgetContainer.vue";
+import {
+  BladeTitleAddonKey,
+  createBladeTitleAddonRegistry,
+} from "@ui/components/organisms/vc-blade/_internal/composables/useBladeTitleAddon";
 import { useBlade } from "../../../../core/composables";
 import { useResponsive } from "@framework/core/composables/useResponsive";
 import { BladeDescriptorKey, BladeMaximizedKey, BladeRenderingStateKey } from "@core/blade-navigation/types";
@@ -250,6 +255,9 @@ const showSkeleton = computed(() => Boolean(props.loading) && !hasLoadedOnce.val
 const showBusyOverlay = computed(() => Boolean(props.loading) && hasLoadedOnce.value);
 
 provide(BladeLoadingKey, showSkeleton);
+
+const { registry: titleAddonRegistry, render: titleAddon } = createBladeTitleAddonRegistry();
+provide(BladeTitleAddonKey, titleAddonRegistry);
 
 const _slots = defineSlots<{
   actions(): void;

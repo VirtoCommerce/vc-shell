@@ -203,6 +203,29 @@ By default the panel is unmounted while closed. Set `forceMount` to keep it in t
 </VcDropdown>
 ```
 
+### Combobox Mode
+
+A text field that suggests values keeps the focus while its list is open: the field's own keys move the active option, and the list only shows it. Set `combobox`, put the field in the `trigger` slot, mark the active option with `isItemActive`, and name it on the field with the slot's `itemId`:
+
+```vue
+<VcDropdown :model-value="open" :items="suggestions" role="listbox" combobox floating :teleport="false" placement="bottom-start" :auto-focus-panel="false" :close-on-escape="false" :close-on-click-outside="false" :is-item-active="(s) => suggestions.indexOf(s) === active" @item-click="pick">
+  <template #trigger="{ panelId, itemId }">
+    <VcInput
+      v-model="text"
+      :input-attrs="{
+        role: 'combobox',
+        'aria-expanded': open,
+        'aria-controls': open ? panelId : undefined,
+        'aria-activedescendant': open ? itemId(active) : undefined,
+      }"
+      @keydown="onArrowKeys"
+    />
+  </template>
+</VcDropdown>
+```
+
+The panel is not focusable and a mouse press on it is cancelled, so the field keeps the focus (and its caret) while an option is clicked.
+
 ## Recipes
 
 ### Confirmation Dropdown
@@ -322,31 +345,32 @@ By default the panel is unmounted while closed. Set `forceMount` to keep it in t
 
 ## Props
 
-| Prop                  | Type                                           | Default                         | Description                                                    |
-| --------------------- | ---------------------------------------------- | ------------------------------- | -------------------------------------------------------------- |
-| `modelValue`          | `boolean`                                      | `false`                         | Controls open/closed state via `v-model`                       |
-| `items`               | `T[]`                                          | `[]`                            | Items to render in the dropdown                                |
-| `emptyText`           | `string`                                       | `""`                            | Text shown when items array is empty                           |
-| `itemText`            | `(item: T) => string`                          | --                              | Maps an item to display text (default renderer only)           |
-| `isItemActive`        | `(item: T) => boolean`                         | --                              | Marks the currently active item (highlighted state)            |
-| `isItemDisabled`      | `(item: T) => boolean`                         | --                              | Marks an item `aria-disabled`: focusable, cannot be chosen     |
-| `itemKey`             | `(item: T, index: number) => string \| number` | index                           | Unique key function for items                                  |
-| `floating`            | `boolean`                                      | `false`                         | Enable floating positioning via `@floating-ui`                 |
-| `teleport`            | `boolean`                                      | --                              | Force teleport to body (defaults to match `floating`)          |
-| `teleportTo`          | `string \| HTMLElement`                        | --                              | Custom teleport target                                         |
-| `placement`           | `Placement`                                    | `"bottom"`                      | Floating UI placement                                          |
-| `offset`              | `{ mainAxis?: number; crossAxis?: number }`    | `{ mainAxis: 0, crossAxis: 0 }` | Offset from the trigger element                                |
-| `variant`             | `"default" \| "secondary"`                     | `"default"`                     | Visual style variant                                           |
-| `maxHeight`           | `number \| string`                             | `300`                           | Maximum panel height (number = px, string = CSS value)         |
-| `role`                | `"menu" \| "listbox"`                          | `"menu"`                        | ARIA role for the dropdown panel                               |
-| `ariaLabel`           | `string`                                       | --                              | Accessible name for the panel. Required for a named `listbox`. |
-| `closeOnClickOutside` | `boolean`                                      | `true`                          | Close when clicking outside the dropdown                       |
-| `closeOnEscape`       | `boolean`                                      | `true`                          | Close on Escape key press                                      |
-| `closeOnSelect`       | `boolean`                                      | `false`                         | Close after selecting an item                                  |
-| `autoFocusPanel`      | `boolean`                                      | `true`                          | Focus the panel element when opened                            |
-| `padded`              | `boolean`                                      | `true`                          | Apply compact padding and rounded item backgrounds             |
-| `zIndex`              | `number`                                       | `9300`                          | Z-index for the floating panel                                 |
-| `forceMount`          | `boolean`                                      | `false`                         | Keep the panel content mounted (hidden, inert) while closed    |
+| Prop                  | Type                                           | Default                         | Description                                                                                                                                                                                                                  |
+| --------------------- | ---------------------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `modelValue`          | `boolean`                                      | `false`                         | Controls open/closed state via `v-model`                                                                                                                                                                                     |
+| `items`               | `T[]`                                          | `[]`                            | Items to render in the dropdown                                                                                                                                                                                              |
+| `emptyText`           | `string`                                       | `""`                            | Text shown when items array is empty                                                                                                                                                                                         |
+| `itemText`            | `(item: T) => string`                          | --                              | Maps an item to display text (default renderer only)                                                                                                                                                                         |
+| `isItemActive`        | `(item: T) => boolean`                         | --                              | Marks the currently active item (highlighted state)                                                                                                                                                                          |
+| `isItemDisabled`      | `(item: T) => boolean`                         | --                              | Marks an item `aria-disabled`: focusable, cannot be chosen                                                                                                                                                                   |
+| `itemKey`             | `(item: T, index: number) => string \| number` | index                           | Unique key function for items                                                                                                                                                                                                |
+| `floating`            | `boolean`                                      | `false`                         | Enable floating positioning via `@floating-ui`                                                                                                                                                                               |
+| `teleport`            | `boolean`                                      | --                              | Force teleport to body (defaults to match `floating`)                                                                                                                                                                        |
+| `teleportTo`          | `string \| HTMLElement`                        | --                              | Custom teleport target                                                                                                                                                                                                       |
+| `placement`           | `Placement`                                    | `"bottom"`                      | Floating UI placement                                                                                                                                                                                                        |
+| `offset`              | `{ mainAxis?: number; crossAxis?: number }`    | `{ mainAxis: 0, crossAxis: 0 }` | Offset from the trigger element                                                                                                                                                                                              |
+| `variant`             | `"default" \| "secondary"`                     | `"default"`                     | Visual style variant                                                                                                                                                                                                         |
+| `maxHeight`           | `number \| string`                             | `300`                           | Maximum panel height (number = px, string = CSS value)                                                                                                                                                                       |
+| `role`                | `"menu" \| "listbox"`                          | `"menu"`                        | ARIA role for the dropdown panel                                                                                                                                                                                             |
+| `ariaLabel`           | `string`                                       | --                              | Accessible name for the panel. Required for a named `listbox`.                                                                                                                                                               |
+| `closeOnClickOutside` | `boolean`                                      | `true`                          | Close when clicking outside the dropdown                                                                                                                                                                                     |
+| `closeOnEscape`       | `boolean`                                      | `true`                          | Close on Escape key press                                                                                                                                                                                                    |
+| `closeOnSelect`       | `boolean`                                      | `false`                         | Close after selecting an item                                                                                                                                                                                                |
+| `autoFocusPanel`      | `boolean`                                      | `true`                          | Focus the panel element when opened                                                                                                                                                                                          |
+| `padded`              | `boolean`                                      | `true`                          | Apply compact padding and rounded item backgrounds                                                                                                                                                                           |
+| `zIndex`              | `number`                                       | `9300`                          | Z-index for the floating panel                                                                                                                                                                                               |
+| `forceMount`          | `boolean`                                      | `false`                         | Keep the panel content mounted (hidden, inert) while closed                                                                                                                                                                  |
+| `combobox`            | `boolean`                                      | `false`                         | The trigger is a text field that keeps the focus while the panel is open: the panel leaves the tab order, a press on it does not take the focus, and the field names the active option (see [Combobox Mode](#combobox-mode)) |
 
 ## Events
 
@@ -359,33 +383,37 @@ By default the panel is unmounted while closed. Set `forceMount` to keep it in t
 
 ## Slots
 
-| Slot              | Props                                                                                             | Description                                                                                                                                                                                                                                                                   |
-| ----------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `trigger`         | `{ isActive: boolean, toggle: () => void, open: () => void, close: () => void, panelId: string }` | Custom trigger element. Render a real interactive control (e.g. `VcButton`) that calls `toggle` — the wrapper is a passive container, so nesting a button inside a `role="button"` wrapper is avoided. Use `panelId` to wire `aria-controls`/`aria-expanded` on your control. |
-| `item`            | `{ item: T, click: () => void }`                                                                  | Custom item rendering                                                                                                                                                                                                                                                         |
-| `empty`           | --                                                                                                | Content when items array is empty                                                                                                                                                                                                                                             |
-| `items-container` | `{ items: T[], close: () => void }`                                                               | Full control over the items list                                                                                                                                                                                                                                              |
+| Slot              | Props                                                                                                                                | Description                                                                                                                                                                                                                                                                                                                                |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `trigger`         | `{ isActive: boolean, toggle: () => void, open: () => void, close: () => void, panelId: string, itemId: (index: number) => string }` | Custom trigger element. Render a real interactive control (e.g. `VcButton`) that calls `toggle` — the wrapper is a passive container, so nesting a button inside a `role="button"` wrapper is avoided. Use `panelId` to wire `aria-controls`/`aria-expanded` on your control, and `itemId` for a combobox field's `aria-activedescendant`. |
+| `item`            | `{ item: T, click: () => void }`                                                                                                     | Custom item rendering                                                                                                                                                                                                                                                                                                                      |
+| `empty`           | --                                                                                                                                   | Content when items array is empty                                                                                                                                                                                                                                                                                                          |
+| `items-container` | `{ items: T[], close: () => void }`                                                                                                  | Full control over the items list                                                                                                                                                                                                                                                                                                           |
+| `header`          | --                                                                                                                                   | Content above the items, e.g. a title. Not part of the item list or its keyboard navigation                                                                                                                                                                                                                                                |
 
 ## CSS Variables
 
-| Variable                                  | Default                | Description                  |
-| ----------------------------------------- | ---------------------- | ---------------------------- |
-| `--vc-dropdown-bg`                        | `var(--additional-50)` | Panel background color       |
-| `--vc-dropdown-text`                      | `var(--neutrals-950)`  | Default text color           |
-| `--vc-dropdown-border`                    | `var(--neutrals-200)`  | Floating panel border color  |
-| `--vc-dropdown-accent`                    | `var(--neutrals-100)`  | Hover/focus background color |
-| `--vc-dropdown-accent-foreground`         | `var(--neutrals-900)`  | Hover/focus text color       |
-| `--vc-dropdown-divider`                   | `var(--neutrals-200)`  | Mobile item divider color    |
-| `--vc-dropdown-trigger-focus-ring-width`  | `2px`                  | Trigger focus ring width     |
-| `--vc-dropdown-trigger-focus-ring-offset` | `1px`                  | Trigger focus ring offset    |
-| `--vc-dropdown-trigger-focus-ring-color`  | `var(--primary-300)`   | Trigger focus ring color     |
+| Variable                                  | Default                          | Description                                                                                     |
+| ----------------------------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `--vc-dropdown-bg`                        | `var(--additional-50)`           | Panel background color                                                                          |
+| `--vc-dropdown-text`                      | `var(--neutrals-950)`            | Default text color                                                                              |
+| `--vc-dropdown-border`                    | `var(--neutrals-200)`            | Floating panel border color                                                                     |
+| `--vc-dropdown-accent`                    | `var(--neutrals-100)`            | Hover/focus background color                                                                    |
+| `--vc-dropdown-accent-foreground`         | `var(--neutrals-900)`            | Hover/focus text color                                                                          |
+| `--vc-dropdown-divider`                   | `var(--neutrals-200)`            | Mobile item divider color                                                                       |
+| `--vc-dropdown-trigger-focus-ring-width`  | `2px`                            | Trigger focus ring width                                                                        |
+| `--vc-dropdown-trigger-focus-ring-offset` | `1px`                            | Trigger focus ring offset                                                                       |
+| `--vc-dropdown-trigger-focus-ring-color`  | `var(--primary-300)`             | Trigger focus ring color                                                                        |
+| `--vc-dropdown-trigger-flex`              | `initial`                        | `flex` of the trigger wrapper; `1 1 auto` lets a field in the trigger fill the dropdown's width |
+| `--vc-dropdown-radius`                    | `6px`                            | Corner radius of a floating panel                                                               |
+| `--vc-dropdown-shadow`                    | `0 4px 16px rgba(0, 0, 0, 0.08)` | Shadow of a floating panel                                                                      |
 
 ## Accessibility
 
 - **Trigger element**: a passive wrapper — the interactive control lives in the `#trigger` slot. Render a real `<button>` (e.g. `VcButton`) that calls `toggle`; wire `aria-expanded`/`aria-haspopup`/`aria-controls` (via the slot's `panelId`) on it. This avoids nesting interactive controls (WCAG 4.1.2).
 - **Panel**: uses the specified `role` attribute (`"menu"` or `"listbox"`), is keyboard-focusable (`tabindex="0"`), and takes an accessible name from `ariaLabel`
 - **Items**: use `role="menuitem"` (menu mode) or `role="option"` (listbox mode)
-- **Active item tracking**: `aria-activedescendant` on the panel tracks the currently focused item
+- **Active item tracking**: `aria-activedescendant` on the panel tracks the currently focused item. In `combobox` mode the panel drops it and leaves the tab order: the field carries `aria-activedescendant` (`itemId` from the trigger slot)
 - **Listbox selection**: `aria-selected` is set on items when `role="listbox"` and `isItemActive` returns `true`
 - **Keyboard navigation**:
   - **Arrow Down / Arrow Up** -- move focus between items (wraps around)

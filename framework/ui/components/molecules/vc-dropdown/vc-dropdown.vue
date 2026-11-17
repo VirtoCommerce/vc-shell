@@ -20,6 +20,7 @@
         :open="open"
         :close="close"
         :panel-id="panelId"
+        :item-id="itemId"
       />
     </div>
 
@@ -47,14 +48,16 @@
           :class="panelClasses"
           :role="role"
           :aria-label="ariaLabel"
-          :aria-activedescendant="activeDescendantId"
-          tabindex="0"
+          :aria-activedescendant="combobox ? undefined : activeDescendantId"
+          :tabindex="combobox ? -1 : 0"
           @keydown="onPanelKeydown"
+          @mousedown="combobox && $event.preventDefault()"
         >
           <div
             class="vc-dropdown__content"
             :class="{ 'vc-dropdown__content--padded': padded }"
           >
+            <slot name="header" />
             <slot
               name="items-container"
               :items="items"
@@ -145,6 +148,12 @@ export interface VcDropdownProps<T> {
   ariaLabel?: string;
   /** Keep the panel content mounted (hidden and inert) while closed. */
   forceMount?: boolean;
+  /**
+   * The trigger is a text field that keeps the focus while the panel is open (a combobox). The panel leaves
+   * the tab order, a press on it does not take the focus from the field, and the field names the active
+   * option itself (`aria-activedescendant` with the trigger slot's `itemId`; mark it with `isItemActive`).
+   */
+  combobox?: boolean;
 }
 
 const props = withDefaults(defineProps<VcDropdownProps<T>>(), {
@@ -167,6 +176,7 @@ const props = withDefaults(defineProps<VcDropdownProps<T>>(), {
   zIndex: 9300,
   padded: true,
   forceMount: false,
+  combobox: false,
 });
 
 const emit = defineEmits<{
@@ -185,7 +195,11 @@ defineSlots<{
     open: () => void;
     close: () => void;
     panelId: string;
+    /** Id of the item at an index, for a combobox field's `aria-activedescendant` */
+    itemId: (index: number) => string;
   }) => unknown;
+  /** Content above the items, e.g. a title */
+  header?: () => unknown;
   "items-container"?: (args: { items: T[]; close: () => void }) => unknown;
 }>();
 
@@ -500,11 +514,15 @@ onBeforeUnmount(() => {
   --vc-dropdown-trigger-focus-ring-width: 2px;
   --vc-dropdown-trigger-focus-ring-offset: 1px;
   --vc-dropdown-trigger-focus-ring-color: var(--primary-300);
+  --vc-dropdown-trigger-flex: initial;
+  --vc-dropdown-radius: 6px;
+  --vc-dropdown-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 
   @apply tw-relative tw-flex tw-w-full tw-h-full;
 
   &__trigger {
     @apply tw-flex tw-items-center tw-justify-center;
+    flex: var(--vc-dropdown-trigger-flex);
 
     &:focus-visible {
       @apply tw-outline-none
@@ -531,8 +549,8 @@ onBeforeUnmount(() => {
     // Floating panels
     &--floating {
       border: 1px solid var(--vc-dropdown-border);
-      border-radius: 6px; // rounded-md
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      border-radius: var(--vc-dropdown-radius);
+      box-shadow: var(--vc-dropdown-shadow);
     }
   }
 

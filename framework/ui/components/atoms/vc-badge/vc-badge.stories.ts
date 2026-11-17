@@ -520,3 +520,21 @@ export const CustomPositioning: Story = {
     },
   },
 };
+
+/**
+ * Inline `solid` — the filled overlay colours inside a control (a count on a button);
+ * inline `label` — a short word shown in full (a long content is otherwise cut to 40px).
+ */
+export const InlineSolidAndLabel: Story = {
+  render: () => ({
+    components: { VcBadge },
+    template: `
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <VcBadge inline solid content="3" size="s" />
+        <VcBadge inline solid content="12" variant="danger" size="s" />
+        <VcBadge inline label content="Modified" variant="warning" size="s" />
+        <VcBadge inline content="Modified" variant="warning" size="s" />
+      </div>
+    `,
+  }),
+};

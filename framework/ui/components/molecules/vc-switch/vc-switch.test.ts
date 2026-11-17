@@ -25,4 +25,18 @@ describe("VcSwitch", () => {
       expect(wrapper.emitted("update:modelValue")).toBeTruthy();
     });
   });
+
+  describe("inline label slot", () => {
+    it("renders a label for the switch after the track", () => {
+      const wrapper = mount(VcSwitch as any, { props: { modelValue: false }, slots: { default: "Overdue" } });
+      const text = wrapper.find(".vc-switch__text");
+      expect(text.element.tagName).toBe("LABEL");
+      expect(text.attributes("for")).toBe(wrapper.find('[role="switch"]').attributes("id"));
+      expect(text.text()).toBe("Overdue");
+    });
+
+    it("renders no inline label without the slot", () => {
+      expect(mountSwitch().find(".vc-switch__text").exists()).toBe(false);
+    });
+  });
 });

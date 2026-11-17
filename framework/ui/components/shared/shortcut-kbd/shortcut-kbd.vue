@@ -1,5 +1,11 @@
 <template>
   <span class="vc-shortcut-kbd">
+    <!-- one key with its own content: an icon and a word ("↵ to add") -->
+    <kbd
+      v-if="$slots.default"
+      class="vc-shortcut-kbd__key"
+      ><slot
+    /></kbd>
     <template
       v-for="(part, index) in parts"
       :key="index"
@@ -17,11 +23,12 @@
 <script lang="ts" setup>
 withDefaults(
   defineProps<{
-    parts: string[];
+    /** The keys, one chip each */
+    parts?: string[];
     /** Show a `+` between chips (Windows/Linux). macOS glyphs sit flush. */
     separated?: boolean;
   }>(),
-  { separated: false },
+  { parts: () => [], separated: false },
 );
 </script>
 
@@ -34,7 +41,8 @@ withDefaults(
   }
 
   &__key {
-    @apply tw-inline-flex tw-items-center tw-justify-center;
+    // the gap only parts an icon from a word in a slotted key
+    @apply tw-inline-flex tw-items-center tw-justify-center tw-gap-1;
     @apply tw-min-w-[20px] tw-h-[18px] tw-px-1;
     @apply tw-rounded-sm tw-leading-none;
     @apply tw-text-[10px] tw-font-medium;

@@ -168,6 +168,102 @@
       }
     },
     "ORGANISMS": {
+      "VC_SEARCH_BAR": {
+        "SEARCH_PLACEHOLDER": "Suchen",
+        "FILTERS": "Filter",
+        "REMOVE_FILTER": "Filter {label} entfernen",
+        "CLEAR_SEARCH": "Suche löschen",
+        "CLEAR_FILTERS": "Alle Filter löschen",
+        "FILTERS_APPLIED": "Filter, {count} aktiv",
+        "MORE_FILTERS": "{count} weitere Filter",
+        "SUGGEST": {
+          "BY": "Nach {field} filtern",
+          "BY_FIELD": "Nach Feld filtern",
+          "ADD": "zum Hinzufügen"
+        },
+        "PHONE": {
+          "CLEAR": "Löschen",
+          "DONE": "Fertig",
+          "VIEW": "Ansicht",
+          "SHOW": "{count} Ergebnis anzeigen | {count} Ergebnisse anzeigen",
+          "SHOW_ANY": "Ergebnisse anzeigen",
+          "NO_MATCH": "Keine passenden Ergebnisse",
+          "RESULTS": "{count} Ergebnis | {count} Ergebnisse",
+          "ITEMS": "{count} Eintrag | {count} Einträge",
+          "FILTERED_FROM": "gefiltert aus {count}",
+          "FILTER_COUNT": "{count} Filter | {count} Filter",
+          "CLEAR_ALL": "Alle löschen"
+        },
+        "DATE": {
+          "TODAY": "Heute",
+          "LAST_7": "Letzte 7 Tage",
+          "LAST_30": "Letzte 30 Tage",
+          "CUSTOM_RANGE": "Eigener Zeitraum",
+          "ANY": "Beliebig"
+        },
+        "NUMBER": {
+          "MIN": "Von",
+          "MAX": "Bis",
+          "APPLY": "Anwenden",
+          "NOTE": "Bereiche gelten mit Enter",
+          "NOTE_PRESETS": "Bereiche gelten mit Enter, Vorgaben sofort"
+        },
+        "VIEWS": {
+          "ALL": "Alle",
+          "SELECTOR": "Ansicht: {name}",
+          "SAVED_VIEWS": "Gespeicherte Ansichten",
+          "MODIFIED": "Geändert",
+          "OPTIONS": "Optionen für {name}",
+          "SAVE_CHANGES": "Änderungen an „{name}“ speichern",
+          "SAVE_AS_NEW": "Als neue Ansicht speichern…",
+          "REVERT": "Auf „{name}“ zurücksetzen",
+          "REVERT_SHORT": "Zurücksetzen",
+          "RENAME": "Umbenennen",
+          "DELETE": "Löschen",
+          "NEW_NAME": "Neuer Name",
+          "UNSAVED": "Ungespeicherte Filter",
+          "SAVE": "Speichern",
+          "SAVE_AS_VIEW": "Als Ansicht speichern…",
+          "NAME_PLACEHOLDER": "Name der Ansicht",
+          "CANCEL": "Abbrechen"
+        },
+        "OPERATOR": {
+          "ANY": "Ist einer von",
+          "NOT": "Ist nicht"
+        },
+        "PANEL": {
+          "ACTIVE": "{count} aktiv",
+          "TOGGLES": "Schalter",
+          "ANY": "Alle",
+          "RESULTS": "Ergebnis · sofort angewendet | Ergebnisse · sofort angewendet",
+          "APPLIED": "Sofort angewendet",
+          "CLEAR": "Filter löschen"
+        },
+        "EDITOR": {
+          "FIND": "Suchen",
+          "NOTHING_FOUND": "Nichts gefunden",
+          "ONLY": "Nur",
+          "ONLY_LABEL": "Nur {label}"
+        }
+      },
+      "VC_DATA_TABLE": {
+        "STATUS": {
+          "FILTERED_FROM": "gefiltert aus {count}",
+          "FILTERS": "{count} Filter | {count} Filter",
+          "FILTERS_AND_SEARCH": "{count} Filter + Suche | {count} Filter + Suche",
+          "SEARCH": "Suche",
+          "CLEAR_ALL": "Alle löschen"
+        },
+        "NO_RESULTS": {
+          "TITLE_SEARCH_FILTERS": "Keine Ergebnisse für „{query}“ mit {count} Filter | Keine Ergebnisse für „{query}“ mit {count} Filtern",
+          "TITLE_SEARCH": "Keine Ergebnisse für „{query}“",
+          "TITLE_FILTERS": "Keine Ergebnisse mit {count} Filter | Keine Ergebnisse mit {count} Filtern",
+          "HINT_FILTERS": "Entfernen Sie unten einen Filter oder löschen Sie alle.",
+          "HINT_SEARCH": "Prüfen Sie die Schreibweise oder versuchen Sie ein anderes Stichwort.",
+          "CLEAR_SEARCH": "Suche löschen",
+          "CLEAR_FILTERS": "Filter löschen"
+        }
+      },
       "VC_DYNAMIC_PROPERTY": {
         "ADD": "Wert hinzufügen",
         "VALUE_TYPE": {

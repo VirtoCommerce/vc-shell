@@ -179,5 +179,29 @@ describe("VcInput", () => {
       expect(withStep.find("input").attributes("step")).toBe("0.01");
       expect(withoutStep.find("input").attributes("step")).toBeUndefined();
     });
+
+    it("binds inputAttrs to the input, over the forwarded native attributes", () => {
+      const wrapper = mount(VcInput, {
+        props: {
+          modelValue: "",
+          inputAttrs: { role: "combobox", "aria-expanded": false, "aria-controls": "list-1", inputmode: "search" },
+        },
+        attrs: { inputmode: "text" },
+      });
+      const input = wrapper.find("input");
+
+      expect(input.attributes("role")).toBe("combobox");
+      expect(input.attributes("aria-expanded")).toBe("false");
+      expect(input.attributes("aria-controls")).toBe("list-1");
+      expect(input.attributes("inputmode")).toBe("search");
+      expect(wrapper.find(".vc-input").attributes("role")).toBeUndefined();
+    });
+  });
+
+  it("exposes focus(), which focuses the native input", () => {
+    const wrapper = mount(VcInput, { props: { modelValue: "" }, attachTo: document.body });
+    (wrapper.vm as unknown as { focus: () => void }).focus();
+    expect(document.activeElement).toBe(wrapper.find("input").element);
+    wrapper.unmount();
   });
 });

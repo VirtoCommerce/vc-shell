@@ -59,6 +59,13 @@
         />
         <span class="vc-switch__slider"></span>
       </label>
+      <!-- an inline label after the track: it names the switch and toggles it -->
+      <label
+        v-if="$slots.default"
+        :for="switchId"
+        class="vc-switch__text"
+        ><slot
+      /></label>
     </div>
 
     <Transition
@@ -127,6 +134,8 @@ const emit = defineEmits<Emits>();
 
 defineSlots<{
   error: (props: Record<string, never>) => any;
+  /** Inline label after the track; it names the switch and toggles it on click */
+  default: (props: Record<string, never>) => any;
 }>();
 
 const {
@@ -195,6 +204,14 @@ function onInput(e: Event) {
 
   &__track-wrapper {
     @apply tw-inline-flex tw-items-center;
+  }
+
+  &__text {
+    @apply tw-flex-1 tw-min-w-0 tw-truncate tw-cursor-pointer tw-ms-2;
+  }
+
+  &--disabled &__text {
+    @apply tw-cursor-not-allowed;
   }
 
   &__track-label {

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
-import { computed, nextTick, ref } from "vue";
+import { computed, h, nextTick, ref } from "vue";
 import { BladeDescriptorKey, BladeRenderingStateKey } from "@core/blade-navigation/types";
 import { IsMobileKey, IsDesktopKey } from "@framework/injection-keys";
 import type { BladeDescriptor, BladeRenderingState } from "@core/blade-navigation/types";
@@ -69,6 +69,42 @@ function factory(
     },
   });
 }
+
+describe("BladeHeader title addon", () => {
+  const addon = () => h("div", { class: "test-title-addon" });
+
+  it("renders a registered addon next to the title", () => {
+    const wrapper = factory({ title: "Orders", titleAddon: addon });
+    const row = wrapper.find(".vc-blade-header__title-row");
+    expect(row.find(".vc-blade-header__title").exists()).toBe(true);
+    expect(row.find(".test-title-addon").exists()).toBe(true);
+  });
+
+  it("renders nothing without a registered addon", () => {
+    const wrapper = factory({ title: "Orders", titleAddon: null });
+    expect(wrapper.find(".test-title-addon").exists()).toBe(false);
+  });
+
+  it("keeps the released title markup without a registered addon", () => {
+    const wrapper = factory({ title: "Orders", subtitle: "All orders" });
+    const content = wrapper.find(".vc-blade-header__content");
+    expect(wrapper.find(".vc-blade-header__title-row").exists()).toBe(false);
+    const children = Array.from(content.element.children).map((el) => el.className);
+    expect(children).toEqual(["vc-blade-header__title", "vc-blade-header__subtitle"]);
+  });
+
+  it("renders a registered addon on mobile too (the addon decides where it shows)", () => {
+    const wrapper = mount(BladeHeader, {
+      props: { title: "Orders", titleAddon: addon },
+      global: {
+        provide: { [IsMobileKey as symbol]: ref(true), [IsDesktopKey as symbol]: ref(false) },
+        stubs: { teleport: true },
+        mocks: { $t: (key: string) => key },
+      },
+    });
+    expect(wrapper.find(".vc-blade-header__title-row .test-title-addon").exists()).toBe(true);
+  });
+});
 
 describe("BladeHeader", () => {
   it("renders with vc-blade-header class", () => {

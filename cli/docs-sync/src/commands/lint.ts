@@ -4,6 +4,7 @@ import { globby } from "globby";
 import chalk from "chalk";
 import { FRAMEWORK_DIR, FRAMEWORK_ROOT, STORYBOOK_URL } from "../config.js";
 import { fetchStorybookIds } from "../storybook/index-fetcher.js";
+import { collectLocalStoryIds } from "../storybook/local-ids.js";
 import { runLint } from "../lint/runner.js";
 
 export async function runLintCommand(): Promise<{ exitCode: number }> {
@@ -44,6 +45,9 @@ export async function runLintCommand(): Promise<{ exitCode: number }> {
       chalk.yellow(`warning: could not fetch Storybook index (${(err as Error).message}); skipping story-id checks`),
     );
   }
+
+  // stories added in this change are not published yet; they count as known too
+  for (const id of await collectLocalStoryIds(FRAMEWORK_DIR)) knownStoryIds.add(id);
 
   const result = await runLint({ sources: files, knownStoryIds });
 

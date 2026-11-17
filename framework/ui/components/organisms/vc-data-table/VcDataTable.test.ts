@@ -54,6 +54,14 @@ vi.mock("@ui/components/organisms/vc-data-table/components", () => ({
   TableSelectAllBar: defineComponent({ name: "TableSelectAllBar", template: "<div />" }),
 }));
 
+vi.mock("@ui/components/organisms/vc-search-bar", () => ({
+  VcSearchBar: defineComponent({
+    name: "VcSearchBar",
+    props: ["fields", "search", "placeholder", "searchDebounce", "storageKey", "name", "searchable"],
+    template: "<div class='mock-search-bar'><slot name='actions' /></div>",
+  }),
+}));
+
 vi.mock("@ui/components/molecules", () => ({
   VcPagination: defineComponent({ name: "VcPagination", template: "<div class='mock-pagination' />" }),
 }));
@@ -318,6 +326,12 @@ describe("VcDataTable", () => {
 
   it("does not render search header when searchable is false and no filters", () => {
     const wrapper = mountTable({ searchable: false });
+    expect(wrapper.find(".mock-search-header").exists()).toBe(false);
+  });
+
+  it("renders the search bar instead of the search header with searchBar", () => {
+    const wrapper = mountTable({ searchable: true, searchBar: true });
+    expect(wrapper.find(".mock-search-bar").exists()).toBe(true);
     expect(wrapper.find(".mock-search-header").exists()).toBe(false);
   });
 

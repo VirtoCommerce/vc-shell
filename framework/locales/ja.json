@@ -168,6 +168,102 @@
       }
     },
     "ORGANISMS": {
+      "VC_SEARCH_BAR": {
+        "SEARCH_PLACEHOLDER": "検索",
+        "FILTERS": "フィルター",
+        "REMOVE_FILTER": "フィルター「{label}」を削除",
+        "CLEAR_SEARCH": "検索をクリア",
+        "CLEAR_FILTERS": "すべてのフィルターをクリア",
+        "FILTERS_APPLIED": "フィルター、{count} 件適用中",
+        "MORE_FILTERS": "ほかに {count} 件のフィルター",
+        "SUGGEST": {
+          "BY": "{field}でフィルター",
+          "BY_FIELD": "フィールドでフィルター",
+          "ADD": "で追加"
+        },
+        "PHONE": {
+          "CLEAR": "クリア",
+          "DONE": "完了",
+          "VIEW": "ビュー",
+          "SHOW": "{count} 件の結果を表示",
+          "SHOW_ANY": "結果を表示",
+          "NO_MATCH": "一致する結果はありません",
+          "RESULTS": "{count} 件の結果",
+          "ITEMS": "{count} 件の項目",
+          "FILTERED_FROM": "{count} 件から絞り込み",
+          "FILTER_COUNT": "{count} 件のフィルター",
+          "CLEAR_ALL": "すべてクリア"
+        },
+        "DATE": {
+          "TODAY": "今日",
+          "LAST_7": "過去 7 日間",
+          "LAST_30": "過去 30 日間",
+          "CUSTOM_RANGE": "期間を指定",
+          "ANY": "すべての期間"
+        },
+        "NUMBER": {
+          "MIN": "開始",
+          "MAX": "終了",
+          "APPLY": "適用",
+          "NOTE": "範囲は Enter で適用されます",
+          "NOTE_PRESETS": "範囲は Enter で、プリセットはすぐに適用されます"
+        },
+        "VIEWS": {
+          "ALL": "すべて",
+          "SELECTOR": "ビュー: {name}",
+          "SAVED_VIEWS": "保存済みビュー",
+          "MODIFIED": "変更あり",
+          "OPTIONS": "{name} のオプション",
+          "SAVE_CHANGES": "「{name}」への変更を保存",
+          "SAVE_AS_NEW": "新しいビューとして保存…",
+          "REVERT": "「{name}」に戻す",
+          "REVERT_SHORT": "元に戻す",
+          "RENAME": "名前を変更",
+          "DELETE": "削除",
+          "NEW_NAME": "新しい名前",
+          "UNSAVED": "未保存のフィルター",
+          "SAVE": "保存",
+          "SAVE_AS_VIEW": "ビューとして保存…",
+          "NAME_PLACEHOLDER": "ビュー名",
+          "CANCEL": "キャンセル"
+        },
+        "OPERATOR": {
+          "ANY": "いずれかに一致",
+          "NOT": "次と等しくない"
+        },
+        "PANEL": {
+          "ACTIVE": "{count} 件有効",
+          "TOGGLES": "切り替え",
+          "ANY": "すべて",
+          "RESULTS": "件 · すぐに適用",
+          "APPLIED": "すぐに適用",
+          "CLEAR": "フィルターをクリア"
+        },
+        "EDITOR": {
+          "FIND": "検索",
+          "NOTHING_FOUND": "見つかりませんでした",
+          "ONLY": "のみ",
+          "ONLY_LABEL": "{label} のみ"
+        }
+      },
+      "VC_DATA_TABLE": {
+        "STATUS": {
+          "FILTERED_FROM": "{count} 件から絞り込み",
+          "FILTERS": "{count} 件のフィルター",
+          "FILTERS_AND_SEARCH": "{count} 件のフィルター + 検索",
+          "SEARCH": "検索",
+          "CLEAR_ALL": "すべてクリア"
+        },
+        "NO_RESULTS": {
+          "TITLE_SEARCH_FILTERS": "「{query}」と {count} 件のフィルターに一致する結果はありません",
+          "TITLE_SEARCH": "「{query}」に一致する結果はありません",
+          "TITLE_FILTERS": "{count} 件のフィルターに一致する結果はありません",
+          "HINT_FILTERS": "下のフィルターを削除するか、すべてクリアしてください。",
+          "HINT_SEARCH": "つづりを確認するか、別のキーワードをお試しください。",
+          "CLEAR_SEARCH": "検索をクリア",
+          "CLEAR_FILTERS": "フィルターをクリア"
+        }
+      },
       "VC_DYNAMIC_PROPERTY": {
         "ADD": "値を追加",
         "VALUE_TYPE": {

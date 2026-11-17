@@ -514,6 +514,73 @@
         "DELETE": "Löschen",
         "EDIT": "Bearbeiten"
       }
+    },
+    "FOLDER": {
+      "TITLE": "Dateien",
+      "SEARCH_PLACEHOLDER": "In diesem Ordner suchen",
+      "TOOLBAR": {
+        "REFRESH": "Aktualisieren",
+        "NEW_FOLDER": "Neuer Ordner",
+        "UPLOAD": "Hochladen",
+        "UPLOAD_FROM_URL": "Von URL hochladen",
+        "DELETE": "Löschen"
+      },
+      "TABLE": {
+        "HEADER": {
+          "NAME": "Name",
+          "SIZE": "Größe",
+          "MODIFIED_DATE": "Geändert"
+        }
+      },
+      "ACTIONS": {
+        "DOWNLOAD": "Herunterladen",
+        "COPY_LINK": "Link kopieren",
+        "DELETE": "Löschen"
+      },
+      "EMPTY": {
+        "TITLE": "Dieser Ordner ist leer",
+        "UPLOAD": "Hochladen"
+      },
+      "NOT_FOUND": "Nichts in diesem Ordner entspricht Ihrer Suche",
+      "CONFIRM_DELETE": "{items} löschen? Dies kann nicht rückgängig gemacht werden.",
+      "CONFIRM_DELETE_FOLDERS": "{items} löschen? Alles in den ausgewählten Ordnern wird ebenfalls gelöscht. Dies kann nicht rückgängig gemacht werden.",
+      "ITEMS_COUNT": "{count} Elemente",
+      "NEW_FOLDER_POPUP": {
+        "TITLE": "Neuer Ordner",
+        "NAME": "Ordnername",
+        "CREATE": "Erstellen",
+        "CANCEL": "Abbrechen",
+        "INVALID": "Geben Sie einen Namen ohne \"/\" ein"
+      },
+      "URL_POPUP": {
+        "TITLE": "Von URL hochladen",
+        "URL": "Datei-URL",
+        "UPLOAD": "Hochladen",
+        "CANCEL": "Abbrechen",
+        "INVALID": "Geben Sie eine gültige http(s)-URL ein"
+      },
+      "OVERWRITE_POPUP": {
+        "TITLE": "Datei existiert bereits",
+        "MESSAGE": "\"{name}\" existiert bereits in diesem Ordner.",
+        "NAME": "Dateiname",
+        "OVERWRITE": "Überschreiben",
+        "RENAME": "Umbenennen",
+        "SKIP": "Überspringen"
+      },
+      "NOTIFY": {
+        "LINK_COPIED": "Link kopiert",
+        "UPLOAD_FAILED": "{failed} von {total} Dateien konnten nicht hochgeladen werden",
+        "REQUEST_FAILED": "Anfrage fehlgeschlagen: {message}"
+      },
+      "VIEW": {
+        "TABLE": "Tabellenansicht",
+        "GRID": "Rasteransicht"
+      },
+      "FOLDER_LABEL": "Ordner",
+      "GRID": {
+        "MORE": "Weitere Aktionen",
+        "SELECT": "{name} auswählen"
+      }
     }
   },
   "ASSETS": {
@@ -522,7 +589,9 @@
         "SUBTITLE": "Asset bearbeiten",
         "TOOLBAR": {
           "SAVE": "Speichern",
-          "DELETE": "Löschen"
+          "DELETE": "Löschen",
+          "DOWNLOAD": "Herunterladen",
+          "COPY_LINK": "Link kopieren"
         },
         "FIELDS": {
           "SIZE": "Größe",
@@ -541,8 +610,21 @@
           "DESCRIPTION": {
             "TITLE": "Meta-Beschreibung",
             "PLACEHOLDER": "Meta-Beschreibung eingeben"
-          }
-        }
+          },
+          "TYPE": "Typ",
+          "DIMENSIONS": "Abmessungen",
+          "MODIFIED": "Geändert"
+        },
+        "SECTIONS": {
+          "METADATA": "Metadaten",
+          "FILE": "Datei"
+        },
+        "INFO_FAILED": "Zusätzliche Informationen konnten nicht geladen werden",
+        "NOTIFY": {
+          "LINK_COPIED": "Link kopiert",
+          "COPY_FAILED": "Link konnte nicht kopiert werden"
+        },
+        "OPEN_PREVIEW": "Vorschau in neuem Tab öffnen"
       }
     }
   },

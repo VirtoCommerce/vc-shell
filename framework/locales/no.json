@@ -514,6 +514,73 @@
         "DELETE": "Slett",
         "EDIT": "Rediger"
       }
+    },
+    "FOLDER": {
+      "TITLE": "Filer",
+      "SEARCH_PLACEHOLDER": "Søk i denne mappen",
+      "TOOLBAR": {
+        "REFRESH": "Oppdater",
+        "NEW_FOLDER": "Ny mappe",
+        "UPLOAD": "Last opp",
+        "UPLOAD_FROM_URL": "Last opp fra URL",
+        "DELETE": "Slett"
+      },
+      "TABLE": {
+        "HEADER": {
+          "NAME": "Navn",
+          "SIZE": "Størrelse",
+          "MODIFIED_DATE": "Endret"
+        }
+      },
+      "ACTIONS": {
+        "DOWNLOAD": "Last ned",
+        "COPY_LINK": "Kopier lenke",
+        "DELETE": "Slett"
+      },
+      "EMPTY": {
+        "TITLE": "Denne mappen er tom",
+        "UPLOAD": "Last opp"
+      },
+      "NOT_FOUND": "Ingenting i denne mappen samsvarer med søket ditt",
+      "CONFIRM_DELETE": "Slette {items}? Dette kan ikke angres.",
+      "CONFIRM_DELETE_FOLDERS": "Slette {items}? Alt innholdet i de valgte mappene slettes også. Dette kan ikke angres.",
+      "ITEMS_COUNT": "{count} elementer",
+      "NEW_FOLDER_POPUP": {
+        "TITLE": "Ny mappe",
+        "NAME": "Mappenavn",
+        "CREATE": "Opprett",
+        "CANCEL": "Avbryt",
+        "INVALID": "Skriv inn et navn uten \"/\""
+      },
+      "URL_POPUP": {
+        "TITLE": "Last opp fra URL",
+        "URL": "Fil-URL",
+        "UPLOAD": "Last opp",
+        "CANCEL": "Avbryt",
+        "INVALID": "Skriv inn en gyldig http(s)-URL"
+      },
+      "OVERWRITE_POPUP": {
+        "TITLE": "Filen finnes allerede",
+        "MESSAGE": "\"{name}\" finnes allerede i denne mappen.",
+        "NAME": "Filnavn",
+        "OVERWRITE": "Overskriv",
+        "RENAME": "Gi nytt navn",
+        "SKIP": "Hopp over"
+      },
+      "NOTIFY": {
+        "LINK_COPIED": "Lenke kopiert",
+        "UPLOAD_FAILED": "{failed} av {total} filer kunne ikke lastes opp",
+        "REQUEST_FAILED": "Forespørselen mislyktes: {message}"
+      },
+      "VIEW": {
+        "TABLE": "Tabellvisning",
+        "GRID": "Rutenettvisning"
+      },
+      "FOLDER_LABEL": "Mappe",
+      "GRID": {
+        "MORE": "Flere handlinger",
+        "SELECT": "Velg {name}"
+      }
     }
   },
   "ASSETS": {
@@ -522,7 +589,9 @@
         "SUBTITLE": "Rediger ressurs",
         "TOOLBAR": {
           "SAVE": "Lagre",
-          "DELETE": "Slett"
+          "DELETE": "Slett",
+          "DOWNLOAD": "Last ned",
+          "COPY_LINK": "Kopier lenke"
         },
         "FIELDS": {
           "SIZE": "Størrelse",
@@ -541,8 +610,21 @@
           "DESCRIPTION": {
             "TITLE": "Metabeskrivelse",
             "PLACEHOLDER": "Skriv inn metabeskrivelse"
-          }
-        }
+          },
+          "TYPE": "Type",
+          "DIMENSIONS": "Dimensjoner",
+          "MODIFIED": "Endret"
+        },
+        "SECTIONS": {
+          "METADATA": "Metadata",
+          "FILE": "Fil"
+        },
+        "INFO_FAILED": "Kunne ikke laste inn tilleggsinformasjon",
+        "NOTIFY": {
+          "LINK_COPIED": "Lenke kopiert",
+          "COPY_FAILED": "Kunne ikke kopiere lenken"
+        },
+        "OPEN_PREVIEW": "Åpne forhåndsvisning i ny fane"
       }
     }
   },

@@ -514,6 +514,73 @@
         "DELETE": "Elimina",
         "EDIT": "Modifica"
       }
+    },
+    "FOLDER": {
+      "TITLE": "File",
+      "SEARCH_PLACEHOLDER": "Cerca in questa cartella",
+      "TOOLBAR": {
+        "REFRESH": "Aggiorna",
+        "NEW_FOLDER": "Nuova cartella",
+        "UPLOAD": "Carica",
+        "UPLOAD_FROM_URL": "Carica da URL",
+        "DELETE": "Elimina"
+      },
+      "TABLE": {
+        "HEADER": {
+          "NAME": "Nome",
+          "SIZE": "Dimensione",
+          "MODIFIED_DATE": "Modificato"
+        }
+      },
+      "ACTIONS": {
+        "DOWNLOAD": "Scarica",
+        "COPY_LINK": "Copia link",
+        "DELETE": "Elimina"
+      },
+      "EMPTY": {
+        "TITLE": "Questa cartella è vuota",
+        "UPLOAD": "Carica"
+      },
+      "NOT_FOUND": "Nessun elemento in questa cartella corrisponde alla ricerca",
+      "CONFIRM_DELETE": "Eliminare {items}? L'operazione non può essere annullata.",
+      "CONFIRM_DELETE_FOLDERS": "Eliminare {items}? Verrà eliminato anche tutto il contenuto delle cartelle selezionate. L'operazione non può essere annullata.",
+      "ITEMS_COUNT": "{count} elementi",
+      "NEW_FOLDER_POPUP": {
+        "TITLE": "Nuova cartella",
+        "NAME": "Nome della cartella",
+        "CREATE": "Crea",
+        "CANCEL": "Annulla",
+        "INVALID": "Inserisci un nome senza \"/\""
+      },
+      "URL_POPUP": {
+        "TITLE": "Carica da URL",
+        "URL": "URL del file",
+        "UPLOAD": "Carica",
+        "CANCEL": "Annulla",
+        "INVALID": "Inserisci un URL http(s) valido"
+      },
+      "OVERWRITE_POPUP": {
+        "TITLE": "Il file esiste già",
+        "MESSAGE": "\"{name}\" esiste già in questa cartella.",
+        "NAME": "Nome del file",
+        "OVERWRITE": "Sovrascrivi",
+        "RENAME": "Rinomina",
+        "SKIP": "Salta"
+      },
+      "NOTIFY": {
+        "LINK_COPIED": "Link copiato",
+        "UPLOAD_FAILED": "Caricamento non riuscito per {failed} file su {total}",
+        "REQUEST_FAILED": "Richiesta non riuscita: {message}"
+      },
+      "VIEW": {
+        "TABLE": "Vista tabella",
+        "GRID": "Vista griglia"
+      },
+      "FOLDER_LABEL": "Cartella",
+      "GRID": {
+        "MORE": "Altre azioni",
+        "SELECT": "Seleziona {name}"
+      }
     }
   },
   "ASSETS": {
@@ -522,7 +589,9 @@
         "SUBTITLE": "Modifica risorsa",
         "TOOLBAR": {
           "SAVE": "Salva",
-          "DELETE": "Elimina"
+          "DELETE": "Elimina",
+          "DOWNLOAD": "Scarica",
+          "COPY_LINK": "Copia link"
         },
         "FIELDS": {
           "SIZE": "Dimensione",
@@ -541,8 +610,21 @@
           "DESCRIPTION": {
             "TITLE": "Meta descrizione",
             "PLACEHOLDER": "Inserire la meta descrizione"
-          }
-        }
+          },
+          "TYPE": "Tipo",
+          "DIMENSIONS": "Dimensioni",
+          "MODIFIED": "Modificato"
+        },
+        "SECTIONS": {
+          "METADATA": "Metadati",
+          "FILE": "File"
+        },
+        "INFO_FAILED": "Impossibile caricare le informazioni aggiuntive",
+        "NOTIFY": {
+          "LINK_COPIED": "Link copiato",
+          "COPY_FAILED": "Impossibile copiare il link"
+        },
+        "OPEN_PREVIEW": "Apri l'anteprima in una nuova scheda"
       }
     }
   },

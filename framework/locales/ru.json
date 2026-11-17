@@ -514,6 +514,73 @@
         "DELETE": "Удалить",
         "EDIT": "Редактировать"
       }
+    },
+    "FOLDER": {
+      "TITLE": "Файлы",
+      "SEARCH_PLACEHOLDER": "Поиск в этой папке",
+      "TOOLBAR": {
+        "REFRESH": "Обновить",
+        "NEW_FOLDER": "Новая папка",
+        "UPLOAD": "Загрузить",
+        "UPLOAD_FROM_URL": "Загрузить по URL",
+        "DELETE": "Удалить"
+      },
+      "TABLE": {
+        "HEADER": {
+          "NAME": "Имя",
+          "SIZE": "Размер",
+          "MODIFIED_DATE": "Изменён"
+        }
+      },
+      "ACTIONS": {
+        "DOWNLOAD": "Скачать",
+        "COPY_LINK": "Копировать ссылку",
+        "DELETE": "Удалить"
+      },
+      "EMPTY": {
+        "TITLE": "Эта папка пуста",
+        "UPLOAD": "Загрузить"
+      },
+      "NOT_FOUND": "В этой папке ничего не найдено по вашему запросу",
+      "CONFIRM_DELETE": "Удалить {items}? Это действие нельзя отменить.",
+      "CONFIRM_DELETE_FOLDERS": "Удалить {items}? Всё содержимое выбранных папок тоже будет удалено. Это действие нельзя отменить.",
+      "ITEMS_COUNT": "Элементов: {count}",
+      "NEW_FOLDER_POPUP": {
+        "TITLE": "Новая папка",
+        "NAME": "Название папки",
+        "CREATE": "Создать",
+        "CANCEL": "Отмена",
+        "INVALID": "Введите имя без \"/\""
+      },
+      "URL_POPUP": {
+        "TITLE": "Загрузить по URL",
+        "URL": "URL файла",
+        "UPLOAD": "Загрузить",
+        "CANCEL": "Отмена",
+        "INVALID": "Введите корректный http(s) URL"
+      },
+      "OVERWRITE_POPUP": {
+        "TITLE": "Файл уже существует",
+        "MESSAGE": "\"{name}\" уже существует в этой папке.",
+        "NAME": "Имя файла",
+        "OVERWRITE": "Перезаписать",
+        "RENAME": "Переименовать",
+        "SKIP": "Пропустить"
+      },
+      "NOTIFY": {
+        "LINK_COPIED": "Ссылка скопирована",
+        "UPLOAD_FAILED": "Не удалось загрузить файлов: {failed} из {total}",
+        "REQUEST_FAILED": "Ошибка запроса: {message}"
+      },
+      "VIEW": {
+        "TABLE": "Таблица",
+        "GRID": "Сетка"
+      },
+      "FOLDER_LABEL": "Папка",
+      "GRID": {
+        "MORE": "Дополнительные действия",
+        "SELECT": "Выбрать {name}"
+      }
     }
   },
   "ASSETS": {
@@ -522,7 +589,9 @@
         "SUBTITLE": "Редактирование ресурса",
         "TOOLBAR": {
           "SAVE": "Сохранить",
-          "DELETE": "Удалить"
+          "DELETE": "Удалить",
+          "DOWNLOAD": "Скачать",
+          "COPY_LINK": "Копировать ссылку"
         },
         "FIELDS": {
           "SIZE": "Размер",
@@ -541,8 +610,21 @@
           "DESCRIPTION": {
             "TITLE": "Мета-описание",
             "PLACEHOLDER": "Введите мета-описание"
-          }
-        }
+          },
+          "TYPE": "Тип",
+          "DIMENSIONS": "Размеры",
+          "MODIFIED": "Изменён"
+        },
+        "SECTIONS": {
+          "METADATA": "Метаданные",
+          "FILE": "Файл"
+        },
+        "INFO_FAILED": "Не удалось загрузить дополнительную информацию",
+        "NOTIFY": {
+          "LINK_COPIED": "Ссылка скопирована",
+          "COPY_FAILED": "Не удалось скопировать ссылку"
+        },
+        "OPEN_PREVIEW": "Открыть предпросмотр в новой вкладке"
       }
     }
   },

@@ -514,6 +514,73 @@
         "DELETE": "Poista",
         "EDIT": "Muokkaa"
       }
+    },
+    "FOLDER": {
+      "TITLE": "Tiedostot",
+      "SEARCH_PLACEHOLDER": "Hae tästä kansiosta",
+      "TOOLBAR": {
+        "REFRESH": "Päivitä",
+        "NEW_FOLDER": "Uusi kansio",
+        "UPLOAD": "Lataa",
+        "UPLOAD_FROM_URL": "Lataa URL-osoitteesta",
+        "DELETE": "Poista"
+      },
+      "TABLE": {
+        "HEADER": {
+          "NAME": "Nimi",
+          "SIZE": "Koko",
+          "MODIFIED_DATE": "Muokattu"
+        }
+      },
+      "ACTIONS": {
+        "DOWNLOAD": "Lataa",
+        "COPY_LINK": "Kopioi linkki",
+        "DELETE": "Poista"
+      },
+      "EMPTY": {
+        "TITLE": "Tämä kansio on tyhjä",
+        "UPLOAD": "Lataa"
+      },
+      "NOT_FOUND": "Mikään tässä kansiossa ei vastaa hakuasi",
+      "CONFIRM_DELETE": "Poistetaanko {items}? Tätä ei voi peruuttaa.",
+      "CONFIRM_DELETE_FOLDERS": "Poistetaanko {items}? Myös valittujen kansioiden sisältö poistetaan. Tätä ei voi peruuttaa.",
+      "ITEMS_COUNT": "{count} kohdetta",
+      "NEW_FOLDER_POPUP": {
+        "TITLE": "Uusi kansio",
+        "NAME": "Kansion nimi",
+        "CREATE": "Luo",
+        "CANCEL": "Peruuta",
+        "INVALID": "Anna nimi ilman merkkiä \"/\""
+      },
+      "URL_POPUP": {
+        "TITLE": "Lataa URL-osoitteesta",
+        "URL": "Tiedoston URL",
+        "UPLOAD": "Lataa",
+        "CANCEL": "Peruuta",
+        "INVALID": "Anna kelvollinen http(s)-osoite"
+      },
+      "OVERWRITE_POPUP": {
+        "TITLE": "Tiedosto on jo olemassa",
+        "MESSAGE": "\"{name}\" on jo tässä kansiossa.",
+        "NAME": "Tiedoston nimi",
+        "OVERWRITE": "Korvaa",
+        "RENAME": "Nimeä uudelleen",
+        "SKIP": "Ohita"
+      },
+      "NOTIFY": {
+        "LINK_COPIED": "Linkki kopioitu",
+        "UPLOAD_FAILED": "{failed}/{total} tiedoston lataus epäonnistui",
+        "REQUEST_FAILED": "Pyyntö epäonnistui: {message}"
+      },
+      "VIEW": {
+        "TABLE": "Taulukkonäkymä",
+        "GRID": "Ruudukkonäkymä"
+      },
+      "FOLDER_LABEL": "Kansio",
+      "GRID": {
+        "MORE": "Lisää toimintoja",
+        "SELECT": "Valitse {name}"
+      }
     }
   },
   "ASSETS": {
@@ -522,7 +589,9 @@
         "SUBTITLE": "Resurssin muokkaus",
         "TOOLBAR": {
           "SAVE": "Tallenna",
-          "DELETE": "Poista"
+          "DELETE": "Poista",
+          "DOWNLOAD": "Lataa",
+          "COPY_LINK": "Kopioi linkki"
         },
         "FIELDS": {
           "SIZE": "Koko",
@@ -541,8 +610,21 @@
           "DESCRIPTION": {
             "TITLE": "Metakuvaus",
             "PLACEHOLDER": "Anna metakuvaus"
-          }
-        }
+          },
+          "TYPE": "Tyyppi",
+          "DIMENSIONS": "Mitat",
+          "MODIFIED": "Muokattu"
+        },
+        "SECTIONS": {
+          "METADATA": "Metatiedot",
+          "FILE": "Tiedosto"
+        },
+        "INFO_FAILED": "Lisätietojen lataaminen epäonnistui",
+        "NOTIFY": {
+          "LINK_COPIED": "Linkki kopioitu",
+          "COPY_FAILED": "Linkin kopioiminen epäonnistui"
+        },
+        "OPEN_PREVIEW": "Avaa esikatselu uudessa välilehdessä"
       }
     }
   },

@@ -41,15 +41,17 @@ const dirOf = (key: string) => key.slice(0, key.lastIndexOf("/") + 1);
 const baseOf = (file: string) => file.slice(file.lastIndexOf("/") + 1).split(".")[0];
 
 /**
- * Guide for a stories file: same folder and base name, or the only guide in the folder.
+ * Guide for a stories file: same base name, or the only guide in the folder.
  * Auth pages keep stories two levels below their guide (`LoginPage/components/login/`),
+ * and modules keep several guides one folder up (`assets-manager/assets-folder-manager.docs.md`),
  * so up to two parent folders are tried before giving up.
  */
 export function guideKeyForStories(guides: Guides, storiesPath: string): string | undefined {
   let dir = dirOf(storiesPath.replace(/^\.\//, "../"));
-  const exact = `${dir}${baseOf(storiesPath)}.docs.md`;
-  if (exact in guides) return exact;
+  const base = baseOf(storiesPath);
   for (let level = 0; level < 3; level++) {
+    const exact = `${dir}${base}.docs.md`;
+    if (exact in guides) return exact;
     const inDir = Object.keys(guides).filter((k) => k.startsWith(dir) && !k.slice(dir.length).includes("/"));
     if (inDir.length === 1) return inDir[0];
     if (inDir.length > 1) return undefined;

@@ -48,4 +48,25 @@ function getExtensionLabel(name: string | undefined): string {
   return (getExtension(name) ?? "FILE").toUpperCase();
 }
 
-export { isImage, readableSize, getExtensionColor, getExtensionLabel };
+// The API may return a path relative to the platform; always hand out an absolute URL.
+function absoluteUrl(url: string): string {
+  return new URL(url, window.location.origin).href;
+}
+
+function downloadFile({ url, name }: { url: string; name?: string }): void {
+  try {
+    const link = document.createElement("a");
+    link.href = url;
+    if (name) link.download = name;
+    // A cross-origin url ignores `download` and navigates; a new tab keeps the admin open.
+    link.target = "_blank";
+    link.rel = "noopener";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch {
+    window.open(url, "_blank", "noopener");
+  }
+}
+
+export { isImage, readableSize, getExtensionColor, getExtensionLabel, absoluteUrl, downloadFile };

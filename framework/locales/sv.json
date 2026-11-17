@@ -580,18 +580,6 @@
       "GRID": {
         "MORE": "Fler åtgärder",
         "SELECT": "Markera {name}"
-      },
-      "DETAILS": {
-        "FIELDS": {
-          "NAME": "Namn",
-          "TYPE": "Typ",
-          "SIZE": "Storlek",
-          "DIMENSIONS": "Mått",
-          "CREATED": "Skapad",
-          "MODIFIED": "Ändrad",
-          "URL": "URL"
-        },
-        "INFO_FAILED": "Det gick inte att läsa in ytterligare information"
       }
     }
   },
@@ -601,7 +589,9 @@
         "SUBTITLE": "Redigera tillgång",
         "TOOLBAR": {
           "SAVE": "Spara",
-          "DELETE": "Ta bort"
+          "DELETE": "Ta bort",
+          "DOWNLOAD": "Ladda ned",
+          "COPY_LINK": "Kopiera länk"
         },
         "FIELDS": {
           "SIZE": "Storlek",
@@ -620,8 +610,21 @@
           "DESCRIPTION": {
             "TITLE": "Metabeskrivning",
             "PLACEHOLDER": "Ange metabeskrivning"
-          }
-        }
+          },
+          "TYPE": "Typ",
+          "DIMENSIONS": "Mått",
+          "MODIFIED": "Ändrad"
+        },
+        "SECTIONS": {
+          "METADATA": "Metadata",
+          "FILE": "Fil"
+        },
+        "INFO_FAILED": "Det gick inte att läsa in ytterligare information",
+        "NOTIFY": {
+          "LINK_COPIED": "Länk kopierad",
+          "COPY_FAILED": "Det gick inte att kopiera länken"
+        },
+        "OPEN_PREVIEW": "Öppna förhandsvisningen i en ny flik"
       }
     }
   },

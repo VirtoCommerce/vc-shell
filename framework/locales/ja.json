@@ -580,18 +580,6 @@
       "GRID": {
         "MORE": "その他の操作",
         "SELECT": "{name} を選択"
-      },
-      "DETAILS": {
-        "FIELDS": {
-          "NAME": "名前",
-          "TYPE": "種類",
-          "SIZE": "サイズ",
-          "DIMENSIONS": "寸法",
-          "CREATED": "作成日",
-          "MODIFIED": "更新日",
-          "URL": "URL"
-        },
-        "INFO_FAILED": "追加情報を読み込めませんでした"
       }
     }
   },
@@ -601,7 +589,9 @@
         "SUBTITLE": "リソースの編集",
         "TOOLBAR": {
           "SAVE": "保存",
-          "DELETE": "削除"
+          "DELETE": "削除",
+          "DOWNLOAD": "ダウンロード",
+          "COPY_LINK": "リンクをコピー"
         },
         "FIELDS": {
           "SIZE": "サイズ",
@@ -620,8 +610,21 @@
           "DESCRIPTION": {
             "TITLE": "メタディスクリプション",
             "PLACEHOLDER": "メタディスクリプションを入力"
-          }
-        }
+          },
+          "TYPE": "種類",
+          "DIMENSIONS": "寸法",
+          "MODIFIED": "更新日"
+        },
+        "SECTIONS": {
+          "METADATA": "メタデータ",
+          "FILE": "ファイル"
+        },
+        "INFO_FAILED": "追加情報を読み込めませんでした",
+        "NOTIFY": {
+          "LINK_COPIED": "リンクをコピーしました",
+          "COPY_FAILED": "リンクをコピーできませんでした"
+        },
+        "OPEN_PREVIEW": "プレビューを新しいタブで開く"
       }
     }
   },

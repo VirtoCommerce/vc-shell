@@ -580,18 +580,6 @@
       "GRID": {
         "MORE": "פעולות נוספות",
         "SELECT": "בחירת {name}"
-      },
-      "DETAILS": {
-        "FIELDS": {
-          "NAME": "שם",
-          "TYPE": "סוג",
-          "SIZE": "גודל",
-          "DIMENSIONS": "ממדים",
-          "CREATED": "נוצר",
-          "MODIFIED": "שונה",
-          "URL": "URL"
-        },
-        "INFO_FAILED": "לא ניתן לטעון מידע נוסף"
       }
     }
   },
@@ -601,7 +589,9 @@
         "SUBTITLE": "עריכת נכס",
         "TOOLBAR": {
           "SAVE": "שמירה",
-          "DELETE": "מחיקה"
+          "DELETE": "מחיקה",
+          "DOWNLOAD": "הורדה",
+          "COPY_LINK": "העתקת קישור"
         },
         "FIELDS": {
           "SIZE": "גודל",
@@ -620,8 +610,21 @@
           "DESCRIPTION": {
             "TITLE": "תיאור מטא",
             "PLACEHOLDER": "יש להזין תיאור מטא"
-          }
-        }
+          },
+          "TYPE": "סוג",
+          "DIMENSIONS": "ממדים",
+          "MODIFIED": "שונה"
+        },
+        "SECTIONS": {
+          "METADATA": "מטא-נתונים",
+          "FILE": "קובץ"
+        },
+        "INFO_FAILED": "לא ניתן לטעון מידע נוסף",
+        "NOTIFY": {
+          "LINK_COPIED": "הקישור הועתק",
+          "COPY_FAILED": "לא ניתן להעתיק את הקישור"
+        },
+        "OPEN_PREVIEW": "פתיחת התצוגה המקדימה בכרטיסייה חדשה"
       }
     }
   },

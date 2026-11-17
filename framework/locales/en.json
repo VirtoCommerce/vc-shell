@@ -580,18 +580,6 @@
       "GRID": {
         "MORE": "More actions",
         "SELECT": "Select {name}"
-      },
-      "DETAILS": {
-        "FIELDS": {
-          "NAME": "Name",
-          "TYPE": "Type",
-          "SIZE": "Size",
-          "DIMENSIONS": "Dimensions",
-          "CREATED": "Created",
-          "MODIFIED": "Modified",
-          "URL": "URL"
-        },
-        "INFO_FAILED": "Could not load additional information"
       }
     }
   },
@@ -601,7 +589,9 @@
         "SUBTITLE": "Asset edit",
         "TOOLBAR": {
           "SAVE": "Save",
-          "DELETE": "Delete"
+          "DELETE": "Delete",
+          "DOWNLOAD": "Download",
+          "COPY_LINK": "Copy link"
         },
         "FIELDS": {
           "SIZE": "Size",
@@ -620,8 +610,21 @@
           "DESCRIPTION": {
             "TITLE": "Meta description",
             "PLACEHOLDER": "Enter meta description"
-          }
-        }
+          },
+          "TYPE": "Type",
+          "DIMENSIONS": "Dimensions",
+          "MODIFIED": "Modified"
+        },
+        "SECTIONS": {
+          "METADATA": "Metadata",
+          "FILE": "File"
+        },
+        "INFO_FAILED": "Could not load additional information",
+        "NOTIFY": {
+          "LINK_COPIED": "Link copied",
+          "COPY_FAILED": "Could not copy the link"
+        },
+        "OPEN_PREVIEW": "Open preview in a new tab"
       }
     }
   },

@@ -580,18 +580,6 @@
       "GRID": {
         "MORE": "Więcej akcji",
         "SELECT": "Wybierz {name}"
-      },
-      "DETAILS": {
-        "FIELDS": {
-          "NAME": "Nazwa",
-          "TYPE": "Typ",
-          "SIZE": "Rozmiar",
-          "DIMENSIONS": "Wymiary",
-          "CREATED": "Utworzono",
-          "MODIFIED": "Zmodyfikowano",
-          "URL": "URL"
-        },
-        "INFO_FAILED": "Nie udało się załadować dodatkowych informacji"
       }
     }
   },
@@ -601,7 +589,9 @@
         "SUBTITLE": "Edycja zasobu",
         "TOOLBAR": {
           "SAVE": "Zapisz",
-          "DELETE": "Usuń"
+          "DELETE": "Usuń",
+          "DOWNLOAD": "Pobierz",
+          "COPY_LINK": "Kopiuj link"
         },
         "FIELDS": {
           "SIZE": "Rozmiar",
@@ -620,8 +610,21 @@
           "DESCRIPTION": {
             "TITLE": "Metaopis",
             "PLACEHOLDER": "Wprowadź metaopis"
-          }
-        }
+          },
+          "TYPE": "Typ",
+          "DIMENSIONS": "Wymiary",
+          "MODIFIED": "Zmodyfikowano"
+        },
+        "SECTIONS": {
+          "METADATA": "Metadane",
+          "FILE": "Plik"
+        },
+        "INFO_FAILED": "Nie udało się załadować dodatkowych informacji",
+        "NOTIFY": {
+          "LINK_COPIED": "Skopiowano link",
+          "COPY_FAILED": "Nie udało się skopiować linku"
+        },
+        "OPEN_PREVIEW": "Otwórz podgląd w nowej karcie"
       }
     }
   },

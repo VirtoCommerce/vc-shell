@@ -580,18 +580,6 @@
       "GRID": {
         "MORE": "Weitere Aktionen",
         "SELECT": "{name} auswählen"
-      },
-      "DETAILS": {
-        "FIELDS": {
-          "NAME": "Name",
-          "TYPE": "Typ",
-          "SIZE": "Größe",
-          "DIMENSIONS": "Abmessungen",
-          "CREATED": "Erstellt",
-          "MODIFIED": "Geändert",
-          "URL": "URL"
-        },
-        "INFO_FAILED": "Zusätzliche Informationen konnten nicht geladen werden"
       }
     }
   },
@@ -601,7 +589,9 @@
         "SUBTITLE": "Asset bearbeiten",
         "TOOLBAR": {
           "SAVE": "Speichern",
-          "DELETE": "Löschen"
+          "DELETE": "Löschen",
+          "DOWNLOAD": "Herunterladen",
+          "COPY_LINK": "Link kopieren"
         },
         "FIELDS": {
           "SIZE": "Größe",
@@ -620,8 +610,21 @@
           "DESCRIPTION": {
             "TITLE": "Meta-Beschreibung",
             "PLACEHOLDER": "Meta-Beschreibung eingeben"
-          }
-        }
+          },
+          "TYPE": "Typ",
+          "DIMENSIONS": "Abmessungen",
+          "MODIFIED": "Geändert"
+        },
+        "SECTIONS": {
+          "METADATA": "Metadaten",
+          "FILE": "Datei"
+        },
+        "INFO_FAILED": "Zusätzliche Informationen konnten nicht geladen werden",
+        "NOTIFY": {
+          "LINK_COPIED": "Link kopiert",
+          "COPY_FAILED": "Link konnte nicht kopiert werden"
+        },
+        "OPEN_PREVIEW": "Vorschau in neuem Tab öffnen"
       }
     }
   },

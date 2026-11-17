@@ -580,18 +580,6 @@
       "GRID": {
         "MORE": "Flere handlinger",
         "SELECT": "Velg {name}"
-      },
-      "DETAILS": {
-        "FIELDS": {
-          "NAME": "Navn",
-          "TYPE": "Type",
-          "SIZE": "Størrelse",
-          "DIMENSIONS": "Dimensjoner",
-          "CREATED": "Opprettet",
-          "MODIFIED": "Endret",
-          "URL": "URL"
-        },
-        "INFO_FAILED": "Kunne ikke laste inn tilleggsinformasjon"
       }
     }
   },
@@ -601,7 +589,9 @@
         "SUBTITLE": "Rediger ressurs",
         "TOOLBAR": {
           "SAVE": "Lagre",
-          "DELETE": "Slett"
+          "DELETE": "Slett",
+          "DOWNLOAD": "Last ned",
+          "COPY_LINK": "Kopier lenke"
         },
         "FIELDS": {
           "SIZE": "Størrelse",
@@ -620,8 +610,21 @@
           "DESCRIPTION": {
             "TITLE": "Metabeskrivelse",
             "PLACEHOLDER": "Skriv inn metabeskrivelse"
-          }
-        }
+          },
+          "TYPE": "Type",
+          "DIMENSIONS": "Dimensjoner",
+          "MODIFIED": "Endret"
+        },
+        "SECTIONS": {
+          "METADATA": "Metadata",
+          "FILE": "Fil"
+        },
+        "INFO_FAILED": "Kunne ikke laste inn tilleggsinformasjon",
+        "NOTIFY": {
+          "LINK_COPIED": "Lenke kopiert",
+          "COPY_FAILED": "Kunne ikke kopiere lenken"
+        },
+        "OPEN_PREVIEW": "Åpne forhåndsvisning i ny fane"
       }
     }
   },

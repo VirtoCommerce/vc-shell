@@ -580,18 +580,6 @@
       "GRID": {
         "MORE": "Lisää toimintoja",
         "SELECT": "Valitse {name}"
-      },
-      "DETAILS": {
-        "FIELDS": {
-          "NAME": "Nimi",
-          "TYPE": "Tyyppi",
-          "SIZE": "Koko",
-          "DIMENSIONS": "Mitat",
-          "CREATED": "Luotu",
-          "MODIFIED": "Muokattu",
-          "URL": "URL"
-        },
-        "INFO_FAILED": "Lisätietojen lataaminen epäonnistui"
       }
     }
   },
@@ -601,7 +589,9 @@
         "SUBTITLE": "Resurssin muokkaus",
         "TOOLBAR": {
           "SAVE": "Tallenna",
-          "DELETE": "Poista"
+          "DELETE": "Poista",
+          "DOWNLOAD": "Lataa",
+          "COPY_LINK": "Kopioi linkki"
         },
         "FIELDS": {
           "SIZE": "Koko",
@@ -620,8 +610,21 @@
           "DESCRIPTION": {
             "TITLE": "Metakuvaus",
             "PLACEHOLDER": "Anna metakuvaus"
-          }
-        }
+          },
+          "TYPE": "Tyyppi",
+          "DIMENSIONS": "Mitat",
+          "MODIFIED": "Muokattu"
+        },
+        "SECTIONS": {
+          "METADATA": "Metatiedot",
+          "FILE": "Tiedosto"
+        },
+        "INFO_FAILED": "Lisätietojen lataaminen epäonnistui",
+        "NOTIFY": {
+          "LINK_COPIED": "Linkki kopioitu",
+          "COPY_FAILED": "Linkin kopioiminen epäonnistui"
+        },
+        "OPEN_PREVIEW": "Avaa esikatselu uudessa välilehdessä"
       }
     }
   },

@@ -1,3 +1,5 @@
+import type { IAssetInfoItem } from "@modules/assets/components/assets-details";
+
 export interface BlobEntry {
   type: "folder" | "blob";
   name: string;
@@ -17,15 +19,10 @@ export interface IAssetsFolderAction {
   clickHandler: (folder: BlobEntry, ctx: { reload: () => Promise<void> }) => void | Promise<void>;
 }
 
-export interface IAssetsFolderInfoItem {
-  label: string;
-  value: string;
-}
-
 export interface AssetsFolderManagerOptions {
   rootUrl: string;
   title?: string;
   folderActions?: IAssetsFolderAction[];
-  entryInfo?: (entry: BlobEntry) => IAssetsFolderInfoItem[] | Promise<IAssetsFolderInfoItem[]>;
+  entryInfo?: (entry: BlobEntry) => IAssetInfoItem[] | Promise<IAssetInfoItem[]>;
   beforeDelete?: (entries: BlobEntry[]) => string | undefined | Promise<string | undefined>;
 }

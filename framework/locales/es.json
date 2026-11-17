@@ -580,18 +580,6 @@
       "GRID": {
         "MORE": "Más acciones",
         "SELECT": "Seleccionar {name}"
-      },
-      "DETAILS": {
-        "FIELDS": {
-          "NAME": "Nombre",
-          "TYPE": "Tipo",
-          "SIZE": "Tamaño",
-          "DIMENSIONS": "Dimensiones",
-          "CREATED": "Creado",
-          "MODIFIED": "Modificado",
-          "URL": "URL"
-        },
-        "INFO_FAILED": "No se pudo cargar la información adicional"
       }
     }
   },
@@ -601,7 +589,9 @@
         "SUBTITLE": "Edición de recurso",
         "TOOLBAR": {
           "SAVE": "Guardar",
-          "DELETE": "Eliminar"
+          "DELETE": "Eliminar",
+          "DOWNLOAD": "Descargar",
+          "COPY_LINK": "Copiar enlace"
         },
         "FIELDS": {
           "SIZE": "Tamaño",
@@ -620,8 +610,21 @@
           "DESCRIPTION": {
             "TITLE": "Metadescripción",
             "PLACEHOLDER": "Introduzca la metadescripción"
-          }
-        }
+          },
+          "TYPE": "Tipo",
+          "DIMENSIONS": "Dimensiones",
+          "MODIFIED": "Modificado"
+        },
+        "SECTIONS": {
+          "METADATA": "Metadatos",
+          "FILE": "Archivo"
+        },
+        "INFO_FAILED": "No se pudo cargar la información adicional",
+        "NOTIFY": {
+          "LINK_COPIED": "Enlace copiado",
+          "COPY_FAILED": "No se pudo copiar el enlace"
+        },
+        "OPEN_PREVIEW": "Abrir la vista previa en una pestaña nueva"
       }
     }
   },

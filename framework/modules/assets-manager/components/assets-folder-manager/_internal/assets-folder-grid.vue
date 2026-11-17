@@ -1,7 +1,9 @@
 <template>
   <div
+    ref="root"
     class="assets-folder-grid"
     :class="{ 'assets-folder-grid--selecting': selection.length > 0 }"
+    :style="tracks ? { gridTemplateColumns: `repeat(${tracks.count}, ${tracks.width}px)` } : undefined"
     role="list"
   >
     <div
@@ -124,7 +126,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, toValue, useId } from "vue";
+import { nextTick, ref, toValue, useId } from "vue";
+import { useDebounceFn, useEventListener, useResizeObserver } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { getExtensionColor, getExtensionLabel, isImage, readableSize } from "@core/utilities/assets";
 import { formatDateRelative } from "@core/utilities/date";
@@ -133,6 +136,8 @@ import { VcIcon, VcImage } from "@ui/components/atoms";
 import { VcCheckbox } from "@ui/components/molecules/vc-checkbox";
 import { VcDropdown, VcDropdownItem } from "@ui/components/molecules/vc-dropdown";
 import { folderUrlOf } from "../useAssetsFolder";
+import { flip } from "./flip";
+import { readWidthTransition } from "./width-transition";
 import type { BlobEntry } from "../types";
 
 const props = defineProps<{
@@ -160,6 +165,74 @@ const visibleActions = (entry: BlobEntry) => props.actions(entry).filter((action
 // The meta line is read after the name, not as part of it.
 const idPrefix = useId();
 const metaId = (entry: BlobEntry) => `${idPrefix}-meta-${props.items.indexOf(entry)}`;
+
+// Opening or closing a sibling blade animates this blade's width. Re-flowing on every frame
+// makes cards resize and jump between rows. Instead the grid reads where the width transition
+// ends, switches to that layout at once and glides the cards there in step with the blade;
+// the clipped edge covers the difference meanwhile. A resize without a readable transition
+// (window, devtools) re-flows once it settles.
+const MIN_CARD_WIDTH = 160;
+const SETTLE_MS = 100;
+// The predicted width can miss the real one by a pixel; at a column threshold that would add or drop
+// a column right after the glide. Within this much the column count stays and only the tracks are fitted.
+const WIDTH_TOLERANCE = 2;
+const root = ref<HTMLElement>();
+const tracks = ref<{ count: number; width: number }>();
+let contentWidth = 0;
+// The width the current tracks were planned for: measured, or predicted from a transition.
+let plannedWidth = 0;
+
+function gapOf(): number {
+  return root.value ? parseFloat(getComputedStyle(root.value).columnGap) || 0 : 0;
+}
+
+function fit(count: number, width: number) {
+  return { count, width: Math.floor((width - gapOf() * (count - 1)) / count) };
+}
+
+function tracksFor(width: number) {
+  const gap = gapOf();
+  return fit(Math.max(1, Math.floor((width + gap) / (MIN_CARD_WIDTH + gap))), width);
+}
+
+function reflow(width: number, timing?: { duration: number; easing: string }) {
+  const current = tracks.value;
+  if (current && Math.abs(width - plannedWidth) <= WIDTH_TOLERANCE) {
+    plannedWidth = width;
+    tracks.value = fit(current.count, width);
+    return;
+  }
+  plannedWidth = width;
+  const next = tracksFor(width);
+  if (current && next.count === current.count && next.width === current.width) return;
+  const cards = Array.from(root.value?.querySelectorAll<HTMLElement>(".assets-folder-grid__card") ?? []);
+  return flip(
+    cards,
+    () => {
+      tracks.value = next;
+      return nextTick();
+    },
+    timing,
+  );
+}
+
+const settleTracks = useDebounceFn((width: number) => reflow(width), SETTLE_MS);
+
+useResizeObserver(root, ([entry]) => {
+  contentWidth = entry.contentRect.width;
+  if (tracks.value === undefined) {
+    plannedWidth = contentWidth;
+    tracks.value = tracksFor(contentWidth);
+  } else void settleTracks(contentWidth);
+});
+
+// Transition events bubble, so an ancestor's width transition is seen here when it starts.
+useEventListener(document, "transitionrun", (event: TransitionEvent) => {
+  if (event.propertyName !== "width" || !root.value || !(event.target instanceof Element)) return;
+  if (event.target === root.value || !event.target.contains(root.value)) return;
+  const change = readWidthTransition(event.target);
+  if (change) void reflow(contentWidth + change.delta, { duration: change.duration, easing: change.easing });
+});
 
 // Only one card menu is open at a time; its actions are built when it opens.
 const openMenuUrl = ref<string>();
@@ -227,6 +300,7 @@ function dropListeners(entry: BlobEntry) {
 
 .assets-folder-grid {
   @apply tw-grid tw-gap-4 tw-p-4 tw-content-start;
+  // Until the first measurement; afterwards the count is set inline.
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
 
   &__card {

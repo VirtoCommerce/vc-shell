@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { isImage, readableSize, getExtensionColor, getExtensionLabel } from "./assets";
+import { describe, it, expect, vi, afterEach } from "vitest";
+import { isImage, readableSize, getExtensionColor, getExtensionLabel, absoluteUrl, downloadFile } from "./assets";
 
 describe("assets utilities", () => {
   describe("isImage", () => {
@@ -111,6 +111,39 @@ describe("assets utilities", () => {
 
     it("treats negative decimals as 0", () => {
       expect(readableSize(1536, -1)).toBe("2 KB");
+    });
+  });
+
+  describe("absoluteUrl", () => {
+    it("resolves a relative url against the origin", () => {
+      expect(absoluteUrl("/assets/a.png")).toBe(window.location.origin + "/assets/a.png");
+    });
+
+    it("keeps an absolute url", () => {
+      expect(absoluteUrl("https://cdn.example.com/a.png")).toBe("https://cdn.example.com/a.png");
+    });
+  });
+
+  describe("downloadFile", () => {
+    afterEach(() => vi.restoreAllMocks());
+
+    it("clicks a temporary link with download and a new tab", () => {
+      let attached = false;
+      const click = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(function (
+        this: HTMLAnchorElement,
+      ) {
+        attached = document.body.contains(this);
+      });
+
+      downloadFile({ url: "https://cdn.example.com/a.png", name: "a.png" });
+
+      const anchor = click.mock.contexts[0] as HTMLAnchorElement;
+      expect(attached).toBe(true);
+      expect(anchor.href).toBe("https://cdn.example.com/a.png");
+      expect(anchor.download).toBe("a.png");
+      expect(anchor.target).toBe("_blank");
+      expect(anchor.rel).toBe("noopener");
+      expect(document.body.contains(anchor)).toBe(false);
     });
   });
 });

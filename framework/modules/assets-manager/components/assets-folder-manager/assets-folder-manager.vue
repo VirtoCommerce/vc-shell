@@ -94,9 +94,12 @@
         </div>
       </template>
 
+      <!-- A new listing gets a fresh table: the row TransitionGroup would keep the old rows on screen
+           for a few frames after the spinner goes. -->
       <!-- @vue-generic {BlobEntry} -->
       <VcDataTable
         v-else
+        :key="listingKey"
         v-model:selection="selection"
         :items="pageItems"
         data-key="url"
@@ -202,7 +205,8 @@ import { useBlade } from "@core/composables/useBlade";
 import { usePermissions } from "@core/composables/usePermissions";
 import { usePopup } from "@core/composables/usePopup";
 import { notification } from "@core/notifications/notification";
-import { readableSize } from "@core/utilities/assets";
+import { absoluteUrl, downloadFile, isImage, readableSize } from "@core/utilities/assets";
+import type { AssetLike } from "@core/composables/useAssetsManager";
 import type { Breadcrumbs, IBladeToolbar } from "@core/types";
 import type { DataTablePagination, TableAction, TableStateConfig } from "@ui/components/organisms/vc-data-table/types";
 import {
@@ -224,8 +228,8 @@ import UploadUrlPopup from "./_internal/upload-url-popup.vue";
 import OverwritePopup from "./_internal/overwrite-popup.vue";
 import AssetsFolderGrid from "./_internal/assets-folder-grid.vue";
 import AssetsFolderState from "./_internal/assets-folder-state.vue";
+import { preloadImages } from "./_internal/preload-images";
 import { folderUrlOf, useAssetsFolder } from "./useAssetsFolder";
-import { absoluteUrl, download } from "./entry-links";
 import type { CollisionDecision } from "./collisions";
 import type { AssetsFolderManagerOptions, BlobEntry } from "./types";
 
@@ -234,6 +238,8 @@ defineBlade({
 });
 
 const PAGE_SIZE = 20;
+// A slow image must not hold the listing back for long.
+const PRELOAD_TIMEOUT_MS = 1500;
 // Past this many, the delete confirmation shows a count instead of names.
 const MAX_NAMED_ITEMS = 3;
 
@@ -261,7 +267,17 @@ const {
   upload,
   uploadFromUrl,
   remove,
-} = useAssetsFolder(options.value!.rootUrl, bladeTitle);
+} = useAssetsFolder(options.value!.rootUrl, bladeTitle, {
+  // A listing opens on page 1; its previews load behind the spinner, so the folder appears at once, not image by image.
+  prepare: (items) =>
+    preloadImages(
+      items
+        .slice(0, PAGE_SIZE)
+        .filter((e) => e.type !== "folder" && isImage(e.name))
+        .map((e) => e.url),
+      PRELOAD_TIMEOUT_MS,
+    ),
+});
 
 const page = ref(1);
 const selection = ref<BlobEntry[]>([]);
@@ -272,6 +288,8 @@ const searchText = ref("");
 watch(currentUrl, () => {
   searchText.value = "";
 });
+
+const listingKey = computed(() => `${currentUrl.value}|${keyword.value ?? ""}`);
 
 const pageCount = computed(() => Math.max(1, Math.ceil(entries.value.length / PAGE_SIZE)));
 const pageItems = computed(() => entries.value.slice((page.value - 1) * PAGE_SIZE, page.value * PAGE_SIZE));
@@ -382,21 +400,46 @@ function clearActive(token: symbol) {
   activeUrl.value = undefined;
 }
 
+function toAsset(entry: BlobEntry): AssetLike {
+  return {
+    url: entry.url,
+    relativeUrl: entry.relativeUrl,
+    name: entry.name,
+    size: entry.size,
+    contentType: entry.contentType,
+    createdDate: entry.createdDate,
+    modifiedDate: entry.modifiedDate,
+  } as AssetLike;
+}
+
 function openDetails(entry: BlobEntry) {
   const { url } = entry;
   const token = Symbol(url);
   detailsToken = token;
   activeUrl.value = url;
-  // Follows reloads: the details get the fresh object, or undefined (and close) once the url is gone.
-  const detailsEntry = computed(() => entries.value.find((e) => e.url === url));
+  // Follows reloads: a fresh mapped object each time, undefined (blade closes) once the url is gone.
+  const assetSource = computed(() => {
+    const current = entries.value.find((e) => e.url === url);
+    return current ? toAsset(current) : undefined;
+  });
+  const entryInfo = options.value?.entryInfo;
   void run(async () => {
     try {
       await openBlade({
-        name: "AssetsFolderEntryDetails",
+        name: "AssetsDetails",
         options: markRaw({
-          entry: detailsEntry,
-          entryInfo: options.value?.entryInfo,
-          onDelete: (target: BlobEntry) => deleteEntries([target]),
+          assetSource,
+          // The hook gets the original entry; once it left the listing there is nothing to describe.
+          extraInfo: entryInfo
+            ? (asset: AssetLike) => {
+                const current = entries.value.find((e) => e.url === asset.url);
+                return current ? entryInfo(current) : [];
+              }
+            : undefined,
+          assetRemoveHandler: (asset: AssetLike) => {
+            const current = entries.value.find((e) => e.url === asset.url);
+            return current ? deleteEntries([current]) : Promise.resolve(false);
+          },
         }),
         onClose: () => clearActive(token),
       });
@@ -611,7 +654,7 @@ function rowActions(entry: BlobEntry): TableAction[] {
       icon: "lucide-download",
       title: t("ASSETS_MANAGER.FOLDER.ACTIONS.DOWNLOAD"),
       type: "info",
-      clickHandler: () => download(entry),
+      clickHandler: () => downloadFile(entry),
     });
   }
   actions.push({
@@ -728,8 +771,11 @@ onMounted(() => run(load));
     @apply tw-shrink-0;
   }
 
+  // The gutter is reserved even without a scrollbar: one appearing or going away mid-transition
+  // would change the width the grid planned its columns for.
   &__grid {
-    @apply tw-flex tw-flex-col tw-flex-1 tw-min-h-0 tw-overflow-y-auto;
+    @apply tw-flex tw-flex-col tw-flex-1 tw-min-h-0 tw-overflow-y-auto tw-overflow-x-hidden;
+    scrollbar-gutter: stable;
   }
 
   &__pagination {

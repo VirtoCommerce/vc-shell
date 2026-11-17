@@ -43,6 +43,42 @@ describe("useAssetsFolder", () => {
     expect(entries.value.map((e) => e.name)).toEqual(["alpha", "Zeta", "A.png", "b.png"]);
   });
 
+  it("keeps loading and the old listing until prepare settles", async () => {
+    const ready = deferred<void>();
+    const prepare = vi.fn(() => ready.promise);
+    list.mockResolvedValue([blob("b.png"), blob("a.png")]);
+    const { load, entries, loading } = useAssetsFolder("/root", "Root", { prepare });
+    const pending = load();
+    await vi.waitFor(() => expect(prepare).toHaveBeenCalled());
+    expect(prepare.mock.calls[0]).toEqual([[blob("a.png"), blob("b.png")]]);
+    expect(loading.value).toBe(true);
+    expect(entries.value).toEqual([]);
+    ready.resolve();
+    await pending;
+    expect(loading.value).toBe(false);
+    expect(entries.value.map((e) => e.name)).toEqual(["a.png", "b.png"]);
+  });
+
+  it("commits the listing when prepare fails", async () => {
+    list.mockResolvedValue([blob("a.png")]);
+    const { load, entries } = useAssetsFolder("/root", "Root", { prepare: () => Promise.reject(new Error("x")) });
+    await load();
+    expect(entries.value.map((e) => e.name)).toEqual(["a.png"]);
+  });
+
+  it("drops a listing superseded while it was being prepared", async () => {
+    const first = deferred<void>();
+    const prepare = vi.fn().mockReturnValueOnce(first.promise).mockResolvedValue(undefined);
+    list.mockResolvedValueOnce([blob("old.png")]).mockResolvedValueOnce([blob("new.png")]);
+    const { load, search, entries } = useAssetsFolder("/root", "Root", { prepare });
+    const stale = load();
+    await vi.waitFor(() => expect(prepare).toHaveBeenCalledTimes(1));
+    await search("new");
+    first.resolve();
+    await stale;
+    expect(entries.value.map((e) => e.name)).toEqual(["new.png"]);
+  });
+
   it("builds breadcrumbs as a stack", async () => {
     const a = folder("a");
     list.mockResolvedValueOnce([a]).mockResolvedValueOnce([]);

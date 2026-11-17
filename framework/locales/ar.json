@@ -580,18 +580,6 @@
       "GRID": {
         "MORE": "المزيد من الإجراءات",
         "SELECT": "تحديد {name}"
-      },
-      "DETAILS": {
-        "FIELDS": {
-          "NAME": "الاسم",
-          "TYPE": "النوع",
-          "SIZE": "الحجم",
-          "DIMENSIONS": "الأبعاد",
-          "CREATED": "تاريخ الإنشاء",
-          "MODIFIED": "تاريخ التعديل",
-          "URL": "URL"
-        },
-        "INFO_FAILED": "تعذر تحميل المعلومات الإضافية"
       }
     }
   },
@@ -601,7 +589,9 @@
         "SUBTITLE": "تعديل الأصل",
         "TOOLBAR": {
           "SAVE": "حفظ",
-          "DELETE": "حذف"
+          "DELETE": "حذف",
+          "DOWNLOAD": "تنزيل",
+          "COPY_LINK": "نسخ الرابط"
         },
         "FIELDS": {
           "SIZE": "الحجم",
@@ -620,8 +610,21 @@
           "DESCRIPTION": {
             "TITLE": "الوصف التعريفي (Meta)",
             "PLACEHOLDER": "أدخل الوصف التعريفي"
-          }
-        }
+          },
+          "TYPE": "النوع",
+          "DIMENSIONS": "الأبعاد",
+          "MODIFIED": "تاريخ التعديل"
+        },
+        "SECTIONS": {
+          "METADATA": "البيانات الوصفية",
+          "FILE": "الملف"
+        },
+        "INFO_FAILED": "تعذر تحميل المعلومات الإضافية",
+        "NOTIFY": {
+          "LINK_COPIED": "تم نسخ الرابط",
+          "COPY_FAILED": "تعذر نسخ الرابط"
+        },
+        "OPEN_PREVIEW": "فتح المعاينة في علامة تبويب جديدة"
       }
     }
   },

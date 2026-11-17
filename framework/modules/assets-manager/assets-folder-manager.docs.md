@@ -11,7 +11,7 @@ A built-in blade that browses a folder of platform asset storage. It lists one f
 
 ## Overview
 
-`AssetsFolderManager` is registered by `AssetsManagerModule` and opened by name with `openBlade`. It is a browser only: it does not return a chosen file to the opener. Clicking a file opens `AssetsFolderEntryDetails`, a child blade with the file's preview and properties. The same module registers it.
+`AssetsFolderManager` is registered by `AssetsManagerModule` and opened by name with `openBlade`. It is a browser only: it does not return a chosen file to the opener. Clicking a file opens `AssetsDetails`, the shared child blade of the assets module, with the file's preview and properties.
 
 Every request goes to `/api/assets` with `fetch`. Storage is the source of truth: each upload, new folder and delete reloads the current level, there are no local edits.
 
@@ -28,13 +28,13 @@ openBlade({
 
 ## Options (via `useBlade`)
 
-| Option          | Type                                                 | Description                                                                     |
-| --------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------- |
-| `rootUrl`       | `string`                                             | Root folder, for example `/stores/<id>`. Required. The blade cannot leave it    |
-| `title`         | `string?`                                            | Blade title and root breadcrumb. Defaults to i18n `ASSETS_MANAGER.FOLDER.TITLE` |
-| `folderActions` | `IAssetsFolderAction[]?`                             | Extra actions on folder rows and cards only                                     |
-| `entryInfo`     | `(entry) => IAssetsFolderInfoItem[] \| Promise<...>` | Extra rows in the details blade. See [App hooks](#app-hooks)                    |
-| `beforeDelete`  | `(entries) => string \| undefined \| Promise<...>`   | Extra warning in the delete confirmation. See [App hooks](#app-hooks)           |
+| Option          | Type                                               | Description                                                                     |
+| --------------- | -------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `rootUrl`       | `string`                                           | Root folder, for example `/stores/<id>`. Required. The blade cannot leave it    |
+| `title`         | `string?`                                          | Blade title and root breadcrumb. Defaults to i18n `ASSETS_MANAGER.FOLDER.TITLE` |
+| `folderActions` | `IAssetsFolderAction[]?`                           | Extra actions on folder rows and cards only                                     |
+| `entryInfo`     | `(entry) => IAssetInfoItem[] \| Promise<...>`      | Extra rows in the details blade. See [App hooks](#app-hooks)                    |
+| `beforeDelete`  | `(entries) => string \| undefined \| Promise<...>` | Extra warning in the delete confirmation. See [App hooks](#app-hooks)           |
 
 ## Permissions
 
@@ -68,9 +68,9 @@ Both views show the same page of 20 entries, the same selection and the same row
 
 ## Details blade
 
-Clicking a file opens `AssetsFolderEntryDetails` as a child blade. Clicking another file replaces it, the open file stays highlighted in the table or grid, and moving to another folder or searching closes it.
+Clicking a file opens `AssetsDetails` as a child blade. Clicking another file replaces it, the open file stays highlighted in the table or grid, and moving to another folder or searching closes it.
 
-It shows a large preview and the fields Name, Type (`contentType` or the extension), Size, Dimensions (images only, measured once the image loads), Created, Modified and URL with a copy button. Rows from [`entryInfo`](#app-hooks) follow under a separator. The toolbar has Download, Copy link and Delete. Delete runs the folder blade's own delete, with the same confirmation and `beforeDelete` warning, and closes the details only when the file is gone.
+It opens in storage mode: no form, a header with the preview or extension tile, the file name and chips, the absolute URL with a copy button, then the File section with Type (`contentType` or the extension), Size, Dimensions (images only, measured once the image loads), Created and Modified. Rows from [`entryInfo`](#app-hooks) follow under a separator. See [Assets Details](../assets/assets-details.docs.md). The toolbar has Download, Copy link and Delete. Delete runs the folder blade's own delete, with the same confirmation and `beforeDelete` warning, and closes the details only when the file is gone.
 
 The details follow the folder listing: after a reload they show the fresh entry, and they close when the file disappears. The blade options carry functions, so a page reload or a deep link to it opens nothing and the blade closes itself.
 
@@ -79,12 +79,8 @@ The details follow the folder listing: after a reload they show the fresh entry,
 Two options let the opener add what only the app knows about a file.
 
 ```typescript
-interface IAssetsFolderInfoItem {
-  label: string;
-  value: string;
-}
-
-entryInfo?: (entry: BlobEntry) => IAssetsFolderInfoItem[] | Promise<IAssetsFolderInfoItem[]>;
+// IAssetInfoItem is { label: string; value: string }, exported from the assets module
+entryInfo?: (entry: BlobEntry) => IAssetInfoItem[] | Promise<IAssetInfoItem[]>;
 beforeDelete?: (entries: BlobEntry[]) => string | undefined | Promise<string | undefined>;
 ```
 
@@ -200,5 +196,6 @@ export function useStoreWidgets(store: Ref<{ id: string; name: string } | undefi
 
 ## Related
 
-- `framework/modules/assets-manager/components/assets-folder-manager/` -- the blade, the details blade, its internal composable, grid and popups
+- `framework/modules/assets-manager/components/assets-folder-manager/` -- the blade, its internal composable, grid and popups
+- [Assets Details](../assets/assets-details.docs.md) -- the details blade opened on a file click
 - [Assets Manager](./assets-manager.docs.md) -- the flat asset list blade for an entity's own assets

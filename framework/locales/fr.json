@@ -580,18 +580,6 @@
       "GRID": {
         "MORE": "Plus d'actions",
         "SELECT": "Sélectionner {name}"
-      },
-      "DETAILS": {
-        "FIELDS": {
-          "NAME": "Nom",
-          "TYPE": "Type",
-          "SIZE": "Taille",
-          "DIMENSIONS": "Dimensions",
-          "CREATED": "Créé",
-          "MODIFIED": "Modifié",
-          "URL": "URL"
-        },
-        "INFO_FAILED": "Impossible de charger les informations supplémentaires"
       }
     }
   },
@@ -601,7 +589,9 @@
         "SUBTITLE": "Modification de la ressource",
         "TOOLBAR": {
           "SAVE": "Enregistrer",
-          "DELETE": "Supprimer"
+          "DELETE": "Supprimer",
+          "DOWNLOAD": "Télécharger",
+          "COPY_LINK": "Copier le lien"
         },
         "FIELDS": {
           "SIZE": "Taille",
@@ -620,8 +610,21 @@
           "DESCRIPTION": {
             "TITLE": "Méta-description",
             "PLACEHOLDER": "Saisissez la méta-description"
-          }
-        }
+          },
+          "TYPE": "Type",
+          "DIMENSIONS": "Dimensions",
+          "MODIFIED": "Modifié"
+        },
+        "SECTIONS": {
+          "METADATA": "Métadonnées",
+          "FILE": "Fichier"
+        },
+        "INFO_FAILED": "Impossible de charger les informations supplémentaires",
+        "NOTIFY": {
+          "LINK_COPIED": "Lien copié",
+          "COPY_FAILED": "Impossible de copier le lien"
+        },
+        "OPEN_PREVIEW": "Ouvrir l'aperçu dans un nouvel onglet"
       }
     }
   },

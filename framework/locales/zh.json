@@ -580,18 +580,6 @@
       "GRID": {
         "MORE": "更多操作",
         "SELECT": "选择 {name}"
-      },
-      "DETAILS": {
-        "FIELDS": {
-          "NAME": "名称",
-          "TYPE": "类型",
-          "SIZE": "大小",
-          "DIMENSIONS": "尺寸",
-          "CREATED": "创建时间",
-          "MODIFIED": "修改时间",
-          "URL": "URL"
-        },
-        "INFO_FAILED": "无法加载其他信息"
       }
     }
   },
@@ -601,7 +589,9 @@
         "SUBTITLE": "编辑资源",
         "TOOLBAR": {
           "SAVE": "保存",
-          "DELETE": "删除"
+          "DELETE": "删除",
+          "DOWNLOAD": "下载",
+          "COPY_LINK": "复制链接"
         },
         "FIELDS": {
           "SIZE": "大小",
@@ -620,8 +610,21 @@
           "DESCRIPTION": {
             "TITLE": "元描述",
             "PLACEHOLDER": "输入元描述"
-          }
-        }
+          },
+          "TYPE": "类型",
+          "DIMENSIONS": "尺寸",
+          "MODIFIED": "修改时间"
+        },
+        "SECTIONS": {
+          "METADATA": "元数据",
+          "FILE": "文件"
+        },
+        "INFO_FAILED": "无法加载其他信息",
+        "NOTIFY": {
+          "LINK_COPIED": "链接已复制",
+          "COPY_FAILED": "无法复制链接"
+        },
+        "OPEN_PREVIEW": "在新标签页中打开预览"
       }
     }
   },

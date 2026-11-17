@@ -11,12 +11,13 @@ import { useUserManagement } from "@core/composables/useUserManagement";
 import { PlatformPermissions } from "@core/constants/permissions";
 import { VcPopupContainer } from "@shell/_internal/popup";
 import { withMobileView } from "../../../../../.storybook/decorators";
-import type { AssetsFolderManagerOptions, BlobEntry, IAssetsFolderAction, IAssetsFolderInfoItem } from "./types";
+import type { IAssetInfoItem } from "@modules/assets/components/assets-details";
+import type { AssetsFolderManagerOptions, BlobEntry, IAssetsFolderAction } from "./types";
 
 // The blade calls the `defineBlade` compile-time macro, which only the app build replaces.
 (globalThis as Record<string, unknown>).defineBlade ??= () => undefined;
-const { AssetsFolderManager, AssetsFolderEntryDetails } =
-  await import("@modules/assets-manager/components/assets-folder-manager");
+const { AssetsFolderManager } = await import("@modules/assets-manager/components/assets-folder-manager");
+const { AssetsDetails } = await import("@modules/assets/components/assets-details");
 
 // ── In-memory assets API ─────────────────────────────────────────────────────
 
@@ -180,7 +181,7 @@ interface StoryConfig {
 }
 
 const FOLDER_ID = "assets-folder-manager";
-const DETAILS_ID = "assets-folder-entry-details";
+const DETAILS_ID = "assets-details";
 
 // One child blade at most, the way the details blade is used. Opening replaces it, closing unmounts it.
 type ChildEvent = BladeOpenEvent & { parentId?: string };
@@ -212,7 +213,7 @@ function createChildSlot() {
 
 // The details blade gets its own descriptor, toolbar and widgets, as a blade in the real stack would.
 const ChildBlade = defineComponent({
-  components: { AssetsFolderEntryDetails },
+  components: { AssetsDetails },
   props: { event: { type: Object as PropType<ChildEvent>, required: true } },
   setup(props) {
     provide(ToolbarServiceKey, createToolbarService());
@@ -222,14 +223,14 @@ const ChildBlade = defineComponent({
       BladeDescriptorKey,
       computed<BladeDescriptor>(() => ({
         id: DETAILS_ID,
-        name: props.event.name ?? "AssetsFolderEntryDetails",
+        name: props.event.name ?? "AssetsDetails",
         visible: true,
         parentId: props.event.parentId,
         options: props.event.options as Record<string, unknown>,
       })),
     );
   },
-  template: "<AssetsFolderEntryDetails />",
+  template: "<AssetsDetails />",
 });
 
 function provideBladeContext(options: AssetsFolderManagerOptions, slot: ReturnType<typeof createChildSlot>) {
@@ -494,7 +495,7 @@ export const GridView: Story = {
 const detailsBlade = (canvasElement: HTMLElement) =>
   waitFor(
     () => {
-      const blade = canvasElement.querySelector<HTMLElement>('[data-test-id="assets-folder-entry-details-blade"]');
+      const blade = canvasElement.querySelector<HTMLElement>(".assets-details")?.closest<HTMLElement>(".vc-blade");
       if (!blade) throw new Error("details blade is not open");
       return blade;
     },
@@ -508,7 +509,7 @@ export const Details: Story = {
     await userEvent.click(await canvasText(canvasElement, "logo.png"));
     const blade = within(await detailsBlade(canvasElement));
     await blade.findByText("Dimensions", undefined, { timeout: 5000 });
-    await blade.findByText("64 × 64", undefined, { timeout: 5000 });
+    await blade.findAllByText("64 × 64", undefined, { timeout: 5000 });
   },
 };
 
@@ -524,7 +525,7 @@ export const WithHooks: Story = {
   parameters: {
     assetsFolder: {
       title: "Catalog files",
-      entryInfo: async (entry: BlobEntry): Promise<IAssetsFolderInfoItem[]> => {
+      entryInfo: async (entry: BlobEntry): Promise<IAssetInfoItem[]> => {
         await new Promise((resolve) => setTimeout(resolve, 400));
         const count = PAGE_USAGE[entry.name] ?? 0;
         return [{ label: "Used on", value: count ? pagesLabel(count) : "Not used" }];

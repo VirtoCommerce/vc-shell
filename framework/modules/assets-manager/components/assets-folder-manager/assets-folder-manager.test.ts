@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { mount, flushPromises } from "@vue/test-utils";
-import { ref, computed, defineComponent, effectScope, h, unref, watch, type Component } from "vue";
+import { ref, computed, defineComponent, h, nextTick, unref, type Component, type Ref } from "vue";
 import type { BlobEntry, IAssetsFolderAction } from "./types";
 import type { TableAction } from "@ui/components/organisms/vc-data-table/types";
 import { PlatformPermissions } from "@core/constants/permissions";
@@ -16,6 +16,7 @@ const folder = (name: string): BlobEntry => ({ type: "folder", name, url: `/root
 const blob = (name: string): BlobEntry => ({ type: "blob", name, url: `/root/${name}`, size: 10 });
 
 const state = vi.hoisted(() => ({
+  folderOptions: undefined as { prepare?: (entries: unknown[]) => Promise<unknown> } | undefined,
   currentUrl: null as unknown,
   entries: null as unknown,
   keyword: null as unknown,
@@ -54,6 +55,9 @@ vi.mock("@core/composables/useBlade", () => ({
   }),
 }));
 
+const preloadImages = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
+vi.mock("./_internal/preload-images", () => ({ preloadImages }));
+
 vi.mock("@core/notifications/notification", () => ({
   notification: { error: state.notifyError, success: state.notifySuccess },
 }));
@@ -75,21 +79,24 @@ vi.mock("@core/composables/usePopup", () => ({
 
 vi.mock("./useAssetsFolder", () => ({
   folderUrlOf: (entry: { url: string }) => entry.url,
-  useAssetsFolder: () => ({
-    currentUrl: state.currentUrl,
-    entries: state.entries,
-    loading: ref(false),
-    keyword: state.keyword,
-    breadcrumbs: state.breadcrumbs,
-    load: state.load,
-    open: state.open,
-    goTo: state.goTo,
-    search: state.search,
-    createFolder: state.createFolder,
-    upload: state.upload,
-    uploadFromUrl: state.uploadFromUrl,
-    remove: state.remove,
-  }),
+  useAssetsFolder: (_rootUrl: string, _rootName: unknown, folderOptions: typeof state.folderOptions) => {
+    state.folderOptions = folderOptions;
+    return {
+      currentUrl: state.currentUrl,
+      entries: state.entries,
+      loading: ref(false),
+      keyword: state.keyword,
+      breadcrumbs: state.breadcrumbs,
+      load: state.load,
+      open: state.open,
+      goTo: state.goTo,
+      search: state.search,
+      createFolder: state.createFolder,
+      upload: state.upload,
+      uploadFromUrl: state.uploadFromUrl,
+      remove: state.remove,
+    };
+  },
 }));
 
 vi.mock("vue-i18n", async (importOriginal) => ({
@@ -235,6 +242,20 @@ describe("AssetsFolderManager", () => {
     expect(state.load).toHaveBeenCalledTimes(1);
   });
 
+  it("preloads the image previews of the first page before a listing is shown", async () => {
+    mountBlade();
+    const files = Array.from({ length: 22 }, (_, i) => ({ type: "blob", name: `p${i}.png`, url: `/root/p${i}.png` }));
+    await state.folderOptions?.prepare?.([
+      { type: "folder", name: "x.png", url: "/root/x.png" },
+      { type: "blob", name: "doc.pdf", url: "/root/doc.pdf" },
+      ...files,
+    ]);
+    expect(preloadImages).toHaveBeenCalledWith(
+      files.slice(0, 18).map((f) => f.url),
+      1500,
+    );
+  });
+
   it("opens a folder on row click", async () => {
     const wrapper = mountBlade();
     const table = wrapper.findComponent(Table);
@@ -246,48 +267,78 @@ describe("AssetsFolderManager", () => {
 
   describe("details blade", () => {
     type DetailsOptions = {
-      entry: { value: BlobEntry | undefined };
-      entryInfo?: unknown;
-      onDelete: (e: BlobEntry) => Promise<boolean>;
+      assetSource: { value: { url: string; name: string; size?: number } | undefined };
+      extraInfo?: (a: { url: string }) => unknown;
+      assetRemoveHandler: (a: { url: string }) => Promise<boolean>;
     };
     const lastOpen = () =>
       state.openBlade.mock.calls.at(-1)![0] as { name: string; options: DetailsOptions; onClose?: () => void };
 
-    it("opens the details of a clicked file and highlights its row", async () => {
-      const entryInfo = vi.fn();
-      state.entryInfo = entryInfo;
+    const asset = (e: BlobEntry) => ({ url: e.url });
+
+    it("opens AssetsDetails with a live source and highlights the row", async () => {
       const wrapper = mountBlade();
       const table = wrapper.findComponent(Table);
       table.vm.$emit("row-click", { data: blob("b.txt") });
       await flushPromises();
       expect(state.open).not.toHaveBeenCalled();
       const event = lastOpen();
-      expect(event.name).toBe("AssetsFolderEntryDetails");
-      expect(event.options.entry.value).toEqual(blob("b.txt"));
-      expect(event.options.entryInfo).toBe(entryInfo);
+      expect(event.name).toBe("AssetsDetails");
+      const b = blob("b.txt");
+      expect(event.options.assetSource.value).toMatchObject({
+        url: b.url,
+        name: b.name,
+        size: b.size,
+        createdDate: b.createdDate,
+        modifiedDate: b.modifiedDate,
+      });
+      expect(event.options.extraInfo).toBeUndefined();
       expect(table.props("activeItemId")).toBe("/root/b.txt");
     });
 
-    it("feeds the details the fresh entry object and undefined once it is gone", async () => {
+    it("feeds a fresh object on reload and undefined once the file is gone", async () => {
       const wrapper = mountBlade();
       wrapper.findComponent(Table).vm.$emit("row-click", { data: blob("b.txt") });
-      const { entry } = lastOpen().options;
-      const fresh = { ...blob("b.txt"), size: 99 };
-      (state.entries as { value: BlobEntry[] }).value = [fresh];
+      const { assetSource } = lastOpen().options;
+      (state.entries as { value: BlobEntry[] }).value = [{ ...blob("b.txt"), size: 99 }];
       await flushPromises();
-      expect(entry.value).toEqual(fresh);
+      expect(assetSource.value?.size).toBe(99);
       (state.entries as { value: BlobEntry[] }).value = [folder("a")];
       await flushPromises();
-      expect(entry.value).toBeUndefined();
+      expect(assetSource.value).toBeUndefined();
     });
 
-    it("onDelete runs the folder delete flow for that one entry", async () => {
+    it("the remove handler returns true after a confirmed delete and false when cancelled", async () => {
       const wrapper = mountBlade();
       wrapper.findComponent(Table).vm.$emit("row-click", { data: blob("b.txt") });
-      expect(await lastOpen().options.onDelete(blob("b.txt"))).toBe(true);
+      const handler = lastOpen().options.assetRemoveHandler;
+      expect(await handler(asset(blob("b.txt")))).toBe(true);
       expect(state.remove).toHaveBeenCalledWith([blob("b.txt")]);
       state.showConfirmation.mockResolvedValue(false);
-      expect(await lastOpen().options.onDelete(blob("b.txt"))).toBe(false);
+      expect(await handler(asset(blob("b.txt")))).toBe(false);
+    });
+
+    it("passes entryInfo as extraInfo, called with the original BlobEntry", async () => {
+      const entryInfo = vi.fn(() => [{ label: "l", value: "v" }]);
+      state.entryInfo = entryInfo;
+      const wrapper = mountBlade();
+      wrapper.findComponent(Table).vm.$emit("row-click", { data: blob("b.txt") });
+      const { extraInfo } = lastOpen().options;
+      expect(await extraInfo!({ url: "/root/b.txt" })).toEqual([{ label: "l", value: "v" }]);
+      expect(entryInfo).toHaveBeenCalledWith(blob("b.txt"));
+    });
+
+    it("resolves extraInfo to [] and the remove handler to false once the file is gone", async () => {
+      state.entryInfo = vi.fn(() => [{ label: "l", value: "v" }]);
+      const wrapper = mountBlade();
+      wrapper.findComponent(Table).vm.$emit("row-click", { data: blob("b.txt") });
+      const { extraInfo, assetRemoveHandler } = lastOpen().options;
+      (state.entries as { value: BlobEntry[] }).value = [folder("a")];
+      await flushPromises();
+      state.remove.mockClear();
+      expect(await extraInfo!({ url: "/root/b.txt" })).toEqual([]);
+      expect(await assetRemoveHandler({ url: "/root/b.txt" })).toBe(false);
+      expect(state.remove).not.toHaveBeenCalled();
     });
 
     it("clears the highlight when the details close, but not when another file replaces them", async () => {
@@ -302,32 +353,6 @@ describe("AssetsFolderManager", () => {
       lastOpen().onClose?.();
       await flushPromises();
       expect(table.props("activeItemId")).toBeUndefined();
-    });
-
-    it("gives each details blade its own entry, so switching files asks entryInfo once per file", async () => {
-      const entryInfo = vi.fn();
-      (state.entries as { value: BlobEntry[] }).value = [blob("b.txt"), blob("c.txt")];
-      const wrapper = mountBlade();
-      const table = wrapper.findComponent(Table);
-      // Stands in for the details blade: it asks the hook whenever its entry url changes.
-      const scope = effectScope();
-      const follow = (options: DetailsOptions) =>
-        scope.run(() =>
-          watch(
-            () => options.entry.value?.url,
-            () => options.entry.value && entryInfo(options.entry.value),
-            { immediate: true },
-          ),
-        );
-      table.vm.$emit("row-click", { data: blob("b.txt") });
-      const first = lastOpen().options;
-      follow(first);
-      table.vm.$emit("row-click", { data: blob("c.txt") });
-      follow(lastOpen().options);
-      await flushPromises();
-      scope.stop();
-      expect(first.entry.value).toEqual(blob("b.txt"));
-      expect(entryInfo.mock.calls).toEqual([[blob("b.txt")], [blob("c.txt")]]);
     });
 
     it("clears the highlight when the details fail to open", async () => {
@@ -372,6 +397,22 @@ describe("AssetsFolderManager", () => {
   it("keys table rows by url so selecting one row does not select every row", () => {
     const wrapper = mountBlade();
     expect(wrapper.findComponent(Table).props("dataKey")).toBe("url");
+  });
+
+  it("mounts a fresh table for another folder or search, not for a reload", async () => {
+    const wrapper = mountBlade();
+    const uid = () => wrapper.findComponent(Table).vm.$.uid;
+    const first = uid();
+    (state.entries as Ref<BlobEntry[]>).value = [blob("a.txt")];
+    await nextTick();
+    expect(uid()).toBe(first);
+    (state.currentUrl as Ref<string>).value = "/root/a";
+    await nextTick();
+    const second = uid();
+    expect(second).not.toBe(first);
+    (state.keyword as Ref<string | undefined>).value = "cat";
+    await nextTick();
+    expect(uid()).not.toBe(second);
   });
 
   it("searches with the trimmed text and with undefined once cleared", async () => {
@@ -498,7 +539,7 @@ describe("AssetsFolderManager", () => {
       expect(state.open).toHaveBeenCalledWith(folder("a"));
       grid.vm.$emit("open", blob("b.txt"));
       await flushPromises();
-      expect(lastOpenName()).toBe("AssetsFolderEntryDetails");
+      expect(lastOpenName()).toBe("AssetsDetails");
       expect(grid.props("activeUrl")).toBe("/root/b.txt");
       grid.vm.$emit("update:selection", [blob("b.txt")]);
       await flushPromises();

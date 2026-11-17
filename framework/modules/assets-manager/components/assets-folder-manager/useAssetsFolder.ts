@@ -21,7 +21,16 @@ function sortEntries(items: BlobEntry[]): BlobEntry[] {
   return [...folders, ...files];
 }
 
-export function useAssetsFolder(rootUrl: string, rootName: MaybeRefOrGetter<string>) {
+export interface AssetsFolderOptions {
+  /** Runs on a fresh listing before it is shown; loading stays on until it settles. Failures are ignored. */
+  prepare?: (entries: BlobEntry[]) => Promise<unknown>;
+}
+
+export function useAssetsFolder(
+  rootUrl: string,
+  rootName: MaybeRefOrGetter<string>,
+  { prepare }: AssetsFolderOptions = {},
+) {
   const currentUrl = ref(rootUrl);
   const entries = ref<BlobEntry[]>([]);
   const fetching = ref(false);
@@ -43,7 +52,8 @@ export function useAssetsFolder(rootUrl: string, rootName: MaybeRefOrGetter<stri
     fetching.value = true;
     let result: BlobEntry[];
     try {
-      result = await api.listFolder(url, kw);
+      result = sortEntries(await api.listFolder(url, kw));
+      if (prepare && id === requestId) await prepare(result).catch(() => {});
     } catch (e) {
       if (id !== requestId) return;
       throw e;
@@ -51,7 +61,7 @@ export function useAssetsFolder(rootUrl: string, rootName: MaybeRefOrGetter<stri
       if (id === requestId) fetching.value = false;
     }
     if (id !== requestId) return;
-    entries.value = sortEntries(result);
+    entries.value = result;
     currentUrl.value = url;
     keyword.value = kw;
     trail.value = nextTrail;

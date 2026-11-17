@@ -610,6 +610,73 @@
         "DELETE": "מחיקה",
         "EDIT": "עריכה"
       }
+    },
+    "FOLDER": {
+      "TITLE": "קבצים",
+      "SEARCH_PLACEHOLDER": "חיפוש בתיקייה זו",
+      "TOOLBAR": {
+        "REFRESH": "רענון",
+        "NEW_FOLDER": "תיקייה חדשה",
+        "UPLOAD": "העלאה",
+        "UPLOAD_FROM_URL": "העלאה מכתובת URL",
+        "DELETE": "מחיקה"
+      },
+      "TABLE": {
+        "HEADER": {
+          "NAME": "שם",
+          "SIZE": "גודל",
+          "MODIFIED_DATE": "תאריך שינוי"
+        }
+      },
+      "ACTIONS": {
+        "DOWNLOAD": "הורדה",
+        "COPY_LINK": "העתקת קישור",
+        "DELETE": "מחיקה"
+      },
+      "EMPTY": {
+        "TITLE": "התיקייה הזו ריקה",
+        "UPLOAD": "העלאה"
+      },
+      "NOT_FOUND": "אין בתיקייה זו פריטים שתואמים לחיפוש",
+      "CONFIRM_DELETE": "למחוק את {items}? לא ניתן לבטל פעולה זו.",
+      "CONFIRM_DELETE_FOLDERS": "למחוק את {items}? כל התוכן שבתיקיות שנבחרו יימחק גם הוא. לא ניתן לבטל פעולה זו.",
+      "ITEMS_COUNT": "{count} פריטים",
+      "NEW_FOLDER_POPUP": {
+        "TITLE": "תיקייה חדשה",
+        "NAME": "שם התיקייה",
+        "CREATE": "יצירה",
+        "CANCEL": "ביטול",
+        "INVALID": "הזינו שם ללא \"/\""
+      },
+      "URL_POPUP": {
+        "TITLE": "העלאה מכתובת URL",
+        "URL": "כתובת ה-URL של הקובץ",
+        "UPLOAD": "העלאה",
+        "CANCEL": "ביטול",
+        "INVALID": "הזינו כתובת http(s) תקינה"
+      },
+      "OVERWRITE_POPUP": {
+        "TITLE": "הקובץ כבר קיים",
+        "MESSAGE": "\"{name}\" כבר קיים בתיקייה זו.",
+        "NAME": "שם הקובץ",
+        "OVERWRITE": "החלפה",
+        "RENAME": "שינוי שם",
+        "SKIP": "דילוג"
+      },
+      "NOTIFY": {
+        "LINK_COPIED": "הקישור הועתק",
+        "UPLOAD_FAILED": "העלאת {failed} מתוך {total} קבצים נכשלה",
+        "REQUEST_FAILED": "הבקשה נכשלה: {message}"
+      },
+      "VIEW": {
+        "TABLE": "תצוגת טבלה",
+        "GRID": "תצוגת רשת"
+      },
+      "FOLDER_LABEL": "תיקייה",
+      "GRID": {
+        "MORE": "פעולות נוספות",
+        "SELECT": "בחירת {name}"
+      }
     }
   },
   "ASSETS": {
@@ -618,7 +685,9 @@
         "SUBTITLE": "עריכת נכס",
         "TOOLBAR": {
           "SAVE": "שמירה",
-          "DELETE": "מחיקה"
+          "DELETE": "מחיקה",
+          "DOWNLOAD": "הורדה",
+          "COPY_LINK": "העתקת קישור"
         },
         "FIELDS": {
           "SIZE": "גודל",
@@ -637,8 +706,21 @@
           "DESCRIPTION": {
             "TITLE": "תיאור מטא",
             "PLACEHOLDER": "יש להזין תיאור מטא"
-          }
-        }
+          },
+          "TYPE": "סוג",
+          "DIMENSIONS": "ממדים",
+          "MODIFIED": "שונה"
+        },
+        "SECTIONS": {
+          "METADATA": "מטא-נתונים",
+          "FILE": "קובץ"
+        },
+        "INFO_FAILED": "לא ניתן לטעון מידע נוסף",
+        "NOTIFY": {
+          "LINK_COPIED": "הקישור הועתק",
+          "COPY_FAILED": "לא ניתן להעתיק את הקישור"
+        },
+        "OPEN_PREVIEW": "פתיחת התצוגה המקדימה בכרטיסייה חדשה"
       }
     }
   },

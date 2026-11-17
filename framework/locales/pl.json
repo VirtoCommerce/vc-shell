@@ -610,6 +610,73 @@
         "DELETE": "Usuń",
         "EDIT": "Edytuj"
       }
+    },
+    "FOLDER": {
+      "TITLE": "Pliki",
+      "SEARCH_PLACEHOLDER": "Szukaj w tym folderze",
+      "TOOLBAR": {
+        "REFRESH": "Odśwież",
+        "NEW_FOLDER": "Nowy folder",
+        "UPLOAD": "Prześlij",
+        "UPLOAD_FROM_URL": "Prześlij z adresu URL",
+        "DELETE": "Usuń"
+      },
+      "TABLE": {
+        "HEADER": {
+          "NAME": "Nazwa",
+          "SIZE": "Rozmiar",
+          "MODIFIED_DATE": "Zmodyfikowano"
+        }
+      },
+      "ACTIONS": {
+        "DOWNLOAD": "Pobierz",
+        "COPY_LINK": "Kopiuj link",
+        "DELETE": "Usuń"
+      },
+      "EMPTY": {
+        "TITLE": "Ten folder jest pusty",
+        "UPLOAD": "Prześlij"
+      },
+      "NOT_FOUND": "Nic w tym folderze nie pasuje do wyszukiwania",
+      "CONFIRM_DELETE": "Usunąć {items}? Tej operacji nie można cofnąć.",
+      "CONFIRM_DELETE_FOLDERS": "Usunąć {items}? Cała zawartość wybranych folderów również zostanie usunięta. Tej operacji nie można cofnąć.",
+      "ITEMS_COUNT": "Elementów: {count}",
+      "NEW_FOLDER_POPUP": {
+        "TITLE": "Nowy folder",
+        "NAME": "Nazwa folderu",
+        "CREATE": "Utwórz",
+        "CANCEL": "Anuluj",
+        "INVALID": "Wpisz nazwę bez znaku \"/\""
+      },
+      "URL_POPUP": {
+        "TITLE": "Prześlij z adresu URL",
+        "URL": "Adres URL pliku",
+        "UPLOAD": "Prześlij",
+        "CANCEL": "Anuluj",
+        "INVALID": "Wpisz prawidłowy adres http(s)"
+      },
+      "OVERWRITE_POPUP": {
+        "TITLE": "Plik już istnieje",
+        "MESSAGE": "\"{name}\" już istnieje w tym folderze.",
+        "NAME": "Nazwa pliku",
+        "OVERWRITE": "Nadpisz",
+        "RENAME": "Zmień nazwę",
+        "SKIP": "Pomiń"
+      },
+      "NOTIFY": {
+        "LINK_COPIED": "Skopiowano link",
+        "UPLOAD_FAILED": "Nie udało się przesłać plików: {failed} z {total}",
+        "REQUEST_FAILED": "Żądanie nie powiodło się: {message}"
+      },
+      "VIEW": {
+        "TABLE": "Widok tabeli",
+        "GRID": "Widok siatki"
+      },
+      "FOLDER_LABEL": "Folder",
+      "GRID": {
+        "MORE": "Więcej akcji",
+        "SELECT": "Wybierz {name}"
+      }
     }
   },
   "ASSETS": {
@@ -618,7 +685,9 @@
         "SUBTITLE": "Edycja zasobu",
         "TOOLBAR": {
           "SAVE": "Zapisz",
-          "DELETE": "Usuń"
+          "DELETE": "Usuń",
+          "DOWNLOAD": "Pobierz",
+          "COPY_LINK": "Kopiuj link"
         },
         "FIELDS": {
           "SIZE": "Rozmiar",
@@ -637,8 +706,21 @@
           "DESCRIPTION": {
             "TITLE": "Metaopis",
             "PLACEHOLDER": "Wprowadź metaopis"
-          }
-        }
+          },
+          "TYPE": "Typ",
+          "DIMENSIONS": "Wymiary",
+          "MODIFIED": "Zmodyfikowano"
+        },
+        "SECTIONS": {
+          "METADATA": "Metadane",
+          "FILE": "Plik"
+        },
+        "INFO_FAILED": "Nie udało się załadować dodatkowych informacji",
+        "NOTIFY": {
+          "LINK_COPIED": "Skopiowano link",
+          "COPY_FAILED": "Nie udało się skopiować linku"
+        },
+        "OPEN_PREVIEW": "Otwórz podgląd w nowej karcie"
       }
     }
   },

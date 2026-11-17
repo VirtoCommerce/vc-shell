@@ -38,25 +38,10 @@
           type="image"
         >
           <template #body="{ data }">
-            <div class="tw-flex tw-items-center tw-justify-center">
-              <template v-if="isImage(data.name ?? '')">
-                <VcImage
-                  :bordered="true"
-                  size="s"
-                  aspect="1x1"
-                  :src="data.url"
-                  background="contain"
-                ></VcImage>
-              </template>
-              <template v-else>
-                <div
-                  class="assets-manager__file-badge"
-                  :style="{ backgroundColor: getExtensionColor(data.name ?? '') }"
-                >
-                  {{ getExtensionLabel(data.name ?? "") }}
-                </div>
-              </template>
-            </div>
+            <AssetPreviewCell
+              :name="data.name ?? ''"
+              :url="data.url"
+            />
           </template>
         </VcColumn>
 
@@ -119,11 +104,12 @@ import type { AssetLike, UseAssetsManagerReturn } from "@core/composables/useAss
 import { IBladeToolbar } from "@core/types";
 import { ref, computed, unref } from "vue";
 import { useI18n } from "vue-i18n";
-import { isImage, readableSize, getExtensionColor, getExtensionLabel } from "@core/utilities/assets";
+import { readableSize } from "@core/utilities/assets";
 import { useBlade } from "@core/composables/useBlade";
 import { createLogger } from "@core/utilities";
 import { TableAction } from "@ui/components/organisms/vc-data-table/types";
-import { VcBlade, VcColumn, VcDataTable, VcImage } from "@ui/components";
+import { VcBlade, VcColumn, VcDataTable } from "@ui/components";
+import AssetPreviewCell from "../_internal/asset-preview-cell.vue";
 import { vLoading } from "@core/directives";
 
 const logger = createLogger("assets-manager");
@@ -307,13 +293,5 @@ const actionBuilder = (): TableAction[] => {
 :root {
   --assets-manager-empty-icon-color: var(--primary-400);
   --assets-manager-mobile-border: var(--info-100);
-}
-
-.assets-manager__file-badge {
-  @apply tw-flex tw-items-center tw-justify-center;
-  @apply tw-px-2.5 tw-py-1;
-  @apply tw-rounded;
-  @apply tw-text-xs tw-font-bold tw-tracking-wide;
-  @apply tw-text-white;
 }
 </style>

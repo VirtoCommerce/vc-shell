@@ -610,6 +610,73 @@
         "DELETE": "削除",
         "EDIT": "編集"
       }
+    },
+    "FOLDER": {
+      "TITLE": "ファイル",
+      "SEARCH_PLACEHOLDER": "このフォルダー内を検索",
+      "TOOLBAR": {
+        "REFRESH": "更新",
+        "NEW_FOLDER": "新しいフォルダー",
+        "UPLOAD": "アップロード",
+        "UPLOAD_FROM_URL": "URL からアップロード",
+        "DELETE": "削除"
+      },
+      "TABLE": {
+        "HEADER": {
+          "NAME": "名前",
+          "SIZE": "サイズ",
+          "MODIFIED_DATE": "更新日時"
+        }
+      },
+      "ACTIONS": {
+        "DOWNLOAD": "ダウンロード",
+        "COPY_LINK": "リンクをコピー",
+        "DELETE": "削除"
+      },
+      "EMPTY": {
+        "TITLE": "このフォルダーは空です",
+        "UPLOAD": "アップロード"
+      },
+      "NOT_FOUND": "このフォルダーには検索に一致する項目がありません",
+      "CONFIRM_DELETE": "{items} を削除しますか？この操作は元に戻せません。",
+      "CONFIRM_DELETE_FOLDERS": "{items} を削除しますか？選択したフォルダー内のすべての項目も削除されます。この操作は元に戻せません。",
+      "ITEMS_COUNT": "{count} 件",
+      "NEW_FOLDER_POPUP": {
+        "TITLE": "新しいフォルダー",
+        "NAME": "フォルダー名",
+        "CREATE": "作成",
+        "CANCEL": "キャンセル",
+        "INVALID": "「/」を含まない名前を入力してください"
+      },
+      "URL_POPUP": {
+        "TITLE": "URL からアップロード",
+        "URL": "ファイルの URL",
+        "UPLOAD": "アップロード",
+        "CANCEL": "キャンセル",
+        "INVALID": "有効な http(s) URL を入力してください"
+      },
+      "OVERWRITE_POPUP": {
+        "TITLE": "ファイルは既に存在します",
+        "MESSAGE": "「{name}」はこのフォルダーに既に存在します。",
+        "NAME": "ファイル名",
+        "OVERWRITE": "上書き",
+        "RENAME": "名前を変更",
+        "SKIP": "スキップ"
+      },
+      "NOTIFY": {
+        "LINK_COPIED": "リンクをコピーしました",
+        "UPLOAD_FAILED": "{total} 件中 {failed} 件のファイルをアップロードできませんでした",
+        "REQUEST_FAILED": "リクエストに失敗しました: {message}"
+      },
+      "VIEW": {
+        "TABLE": "テーブル表示",
+        "GRID": "グリッド表示"
+      },
+      "FOLDER_LABEL": "フォルダー",
+      "GRID": {
+        "MORE": "その他の操作",
+        "SELECT": "{name} を選択"
+      }
     }
   },
   "ASSETS": {
@@ -618,7 +685,9 @@
         "SUBTITLE": "リソースの編集",
         "TOOLBAR": {
           "SAVE": "保存",
-          "DELETE": "削除"
+          "DELETE": "削除",
+          "DOWNLOAD": "ダウンロード",
+          "COPY_LINK": "リンクをコピー"
         },
         "FIELDS": {
           "SIZE": "サイズ",
@@ -637,8 +706,21 @@
           "DESCRIPTION": {
             "TITLE": "メタディスクリプション",
             "PLACEHOLDER": "メタディスクリプションを入力"
-          }
-        }
+          },
+          "TYPE": "種類",
+          "DIMENSIONS": "寸法",
+          "MODIFIED": "更新日"
+        },
+        "SECTIONS": {
+          "METADATA": "メタデータ",
+          "FILE": "ファイル"
+        },
+        "INFO_FAILED": "追加情報を読み込めませんでした",
+        "NOTIFY": {
+          "LINK_COPIED": "リンクをコピーしました",
+          "COPY_FAILED": "リンクをコピーできませんでした"
+        },
+        "OPEN_PREVIEW": "プレビューを新しいタブで開く"
       }
     }
   },

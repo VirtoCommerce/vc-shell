@@ -610,6 +610,73 @@
         "DELETE": "Eliminar",
         "EDIT": "Editar"
       }
+    },
+    "FOLDER": {
+      "TITLE": "Archivos",
+      "SEARCH_PLACEHOLDER": "Buscar en esta carpeta",
+      "TOOLBAR": {
+        "REFRESH": "Actualizar",
+        "NEW_FOLDER": "Nueva carpeta",
+        "UPLOAD": "Subir",
+        "UPLOAD_FROM_URL": "Subir desde URL",
+        "DELETE": "Eliminar"
+      },
+      "TABLE": {
+        "HEADER": {
+          "NAME": "Nombre",
+          "SIZE": "Tamaño",
+          "MODIFIED_DATE": "Modificado"
+        }
+      },
+      "ACTIONS": {
+        "DOWNLOAD": "Descargar",
+        "COPY_LINK": "Copiar enlace",
+        "DELETE": "Eliminar"
+      },
+      "EMPTY": {
+        "TITLE": "Esta carpeta está vacía",
+        "UPLOAD": "Subir"
+      },
+      "NOT_FOUND": "Nada en esta carpeta coincide con tu búsqueda",
+      "CONFIRM_DELETE": "¿Eliminar {items}? Esta acción no se puede deshacer.",
+      "CONFIRM_DELETE_FOLDERS": "¿Eliminar {items}? También se eliminará todo el contenido de las carpetas seleccionadas. Esta acción no se puede deshacer.",
+      "ITEMS_COUNT": "{count} elementos",
+      "NEW_FOLDER_POPUP": {
+        "TITLE": "Nueva carpeta",
+        "NAME": "Nombre de la carpeta",
+        "CREATE": "Crear",
+        "CANCEL": "Cancelar",
+        "INVALID": "Introduce un nombre sin \"/\""
+      },
+      "URL_POPUP": {
+        "TITLE": "Subir desde URL",
+        "URL": "URL del archivo",
+        "UPLOAD": "Subir",
+        "CANCEL": "Cancelar",
+        "INVALID": "Introduce una URL http(s) válida"
+      },
+      "OVERWRITE_POPUP": {
+        "TITLE": "El archivo ya existe",
+        "MESSAGE": "\"{name}\" ya existe en esta carpeta.",
+        "NAME": "Nombre del archivo",
+        "OVERWRITE": "Sobrescribir",
+        "RENAME": "Renombrar",
+        "SKIP": "Omitir"
+      },
+      "NOTIFY": {
+        "LINK_COPIED": "Enlace copiado",
+        "UPLOAD_FAILED": "No se pudieron subir {failed} de {total} archivos",
+        "REQUEST_FAILED": "Error en la solicitud: {message}"
+      },
+      "VIEW": {
+        "TABLE": "Vista de tabla",
+        "GRID": "Vista de cuadrícula"
+      },
+      "FOLDER_LABEL": "Carpeta",
+      "GRID": {
+        "MORE": "Más acciones",
+        "SELECT": "Seleccionar {name}"
+      }
     }
   },
   "ASSETS": {
@@ -618,7 +685,9 @@
         "SUBTITLE": "Edición de recurso",
         "TOOLBAR": {
           "SAVE": "Guardar",
-          "DELETE": "Eliminar"
+          "DELETE": "Eliminar",
+          "DOWNLOAD": "Descargar",
+          "COPY_LINK": "Copiar enlace"
         },
         "FIELDS": {
           "SIZE": "Tamaño",
@@ -637,8 +706,21 @@
           "DESCRIPTION": {
             "TITLE": "Metadescripción",
             "PLACEHOLDER": "Introduzca la metadescripción"
-          }
-        }
+          },
+          "TYPE": "Tipo",
+          "DIMENSIONS": "Dimensiones",
+          "MODIFIED": "Modificado"
+        },
+        "SECTIONS": {
+          "METADATA": "Metadatos",
+          "FILE": "Archivo"
+        },
+        "INFO_FAILED": "No se pudo cargar la información adicional",
+        "NOTIFY": {
+          "LINK_COPIED": "Enlace copiado",
+          "COPY_FAILED": "No se pudo copiar el enlace"
+        },
+        "OPEN_PREVIEW": "Abrir la vista previa en una pestaña nueva"
       }
     }
   },

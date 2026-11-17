@@ -1,16 +1,16 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { computed, defineComponent, markRaw, onBeforeUnmount, provide, ref } from "vue";
+import { computed, defineComponent, markRaw, provide, ref } from "vue";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 import { ToolbarServiceKey, WidgetServiceKey } from "@framework/injection-keys";
 import { BladeStackKey, BladeMessagingKey, BladeDescriptorKey, BladeBannersKey } from "@core/blade-navigation/types";
 import type { BladeDescriptor, IBladeBanner } from "@core/blade-navigation/types";
 import { createToolbarService } from "@core/services/toolbar-service";
 import { createWidgetService } from "@core/services/widget-service";
-import { useUserManagement } from "@core/composables/useUserManagement";
 import { PlatformPermissions } from "@core/constants/permissions";
 import type { AssetLike } from "@core/composables/useAssetsManager";
 import { VcPopupContainer } from "@shell/_internal/popup";
 import { withMobileView } from "../../../../../.storybook/decorators";
+import { useSharedPopupContainer, useStoryUser } from "../../../../../.storybook/story-mocks";
 import type { AssetsDetailsOptions, IAssetInfoItem } from "@modules/assets/components/assets-details/types";
 
 // The blade calls the `defineBlade` compile-time macro, which only the app build replaces.
@@ -60,7 +60,7 @@ interface StoryConfig {
 
 const DETAILS_ID = "assets-details";
 
-function renderBlade(config: StoryConfig) {
+function renderBlade(config: StoryConfig, height: string) {
   return defineComponent({
     components: { AssetsDetails, VcPopupContainer },
     setup() {
@@ -105,42 +105,29 @@ function renderBlade(config: StoryConfig) {
       );
 
       // Storage Delete checks `platform:asset:delete` on the loaded user.
-      const realFetch = window.fetch.bind(window);
-      window.fetch = async (input, init) => {
-        const raw = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
-        if (new URL(raw, window.location.origin).pathname === "/api/platform/security/currentuser") {
-          const user = { id: "story-user", userName: "story-user", isAdministrator: false };
-          return new Response(JSON.stringify({ ...user, permissions: config.permissions ?? [DELETE] }), {
-            headers: { "Content-Type": "application/json" },
-          });
-        }
-        return realFetch(input, init);
-      };
-      onBeforeUnmount(() => {
-        window.fetch = realFetch;
-      });
+      const ready = useStoryUser(config.permissions ?? [DELETE]);
+      const ownsPopups = useSharedPopupContainer();
 
-      const ready = ref(false);
-      void useUserManagement()
-        .loadUser()
-        .finally(() => {
-          ready.value = true;
-        });
-
-      return { ready, closed };
+      return { ready, closed, ownsPopups, height };
     },
     template: `
-      <div style="display: flex; height: 100vh; width: 100%;">
+      <div :style="{ display: 'flex', height, width: '100%' }">
         <AssetsDetails v-if="ready && !closed" />
         <p v-if="closed" data-test-id="story-closed" style="margin: 16px;">The blade closed itself.</p>
       </div>
-      <VcPopupContainer />
+      <VcPopupContainer v-if="ownsPopups" />
     `,
   });
 }
 
-const render = (_args: unknown, { parameters }: { parameters: Record<string, unknown> }) => ({
-  components: { Story: markRaw(renderBlade(parameters.assetsDetails as StoryConfig)) },
+// On a docs page the stories sit one under another, so each gets a fixed height instead of the viewport.
+const render = (
+  _args: unknown,
+  { parameters, viewMode }: { parameters: Record<string, unknown>; viewMode?: string },
+) => ({
+  components: {
+    Story: markRaw(renderBlade(parameters.assetsDetails as StoryConfig, viewMode === "docs" ? "640px" : "100vh")),
+  },
   template: "<Story />",
 });
 
@@ -162,6 +149,8 @@ const storageHandlers: Pick<AssetsDetailsOptions, "assetRemoveHandler"> = {
  * entity's asset; storage mode (`assetSource`) shows a file in a storage folder read-only.
  * Both share the header: preview or extension tile, name, chips and the URL row.
  */
+// The docs page shows the stories that share one signed-in user; permission and mobile variants stay
+// in the sidebar and in the story tests (both change app-wide state).
 const meta = {
   title: "Modules/AssetsDetails",
   component: AssetsDetails,
@@ -169,8 +158,6 @@ const meta = {
   parameters: {
     layout: "fullscreen",
     docs: {
-      // Each story swaps window.fetch and shares the user singleton, so it needs its own iframe.
-      story: { inline: false, iframeHeight: 640 },
       description: {
         component: [
           "Opened as a blade, not used as a tag:",
@@ -226,6 +213,7 @@ export const FlatImage: Story = {
 
 /** Editing the name enables Save; the extension stays outside the input. */
 export const FlatEditName: Story = {
+  tags: ["!autodocs"],
   parameters: { assetsDetails: { options: { asset: image("cover.png"), ...flatHandlers } } },
   play: async ({ canvasElement }) => {
     await bladeReady(canvasElement);
@@ -252,6 +240,7 @@ export const FlatDocument: Story = {
 
 /** A name without an extension: the tile reads `FILE`, the name input has no suffix. */
 export const FlatNoExtension: Story = {
+  tags: ["!autodocs"],
   parameters: { assetsDetails: { options: { asset: doc("README"), ...flatHandlers } } },
   play: async ({ canvasElement }) => {
     await bladeReady(canvasElement);
@@ -263,6 +252,7 @@ export const FlatNoExtension: Story = {
 
 /** An asset that is not uploaded yet: no URL row, no Download, a tile instead of a preview. */
 export const FlatNoUrl: Story = {
+  tags: ["!autodocs"],
   parameters: {
     assetsDetails: { options: { asset: { ...image("draft.png"), url: undefined }, ...flatHandlers } },
   },
@@ -277,6 +267,7 @@ export const FlatNoUrl: Story = {
 
 /** `disabled`: inputs are read-only, Save and Delete are disabled, Download still works. */
 export const FlatDisabled: Story = {
+  tags: ["!autodocs"],
   parameters: {
     assetsDetails: { options: { asset: image("locked.png"), disabled: true, ...flatHandlers } },
   },
@@ -291,6 +282,7 @@ export const FlatDisabled: Story = {
 
 /** `hiddenFields` hides form fields only; the header and File section stay. */
 export const FlatHiddenFields: Story = {
+  tags: ["!autodocs"],
   parameters: {
     assetsDetails: {
       options: { asset: image("thumbnail.png"), hiddenFields: ["altText", "description"], ...flatHandlers },
@@ -322,6 +314,7 @@ export const StorageImage: Story = {
 
 /** Storage mode with a document; a relative url is shown resolved against the origin. */
 export const StorageDocument: Story = {
+  tags: ["!autodocs"],
   parameters: {
     assetsDetails: {
       options: storageHandlers,
@@ -338,6 +331,7 @@ export const StorageDocument: Story = {
 
 /** Without `platform:asset:delete` the storage Delete is hidden. */
 export const StorageNoDeletePermission: Story = {
+  tags: ["!autodocs"],
   parameters: {
     assetsDetails: { options: storageHandlers, storage: storageEntry(doc("audit.csv")), permissions: [] },
   },
@@ -373,6 +367,7 @@ export const StorageWithExtraInfo: Story = {
 
 /** A failing `extraInfo` leaves one muted line; the rest of the blade works. */
 export const StorageExtraInfoFailed: Story = {
+  tags: ["!autodocs"],
   parameters: {
     assetsDetails: {
       options: {
@@ -396,6 +391,7 @@ export const StorageExtraInfoFailed: Story = {
 
 /** An image that fails to load falls back to the extension tile, without dimensions. */
 export const BrokenImage: Story = {
+  tags: ["!autodocs"],
   parameters: {
     assetsDetails: {
       options: storageHandlers,
@@ -413,6 +409,7 @@ export const BrokenImage: Story = {
 
 /** A long name and a long url wrap and truncate instead of widening the blade. */
 export const LongNames: Story = {
+  tags: ["!autodocs"],
   parameters: {
     assetsDetails: {
       options: storageHandlers,
@@ -437,6 +434,7 @@ export const LongNames: Story = {
 
 /** Mounted without `asset` or `assetSource` (a reload or deep link), the blade closes itself. */
 export const NoOptions: Story = {
+  tags: ["!autodocs"],
   parameters: { assetsDetails: { options: {} } },
   play: async ({ canvasElement }) => {
     await waitFor(() => expect(canvasElement.querySelector('[data-test-id="story-closed"]')).not.toBeNull(), {
@@ -447,6 +445,7 @@ export const NoOptions: Story = {
 
 /** Phone layout: the blade fills the screen. */
 export const Mobile: Story = {
+  tags: ["!autodocs"],
   decorators: [withMobileView],
   parameters: { assetsDetails: { options: { asset: image("mobile-banner.png"), ...flatHandlers } } },
   play: async ({ canvasElement }) => {

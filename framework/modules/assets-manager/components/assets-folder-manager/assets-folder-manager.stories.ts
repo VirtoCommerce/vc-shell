@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { computed, defineComponent, markRaw, onBeforeUnmount, provide, ref, shallowRef } from "vue";
+import { computed, defineComponent, markRaw, nextTick, onBeforeUnmount, provide, ref, shallowRef, watch } from "vue";
 import type { PropType } from "vue";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 import { ToolbarServiceKey, WidgetServiceKey } from "@framework/injection-keys";
@@ -7,10 +7,16 @@ import { BladeStackKey, BladeMessagingKey, BladeDescriptorKey, BladeBannersKey }
 import type { BladeDescriptor, BladeOpenEvent, IBladeBanner } from "@core/blade-navigation/types";
 import { createToolbarService } from "@core/services/toolbar-service";
 import { createWidgetService } from "@core/services/widget-service";
-import { useUserManagement } from "@core/composables/useUserManagement";
 import { PlatformPermissions } from "@core/constants/permissions";
 import { VcPopupContainer } from "@shell/_internal/popup";
 import { withMobileView } from "../../../../../.storybook/decorators";
+import {
+  jsonResponse,
+  useSharedPopupContainer,
+  useStoryFetch,
+  useStoryUser,
+  type FetchHandler,
+} from "../../../../../.storybook/story-mocks";
 import type { IAssetInfoItem } from "@modules/assets/components/assets-details";
 import type { AssetsFolderManagerOptions, BlobEntry, IAssetsFolderAction } from "./types";
 
@@ -106,46 +112,43 @@ const datasets: Record<string, () => Tree> = {
   empty: () => ({ "/empty": [] }),
 };
 
-const json = (body: unknown, status = 200) =>
-  new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
-
-function createAssetsFetch(tree: Tree, permissions: string[], realFetch: typeof fetch): typeof fetch {
+// Answers only for folders of its own tree, so stories with different trees can share one page.
+function createAssetsHandler(tree: Tree): FetchHandler {
   const removeFrom = (url: string) => {
     for (const key of Object.keys(tree)) {
       if (key === url || key.startsWith(`${url}/`)) delete tree[key];
       else tree[key] = tree[key].filter((e) => e.url !== url);
     }
   };
+  const owns = (url: string | null) =>
+    !!url && Object.keys(tree).some((key) => url === key || url.startsWith(`${key}/`));
 
-  return async (input, init) => {
-    const raw = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
-    const url = new URL(raw, window.location.origin);
+  return (url, init) => {
+    if (!url.pathname.startsWith("/api/assets")) return undefined;
     const method = (init?.method ?? "GET").toUpperCase();
-
-    if (url.pathname === "/api/platform/security/currentuser") {
-      return json({ id: "story-user", userName: "story-user", isAdministrator: false, permissions });
-    }
-    if (!url.pathname.startsWith("/api/assets")) return realFetch(input, init);
-
     const params = url.searchParams;
 
     if (url.pathname === "/api/assets/folder" && method === "POST") {
       const { name, parentUrl } = JSON.parse(String(init?.body));
+      if (!owns(parentUrl)) return undefined;
       const entry = folder(parentUrl, name);
       tree[parentUrl] = [...(tree[parentUrl] ?? []), entry];
       tree[entry.url] = [];
-      return json({});
+      return jsonResponse({});
     }
 
     if (method === "GET") {
-      const list = tree[params.get("folderUrl") ?? ""];
-      if (!list) return json({}, 404);
+      const folderUrl = params.get("folderUrl");
+      if (!owns(folderUrl)) return undefined;
+      const list = tree[folderUrl ?? ""];
+      if (!list) return jsonResponse({}, 404);
       const keyword = params.get("keyword")?.toLowerCase();
-      return json({ results: keyword ? list.filter((e) => e.name.toLowerCase().includes(keyword)) : list });
+      return jsonResponse({ results: keyword ? list.filter((e) => e.name.toLowerCase().includes(keyword)) : list });
     }
 
     if (method === "POST") {
       const folderUrl = params.get("folderUrl") ?? "";
+      if (!owns(folderUrl)) return undefined;
       const body = init?.body;
       const uploaded = body instanceof FormData ? (body.get("file") as File) : undefined;
       const name = uploaded?.name ?? params.get("name") ?? "download";
@@ -154,17 +157,24 @@ function createAssetsFetch(tree: Tree, permissions: string[], realFetch: typeof 
         (e) => e.name !== name || params.get("forceFileOverwrite") !== "true",
       );
       tree[folderUrl] = [...rest, entry];
-      return json({});
+      return jsonResponse({});
     }
 
     if (method === "DELETE") {
-      params.getAll("urls").forEach(removeFrom);
-      return json({});
+      const urls = params.getAll("urls");
+      if (!urls.some(owns)) return undefined;
+      urls.forEach(removeFrom);
+      return jsonResponse({});
     }
 
-    return json({}, 405);
+    return jsonResponse({}, 405);
   };
 }
+
+// The blade reads the stored view once, when it mounts. Stories on a docs page mount together,
+// so they take turns: each writes its view and mounts its blade before the next one does.
+const VIEW_KEY = "VC_ASSETS_FOLDER_MANAGER_VIEW";
+let mountQueue: Promise<void> = Promise.resolve();
 
 // ── Blade context ────────────────────────────────────────────────────────────
 
@@ -265,7 +275,7 @@ function provideBladeContext(options: AssetsFolderManagerOptions, slot: ReturnTy
   provide(BladeDescriptorKey, descriptor);
 }
 
-function renderBlade(config: StoryConfig) {
+function renderBlade(config: StoryConfig, height: string) {
   const dataset = config.dataset ?? "catalog";
   const rootUrl = config.rootUrl ?? (dataset === "many" ? "/archive" : dataset === "empty" ? "/empty" : "/catalog");
 
@@ -284,35 +294,33 @@ function renderBlade(config: StoryConfig) {
         slot,
       );
 
-      // The blade reads the stored view once, on setup; every story starts from its own.
-      const VIEW_KEY = "VC_ASSETS_FOLDER_MANAGER_VIEW";
-      const storedView = localStorage.getItem(VIEW_KEY);
-      localStorage.setItem(VIEW_KEY, config.view ?? "table");
+      useStoryFetch(createAssetsHandler(datasets[dataset]()));
+      // Permissions come from the loaded user, so the blade mounts once it is in.
+      const userReady = useStoryUser(config.permissions ?? [CREATE, DELETE]);
+      const ownsPopups = useSharedPopupContainer();
+
+      const ready = ref(false);
+      let storedView: string | null = null;
+      const stop = watch(userReady, (loaded) => {
+        if (!loaded) return;
+        stop();
+        mountQueue = mountQueue.then(async () => {
+          storedView = localStorage.getItem(VIEW_KEY);
+          localStorage.setItem(VIEW_KEY, config.view ?? "table");
+          ready.value = true;
+          await nextTick();
+        });
+      });
       onBeforeUnmount(() => {
         if (storedView === null) localStorage.removeItem(VIEW_KEY);
         else localStorage.setItem(VIEW_KEY, storedView);
       });
 
-      // The mock stays installed only while the story is on screen.
-      const realFetch = window.fetch.bind(window);
-      window.fetch = createAssetsFetch(datasets[dataset](), config.permissions ?? [CREATE, DELETE], realFetch);
-      onBeforeUnmount(() => {
-        window.fetch = realFetch;
-      });
-
-      // Permissions come from the loaded user, so the blade mounts once it is in.
-      const ready = ref(false);
-      void useUserManagement()
-        .loadUser()
-        .finally(() => {
-          ready.value = true;
-        });
-
-      return { ready, child: slot.child };
+      return { ready, child: slot.child, ownsPopups, height };
     },
     // On mobile the open child covers its parent, as in the shell.
     template: `
-      <div style="display: flex; height: 100vh; width: 100%;">
+      <div :style="{ display: 'flex', height, width: '100%' }">
         <AssetsFolderManager
           v-if="ready"
           v-show="!(child && $isMobile.value)"
@@ -323,13 +331,21 @@ function renderBlade(config: StoryConfig) {
           :event="child"
         />
       </div>
-      <VcPopupContainer />
+      <VcPopupContainer v-if="ownsPopups" />
     `,
   });
 }
 
-const render = (_args: unknown, { parameters }: { parameters: Record<string, unknown> }) => ({
-  components: { Story: markRaw(renderBlade((parameters.assetsFolder as StoryConfig) ?? {})) },
+// On a docs page the stories sit one under another, so each gets a fixed height instead of the viewport.
+const render = (
+  _args: unknown,
+  { parameters, viewMode }: { parameters: Record<string, unknown>; viewMode?: string },
+) => ({
+  components: {
+    Story: markRaw(
+      renderBlade((parameters.assetsFolder as StoryConfig) ?? {}, viewMode === "docs" ? "660px" : "100vh"),
+    ),
+  },
   template: "<Story />",
 });
 
@@ -341,6 +357,8 @@ const render = (_args: unknown, { parameters }: { parameters: Record<string, unk
  * Every story serves the platform assets API from an in-memory tree, so uploads, deletes and
  * new folders can be tried in place. The tree resets when the story is re-rendered.
  */
+// The docs page shows the stories that share one signed-in user; permission and mobile variants stay
+// in the sidebar and in the story tests (both change app-wide state).
 const meta = {
   title: "Modules/AssetsFolderManager",
   component: AssetsFolderManager,
@@ -348,8 +366,6 @@ const meta = {
   parameters: {
     layout: "fullscreen",
     docs: {
-      // Each story swaps window.fetch and shares the user singleton, so it needs its own iframe.
-      story: { inline: false, iframeHeight: 660 },
       description: {
         component: [
           "Opened as a blade, not used as a tag:",
@@ -385,6 +401,7 @@ export const Default: Story = {
 
 /** Opens a folder and then a sub-folder; the breadcrumbs follow and the last crumb is the current folder. */
 export const NestedFolder: Story = {
+  tags: ["!autodocs"],
   parameters: { assetsFolder: { title: "Catalog files" } },
   play: async ({ canvasElement }) => {
     await userEvent.click(await canvasText(canvasElement, "images"));
@@ -398,6 +415,7 @@ export const NestedFolder: Story = {
 
 /** A folder with no entries shows the empty state with an upload action. */
 export const EmptyFolder: Story = {
+  tags: ["!autodocs"],
   parameters: { assetsFolder: { dataset: "empty", title: "Uploads" } },
   play: async ({ canvasElement }) => {
     await canvasText(canvasElement, "This folder is empty");
@@ -406,6 +424,7 @@ export const EmptyFolder: Story = {
 
 /** 65 files across several pages of 20. */
 export const ManyFiles: Story = {
+  tags: ["!autodocs"],
   parameters: { assetsFolder: { dataset: "many", title: "Scans" } },
   play: async ({ canvasElement }) => {
     await canvasText(canvasElement, "scan-001.pdf");
@@ -414,6 +433,7 @@ export const ManyFiles: Story = {
 
 /** No create or delete permission: no upload, new folder or delete controls, no selection column. */
 export const ReadOnly: Story = {
+  tags: ["!autodocs"],
   parameters: { assetsFolder: { title: "Catalog files", permissions: [] } },
   play: async ({ canvasElement }) => {
     await canvasText(canvasElement, "images");
@@ -424,6 +444,7 @@ export const ReadOnly: Story = {
 
 /** Create without delete: upload and new folder are offered, delete is not. */
 export const CreateOnly: Story = {
+  tags: ["!autodocs"],
   parameters: { assetsFolder: { title: "Catalog files", permissions: [CREATE] } },
   play: async ({ canvasElement }) => {
     await canvasText(canvasElement, "images");
@@ -433,6 +454,7 @@ export const CreateOnly: Story = {
 
 /** `folderActions` add a per-folder row action; the handler gets the folder and a `reload` callback. */
 export const WithFolderActions: Story = {
+  tags: ["!autodocs"],
   parameters: {
     assetsFolder: {
       title: "Catalog files",
@@ -456,6 +478,7 @@ export const WithFolderActions: Story = {
 
 /** Without a title option the blade falls back to the default title. */
 export const DefaultTitle: Story = {
+  tags: ["!autodocs"],
   parameters: { assetsFolder: {} },
   play: async ({ canvasElement }) => {
     await canvasText(canvasElement, "images");
@@ -464,6 +487,7 @@ export const DefaultTitle: Story = {
 
 /** Mobile layout. */
 export const Mobile: Story = {
+  tags: ["!autodocs"],
   decorators: [withMobileView],
   parameters: { assetsFolder: { title: "Catalog files" } },
   play: async ({ canvasElement }) => {
@@ -473,6 +497,7 @@ export const Mobile: Story = {
 
 /** Search narrows the current folder by name through the API keyword filter. */
 export const Search: Story = {
+  tags: ["!autodocs"],
   parameters: { assetsFolder: { title: "Catalog files" } },
   play: async ({ canvasElement }) => {
     await canvasText(canvasElement, "manual.pdf");
@@ -522,6 +547,7 @@ const pagesLabel = (count: number) => `${count} ${count === 1 ? "page" : "pages"
  * Here both report where a file is used, so deleting `logo.png` warns that three pages lose it.
  */
 export const WithHooks: Story = {
+  tags: ["!autodocs"],
   parameters: {
     assetsFolder: {
       title: "Catalog files",
@@ -549,6 +575,7 @@ export const WithHooks: Story = {
 
 /** Dragging files over a folder highlights it; a drop there uploads into that folder instead of the current one. */
 export const DropOnFolder: Story = {
+  tags: ["!autodocs"],
   parameters: { assetsFolder: { title: "Catalog files" } },
   play: async ({ canvasElement }) => {
     const name = await canvasText(canvasElement, "documents");
@@ -565,6 +592,7 @@ export const DropOnFolder: Story = {
 
 /** Grid on a phone: two cards per row, the select and menu controls stay visible without hover. */
 export const MobileGrid: Story = {
+  tags: ["!autodocs"],
   decorators: [withMobileView],
   parameters: { assetsFolder: { title: "Catalog files", view: "grid" } },
   play: async ({ canvasElement }) => {

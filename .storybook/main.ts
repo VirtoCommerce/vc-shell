@@ -72,6 +72,18 @@ const preventGlobalsPlugin = (): Plugin => {
   };
 };
 
+// Storybook has no platform behind it, so the push-notification hub can never connect: a story that
+// signs a mock user in would otherwise retry the negotiate request (404) for as long as it is open.
+const SIGNALR_PLUGIN = path.join(frameworkRoot, "core/plugins/signalR/index.ts");
+const stubSignalR = (): Plugin => ({
+  name: "stub-signalr",
+  enforce: "pre",
+  load(id) {
+    if (id.split("?")[0] === SIGNALR_PLUGIN) return "export const signalR = { install() {} };";
+    return null;
+  },
+});
+
 export default {
   stories: [
     "../framework/ui/components/**/*.stories.ts",
@@ -117,7 +129,7 @@ export default {
     const hasDist = existsSync(distCssPath);
 
     return mergeConfig(config, {
-      plugins: [vue(), preventGlobalsPlugin(), stripInvalidDocgen()],
+      plugins: [stubSignalR(), vue(), preventGlobalsPlugin(), stripInvalidDocgen()],
       assetsInclude: ["/sb-preview/runtime.js"],
       resolve: {
         alias: {

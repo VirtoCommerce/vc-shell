@@ -128,13 +128,7 @@ const meta = {
   parameters: {
     docs: {
       description: {
-        component: `
-Search, filter chips, a Filters panel and saved views for a list.
-
-\`\`\`vue
-<VcSearchBar :fields="fields" :views="views" storage-key="orders" @change="({ filters, search }) => load(filters, search)" />
-\`\`\`
-        `,
+        component: "Search, filter chips, a Filters panel and saved views for a list.",
       },
     },
   },

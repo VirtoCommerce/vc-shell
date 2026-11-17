@@ -189,7 +189,7 @@ export const Interactive: StoryObj = {
           @upload="onUpload"
           @remove="onRemove"
         />
-        <p class="tw-mt-2 tw-text-xs tw-text-gray-500">
+        <p class="tw-mt-2 tw-text-xs tw-text-[var(--neutrals-500)]">
           Upload simulates adding a sample image. Remove clears it.
         </p>
       </div>

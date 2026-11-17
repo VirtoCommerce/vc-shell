@@ -420,8 +420,8 @@ describe("VcDataTable search bar slots", () => {
       const w = mountTable({ searchBar: false, searchValue: "acme" }, { "not-found": slot });
       await nextTick();
       expect(w.find(".custom-not-found").exists()).toBe(true);
-      // the compiler's branch key is all it got on v2.11.0 too
-      expect(seen.props).toEqual({ key: 0 });
+      // as on v2.11.0: no props of its own (older Vue compilers add a branch `key`)
+      expect(Object.keys(seen.props!).filter((k) => k !== "key")).toEqual([]);
     });
   });
 });

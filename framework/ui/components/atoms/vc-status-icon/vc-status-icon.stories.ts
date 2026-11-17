@@ -108,13 +108,13 @@ export const InContext: Story = {
       return { items };
     },
     template: `
-      <div class="tw-p-4 tw-border tw-border-gray-200 tw-rounded tw-bg-white">
+      <div class="tw-p-4 tw-border tw-border-[var(--neutrals-200)] tw-rounded tw-bg-[var(--additional-50)]">
         <h3 class="tw-text-lg tw-font-medium tw-mb-4">System Status</h3>
         <div class="tw-space-y-2">
           <div
             v-for="item in items"
             :key="item.id"
-            class="tw-flex tw-justify-between tw-items-center tw-p-2 tw-border-b tw-border-gray-100"
+            class="tw-flex tw-justify-between tw-items-center tw-p-2 tw-border-b tw-border-[var(--neutrals-100)]"
           >
             <span>{{ item.name }}</span>
             <div class="tw-flex tw-items-center">

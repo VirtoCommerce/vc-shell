@@ -112,7 +112,7 @@ export const ProgressStages: Story = {
         <div v-for="(stage, index) in stages" :key="index" class="tw-space-y-1">
           <div class="tw-flex tw-justify-between tw-items-center">
             <span class="tw-text-sm tw-font-medium">{{ stage.label }}</span>
-            <span class="tw-text-sm tw-text-gray-500">{{ stage.value }}%</span>
+            <span class="tw-text-sm tw-text-[var(--neutrals-500)]">{{ stage.value }}%</span>
           </div>
           <vc-progress :value="stage.value" :variant="stage.value === 100 ? 'striped' : 'default'"></vc-progress>
         </div>
@@ -155,7 +155,7 @@ export const InteractiveProgress: Story = {
           <div class="tw-space-x-2 rtl:tw-space-x-reverse">
             <button
               @click="decrement"
-              class="tw-px-3 tw-py-1 tw-bg-gray-200 tw-rounded"
+              class="tw-px-3 tw-py-1 tw-bg-[var(--neutrals-200)] tw-rounded"
               :disabled="progress <= 0"
             >
               -10%
@@ -169,7 +169,7 @@ export const InteractiveProgress: Story = {
             </button>
             <button
               @click="reset"
-              class="tw-px-3 tw-py-1 tw-bg-gray-700 tw-text-white tw-rounded"
+              class="tw-px-3 tw-py-1 tw-bg-[var(--neutrals-700)] tw-text-white tw-rounded"
             >
               Reset
             </button>

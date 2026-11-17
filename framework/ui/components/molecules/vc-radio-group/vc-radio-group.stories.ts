@@ -119,7 +119,7 @@ export const Default: Story = {
     template: `
       <div class="tw-max-w-lg tw-space-y-3">
         <VcRadioGroup v-bind="args" v-model="value" />
-        <div class="tw-text-sm tw-text-gray-600">Selected: {{ value }}</div>
+        <div class="tw-text-sm tw-text-[var(--neutrals-600)]">Selected: {{ value }}</div>
       </div>
     `,
   }),
@@ -212,7 +212,7 @@ export const CustomSlot: Story = {
           <VcRadioButton v-model="value" value="weekly" label="Weekly" />
           <VcRadioButton v-model="value" value="monthly" label="Monthly" />
         </VcRadioGroup>
-        <div class="tw-text-sm tw-text-gray-600">Selected: {{ value }}</div>
+        <div class="tw-text-sm tw-text-[var(--neutrals-600)]">Selected: {{ value }}</div>
       </div>
     `,
   }),

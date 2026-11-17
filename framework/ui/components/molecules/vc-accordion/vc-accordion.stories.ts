@@ -189,7 +189,7 @@ export const MultipleOpen: Story = {
         :multiple="true"
         v-model="openItems"
       />
-      <div class="tw-mt-4 tw-p-4 tw-bg-gray-100 tw-rounded">
+      <div class="tw-mt-4 tw-p-4 tw-bg-[var(--neutrals-100)] tw-rounded">
         <strong>Open items:</strong> {{ openItems }}
       </div>
     `,
@@ -395,7 +395,7 @@ export const ControlledAccordion: Story = {
           v-model="currentOpen"
         />
 
-        <div class="tw-mt-4 tw-p-4 tw-bg-gray-100 tw-rounded">
+        <div class="tw-mt-4 tw-p-4 tw-bg-[var(--neutrals-100)] tw-rounded">
           <strong>Currently open:</strong> {{ currentOpen }}
         </div>
       </div>

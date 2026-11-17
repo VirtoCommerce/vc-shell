@@ -129,7 +129,7 @@ export const Default: Story = {
     template: `
       <div class="tw-max-w-lg tw-space-y-3">
         <VcCheckboxGroup v-bind="args" v-model="value" />
-        <div class="tw-text-sm tw-text-gray-600">Selected: {{ value }}</div>
+        <div class="tw-text-sm tw-text-[var(--neutrals-600)]">Selected: {{ value }}</div>
       </div>
     `,
   }),
@@ -222,7 +222,7 @@ export const CustomSlot: Story = {
           <VcCheckbox v-model="value" value="feature-b">Feature B</VcCheckbox>
           <VcCheckbox v-model="value" value="feature-c">Feature C</VcCheckbox>
         </VcCheckboxGroup>
-        <div class="tw-text-sm tw-text-gray-600">Selected: {{ value }}</div>
+        <div class="tw-text-sm tw-text-[var(--neutrals-600)]">Selected: {{ value }}</div>
       </div>
     `,
   }),

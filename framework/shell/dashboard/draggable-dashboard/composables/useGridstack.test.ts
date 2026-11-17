@@ -95,6 +95,45 @@ describe("useGridstack — initGrid", () => {
     expect(api().isInitialized.value).toBe(true);
   });
 
+  it("lays the grid out right to left on a right-to-left page", () => {
+    const page = document.createElement("div");
+    page.setAttribute("dir", "rtl");
+    const element = document.createElement("div");
+    page.appendChild(element);
+    document.body.appendChild(page);
+
+    withGridstack(ref([makeWidget("a")]))
+      .api()
+      .initGrid(element);
+
+    expect(GridStack.init).toHaveBeenCalledWith(expect.objectContaining({ rtl: true }), element);
+  });
+
+  it("keeps a left-to-right grid on a left-to-right page", () => {
+    const element = document.createElement("div");
+    document.body.appendChild(element);
+
+    withGridstack(ref([makeWidget("a")]))
+      .api()
+      .initGrid(element);
+
+    expect(GridStack.init).toHaveBeenCalledWith(expect.objectContaining({ rtl: false }), element);
+  });
+
+  it("lets an explicit rtl option win over the page direction", () => {
+    const page = document.createElement("div");
+    page.setAttribute("dir", "rtl");
+    const element = document.createElement("div");
+    page.appendChild(element);
+    document.body.appendChild(page);
+
+    withGridstack(ref([makeWidget("a")]), { gridOptions: { rtl: false } })
+      .api()
+      .initGrid(element);
+
+    expect(GridStack.init).toHaveBeenCalledWith(expect.objectContaining({ rtl: false }), element);
+  });
+
   it("warns and no-ops when initialized twice", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const widgets = ref([makeWidget("a")]);

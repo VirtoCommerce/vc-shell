@@ -18,6 +18,20 @@ Notable location: `useDataTableSort.docs.md` is under `ui/composables/`, not `co
 
 ---
 
+## Component API Manifest
+
+`knowledge/components.json` lists every documented component with its import line, props (type, default, required, deprecated), events (signature), slots, the path to its `*.docs.md` and its Storybook story ids. It is generated from the component sources on each release, so it is the authority on prop names and types.
+
+Use it to:
+
+- check that a prop, event or slot exists before writing it into a template;
+- skip props marked `"deprecated": true`;
+- find a component's docs file without globbing (`docs` is relative to the framework package root).
+
+Read the `*.docs.md` guide for usage patterns; read the manifest for the exact API.
+
+---
+
 ## List Blade Generator
 
 **Task:** Generates `<module>-list.vue` + `use<Entity>s` composable.

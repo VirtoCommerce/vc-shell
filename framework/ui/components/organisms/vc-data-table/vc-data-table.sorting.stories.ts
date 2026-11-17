@@ -384,13 +384,13 @@ export const MobileRowReorder: Story = {
       return { products, eventLog, handleRowReorder };
     },
     template: `
-    <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-      <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
+    <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid var(--neutrals-200); border-radius: 8px; overflow: hidden;">
+      <div style="background: var(--neutrals-50); padding: 8px 12px; border-bottom: 1px solid var(--neutrals-200);">
         <strong>Mobile Row Reorder</strong>
-        <span style="color: #64748b; font-size: 12px;"> (drag the left handle)</span>
-        <ul style="margin: 6px 0 0; padding-left: 16px; font-size: 11px; color: #64748b;">
+        <span style="color: var(--neutrals-500); font-size: 12px;"> (drag the left handle)</span>
+        <ul style="margin: 6px 0 0; padding-inline-start: 16px; font-size: 11px; color: var(--neutrals-500);">
           <li v-for="(event, i) in eventLog" :key="i">{{ event }}</li>
-          <li v-if="!eventLog.length" style="list-style: none; margin-left: -16px;">No reorder events yet</li>
+          <li v-if="!eventLog.length" style="list-style: none; margin-inline-start: -16px;">No reorder events yet</li>
         </ul>
       </div>
       <VcDataTable

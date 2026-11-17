@@ -171,7 +171,7 @@ export const DialogFooter: Story = {
   render: () => ({
     components: { VcButton, VcButtonGroup },
     template: `
-      <div style="display: flex; justify-content: flex-end; padding: 16px; border-top: 1px solid #e5e7eb;">
+      <div style="display: flex; justify-content: flex-end; padding: 16px; border-top: 1px solid var(--neutrals-200);">
         <VcButtonGroup>
           <VcButton variant="outline">Cancel</VcButton>
           <VcButton variant="primary">Confirm</VcButton>

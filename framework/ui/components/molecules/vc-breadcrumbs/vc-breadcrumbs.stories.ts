@@ -357,7 +357,7 @@ export const WithUseBreadcrumbs: Story = {
           ></vc-breadcrumbs>
         </div>
 
-        <div class="tw-border-t tw-pt-4 tw-border-gray-200">
+        <div class="tw-border-t tw-pt-4 tw-border-[var(--neutrals-200)]">
           <h4 class="tw-font-medium tw-mb-2">Navigation simulation:</h4>
           <div class="tw-flex tw-flex-wrap tw-gap-2">
             <button
@@ -371,7 +371,7 @@ export const WithUseBreadcrumbs: Story = {
           </div>
         </div>
 
-        <div class="tw-border-t tw-pt-4 tw-border-gray-200">
+        <div class="tw-border-t tw-pt-4 tw-border-[var(--neutrals-200)]">
           <h4 class="tw-font-medium tw-mb-2">Breadcrumb management:</h4>
           <!-- The remove method can remove specific breadcrumbs by ID -->
           <button

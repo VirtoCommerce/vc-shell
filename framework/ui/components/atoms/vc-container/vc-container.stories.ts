@@ -75,7 +75,7 @@ export const Default: Story = {
       return { args };
     },
     template: `
-      <div style="width: 400px; height: 300px; border: 1px solid #ccc; border-radius: 8px;">
+      <div style="width: 400px; height: 300px; border: 1px solid var(--neutrals-300); border-radius: 8px;">
         <vc-container v-bind="args">
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pellentesque tortor id lacus viverra, ut mollis libero auctor. Curabitur viverra, justo eu convallis pulvinar, dui nisi luctus quam, ut egestas tortor dolor quis nisi.</p>
           <p>Maecenas ut malesuada risus, a euismod ligula. Mauris fringilla arcu a vestibulum varius. Phasellus et quam facilisis, egestas magna ut, ultrices est.</p>
@@ -102,7 +102,7 @@ export const WithShadow: Story = {
       return { args };
     },
     template: `
-      <div style="width: 400px; height: 300px; border: 1px solid #ccc; border-radius: 8px;">
+      <div style="width: 400px; height: 300px; border: 1px solid var(--neutrals-300); border-radius: 8px;">
         <vc-container v-bind="args">
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pellentesque tortor id lacus viverra, ut mollis libero auctor. Curabitur viverra, justo eu convallis pulvinar, dui nisi luctus quam, ut egestas tortor dolor quis nisi.</p>
           <p>Maecenas ut malesuada risus, a euismod ligula. Mauris fringilla arcu a vestibulum varius. Phasellus et quam facilisis, egestas magna ut, ultrices est.</p>
@@ -136,9 +136,9 @@ export const NoPadding: Story = {
       return { args };
     },
     template: `
-      <div style="width: 400px; height: 300px; border: 1px solid #ccc; border-radius: 8px;">
+      <div style="width: 400px; height: 300px; border: 1px solid var(--neutrals-300); border-radius: 8px;">
         <vc-container v-bind="args">
-          <div style="background-color: #f0f0f0; padding: 16px;">
+          <div style="background-color: var(--neutrals-100); padding: 16px;">
             <h3 style="margin-top: 0;">Edge-to-edge content</h3>
             <p>This content has no padding from the container, allowing it to extend all the way to the edges.</p>
           </div>
@@ -146,7 +146,7 @@ export const NoPadding: Story = {
             <p>Content can define its own padding as needed.</p>
             <p>This is useful for creating sections with different background colors or for content that needs to be edge-to-edge.</p>
           </div>
-          <div style="background-color: #e0e0e0; padding: 16px;">
+          <div style="background-color: var(--neutrals-200); padding: 16px;">
             <p>Another section with a different background.</p>
           </div>
         </vc-container>
@@ -177,14 +177,14 @@ export const ContentPanel: Story = {
       return { args };
     },
     template: `
-      <div style="width: 400px; height: 400px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-        <div style="background-color: #f5f5f5; padding: 16px; border-bottom: 1px solid #e0e0e0;">
+      <div style="width: 400px; height: 400px; border: 1px solid var(--neutrals-300); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <div style="background-color: var(--neutrals-100); padding: 16px; border-bottom: 1px solid var(--neutrals-200);">
           <h2 style="margin: 0; font-size: 1.2rem;">Content Panel</h2>
         </div>
         <vc-container v-bind="args">
           <h3>Section heading</h3>
           <p>VcContainer is often used to create scrollable panels within a larger layout.</p>
-          <div style="background-color: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 4px; padding: 12px; margin: 16px 0;">
+          <div style="background-color: var(--neutrals-50); border: 1px solid var(--neutrals-200); border-radius: 4px; padding: 12px; margin: 16px 0;">
             <p style="margin: 0;"><strong>Note:</strong> This component handles overflow automatically.</p>
           </div>
           <h3>Another section</h3>
@@ -196,7 +196,7 @@ export const ContentPanel: Story = {
             <li>Other components</li>
           </ul>
           <p>The container will handle scrolling as needed.</p>
-          <div style="height: 100px; background-color: #e0f7fa; display: flex; align-items: center; justify-content: center; border-radius: 4px;">
+          <div style="height: 100px; background-color: var(--info-50); display: flex; align-items: center; justify-content: center; border-radius: 4px;">
             Sample content block
           </div>
           <p style="margin-top: 16px;">When content exceeds the container height, scrolling is enabled automatically.</p>

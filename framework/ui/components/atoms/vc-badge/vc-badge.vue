@@ -138,9 +138,10 @@ function onClick(): void {
 const customPositionStyle = computed(() => {
   if (!props.customPosition) return {};
 
+  // `right` is the end edge, like the default placement: the badge stays on the trailing corner in right-to-left pages.
   return {
     top: props.top,
-    right: props.right,
+    insetInlineEnd: props.right,
   };
 });
 </script>

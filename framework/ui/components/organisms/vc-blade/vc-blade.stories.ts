@@ -182,8 +182,8 @@ export const Default: Story = {
     template: `
       <VcBlade v-bind="args">
         <div class="tw-p-6">
-          <p class="tw-text-sm tw-text-gray-600">This is the default blade content area.</p>
-          <p class="tw-text-xs tw-text-gray-400 tw-mt-2">Use the controls panel to adjust blade properties.</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)]">This is the default blade content area.</p>
+          <p class="tw-text-xs tw-text-[var(--neutrals-400)] tw-mt-2">Use the controls panel to adjust blade properties.</p>
         </div>
       </VcBlade>
     `,
@@ -209,15 +209,15 @@ export const WithToolbar: Story = {
         <div class="tw-p-6">
           <div class="tw-space-y-3">
             <div class="tw-flex tw-justify-between tw-text-sm">
-              <span class="tw-text-gray-500">Status:</span>
+              <span class="tw-text-[var(--neutrals-500)]">Status:</span>
               <span class="tw-font-semibold tw-text-green-600">Processing</span>
             </div>
             <div class="tw-flex tw-justify-between tw-text-sm">
-              <span class="tw-text-gray-500">Total:</span>
+              <span class="tw-text-[var(--neutrals-500)]">Total:</span>
               <span class="tw-font-semibold">$149.99</span>
             </div>
             <div class="tw-flex tw-justify-between tw-text-sm">
-              <span class="tw-text-gray-500">Customer:</span>
+              <span class="tw-text-[var(--neutrals-500)]">Customer:</span>
               <span>Alice Johnson</span>
             </div>
           </div>
@@ -245,8 +245,8 @@ export const Modified: Story = {
     template: `
       <VcBlade v-bind="args">
         <div class="tw-p-6">
-          <p class="tw-text-sm tw-text-gray-600">The blade header shows a yellow dot indicating unsaved changes.</p>
-          <p class="tw-text-sm tw-text-gray-600 tw-mt-2">The yellow banner below the toolbar confirms modifications.</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)]">The blade header shows a yellow dot indicating unsaved changes.</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)] tw-mt-2">The yellow banner below the toolbar confirms modifications.</p>
         </div>
       </VcBlade>
     `,
@@ -271,8 +271,8 @@ export const WithError: Story = {
     template: `
       <VcBlade v-bind="args">
         <div class="tw-p-6">
-          <p class="tw-text-sm tw-text-gray-600">The red error banner appears when the blade instance has an error.</p>
-          <p class="tw-text-sm tw-text-gray-600 tw-mt-2">Click "See details" to open the error popup.</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)]">The red error banner appears when the blade instance has an error.</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)] tw-mt-2">Click "See details" to open the error popup.</p>
         </div>
       </VcBlade>
     `,
@@ -300,7 +300,7 @@ export const WithActions: Story = {
           </button>
         </template>
         <div class="tw-p-6">
-          <p class="tw-text-sm tw-text-gray-600">The #actions slot renders custom content in the blade header, next to the title.</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)]">The #actions slot renders custom content in the blade header, next to the title.</p>
         </div>
       </VcBlade>
     `,
@@ -325,7 +325,7 @@ export const Expanded: Story = {
       <div style="width: 100%; height: 400px; display: flex;">
         <VcBlade v-bind="args">
           <div class="tw-p-6">
-            <p class="tw-text-sm tw-text-gray-600">This blade is the active one in the stack, so it expands to fill the available width.</p>
+            <p class="tw-text-sm tw-text-[var(--neutrals-600)]">This blade is the active one in the stack, so it expands to fill the available width.</p>
           </div>
         </VcBlade>
       </div>
@@ -350,8 +350,8 @@ export const NotClosable: Story = {
     template: `
       <VcBlade v-bind="args">
         <div class="tw-p-6">
-          <p class="tw-text-sm tw-text-gray-600">This blade is a workspace root (no parent), so it has no close button.</p>
-          <p class="tw-text-sm tw-text-gray-600 tw-mt-2">Closability is derived from stack position, not a prop.</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)]">This blade is a workspace root (no parent), so it has no close button.</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)] tw-mt-2">Closability is derived from stack position, not a prop.</p>
         </div>
       </VcBlade>
     `,
@@ -378,8 +378,8 @@ export const Mobile: Story = {
     template: `
       <VcBlade v-bind="args">
         <div class="tw-p-6">
-          <p class="tw-text-sm tw-text-gray-600">In mobile mode, the toolbar appears as a floating pill at the bottom.</p>
-          <p class="tw-text-sm tw-text-gray-600 tw-mt-2">When there's only one blade, the header is hidden.</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)]">In mobile mode, the toolbar appears as a floating pill at the bottom.</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)] tw-mt-2">When there's only one blade, the header is hidden.</p>
         </div>
       </VcBlade>
     `,
@@ -400,7 +400,7 @@ export const CustomWidth: Story = {
           icon="lucide-minimize"
           :width="300"
         >
-          <div class="tw-p-4 tw-text-xs tw-text-gray-600">width: 300 (number → pixels)</div>
+          <div class="tw-p-4 tw-text-xs tw-text-[var(--neutrals-600)]">width: 300 (number → pixels)</div>
         </VcBlade>
 
         <VcBlade
@@ -408,7 +408,7 @@ export const CustomWidth: Story = {
           icon="lucide-maximize-2"
           width="60%"
         >
-          <div class="tw-p-4 tw-text-xs tw-text-gray-600">width: "60%" (string → CSS value)</div>
+          <div class="tw-p-4 tw-text-xs tw-text-[var(--neutrals-600)]">width: "60%" (string → CSS value)</div>
         </VcBlade>
       </div>
     `,
@@ -432,7 +432,7 @@ export const Loading: Story = {
     template: `
       <VcBlade v-bind="args">
         <div class="tw-p-6">
-          <p class="tw-text-sm tw-text-gray-600">This content is hidden while loading=true.</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)]">This content is hidden while loading=true.</p>
         </div>
       </VcBlade>
     `,
@@ -461,7 +461,7 @@ export const LoadingToggle: Story = {
       <div>
         <button
           class="tw-mb-4 tw-px-3 tw-py-1.5 tw-text-sm tw-rounded tw-border tw-cursor-pointer"
-          :class="loading ? 'tw-bg-blue-600 tw-text-white tw-border-blue-600' : 'tw-bg-white tw-text-gray-700 tw-border-gray-300'"
+          :class="loading ? 'tw-bg-blue-600 tw-text-white tw-border-blue-600' : 'tw-bg-[var(--additional-50)] tw-text-[var(--neutrals-700)] tw-border-[var(--neutrals-300)]'"
           @click="toggle"
         >
           {{ loading ? 'Loading...' : 'Loaded — click to reload' }}
@@ -470,15 +470,15 @@ export const LoadingToggle: Story = {
           <div class="tw-p-6">
             <div class="tw-space-y-3">
               <div class="tw-flex tw-justify-between tw-text-sm">
-                <span class="tw-text-gray-500">Status:</span>
+                <span class="tw-text-[var(--neutrals-500)]">Status:</span>
                 <span class="tw-font-semibold tw-text-green-600">Processing</span>
               </div>
               <div class="tw-flex tw-justify-between tw-text-sm">
-                <span class="tw-text-gray-500">Total:</span>
+                <span class="tw-text-[var(--neutrals-500)]">Total:</span>
                 <span class="tw-font-semibold">$149.99</span>
               </div>
               <div class="tw-flex tw-justify-between tw-text-sm">
-                <span class="tw-text-gray-500">Customer:</span>
+                <span class="tw-text-[var(--neutrals-500)]">Customer:</span>
                 <span>Alice Johnson</span>
               </div>
             </div>
@@ -506,8 +506,8 @@ export const ToolbarOverflow: Story = {
     template: `
       <VcBlade v-bind="args">
         <div class="tw-p-6">
-          <p class="tw-text-sm tw-text-gray-600">With 10 toolbar items in a 400px blade, items that don't fit are moved to a "More" dropdown.</p>
-          <p class="tw-text-sm tw-text-gray-600 tw-mt-2">This uses the useAdaptiveItems composable with ResizeObserver.</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)]">With 10 toolbar items in a 400px blade, items that don't fit are moved to a "More" dropdown.</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)] tw-mt-2">This uses the useAdaptiveItems composable with ResizeObserver.</p>
         </div>
       </VcBlade>
     `,
@@ -546,8 +546,8 @@ export const CustomBanners: Story = {
     template: `
       <VcBlade v-bind="args">
         <div class="tw-p-6">
-          <p class="tw-text-sm tw-text-gray-600">Custom banners added programmatically via useBlade().addBanner().</p>
-          <p class="tw-text-sm tw-text-gray-600 tw-mt-2">Banners are sorted by priority: danger > warning > info > success.</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)]">Custom banners added programmatically via useBlade().addBanner().</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)] tw-mt-2">Banners are sorted by priority: danger > warning > info > success.</p>
         </div>
       </VcBlade>
     `,
@@ -597,8 +597,8 @@ export const AllBannerVariants: Story = {
     template: `
       <VcBlade v-bind="args">
         <div class="tw-p-6">
-          <p class="tw-text-sm tw-text-gray-600">All four banner variants displayed at once.</p>
-          <p class="tw-text-sm tw-text-gray-600 tw-mt-2">Note the priority sort order: danger (top) > warning > info > success (bottom).</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)]">All four banner variants displayed at once.</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)] tw-mt-2">Note the priority sort order: danger (top) > warning > info > success (bottom).</p>
         </div>
       </VcBlade>
     `,
@@ -633,7 +633,7 @@ export const BannerWithAction: Story = {
     template: `
       <VcBlade v-bind="args">
         <div class="tw-p-6">
-          <p class="tw-text-sm tw-text-gray-600">Banners can include action buttons for contextual navigation.</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)]">Banners can include action buttons for contextual navigation.</p>
         </div>
       </VcBlade>
     `,
@@ -664,8 +664,8 @@ export const ErrorWithCustomBanners: Story = {
     template: `
       <VcBlade v-bind="args">
         <div class="tw-p-6">
-          <p class="tw-text-sm tw-text-gray-600">System banners (error + unsaved changes) and custom banners coexist,</p>
-          <p class="tw-text-sm tw-text-gray-600 tw-mt-1">all sorted by priority: danger > warning > info.</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)]">System banners (error + unsaved changes) and custom banners coexist,</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)] tw-mt-1">all sorted by priority: danger > warning > info.</p>
         </div>
       </VcBlade>
     `,
@@ -744,8 +744,8 @@ export const BannerWithRenderFunction: Story = {
     template: `
       <VcBlade v-bind="args">
         <div class="tw-p-6">
-          <p class="tw-text-sm tw-text-gray-600">Banners using render() functions for rich custom content:</p>
-          <ul class="tw-text-sm tw-text-gray-600 tw-mt-2 tw-list-disc tw-ps-5 tw-space-y-1">
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)]">Banners using render() functions for rich custom content:</p>
+          <ul class="tw-text-sm tw-text-[var(--neutrals-600)] tw-mt-2 tw-list-disc tw-ps-5 tw-space-y-1">
             <li>Formatted text with bold and colored spans</li>
             <li>Inline clickable links</li>
             <li>Badge-style pill elements</li>
@@ -836,8 +836,8 @@ export const WithShortcut: Story = {
     template: `
       <VcBlade v-bind="args">
         <div class="tw-p-6">
-          <p class="tw-text-sm tw-text-gray-600">The "Save" button declares a keyboard shortcut via <code>shortcut: hotkey.mod.s</code>.</p>
-          <p class="tw-text-sm tw-text-gray-600 tw-mt-2">Hover or focus the button to see the tooltip; it also carries <code>aria-keyshortcuts</code>.</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)]">The "Save" button declares a keyboard shortcut via <code>shortcut: hotkey.mod.s</code>.</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)] tw-mt-2">Hover or focus the button to see the tooltip; it also carries <code>aria-keyshortcuts</code>.</p>
         </div>
       </VcBlade>
     `,
@@ -1015,7 +1015,7 @@ export const WidgetsCustomizable: Story = {
     template: `
       <VcBlade v-bind="args">
         <WidgetsRegistrar :count="7" />
-        <div class="tw-p-6 tw-text-sm tw-text-gray-600">Open the chevron menu and choose Customize.</div>
+        <div class="tw-p-6 tw-text-sm tw-text-[var(--neutrals-600)]">Open the chevron menu and choose Customize.</div>
       </VcBlade>
     `,
   }),
@@ -1054,7 +1054,7 @@ export const WidgetsThreeOnly: Story = {
     template: `
       <VcBlade v-bind="args">
         <WidgetsRegistrar :count="3" />
-        <div class="tw-p-6 tw-text-sm tw-text-gray-600">Three widgets, all on the strip.</div>
+        <div class="tw-p-6 tw-text-sm tw-text-[var(--neutrals-600)]">Three widgets, all on the strip.</div>
       </VcBlade>
     `,
   }),

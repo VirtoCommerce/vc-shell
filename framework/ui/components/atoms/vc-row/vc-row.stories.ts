@@ -79,9 +79,9 @@ export const WithCards: Story = {
     },
     template: `
       <vc-row v-bind="args">
-        <div v-for="i in 3" :key="i" class="tw-w-64 tw-p-4 tw-border tw-border-gray-200 tw-rounded tw-shadow-sm tw-bg-white">
+        <div v-for="i in 3" :key="i" class="tw-w-64 tw-p-4 tw-border tw-border-[var(--neutrals-200)] tw-rounded tw-shadow-sm tw-bg-[var(--additional-50)]">
           <h3 class="tw-font-medium tw-mb-2">Card Title {{ i }}</h3>
-          <p class="tw-text-sm tw-text-gray-600">This is a card component that demonstrates the VcRow layout.</p>
+          <p class="tw-text-sm tw-text-[var(--neutrals-600)]">This is a card component that demonstrates the VcRow layout.</p>
         </div>
       </vc-row>
     `,
@@ -101,7 +101,7 @@ export const WithSpacing: Story = {
       <div>
         <p class="tw-mb-2 tw-text-sm">Items with custom spacing using utility classes</p>
         <vc-row v-bind="args" class="tw-gap-4">
-          <div v-for="i in 4" :key="i" class="tw-p-4 tw-bg-gray-100 tw-rounded tw-w-32 tw-h-32 tw-flex tw-items-center tw-justify-center">
+          <div v-for="i in 4" :key="i" class="tw-p-4 tw-bg-[var(--neutrals-100)] tw-rounded tw-w-32 tw-h-32 tw-flex tw-items-center tw-justify-center">
             Item {{ i }}
           </div>
         </vc-row>
@@ -132,7 +132,7 @@ export const MobileView: Story = {
         <p class="tw-mb-2 tw-text-sm">Simulating mobile view with grid layout</p>
         <div class="vc-app--mobile">
           <vc-row v-bind="args" class="tw-gap-2">
-            <div v-for="i in 4" :key="i" class="tw-p-4 tw-bg-gray-100 tw-rounded tw-flex tw-items-center tw-justify-center">
+            <div v-for="i in 4" :key="i" class="tw-p-4 tw-bg-[var(--neutrals-100)] tw-rounded tw-flex tw-items-center tw-justify-center">
               Item {{ i }}
             </div>
           </vc-row>

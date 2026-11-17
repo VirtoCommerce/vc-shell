@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
+import { expect, userEvent, within } from "storybook/test";
 import { VcInput } from "@ui/components/molecules/vc-input";
 import { VcButton } from "@ui/components/atoms/vc-button";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
@@ -273,7 +274,7 @@ export const Default: Story = {
           @focus="() => console.log('Focus received')"
           @blur="() => console.log('Focus lost')"
         />
-        <div class="tw-p-2 tw-bg-gray-100 tw-rounded">
+        <div class="tw-p-2 tw-bg-[var(--neutrals-100)] tw-rounded">
           <strong>Current value:</strong> "{{ value || 'empty' }}"
         </div>
       </div>
@@ -485,7 +486,7 @@ export const WithPrepend: Story = {
             <vc-button>Search</vc-button>
           </template>
         </vc-input>
-        <div class="tw-mt-4 tw-text-gray-600 tw-text-sm">
+        <div class="tw-mt-4 tw-text-[var(--neutrals-600)] tw-text-sm">
           This example shows using the <code>prepend</code> slot to add a button before the input field.
         </div>
       </div>
@@ -515,7 +516,7 @@ export const WithAppend: Story = {
             <vc-button>Search</vc-button>
           </template>
         </vc-input>
-        <div class="tw-mt-4 tw-text-gray-600 tw-text-sm">
+        <div class="tw-mt-4 tw-text-[var(--neutrals-600)] tw-text-sm">
           This example shows using the <code>append</code> slot to add a button after the input field.
         </div>
       </div>
@@ -545,7 +546,7 @@ export const WithPrependInner: Story = {
             <VcIcon icon="lucide-search" />
           </template>
         </vc-input>
-        <div class="tw-mt-4 tw-text-gray-600 tw-text-sm">
+        <div class="tw-mt-4 tw-text-[var(--neutrals-600)] tw-text-sm">
           This example shows using the <code>prepend-inner</code> slot to add a search icon inside the input field.
         </div>
       </div>
@@ -578,12 +579,12 @@ export const WithAppendInner: Story = {
             <VcIcon
               v-if="value"
               icon="lucide-x"
-              class="tw-cursor-pointer tw-text-gray-500 hover:tw-text-gray-700"
+              class="tw-cursor-pointer tw-text-[var(--neutrals-500)] hover:tw-text-[var(--neutrals-700)]"
               @click="clearField"
             />
           </template>
         </vc-input>
-        <div class="tw-mt-4 tw-text-gray-600 tw-text-sm">
+        <div class="tw-mt-4 tw-text-[var(--neutrals-600)] tw-text-sm">
           This example shows using the <code>append-inner</code> slot to add a custom clear button that appears when text is entered.
         </div>
       </div>
@@ -612,12 +613,22 @@ export const Clearable: Story = {
           v-model="value"
           @update:modelValue="(val) => console.log('Value updated:', val)"
         />
-        <div class="tw-mt-4 tw-text-gray-600 tw-text-sm">
+        <div class="tw-mt-4 tw-text-[var(--neutrals-600)] tw-text-sm">
           When a value is present, a clear button appears that allows resetting the field.
         </div>
       </div>
     `,
   }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = await canvas.findByRole("textbox");
+    await expect(input).not.toHaveValue("");
+    await userEvent.click(canvas.getByRole("button", { name: "Clear" }));
+    await expect(input).toHaveValue("");
+    await expect(canvas.queryByRole("button", { name: "Clear" })).toBeNull();
+    await userEvent.type(input, "typed");
+    await expect(input).toHaveValue("typed");
+  },
 };
 
 /**
@@ -667,7 +678,7 @@ export const Loading: Story = {
           v-model="value"
           @update:modelValue="(val) => console.log('Value updated:', val)"
         />
-        <div class="tw-mt-4 tw-text-gray-600 tw-text-sm">
+        <div class="tw-mt-4 tw-text-[var(--neutrals-600)] tw-text-sm">
           The loading state is useful when fetching data asynchronously.
         </div>
       </div>
@@ -697,7 +708,7 @@ export const PasswordWithToggle: Story = {
           v-model="value"
           @update:modelValue="(val) => console.log('Value updated:', val)"
         />
-        <div class="tw-mt-4 tw-text-gray-600 tw-text-sm">
+        <div class="tw-mt-4 tw-text-[var(--neutrals-600)] tw-text-sm">
           The password field includes a visibility toggle button to show/hide the password.
         </div>
       </div>
@@ -732,7 +743,7 @@ export const CustomErrorSlot: Story = {
             </div>
           </template>
         </vc-input>
-        <div class="tw-mt-4 tw-text-gray-600 tw-text-sm">
+        <div class="tw-mt-4 tw-text-[var(--neutrals-600)] tw-text-sm">
           Using the <code>error</code> slot allows full customization of validation messages.
         </div>
       </div>
@@ -760,13 +771,13 @@ export const CustomHintSlot: Story = {
           @update:modelValue="(val) => console.log('Value updated:', val)"
         >
           <template #hint>
-            <div class="tw-flex tw-items-center tw-mt-1 tw-text-gray-600">
+            <div class="tw-flex tw-items-center tw-mt-1 tw-text-[var(--neutrals-600)]">
               <VcIcon icon="lucide-info" class="tw-me-1" />
               <span>Username must be at least 5 characters long</span>
             </div>
           </template>
         </vc-input>
-        <div class="tw-mt-4 tw-text-gray-600 tw-text-sm">
+        <div class="tw-mt-4 tw-text-[var(--neutrals-600)] tw-text-sm">
           Using the <code>hint</code> slot allows full customization of helper text.
         </div>
       </div>
@@ -798,12 +809,12 @@ export const CustomControlSlot: Story = {
                 :value="modelValue"
                 @input="(e) => emitValue(e.target.value)"
                 :placeholder="placeholder"
-                class="tw-w-full tw-h-full tw-outline-none tw-border-none tw-px-2 tw-bg-gray-100 tw-rounded"
+                class="tw-w-full tw-h-full tw-outline-none tw-border-none tw-px-2 tw-bg-[var(--neutrals-100)] tw-rounded"
               />
             </div>
           </template>
         </vc-input>
-        <div class="tw-mt-4 tw-text-gray-600 tw-text-sm">
+        <div class="tw-mt-4 tw-text-[var(--neutrals-600)] tw-text-sm">
           The <code>control</code> slot allows replacing the input element while maintaining v-model behavior.
         </div>
       </div>
@@ -837,12 +848,12 @@ export const WithCharCounter: Story = {
           @update:modelValue="(val) => console.log('Value updated:', val)"
         >
           <template #append-inner>
-            <div class="tw-text-xs tw-text-gray-500">
+            <div class="tw-text-xs tw-text-[var(--neutrals-500)]">
               {{ charCount }}/{{ maxLength }}
             </div>
           </template>
         </vc-input>
-        <div class="tw-mt-4 tw-text-gray-600 tw-text-sm">
+        <div class="tw-mt-4 tw-text-[var(--neutrals-600)] tw-text-sm">
           This example implements a character counter using the <code>append-inner</code> slot and <code>maxlength</code> property.
         </div>
       </div>

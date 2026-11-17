@@ -269,7 +269,7 @@ export const AllSizes: Story = {
     template: `
       <div style="display: flex; flex-direction: column; gap: 16px;">
         <div v-for="variant in variants" :key="variant" style="display: flex; gap: 12px; align-items: center;">
-          <span style="width: 80px; font-size: 12px; color: #666;">{{ variant }}</span>
+          <span style="width: 80px; font-size: 12px; color: var(--neutrals-500);">{{ variant }}</span>
           <VcButton :variant="variant" size="sm">Small</VcButton>
           <VcButton :variant="variant" size="default">Default</VcButton>
           <VcButton :variant="variant" size="lg">Large</VcButton>
@@ -408,6 +408,8 @@ export const Selected: Story = {
  * Consumers don't need to change code: this still works.
  */
 export const TextLegacy: Story = {
+  // Stays in the sidebar and in story tests; hidden from the docs page so a deprecated API is not copied.
+  tags: ["deprecated", "!autodocs"],
   render: () => ({
     components: { VcButton },
     template: `
@@ -424,17 +426,19 @@ export const TextLegacy: Story = {
  * Existing code using old names still works identically.
  */
 export const LegacySizeAliases: Story = {
+  // Stays in the sidebar and in story tests; hidden from the docs page so a deprecated API is not copied.
+  tags: ["deprecated", "!autodocs"],
   render: () => ({
     components: { VcButton },
     template: `
       <div style="display: flex; flex-direction: column; gap: 12px;">
         <div style="display: flex; gap: 12px; align-items: center;">
-          <span style="width: 120px; font-size: 12px; color: #666;">size="xs" (→ sm)</span>
+          <span style="width: 120px; font-size: 12px; color: var(--neutrals-500);">size="xs" (→ sm)</span>
           <VcButton size="xs">Legacy XS</VcButton>
           <VcButton size="sm">New SM</VcButton>
         </div>
         <div style="display: flex; gap: 12px; align-items: center;">
-          <span style="width: 120px; font-size: 12px; color: #666;">size="base" (→ default)</span>
+          <span style="width: 120px; font-size: 12px; color: var(--neutrals-500);">size="base" (→ default)</span>
           <VcButton size="base">Legacy Base</VcButton>
           <VcButton size="default">New Default</VcButton>
         </div>

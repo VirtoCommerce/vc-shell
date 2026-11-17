@@ -31,10 +31,10 @@ export const MobileViewInfo: Story = {
       return { products };
     },
     template: `
-    <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-      <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
+    <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid var(--neutrals-200); border-radius: 8px; overflow: hidden;">
+      <div style="background: var(--neutrals-50); padding: 8px 12px; border-bottom: 1px solid var(--neutrals-200);">
         <strong>Mobile View</strong>
-        <span style="color: #64748b; font-size: 12px;"> (Real mobile layout with images)</span>
+        <span style="color: var(--neutrals-500); font-size: 12px;"> (Real mobile layout with images)</span>
       </div>
       <VcDataTable :items="products">
         <VcColumn id="thumbnail" field="thumbnail" title="Image" type="image" mobile-role="image" />
@@ -86,10 +86,10 @@ export const MobileCardView: Story = {
       return { products: mockProducts };
     },
     template: `
-    <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-      <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
+    <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid var(--neutrals-200); border-radius: 8px; overflow: hidden;">
+      <div style="background: var(--neutrals-50); padding: 8px 12px; border-bottom: 1px solid var(--neutrals-200);">
         <strong>Mobile View Preview</strong>
-        <span style="color: #64748b; font-size: 12px;"> (New mobileRole API)</span>
+        <span style="color: var(--neutrals-500); font-size: 12px;"> (New mobileRole API)</span>
       </div>
       <VcDataTable :items="products">
         <!-- Desktop only (no mobileRole) -->
@@ -155,12 +155,12 @@ export const MobileWithSwipeActions: Story = {
       return { products, eventLog, getRowActions };
     },
     template: `
-    <div style="max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-      <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
+    <div style="max-width: 375px; margin: 0 auto; border: 1px solid var(--neutrals-200); border-radius: 8px; overflow: hidden;">
+      <div style="background: var(--neutrals-50); padding: 8px 12px; border-bottom: 1px solid var(--neutrals-200);">
         <strong>Swipe Actions Demo</strong>
-        <div style="font-size: 12px; color: #64748b; margin-top: 4px;">← Swipe left on a card to reveal actions</div>
+        <div style="font-size: 12px; color: var(--neutrals-500); margin-top: 4px;">← Swipe left on a card to reveal actions</div>
       </div>
-      <div v-if="eventLog.length" style="background: #fef3c7; padding: 8px 12px; font-size: 12px;">
+      <div v-if="eventLog.length" style="background: var(--warning-50); padding: 8px 12px; font-size: 12px;">
         <strong>Recent:</strong> {{ eventLog.join(' • ') }}
       </div>
       <div style="height: 500px;">
@@ -250,12 +250,12 @@ export const MobileWithManyActions: Story = {
       return { products, eventLog, getRowActions };
     },
     template: `
-    <div style="max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-      <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
+    <div style="max-width: 375px; margin: 0 auto; border: 1px solid var(--neutrals-200); border-radius: 8px; overflow: hidden;">
+      <div style="background: var(--neutrals-50); padding: 8px 12px; border-bottom: 1px solid var(--neutrals-200);">
         <strong>Action Sheet Demo</strong>
-        <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Swipe → tap "More" to see action sheet</div>
+        <div style="font-size: 12px; color: var(--neutrals-500); margin-top: 4px;">Swipe → tap "More" to see action sheet</div>
       </div>
-      <div v-if="eventLog.length" style="background: #fef3c7; padding: 8px 12px; font-size: 12px;">
+      <div v-if="eventLog.length" style="background: var(--warning-50); padding: 8px 12px; font-size: 12px;">
         <strong>Recent:</strong> {{ eventLog.join(' • ') }}
       </div>
       <div style="height: 500px;">
@@ -303,12 +303,12 @@ export const MobileWithSelection: Story = {
       return { products: mockProducts, selection, clearSelection };
     },
     template: `
-    <div style="max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-      <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
+    <div style="max-width: 375px; margin: 0 auto; border: 1px solid var(--neutrals-200); border-radius: 8px; overflow: hidden;">
+      <div style="background: var(--neutrals-50); padding: 8px 12px; border-bottom: 1px solid var(--neutrals-200);">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <div>
             <strong>Selection Demo</strong>
-            <div style="font-size: 12px; color: #64748b; margin-top: 2px;">
+            <div style="font-size: 12px; color: var(--neutrals-500); margin-top: 2px;">
               {{ selection.length > 0 ? selection.length + ' selected' : 'Long-press to select' }}
             </div>
           </div>
@@ -372,10 +372,10 @@ export const MobileAllCellTypes: Story = {
       return { products };
     },
     template: `
-    <div style="max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-      <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
+    <div style="max-width: 375px; margin: 0 auto; border: 1px solid var(--neutrals-200); border-radius: 8px; overflow: hidden;">
+      <div style="background: var(--neutrals-50); padding: 8px 12px; border-bottom: 1px solid var(--neutrals-200);">
         <strong>Cell Types Demo</strong>
-        <div style="font-size: 12px; color: #64748b; margin-top: 4px;">
+        <div style="font-size: 12px; color: var(--neutrals-500); margin-top: 4px;">
           Various data types rendered in mobile cards
         </div>
       </div>

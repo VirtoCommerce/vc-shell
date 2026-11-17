@@ -155,13 +155,23 @@ html.vc-slow-network .vc-app::before {
 
 // The sign of the reading direction along the line, for horizontal moves: translateX(calc(8px * var(--vc-inline-sign)))
 // moves toward the end of the line in both directions.
+// --dp-direction: VueDatePicker forces `.dp__main * { direction: var(--dp-direction, ltr) }`, so without it the
+// date field keeps its icon and text on the left of a right-to-left page. Its menu is teleported to <body> and
+// inherits the value from <html> too.
 :root,
 [dir="ltr"] {
   --vc-inline-sign: 1;
+  --dp-direction: ltr;
 }
 
 [dir="rtl"] {
   --vc-inline-sign: -1;
+  --dp-direction: rtl;
+
+  // The picker's theme classes declare --dp-direction: ltr on the picker root and menu themselves.
+  :is(.dp__theme_light, .dp__theme_dark) {
+    --dp-direction: rtl;
+  }
 }
 
 // Icons that point the way of reading (forward, back, open, log in/out) turn around. VcIcon marks them itself

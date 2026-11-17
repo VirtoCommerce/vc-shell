@@ -142,7 +142,7 @@ export const WithUrlStatePersistence: Story = {
           through the injected query service (here an in-memory stand-in for the blade URL).
         </p>
         <div class="tw-flex tw-items-center tw-gap-3">
-          <code class="tw-px-2 tw-py-1 tw-bg-white tw-rounded tw-border tw-border-solid tw-border-neutrals-200">{{ queryString }}</code>
+          <code class="tw-px-2 tw-py-1 tw-bg-[var(--additional-50)] tw-rounded tw-border tw-border-solid tw-border-neutrals-200">{{ queryString }}</code>
           <VcButton @click="remount">Remount table</VcButton>
         </div>
         <p class="tw-text-neutrals-500 tw-mt-2 tw-text-xs">

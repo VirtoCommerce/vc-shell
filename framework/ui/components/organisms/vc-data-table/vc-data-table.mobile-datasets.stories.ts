@@ -72,10 +72,10 @@ export const MobileUsers: Story = {
       return { users };
     },
     template: `
-    <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-      <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
+    <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid var(--neutrals-200); border-radius: 8px; overflow: hidden;">
+      <div style="background: var(--neutrals-50); padding: 8px 12px; border-bottom: 1px solid var(--neutrals-200);">
         <strong>Users List</strong>
-        <span style="color: #64748b; font-size: 12px;"> (Universal mobile layout)</span>
+        <span style="color: var(--neutrals-500); font-size: 12px;"> (Universal mobile layout)</span>
       </div>
       <VcDataTable :items="users">
         <VcColumn id="name" field="name" title="Name" mobile-role="title" />
@@ -157,10 +157,10 @@ export const MobileDocuments: Story = {
       return { documents };
     },
     template: `
-    <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-      <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
+    <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid var(--neutrals-200); border-radius: 8px; overflow: hidden;">
+      <div style="background: var(--neutrals-50); padding: 8px 12px; border-bottom: 1px solid var(--neutrals-200);">
         <strong>Documents</strong>
-        <span style="color: #64748b; font-size: 12px;"> (Minimal card - no image/status)</span>
+        <span style="color: var(--neutrals-500); font-size: 12px;"> (Minimal card - no image/status)</span>
       </div>
       <VcDataTable :items="documents">
         <VcColumn id="title" field="title" title="Title" mobile-role="title" />
@@ -259,10 +259,10 @@ export const MobileOrders: Story = {
       return { orders };
     },
     template: `
-    <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-      <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
+    <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid var(--neutrals-200); border-radius: 8px; overflow: hidden;">
+      <div style="background: var(--neutrals-50); padding: 8px 12px; border-bottom: 1px solid var(--neutrals-200);">
         <strong>Orders</strong>
-        <span style="color: #64748b; font-size: 12px;"> (Multiple statuses)</span>
+        <span style="color: var(--neutrals-500); font-size: 12px;"> (Multiple statuses)</span>
       </div>
       <VcDataTable :items="orders">
         <VcColumn id="orderNumber" field="orderNumber" title="Order" mobile-role="title" />
@@ -312,10 +312,10 @@ export const MobileProductsWithMultipleStatuses: Story = {
       return { products };
     },
     template: `
-    <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-      <div style="background: #f8fafc; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
+    <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid var(--neutrals-200); border-radius: 8px; overflow: hidden;">
+      <div style="background: var(--neutrals-50); padding: 8px 12px; border-bottom: 1px solid var(--neutrals-200);">
         <strong>Products (Extended)</strong>
-        <span style="color: #64748b; font-size: 12px;"> (Image + Multiple Statuses)</span>
+        <span style="color: var(--neutrals-500); font-size: 12px;"> (Image + Multiple Statuses)</span>
       </div>
       <VcDataTable :items="products">
         <VcColumn id="thumbnail" field="thumbnail" title="Image" type="image" mobile-role="image" />
@@ -348,16 +348,18 @@ MobileProductsWithMultipleStatuses.parameters = {
  */
 
 export const MobileLegacyAPI: Story = {
+  // Stays in the sidebar and in story tests; hidden from the docs page so a deprecated API is not copied.
+  tags: ["deprecated", "!autodocs"],
   render: () => ({
     components: { VcDataTable, VcColumn },
     setup() {
       return { products: mockProducts };
     },
     template: `
-    <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-      <div style="background: #fef3c7; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
+    <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid var(--neutrals-200); border-radius: 8px; overflow: hidden;">
+      <div style="background: var(--warning-50); padding: 8px 12px; border-bottom: 1px solid var(--neutrals-200);">
         <strong>Legacy mobilePosition API</strong>
-        <span style="color: #92400e; font-size: 12px;"> (Backward compatible)</span>
+        <span style="color: var(--warning-800); font-size: 12px;"> (Backward compatible)</span>
       </div>
       <VcDataTable :items="products">
         <!-- Using legacy mobilePosition instead of mobileRole -->
@@ -409,10 +411,10 @@ export const MobileTwoStatuses: Story = {
       return { products };
     },
     template: `
-    <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-      <div style="background: #ecfdf5; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
+    <div style="height: 600px; max-width: 375px; margin: 0 auto; border: 1px solid var(--neutrals-200); border-radius: 8px; overflow: hidden;">
+      <div style="background: var(--success-50); padding: 8px 12px; border-bottom: 1px solid var(--neutrals-200);">
         <strong>Two Statuses Demo</strong>
-        <span style="color: #065f46; font-size: 12px;"> (Stock + Publish status)</span>
+        <span style="color: var(--success-800); font-size: 12px;"> (Stock + Publish status)</span>
       </div>
       <VcDataTable :items="products">
         <VcColumn id="name" field="name" title="Name" mobile-role="title" />
@@ -473,10 +475,10 @@ export const MobilePullToRefresh: Story = {
       return { products, loading, refreshCount, handleRefresh };
     },
     template: `
-    <div style="max-width: 375px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-      <div style="background: #f0f9ff; padding: 8px 12px; border-bottom: 1px solid #e2e8f0;">
+    <div style="max-width: 375px; margin: 0 auto; border: 1px solid var(--neutrals-200); border-radius: 8px; overflow: hidden;">
+      <div style="background: var(--info-50); padding: 8px 12px; border-bottom: 1px solid var(--neutrals-200);">
         <strong>Pull-to-Refresh Demo</strong>
-        <div style="font-size: 12px; color: #0369a1; margin-top: 4px;">
+        <div style="font-size: 12px; color: var(--info-700); margin-top: 4px;">
           ↓ Pull down to refresh (Refreshed {{ refreshCount }} times)
         </div>
       </div>

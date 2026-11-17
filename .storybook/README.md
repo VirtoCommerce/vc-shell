@@ -1,81 +1,73 @@
-# Storybook Configuration for VC-Shell
+# Storybook for VC-Shell
 
-This directory contains the Storybook configuration for the VC-Shell project.
+Stories live next to the components in `framework/ui/components/**` and `framework/shell/**`. How a story file must look is defined in [STORY_STANDARD.md](./STORY_STANDARD.md).
 
-## Running Storybook
-
-To run Storybook, use the following commands:
+## Commands
 
 ```bash
-# Start Storybook development server
-yarn storybook-serve
-
-# Build Storybook for production
-yarn storybook-build
-
-# Compress Storybook build for deployment
-yarn storybook-compress
+yarn dev:storybook          # dev server on :6006
+yarn build:storybook        # static build into storybook-static/
+yarn test:storybook         # every story as a browser test: render, play function, axe (WCAG 2.2 A/AA)
+yarn check:story-argtypes   # fails when a story documents a prop, event or slot the component no longer has
 ```
 
-## Adding Stories
+`yarn build` must run first on a fresh checkout. When `framework/dist/index.css` exists, Storybook uses it instead of the SCSS sources, so rebuild the framework before judging a style change.
 
-Stories can be added to any component in the following locations:
-- `framework/ui/**/*.stories.ts` - For framework components
-- `apps/vendor-portal/src/**/*.stories.ts` - For vendor portal components
+## Docs pages
 
-## Story Structure
+Every component gets an autodocs page (`.storybook/docs-page.ts`): description, primary story, controls, all stories, then the component's `*.docs.md` guide under "Usage guide". The guide is the same file that feeds vc-docs and the vc-app skill, so write usage documentation there, not in the story file.
 
-Stories should follow this structure:
+"Show code" is built by `.storybook/source-snippet.ts`: for a story with its own `render`, it prints the story's template and setup as a `<script setup>` + `<template>` SFC with `@vc-shell/framework` imports. Set `parameters.docs.source.code` on a story only when the generated snippet is not what a developer should copy.
 
-```typescript
-import type { Meta, StoryObj } from '@storybook/vue3-vite';
-import YourComponent from './YourComponent.vue';
-import { withContainer } from '../../../.storybook/decorators';
+## Tags
 
-const meta: Meta<typeof YourComponent> = {
-  title: 'Category/Subcategory/YourComponent',
-  component: YourComponent,
-  tags: ['autodocs'],
-  decorators: [withContainer],
-  argTypes: {
-    // Define argTypes here
-  },
-  args: {
-    // Default args
-  },
-};
+| Tag          | Effect                                                               |
+| ------------ | -------------------------------------------------------------------- |
+| `autodocs`   | Docs page (on by default in `preview.ts`)                            |
+| `!autodocs`  | Story stays in the sidebar and in tests, but not on the docs page    |
+| `deprecated` | Shows a deprecated API; pair it with `!autodocs` so nobody copies it |
 
-export default meta;
-type Story = StoryObj<typeof YourComponent>;
+## Interaction tests
 
-export const Default: Story = {
-  args: {
-    // Args for this story
+A `play` function turns a story into a behaviour test that `yarn test:storybook` runs in Chromium:
+
+```ts
+import { expect, userEvent, within } from "storybook/test";
+
+export const Interactive: Story = {
+  render: () => ({
+    /* ... */
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: "Next page" }));
+    await expect(canvas.getByText("Current Page: 6 of 15")).toBeInTheDocument();
   },
 };
 ```
 
-## Available Decorators
+Query by role and accessible name. Teleported content (popups, dropdowns) is outside `canvasElement`: use `within(canvasElement.ownerDocument.body)`.
 
-- `withContainer` - Wraps the component in a container with padding and border
-- `withDarkBackground` - Applies a dark background to the component
-- `withRouter` - Provides a Vue Router instance for components that use routing
+## Toolbar
 
-## Testing Components
+- **Theme**: light / dark.
+- **Language**: every locale in `framework/locales`. Arabic and Hebrew switch `<html dir>` to `rtl`, as in the app. vc-shell formats dates, numbers and money by the browser locale (`navigator.language`), not the app language, so the story iframe also pretends its browser is set to the chosen language. Story texts passed as args (labels, placeholders) stay as written; only the framework's own texts translate.
+- **Direction**: `auto` follows the language; `ltr` / `rtl` force it, to check an RTL layout with readable English text.
 
-You can use the `@storybook/test` package to test your components:
+A story that must always render in one mode pins it with `globals: { locale: "ar" }`.
 
-```typescript
-import { composeStories } from '@storybook/test';
-import * as stories from './YourComponent.stories';
+## Decorators
 
-const { Default } = composeStories(stories);
+From `.storybook/decorators.ts`:
 
-it('renders properly', () => {
-  // Test your component with the Default story
-});
-```
+- `withContainer` — padded, bordered wrapper
+- `withDarkBackground` — dark background
+- `withVcApp` — `.vc-app` container, needed by components that teleport (tooltips, dropdowns)
+- `withMobileView` — forces `$isMobile` / `IsMobileKey` to true for the story
+- `withDesktopView` — forces the desktop inject keys, for docs iframes narrower than the desktop breakpoint
 
-## Additional Information
+`preview.ts` applies the router, the global mocks, `withVcApp` and the theme switcher to every story.
 
-For more details on how to use Storybook, refer to the [official Storybook documentation](https://storybook.js.org/docs/vue/get-started/introduction). 
+## Component manifest
+
+`yarn generate:component-manifest` writes `cli/vc-app-skill/runtime/knowledge/components.json`: import line, props, events, slots, docs path and story ids for every component that has stories. The release regenerates it together with the `*.docs.md` mirror.

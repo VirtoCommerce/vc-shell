@@ -1,5 +1,23 @@
 # Changelog
 
+# [2.12.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.11.0...v2.12.0) (2026-11-17)
+
+### Features
+
+- **framework:** add AssetsFolderManager blade for storage folders (#416) ([9f2d92e](https://github.com/VirtoCommerce/vc-shell/commit/9f2d92edc95c7cbef1126c7f1f0cef0225a5223f)), closes [#416](https://github.com/VirtoCommerce/vc-shell/issues/416)
+- **framework:** add VcSearchBar, one search and filter bar for lists (#410) ([c534d00](https://github.com/VirtoCommerce/vc-shell/commit/c534d0013fcf1bbcd3484435b2a5b4282af8ce3e)), closes [#410](https://github.com/VirtoCommerce/vc-shell/issues/410)
+- **framework:** ship vc-shell texts in 13 more languages (#412) ([a5b97b0](https://github.com/VirtoCommerce/vc-shell/commit/a5b97b0ed62cbd62be6dda9237d99dc8c3d13907)), closes [#412](https://github.com/VirtoCommerce/vc-shell/issues/412)
+- **storybook:** copyable snippets, usage guides on docs pages, toolbar globals and RTL fixes (#415) ([24a9cae](https://github.com/VirtoCommerce/vc-shell/commit/24a9cae65c79b91703f0aed7143b97aeb2ed6216)), closes [#415](https://github.com/VirtoCommerce/vc-shell/issues/415)
+
+### Bug Fixes
+
+- **create-vc-app:** make generated dynamic modules build (#413) ([40b98b5](https://github.com/VirtoCommerce/vc-shell/commit/40b98b5aa291e05ccffb11998d08a4f50c4ecf20)), closes [#413](https://github.com/VirtoCommerce/vc-shell/issues/413)
+- **deps:** clear high advisories in runtime dependencies (#409) ([03e7ede](https://github.com/VirtoCommerce/vc-shell/commit/03e7edef39bdd5f310385c4966b23176be334693)), closes [#409](https://github.com/VirtoCommerce/vc-shell/issues/409) [#408](https://github.com/VirtoCommerce/vc-shell/issues/408) [#408](https://github.com/VirtoCommerce/vc-shell/issues/408)
+- **deps:** update vulnerable swiper, `@unovis` and vite-plugin-dts, gate releases on audit (#408) ([5d8226d](https://github.com/VirtoCommerce/vc-shell/commit/5d8226d409029c2ae6bea7ea36139380c480345f)), closes [#408](https://github.com/VirtoCommerce/vc-shell/issues/408)
+- **framework:** one data-widget-id per widget, and test ids on overflowed toolbar commands (#407) ([ebd26ab](https://github.com/VirtoCommerce/vc-shell/commit/ebd26ab20993830340e7b8f57dc9179c02290f0a)), closes [#407](https://github.com/VirtoCommerce/vc-shell/issues/407) [#392](https://github.com/VirtoCommerce/vc-shell/issues/392)
+- **framework:** show hover and selection on striped VcDataTable rows (#411) ([43fe9d2](https://github.com/VirtoCommerce/vc-shell/commit/43fe9d2e38396ad2b26577b08d47222aca4aa0e6)), closes [#411](https://github.com/VirtoCommerce/vc-shell/issues/411) [#402](https://github.com/VirtoCommerce/vc-shell/issues/402)
+- **storybook:** show the desktop VcDataTable layout on its docs page (#414) ([e844463](https://github.com/VirtoCommerce/vc-shell/commit/e844463ba00f30c8abbb521a41b9c7d5d476c44f)), closes [#414](https://github.com/VirtoCommerce/vc-shell/issues/414)
+
 # [2.11.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.10.4...v2.11.0) (2026-11-05)
 
 ### Features

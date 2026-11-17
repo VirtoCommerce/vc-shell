@@ -1,5 +1,11 @@
 # Changelog
 
+# [2.12.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.11.0...v2.12.0) (2026-11-17)
+
+### Features
+
+- **storybook:** copyable snippets, usage guides on docs pages, toolbar globals and RTL fixes (#415) ([24a9cae](https://github.com/VirtoCommerce/vc-shell/commit/24a9cae65c79b91703f0aed7143b97aeb2ed6216)), closes [#415](https://github.com/VirtoCommerce/vc-shell/issues/415)
+
 # [2.11.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.10.4...v2.11.0) (2026-11-05)
 
 **Note:** Version bump only for package @vc-shell/vc-app-skill

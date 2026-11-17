@@ -671,33 +671,34 @@ VcInput blocks the minus key for both `number` and `integer` types. If you need 
 
 ### Props
 
-| Prop                | Type                                                                                                                            | Default     | Description                                                                                                          |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------- |
-| `modelValue`        | `string \| number \| Date \| null`                                                                                              | `undefined` | Bound value via `v-model`                                                                                            |
-| `type`              | `"text" \| "password" \| "email" \| "tel" \| "url" \| "time" \| "number" \| "integer" \| "date" \| "datetime-local" \| "color"` | `"text"`    | Input type. `date`/`datetime-local` delegate to VcDatePicker; `color` delegates to VcColorInput                      |
-| `label`             | `string`                                                                                                                        | --          | Label text displayed above the field                                                                                 |
-| `placeholder`       | `string`                                                                                                                        | --          | Placeholder text inside the field                                                                                    |
-| `hint`              | `string`                                                                                                                        | --          | Help text displayed below the field                                                                                  |
-| `tooltip`           | `string`                                                                                                                        | --          | Tooltip text shown on hover next to the label                                                                        |
-| `prefix`            | `string`                                                                                                                        | --          | Static text rendered before the input value                                                                          |
-| `suffix`            | `string`                                                                                                                        | --          | Static text rendered after the input value                                                                           |
-| `name`              | `string`                                                                                                                        | `"Field"`   | HTML `name` attribute on the native input                                                                            |
-| `clearable`         | `boolean`                                                                                                                       | `false`     | Shows a clear (x) button when the field has a value                                                                  |
-| `disabled`          | `boolean`                                                                                                                       | `false`     | Disables the input (also inherits from `VcInputGroup` context)                                                       |
-| `required`          | `boolean`                                                                                                                       | `false`     | Adds a red asterisk to the label (visual only, no validation)                                                        |
-| `loading`           | `boolean`                                                                                                                       | `false`     | Shows a spinning loader icon inside the field                                                                        |
-| `autofocus`         | `boolean`                                                                                                                       | `false`     | Auto-focuses the input on mount                                                                                      |
-| `autocomplete`      | `string`                                                                                                                        | --          | Autofill hint set on the native input (e.g. `"username"`, `"current-password"`)                                      |
-| `ariaLabel`         | `string`                                                                                                                        | --          | Accessible name used when no visible `label` is provided; forwarded to the delegated date picker and color input too |
-| `error`             | `boolean`                                                                                                                       | `false`     | Activates error styling (red border and ring)                                                                        |
-| `errorMessage`      | `string`                                                                                                                        | --          | Error text shown below the field; also activates error styling when truthy                                           |
-| `debounce`          | `string \| number`                                                                                                              | --          | Delay in ms before emitting model updates                                                                            |
-| `maxlength`         | `string \| number`                                                                                                              | `"1024"`    | Maximum character length                                                                                             |
-| `step`              | `string`                                                                                                                        | —           | Step granularity, set on the native input only when given                                                            |
-| `size`              | `"default" \| "small"`                                                                                                          | `"default"` | Field height variant (36px / 32px)                                                                                   |
-| `multilanguage`     | `boolean`                                                                                                                       | `false`     | Shows a language indicator badge on the label                                                                        |
-| `currentLanguage`   | `string`                                                                                                                        | --          | Language code to display in the multilanguage badge                                                                  |
-| `datePickerOptions` | `VueDatePickerProps`                                                                                                            | --          | Options forwarded to VcDatePicker (only when `type` is `date` or `datetime-local`)                                   |
+| Prop                | Type                                                                                                                            | Default     | Description                                                                                                                                                                            |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `modelValue`        | `string \| number \| Date \| null`                                                                                              | `undefined` | Bound value via `v-model`                                                                                                                                                              |
+| `type`              | `"text" \| "password" \| "email" \| "tel" \| "url" \| "time" \| "number" \| "integer" \| "date" \| "datetime-local" \| "color"` | `"text"`    | Input type. `date`/`datetime-local` delegate to VcDatePicker; `color` delegates to VcColorInput                                                                                        |
+| `label`             | `string`                                                                                                                        | --          | Label text displayed above the field                                                                                                                                                   |
+| `placeholder`       | `string`                                                                                                                        | --          | Placeholder text inside the field                                                                                                                                                      |
+| `hint`              | `string`                                                                                                                        | --          | Help text displayed below the field                                                                                                                                                    |
+| `tooltip`           | `string`                                                                                                                        | --          | Tooltip text shown on hover next to the label                                                                                                                                          |
+| `prefix`            | `string`                                                                                                                        | --          | Static text rendered before the input value                                                                                                                                            |
+| `suffix`            | `string`                                                                                                                        | --          | Static text rendered after the input value                                                                                                                                             |
+| `name`              | `string`                                                                                                                        | `"Field"`   | HTML `name` attribute on the native input                                                                                                                                              |
+| `clearable`         | `boolean`                                                                                                                       | `false`     | Shows a clear (x) button when the field has a value                                                                                                                                    |
+| `disabled`          | `boolean`                                                                                                                       | `false`     | Disables the input (also inherits from `VcInputGroup` context)                                                                                                                         |
+| `required`          | `boolean`                                                                                                                       | `false`     | Adds a red asterisk to the label (visual only, no validation)                                                                                                                          |
+| `loading`           | `boolean`                                                                                                                       | `false`     | Shows a spinning loader icon inside the field                                                                                                                                          |
+| `autofocus`         | `boolean`                                                                                                                       | `false`     | Auto-focuses the input on mount                                                                                                                                                        |
+| `autocomplete`      | `string`                                                                                                                        | --          | Autofill hint set on the native input (e.g. `"username"`, `"current-password"`)                                                                                                        |
+| `ariaLabel`         | `string`                                                                                                                        | --          | Accessible name used when no visible `label` is provided; forwarded to the delegated date picker and color input too                                                                   |
+| `error`             | `boolean`                                                                                                                       | `false`     | Activates error styling (red border and ring)                                                                                                                                          |
+| `errorMessage`      | `string`                                                                                                                        | --          | Error text shown below the field; also activates error styling when truthy                                                                                                             |
+| `debounce`          | `string \| number`                                                                                                              | --          | Delay in ms before emitting model updates                                                                                                                                              |
+| `maxlength`         | `string \| number`                                                                                                              | `"1024"`    | Maximum character length                                                                                                                                                               |
+| `step`              | `string`                                                                                                                        | —           | Step granularity, set on the native input only when given                                                                                                                              |
+| `size`              | `"default" \| "small"`                                                                                                          | `"default"` | Field height variant (36px / 32px)                                                                                                                                                     |
+| `multilanguage`     | `boolean`                                                                                                                       | `false`     | Shows a language indicator badge on the label                                                                                                                                          |
+| `currentLanguage`   | `string`                                                                                                                        | --          | Language code to display in the multilanguage badge                                                                                                                                    |
+| `datePickerOptions` | `VueDatePickerProps`                                                                                                            | --          | Options forwarded to VcDatePicker (only when `type` is `date` or `datetime-local`)                                                                                                     |
+| `inputAttrs`        | `Record<string, string \| number \| boolean \| undefined>`                                                                      | --          | Attributes bound to the native `<input>` rather than the root, e.g. `role="combobox"` and the `aria-*` state of a field with a suggestion list. Not used with the date and color types |
 
 ### Events
 
@@ -706,6 +707,12 @@ VcInput blocks the minus key for both `number` and `integer` types. If you need 
 | `update:modelValue` | `string \| number \| Date \| null \| undefined` | Emitted when the value changes. For `number`/`integer` types, the payload is a parsed number or `null`. Respects `debounce` if set. |
 | `blur`              | `Event`                                         | Emitted when the native input loses focus                                                                                           |
 | `focus`             | --                                              | Emitted when the native input receives focus                                                                                        |
+
+### Exposed Methods
+
+| Method    | Description                         |
+| --------- | ----------------------------------- |
+| `focus()` | Moves the focus to the native input |
 
 ### Slots
 
@@ -725,25 +732,28 @@ VcInput blocks the minus key for both `number` and `integer` types. If you need 
 
 VcInput uses CSS custom properties for theming, defined on `:root`. Override these to customize the appearance across your application.
 
-| Variable                      | Default                | Description                                    |
-| ----------------------------- | ---------------------- | ---------------------------------------------- |
-| `--input-height`              | `36px`                 | Height of the default size field               |
-| `--input-height-small`        | `32px`                 | Height of the small size field                 |
-| `--input-border-radius`       | `6px`                  | Border radius of the field wrapper             |
-| `--input-border-color`        | `var(--neutrals-300)`  | Border color in the normal state               |
-| `--input-padding`             | `12px`                 | Horizontal padding inside the field            |
-| `--input-background-color`    | `var(--additional-50)` | Background color of the field                  |
-| `--input-placeholder-color`   | `var(--neutrals-400)`  | Color of placeholder text                      |
-| `--input-text-color`          | `var(--neutrals-800)`  | Color of the input text                        |
-| `--input-clear-color`         | `var(--neutrals-400)`  | Color of the clear and show/hide buttons       |
-| `--input-clear-color-hover`   | `var(--neutrals-600)`  | Hover color of the clear and show/hide buttons |
-| `--input-disabled-text-color` | `var(--neutrals-500)`  | Text color when disabled                       |
-| `--input-disabled-bg-color`   | `var(--neutrals-200)`  | Background color when disabled                 |
-| `--input-text-color-error`    | `var(--danger-500)`    | Text color in error state                      |
-| `--input-border-color-error`  | `var(--danger-500)`    | Border color in error state                    |
-| `--input-border-color-focus`  | `var(--primary-500)`   | Border color when focused                      |
-| `--input-focus-ring-color`    | `var(--primary-100)`   | Focus ring color (3px outline)                 |
-| `--input-error-ring-color`    | `var(--danger-100)`    | Error ring color (3px outline)                 |
+| Variable                      | Default                | Description                                                                            |
+| ----------------------------- | ---------------------- | -------------------------------------------------------------------------------------- |
+| `--input-height`              | `36px`                 | Height of the default size field                                                       |
+| `--input-height-small`        | `32px`                 | Height of the small size field                                                         |
+| `--input-border-radius`       | `6px`                  | Border radius of the field wrapper                                                     |
+| `--input-border-color`        | `var(--neutrals-300)`  | Border color in the normal state                                                       |
+| `--input-padding`             | `12px`                 | Horizontal padding inside the field                                                    |
+| `--input-padding-start`       | `var(--input-padding)` | Padding at the field's start (not defined by default: falls back to `--input-padding`) |
+| `--input-padding-end`         | `var(--input-padding)` | Padding at the field's end (not defined by default: falls back to `--input-padding`)   |
+| `--input-adornment-gap`       | `12px`                 | Space between the input and the `prepend-inner` / `append-inner` content               |
+| `--input-background-color`    | `var(--additional-50)` | Background color of the field                                                          |
+| `--input-placeholder-color`   | `var(--neutrals-400)`  | Color of placeholder text                                                              |
+| `--input-text-color`          | `var(--neutrals-800)`  | Color of the input text                                                                |
+| `--input-clear-color`         | `var(--neutrals-400)`  | Color of the clear and show/hide buttons                                               |
+| `--input-clear-color-hover`   | `var(--neutrals-600)`  | Hover color of the clear and show/hide buttons                                         |
+| `--input-disabled-text-color` | `var(--neutrals-500)`  | Text color when disabled                                                               |
+| `--input-disabled-bg-color`   | `var(--neutrals-200)`  | Background color when disabled                                                         |
+| `--input-text-color-error`    | `var(--danger-500)`    | Text color in error state                                                              |
+| `--input-border-color-error`  | `var(--danger-500)`    | Border color in error state                                                            |
+| `--input-border-color-focus`  | `var(--primary-500)`   | Border color when focused                                                              |
+| `--input-focus-ring-color`    | `var(--primary-100)`   | Focus ring color (3px outline)                                                         |
+| `--input-error-ring-color`    | `var(--danger-100)`    | Error ring color (3px outline)                                                         |
 
 ### Theming Example
 

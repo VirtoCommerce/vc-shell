@@ -1,5 +1,11 @@
 # Changelog
 
+# [2.12.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.11.0...v2.12.0) (2026-11-17)
+
+### Bug Fixes
+
+- **deps:** clear high advisories in runtime dependencies (#409) ([03e7ede](https://github.com/VirtoCommerce/vc-shell/commit/03e7edef39bdd5f310385c4966b23176be334693)), closes [#409](https://github.com/VirtoCommerce/vc-shell/issues/409) [#408](https://github.com/VirtoCommerce/vc-shell/issues/408) [#408](https://github.com/VirtoCommerce/vc-shell/issues/408)
+
 # [2.11.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.10.4...v2.11.0) (2026-11-05)
 
 **Note:** Version bump only for package @vc-shell/config-generator

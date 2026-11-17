@@ -91,6 +91,14 @@ No border or background, used for inline or de-emphasized actions.
 | `ghost` | Toolbar icons, inline actions      | Light background tint |
 | `link`  | Text-like navigation, inline links | Underline on text     |
 
+### Tonal Variant
+
+A soft primary tint with a light border, for applied state: filter chips, an active filters button, tags. `selected` takes the hover tint.
+
+```vue
+<VcButton variant="tonal" size="2xs">Status: New</VcButton>
+```
+
 ## Sizes
 
 Five size options cover all common use cases from toolbar icons to prominent CTAs.
@@ -98,6 +106,7 @@ Five size options cover all common use cases from toolbar icons to prominent CTA
 ::storybook id="action-vcbutton--all-sizes"
 
 ```vue
+<VcButton size="2xs">Extra small</VcButton>
 <VcButton size="sm">Small</VcButton>
 <VcButton size="default">Default</VcButton>
 <VcButton size="lg">Large</VcButton>
@@ -107,11 +116,14 @@ Five size options cover all common use cases from toolbar icons to prominent CTA
 
 | Size      | Height  | Padding                       | Typical Use                         |
 | --------- | ------- | ----------------------------- | ----------------------------------- |
+| `2xs`     | 28px    | 8px horizontal                | Filter chips, tags, dense toolbars  |
 | `sm`      | 32px    | 12px horizontal               | Compact form actions, table footers |
 | `default` | 36px    | 16px horizontal, 8px vertical | Standard blade actions              |
 | `lg`      | 40px    | 24px horizontal               | Prominent CTAs, dialog actions      |
 | `icon`    | 36x36px | 0 (square)                    | Toolbar icon buttons                |
 | `icon-sm` | 24x24px | 0 (square)                    | Table cell actions, inline controls |
+
+`2xs` is the 28px size; with only an icon it is a 28px square. It is not the legacy `xs`, which still renders as `sm`.
 
 !!! note "Legacy size aliases"
 `xs` (maps to `sm`) and `base` (maps to `default`) are supported for backward compatibility but should not be used in new code.
@@ -295,17 +307,18 @@ Use the `loading` prop, not `disabled`. A disabled button gives no progress feed
 
 All visual properties are customizable through CSS custom properties. Each variant has three property sets (normal, hover, disabled) for background, text, and border colors.
 
-| Pattern                                     | Example                                   | Description                   |
-| ------------------------------------------- | ----------------------------------------- | ----------------------------- |
-| `--button-{variant}-background-color`       | `--button-primary-background-color`       | Normal background             |
-| `--button-{variant}-background-color-hover` | `--button-primary-background-color-hover` | Hover background              |
-| `--button-{variant}-text-color`             | `--button-primary-text-color`             | Normal text color             |
-| `--button-{variant}-border-color`           | `--button-primary-border-color`           | Normal border color           |
-| `--button-border-radius`                    | `6px`                                     | Corner radius for all buttons |
-| `--button-focus-ring-color`                 | `var(--primary-300)`                      | Focus ring color              |
-| `--button-focus-ring-width`                 | `2px`                                     | Focus ring thickness          |
-| `--button-focus-ring-offset`                | `2px`                                     | Focus ring offset             |
-| `--button-{size}-height`                    | `--button-default-height: 36px`           | Height per size               |
+| Pattern                                     | Example                                   | Description                                                                                                                                                                                           |
+| ------------------------------------------- | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--button-{variant}-background-color`       | `--button-primary-background-color`       | Normal background                                                                                                                                                                                     |
+| `--button-{variant}-background-color-hover` | `--button-primary-background-color-hover` | Hover background                                                                                                                                                                                      |
+| `--button-{variant}-text-color`             | `--button-primary-text-color`             | Normal text color                                                                                                                                                                                     |
+| `--button-{variant}-border-color`           | `--button-primary-border-color`           | Normal border color                                                                                                                                                                                   |
+| `--button-border-radius`                    | `6px`                                     | Corner radius for all buttons                                                                                                                                                                         |
+| `--button-focus-ring-color`                 | `var(--primary-300)`                      | Focus ring color                                                                                                                                                                                      |
+| `--button-focus-ring-width`                 | `2px`                                     | Focus ring thickness                                                                                                                                                                                  |
+| `--button-focus-ring-offset`                | `2px`                                     | Focus ring offset                                                                                                                                                                                     |
+| `--button-{size}-height`                    | `--button-default-height: 36px`           | Height per size                                                                                                                                                                                       |
+| `--button-hit-area-size`                    | `44px`                                    | Minimum size of the `::after` hit area around the button. Set `0px` on a container whose buttons sit edge to edge (an attached group, stacked menu rows), so one does not take its neighbour's clicks |
 
 ## Accessibility
 

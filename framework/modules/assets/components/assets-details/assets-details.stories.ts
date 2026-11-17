@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
+import { AssetsDetails } from "@modules/assets/components/assets-details";
 import { computed, defineComponent, markRaw, provide, ref } from "vue";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 import { ToolbarServiceKey, WidgetServiceKey } from "@framework/injection-keys";
@@ -12,10 +13,6 @@ import { VcPopupContainer } from "@shell/_internal/popup";
 import { withMobileView } from "../../../../../.storybook/decorators";
 import { useSharedPopupContainer, useStoryUser } from "../../../../../.storybook/story-mocks";
 import type { AssetsDetailsOptions, IAssetInfoItem } from "@modules/assets/components/assets-details/types";
-
-// The blade calls the `defineBlade` compile-time macro, which only the app build replaces.
-(globalThis as Record<string, unknown>).defineBlade ??= () => undefined;
-const { AssetsDetails } = await import("@modules/assets/components/assets-details");
 
 // ── Mock files ───────────────────────────────────────────────────────────────
 

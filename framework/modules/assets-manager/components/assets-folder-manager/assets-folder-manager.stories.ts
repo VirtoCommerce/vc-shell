@@ -1,15 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { computed, defineComponent, markRaw, nextTick, onBeforeUnmount, provide, ref, shallowRef, watch } from "vue";
-import type { PropType } from "vue";
+import { AssetsFolderManager } from "@modules/assets-manager/components/assets-folder-manager";
+import { AssetsDetails } from "@modules/assets/components/assets-details";
+import { defineComponent, markRaw, nextTick, onBeforeUnmount, ref, watch } from "vue";
 import { expect, userEvent, waitFor, within } from "storybook/test";
-import { ToolbarServiceKey, WidgetServiceKey } from "@framework/injection-keys";
-import { BladeStackKey, BladeMessagingKey, BladeDescriptorKey, BladeBannersKey } from "@core/blade-navigation/types";
-import type { BladeDescriptor, BladeOpenEvent, IBladeBanner } from "@core/blade-navigation/types";
-import { createToolbarService } from "@core/services/toolbar-service";
-import { createWidgetService } from "@core/services/widget-service";
 import { PlatformPermissions } from "@core/constants/permissions";
 import { VcPopupContainer } from "@shell/_internal/popup";
 import { withMobileView } from "../../../../../.storybook/decorators";
+import { ChildBlade, createChildSlot, provideStoryBlade } from "../../../../../.storybook/blade-story";
 import {
   jsonResponse,
   useSharedPopupContainer,
@@ -19,11 +16,6 @@ import {
 } from "../../../../../.storybook/story-mocks";
 import type { IAssetInfoItem } from "@modules/assets/components/assets-details";
 import type { AssetsFolderManagerOptions, BlobEntry, IAssetsFolderAction } from "./types";
-
-// The blade calls the `defineBlade` compile-time macro, which only the app build replaces.
-(globalThis as Record<string, unknown>).defineBlade ??= () => undefined;
-const { AssetsFolderManager } = await import("@modules/assets-manager/components/assets-folder-manager");
-const { AssetsDetails } = await import("@modules/assets/components/assets-details");
 
 // ── In-memory assets API ─────────────────────────────────────────────────────
 
@@ -190,90 +182,7 @@ interface StoryConfig {
   view?: "table" | "grid";
 }
 
-const FOLDER_ID = "assets-folder-manager";
-const DETAILS_ID = "assets-details";
-
-// One child blade at most, the way the details blade is used. Opening replaces it, closing unmounts it.
-type ChildEvent = BladeOpenEvent & { parentId?: string };
-
-function createChildSlot() {
-  const child = shallowRef<ChildEvent & { key: number }>();
-  let opened = 0;
-
-  function close(): boolean {
-    const current = child.value;
-    if (!current) return false;
-    child.value = undefined;
-    current.onClose?.();
-    return true;
-  }
-
-  return {
-    child,
-    open: async (event: ChildEvent) => {
-      close();
-      child.value = { ...event, key: ++opened };
-    },
-    close: async (id: string) => (id === DETAILS_ID ? close() : false),
-    closeChildren: async (parentId: string) => {
-      if (parentId === FOLDER_ID) close();
-    },
-  };
-}
-
-// The details blade gets its own descriptor, toolbar and widgets, as a blade in the real stack would.
-const ChildBlade = defineComponent({
-  components: { AssetsDetails },
-  props: { event: { type: Object as PropType<ChildEvent>, required: true } },
-  setup(props) {
-    provide(ToolbarServiceKey, createToolbarService());
-    provide(WidgetServiceKey, createWidgetService());
-    provide(BladeBannersKey, ref<IBladeBanner[]>([]));
-    provide(
-      BladeDescriptorKey,
-      computed<BladeDescriptor>(() => ({
-        id: DETAILS_ID,
-        name: props.event.name ?? "AssetsDetails",
-        visible: true,
-        parentId: props.event.parentId,
-        options: props.event.options as Record<string, unknown>,
-      })),
-    );
-  },
-  template: "<AssetsDetails />",
-});
-
-function provideBladeContext(options: AssetsFolderManagerOptions, slot: ReturnType<typeof createChildSlot>) {
-  const descriptor = computed<BladeDescriptor>(() => ({
-    id: FOLDER_ID,
-    name: "AssetsFolderManager",
-    visible: true,
-    parentId: "parent-blade",
-    options: options as unknown as Record<string, unknown>,
-  }));
-
-  provide(ToolbarServiceKey, createToolbarService());
-  provide(WidgetServiceKey, createWidgetService());
-  provide(BladeStackKey, {
-    blades: ref([]),
-    activeBlade: computed(() => ({ id: slot.child.value ? DETAILS_ID : FOLDER_ID })),
-    openWorkspace: async () => {},
-    openBlade: slot.open,
-    closeBlade: slot.close,
-    closeChildren: slot.closeChildren,
-    replaceCurrentBlade: async () => {},
-    coverCurrentBlade: async () => {},
-    registerBeforeClose: () => {},
-    unregisterBeforeClose: () => {},
-    setBladeError: () => {},
-    clearBladeError: () => {},
-    setBladeTitle: () => {},
-    _restoreStack: () => {},
-  } as any);
-  provide(BladeMessagingKey, { callParent: async () => undefined, onParentCall: () => () => {} } as any);
-  provide(BladeBannersKey, ref<IBladeBanner[]>([]));
-  provide(BladeDescriptorKey, descriptor);
-}
+const IDS = { parent: "assets-folder-manager", child: "assets-details" };
 
 function renderBlade(config: StoryConfig, height: string) {
   const dataset = config.dataset ?? "catalog";
@@ -282,8 +191,9 @@ function renderBlade(config: StoryConfig, height: string) {
   return defineComponent({
     components: { AssetsFolderManager, ChildBlade, VcPopupContainer },
     setup() {
-      const slot = createChildSlot();
-      provideBladeContext(
+      const slot = createChildSlot(IDS);
+      provideStoryBlade(
+        "AssetsFolderManager",
         {
           rootUrl,
           title: config.title,
@@ -316,7 +226,7 @@ function renderBlade(config: StoryConfig, height: string) {
         else localStorage.setItem(VIEW_KEY, storedView);
       });
 
-      return { ready, child: slot.child, ownsPopups, height };
+      return { ready, child: slot.child, ownsPopups, height, details: markRaw(AssetsDetails), detailsId: IDS.child };
     },
     // On mobile the open child covers its parent, as in the shell.
     template: `
@@ -329,6 +239,8 @@ function renderBlade(config: StoryConfig, height: string) {
           v-if="child"
           :key="child.key"
           :event="child"
+          :component="details"
+          :id="detailsId"
         />
       </div>
       <VcPopupContainer v-if="ownsPopups" />

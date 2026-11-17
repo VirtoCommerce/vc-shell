@@ -19,6 +19,8 @@ import "@vc-shell/framework/dist/index.css";
 if (typeof window !== "undefined") {
   (window as any).defineExtensionPoint = mockDefineExtensionPoint;
   (window as any).useExtensionPoint = mockUseExtensionPoint;
+  // Blades call the `defineBlade` compile-time macro in their setup; only the app build replaces it.
+  (window as any).defineBlade ??= () => undefined;
 }
 
 setup((app) => {

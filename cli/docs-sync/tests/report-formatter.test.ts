@@ -34,4 +34,17 @@ describe("formatReport", () => {
     });
     expect(md).toContain("(none)");
   });
+
+  it("names removed orphans as removed", () => {
+    const md = formatReport({
+      vcShellVersion: "v0",
+      timestamp: "now",
+      changes: [],
+      skipped: [],
+      orphans: [{ target: "composables/ui-state/gone.md", removed: true }],
+      errors: [],
+    });
+    expect(md).toContain("## Removed (synced previously; source gone or internal)");
+    expect(md).toContain("composables/ui-state/gone.md");
+  });
 });

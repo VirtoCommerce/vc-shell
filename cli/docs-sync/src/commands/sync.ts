@@ -9,7 +9,7 @@ import { fetchStorybookIds } from "../storybook/index-fetcher.js";
 import { computeTargetPath, writeMarkdown } from "../writer/writer.js";
 import { copyImageAssets } from "../writer/assets.js";
 import { writePagesFiles } from "../writer/pages.js";
-import { findOrphans } from "../report/orphans.js";
+import { findOrphans, removeOrphans } from "../report/orphans.js";
 import { ReportTracker } from "../report/tracker.js";
 import { formatReport } from "../report/formatter.js";
 import type { Frontmatter } from "../types.js";
@@ -131,7 +131,10 @@ export async function runSync(args: SyncArgs): Promise<{ exitCode: number }> {
 
   // Detect orphans.
   const syncedSet = new Set(synced.map((s) => s.target));
-  const orphans = await findOrphans(targetSection, syncedSet);
+  let orphans = await findOrphans(targetSection, syncedSet);
+  // A generated page whose source is gone or became internal would stay on the site and keep
+  // documenting an API nobody can import: a real sync deletes it.
+  if (!args.dryRun) orphans = await removeOrphans(targetSection, orphans);
   tracker.setOrphans(orphans);
 
   // Build and write report.
@@ -147,7 +150,7 @@ export async function runSync(args: SyncArgs): Promise<{ exitCode: number }> {
   console.log(chalk.bold(`vc-shell@${vcShellVersion} → ${args.target}`));
   console.log(`  changes: ${report.changes.length}`);
   console.log(`  skipped: ${report.skipped.length}`);
-  console.log(`  orphans: ${orphans.length}`);
+  console.log(`  orphans: ${orphans.length}${args.dryRun ? "" : " (removed)"}`);
   console.log(`  errors:  ${report.errors.length}`);
   console.log(`  report:  ${reportPath}`);
 

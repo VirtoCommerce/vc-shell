@@ -587,6 +587,11 @@ defineExpose({
   --vc-sidebar-inset-gap: 12px;
   --vc-sidebar-header-height: 72px;
   --vc-sidebar-footer-height: 72px;
+  --vc-sidebar-bottom-max-height: 96dvh;
+  --vc-sidebar-bottom-duration: 0.32s;
+  --vc-sidebar-handle-padding-block: 12px;
+  --vc-sidebar-handle-width: 100px;
+  --vc-sidebar-handle-height: 6px;
 
   @apply tw-fixed tw-inset-0 tw-pointer-events-none;
 
@@ -616,7 +621,7 @@ defineExpose({
       @apply tw-start-0 tw-end-0 tw-bottom-0 tw-top-auto;
       border-radius: var(--vc-sidebar-radius) var(--vc-sidebar-radius) 0 0;
       border-bottom-width: 0;
-      max-height: 96dvh;
+      max-height: var(--vc-sidebar-bottom-max-height);
     }
 
     &--size-full {
@@ -719,7 +724,8 @@ defineExpose({
   }
 
   &__handle {
-    @apply tw-flex tw-justify-center tw-py-3 tw-cursor-grab tw-shrink-0;
+    @apply tw-flex tw-justify-center tw-cursor-grab tw-shrink-0;
+    padding-block: var(--vc-sidebar-handle-padding-block);
 
     &:active {
       @apply tw-cursor-grabbing;
@@ -727,7 +733,9 @@ defineExpose({
   }
 
   &__handle-bar {
-    @apply tw-w-[100px] tw-h-1.5 tw-rounded-full;
+    @apply tw-rounded-full;
+    width: var(--vc-sidebar-handle-width);
+    height: var(--vc-sidebar-handle-height);
     background: var(--neutrals-300);
   }
 
@@ -768,7 +776,7 @@ defineExpose({
 
 .vc-sidebar-panel-bottom-enter-active,
 .vc-sidebar-panel-bottom-leave-active {
-  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: transform var(--vc-sidebar-bottom-duration) cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .vc-sidebar-panel-right-enter-from,

@@ -112,4 +112,56 @@ describe("VcAccordionItem", () => {
     });
     expect(wrapper.find(".vc-accordion-item__header").attributes("type")).toBe("button");
   });
+
+  describe("lazy, iconPosition and the actions slot", () => {
+    it("renders the header button alone when there is no actions slot", () => {
+      const wrapper = mount(VcAccordionItem, { props: { title: "T" } });
+      expect(wrapper.find(".vc-accordion-item__head").exists()).toBe(false);
+      expect(wrapper.element.firstElementChild?.classList.contains("vc-accordion-item__header")).toBe(true);
+    });
+
+    it("puts the actions next to the header button, outside it", () => {
+      const wrapper = mount(VcAccordionItem, {
+        props: { title: "T" },
+        slots: { actions: '<button class="x">x</button>' },
+      });
+      const head = wrapper.find(".vc-accordion-item__head");
+      expect(head.find(".vc-accordion-item__header").exists()).toBe(true);
+      expect(head.find(".vc-accordion-item__actions .x").exists()).toBe(true);
+      expect(wrapper.find(".vc-accordion-item__header .x").exists()).toBe(false);
+    });
+
+    it("mounts lazy content only while open and makes the closed panel inert", async () => {
+      const wrapper = mount(VcAccordionItem, {
+        props: { title: "T", lazy: true },
+        slots: { default: '<input class="body" />' },
+      });
+      expect(wrapper.find(".body").exists()).toBe(false);
+      expect(wrapper.find(".vc-accordion-item__content-wrapper").attributes("inert")).toBeDefined();
+
+      await wrapper.find(".vc-accordion-item__header").trigger("click");
+      expect(wrapper.find(".body").exists()).toBe(true);
+      expect(wrapper.find(".vc-accordion-item__content-wrapper").attributes("inert")).toBeUndefined();
+
+      // no close animation in jsdom: the content goes at once
+      await wrapper.find(".vc-accordion-item__header").trigger("click");
+      expect(wrapper.find(".body").exists()).toBe(false);
+    });
+
+    it("keeps non-lazy content mounted while closed", () => {
+      const wrapper = mount(VcAccordionItem, { props: { title: "T" }, slots: { default: '<input class="body" />' } });
+      expect(wrapper.find(".body").exists()).toBe(true);
+      expect(wrapper.find(".vc-accordion-item__content-wrapper").attributes("inert")).toBeUndefined();
+    });
+
+    it("puts the chevron before the title with iconPosition start", () => {
+      const end = mount(VcAccordionItem, { props: { title: "T" } });
+      const start = mount(VcAccordionItem, { props: { title: "T", iconPosition: "start" } });
+      expect(end.find(".vc-accordion-item__header").element.lastElementChild?.classList).toContain(
+        "vc-accordion-item__icon",
+      );
+      const first = start.find(".vc-accordion-item__header").element.firstElementChild;
+      expect(first?.classList).toContain("vc-accordion-item__icon--start");
+    });
+  });
 });

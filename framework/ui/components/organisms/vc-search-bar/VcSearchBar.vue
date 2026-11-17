@@ -388,7 +388,7 @@ watch([openId, list], async () => {
   if (!panel || panel.contains(document.activeElement)) return;
   const content = panel.querySelector(".vc-popover__content");
   if (shown.value.field) focusFirst(content, "input[type='checkbox']:checked, input[type='radio']:checked");
-  else if (shown.value.list === "overflow") focusFirst(content, ".vc-search-bar__acc-toggle[aria-expanded='true']");
+  else if (shown.value.list === "overflow") focusFirst(content, ".vc-accordion-item__header[aria-expanded='true']");
   else if (!focusFirst(panel.querySelector(".vc-search-bar__panel-body"))) focusFirst(panel);
 });
 
@@ -506,15 +506,16 @@ function onTypedChip(c: { fieldId: string; value: unknown; rest: string }) {
 
 // The bar's buttons sit edge to edge (a chip and its ×, stacked menu rows): VcButton's 44px hit area would
 // reach into the neighbour and take its clicks. Every button here is 24px or more on its own (WCAG 2.5.8)
-:is(.vc-search-bar, .vc-search-bar__fit, .vc-search-bar__acc, .vc-search-bar__editor) .vc-button::after {
-  content: none;
+:is(.vc-search-bar, .vc-search-bar__fit, .vc-search-bar__acc, .vc-search-bar__editor) {
+  --button-hit-area-size: 0px;
 }
 // the phone sheet's buttons stand apart: they keep the 44px touch target, except inside an attached group
-.vc-search-bar__panel--touch .vc-button::after {
-  content: "";
-}
-.vc-search-bar__panel--touch .vc-button-group--attached .vc-button::after {
-  content: none;
+.vc-search-bar__panel--touch {
+  --button-hit-area-size: 44px;
+
+  .vc-button-group--attached {
+    --button-hit-area-size: 0px;
+  }
 }
 
 // The bar's menus are teleported: their hosts carry the bar's class (panelClass)
@@ -538,21 +539,11 @@ function onTypedChip(c: { fieldId: string; value: unknown; rest: string }) {
   --vc-sidebar-radius: 28px;
   --vc-sidebar-shadow: 0 10px 50px rgb(11 20 32 / 28%);
   --vc-sidebar-overlay-color: rgb(11 20 32 / 40%);
-
-  .vc-sidebar__panel {
-    max-height: calc(100dvh - 56px);
-  }
-  .vc-sidebar__handle {
-    @apply tw-pt-2 tw-pb-0;
-  }
-  .vc-sidebar__handle-bar {
-    width: 36px;
-    height: 5px;
-  }
-  .vc-sidebar-panel-bottom-enter-active,
-  .vc-sidebar-panel-bottom-leave-active {
-    transition-duration: 420ms;
-  }
+  --vc-sidebar-bottom-max-height: calc(100dvh - 56px);
+  --vc-sidebar-bottom-duration: 420ms;
+  --vc-sidebar-handle-padding-block: 8px 0;
+  --vc-sidebar-handle-width: 36px;
+  --vc-sidebar-handle-height: 5px;
 }
 
 // a menu row: a ghost button laid out as a full-width, start-aligned line (menus are teleported: no bar ancestor)

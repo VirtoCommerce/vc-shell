@@ -245,6 +245,23 @@ function resetFilters() {
 - The `minimal` variant removes the header background and border, useful for lightweight panels that blend into the content.
 - Use the `header` slot to completely replace the default header when you need a custom layout (e.g., tabs in the header, search input, breadcrumbs).
 
+## CSS Custom Properties
+
+Set them on the sidebar's root (`panelClass` puts a class there) to style one sidebar.
+
+| Property                            | Default                | Description                                               |
+| ----------------------------------- | ---------------------- | --------------------------------------------------------- |
+| `--vc-sidebar-bg-color`             | `var(--additional-50)` | Panel background                                          |
+| `--vc-sidebar-overlay-color`        | `var(--overlay-bg)`    | Overlay behind the panel                                  |
+| `--vc-sidebar-shadow`               | `var(--shadow-md)`     | Panel shadow                                              |
+| `--vc-sidebar-radius`               | `16px`                 | Corner radius of an elevated or bottom panel              |
+| `--vc-sidebar-inset-gap`            | `12px`                 | Gap around an elevated panel                              |
+| `--vc-sidebar-bottom-max-height`    | `96dvh`                | Maximum height of a bottom sheet                          |
+| `--vc-sidebar-bottom-duration`      | `0.32s`                | Slide duration of a bottom sheet                          |
+| `--vc-sidebar-handle-padding-block` | `12px`                 | Space above and below the drag handle (one or two values) |
+| `--vc-sidebar-handle-width`         | `100px`                | Width of the drag handle bar                              |
+| `--vc-sidebar-handle-height`        | `6px`                  | Height of the drag handle bar                             |
+
 ## Accessibility
 
 - Uses `role="dialog"` with `aria-modal` when overlay is shown.

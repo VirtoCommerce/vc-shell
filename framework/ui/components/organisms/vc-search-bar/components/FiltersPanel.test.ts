@@ -8,24 +8,28 @@ import FiltersPanel from "./FiltersPanel.vue";
 import FieldAccordion from "./FieldAccordion.vue";
 import { normalizeFields } from "../lib/fields";
 import type { SearchBarField, SearchBarState } from "../types";
-import { InputStub, K, makeViews, stopViews, t } from "./views.test-helpers";
+import { K, makeViews, stopViews, t } from "./views.test-helpers";
 import type { ViewsApi } from "../composables/useViews";
 
 const SwitchStub = defineComponent({
   name: "VcSwitch",
   props: { modelValue: Boolean, ariaLabel: String },
   emits: ["update:modelValue"],
+  // the inline label slot wraps the switch, as VcSwitch's label names it
   setup:
-    (props, { emit }) =>
+    (props, { emit, slots }) =>
     () =>
-      h("input", {
-        type: "checkbox",
-        role: "switch",
-        class: "switch-stub",
-        checked: props.modelValue,
-        "aria-label": props.ariaLabel,
-        onChange: (e: Event) => emit("update:modelValue", (e.target as HTMLInputElement).checked),
-      }),
+      h("label", [
+        h("input", {
+          type: "checkbox",
+          role: "switch",
+          class: "switch-stub",
+          checked: props.modelValue,
+          "aria-label": props.ariaLabel,
+          onChange: (e: Event) => emit("update:modelValue", (e.target as HTMLInputElement).checked),
+        }),
+        slots.default?.(),
+      ]),
 });
 const CheckboxStub = defineComponent({
   name: "VcCheckbox",
@@ -44,7 +48,7 @@ const CheckboxStub = defineComponent({
       ]),
 });
 const global = {
-  stubs: { VcInput: InputStub, VcIcon: true, VcSwitch: SwitchStub, VcCheckbox: CheckboxStub, VcDatePicker: true },
+  stubs: { VcIcon: true, VcSwitch: SwitchStub, VcCheckbox: CheckboxStub, VcDatePicker: true },
   mocks: { $t: t },
 };
 
@@ -86,7 +90,7 @@ function mountPanel(props: { state?: SearchBarState; views?: ViewsApi; [k: strin
 const accLabels = (w: VueWrapper) => w.findAll(".vc-search-bar__acc-label").map((l) => l.text());
 const expanded = (w: VueWrapper) =>
   w
-    .findAll(".vc-search-bar__acc-toggle")
+    .findAll(".vc-search-bar__acc .vc-accordion-item__header")
     .filter((b) => b.attributes("aria-expanded") === "true")
     .map((b) => b.find(".vc-search-bar__acc-label").text());
 const clearBtn = (w: VueWrapper) => w.get(".vc-search-bar__panel-clear");
@@ -97,7 +101,9 @@ describe("FiltersPanel", () => {
     const body = w.get(".vc-search-bar__panel-body").element;
     expect(w.get(".vc-search-bar__panel-section").text()).toBe(`${P}TOGGLES`);
     expect(w.findAll(".vc-search-bar__toggle").map((r) => r.text())).toEqual(["Urgent"]);
-    expect(w.get(".switch-stub").attributes("aria-label")).toBe("Urgent");
+    // named by its inline label, not an aria-label of its own
+    expect(w.get(".switch-stub").element.closest("label")!.textContent).toBe("Urgent");
+    expect(w.get(".switch-stub").attributes("aria-label")).toBeUndefined();
     expect(accLabels(w)).toEqual(["Status", "Created", "Total"]);
     const toggles = body.querySelector(".vc-search-bar__toggle")!;
     const accordion = body.querySelector(".vc-search-bar__acc")!;
@@ -150,7 +156,7 @@ describe("FiltersPanel", () => {
 
   it("a header row opens its editor and closes the open one", async () => {
     const w = mountPanel();
-    const toggles = w.findAll(".vc-search-bar__acc-toggle");
+    const toggles = w.findAll(".vc-search-bar__acc .vc-accordion-item__header");
     expect(expanded(w)).toEqual(["Status"]);
     await toggles[1].trigger("click");
     expect(expanded(w)).toEqual(["Created"]);
@@ -322,7 +328,7 @@ describe("FieldAccordion", () => {
       props: { fields: list, state: { search: "", values: {} }, initiallyOpen: list[0].id },
       global,
     });
-    const toggles = w.findAll(".vc-search-bar__acc-toggle");
+    const toggles = w.findAll(".vc-search-bar__acc .vc-accordion-item__header");
     expect(expanded(w)).toEqual([list[0].label]);
     await toggles[1].trigger("click");
     expect(expanded(w)).toEqual([list[1].label]);
@@ -332,22 +338,23 @@ describe("FieldAccordion", () => {
     expect(w.findAll(".vc-search-bar__acc-body")).toHaveLength(0);
   });
 
-  it("animates the closing and the opening field together, then unmounts the closed editor", async () => {
+  it("the closing and the opening field move together; the closed editor unmounts after its body closes", async () => {
     const list = fields.filter((f) => f.kind !== "toggle");
     const w = mount(FieldAccordion, {
       props: { fields: list, state: { search: "", values: {} }, initiallyOpen: list[0].id },
-      global: { ...global, stubs: { ...global.stubs, transition: false } },
+      global,
       attachTo: document.body,
     });
-    await w.findAll(".vc-search-bar__acc-toggle")[1].trigger("click");
-    const bodies = w.findAll(".vc-search-bar__acc-body");
-    expect(bodies).toHaveLength(2);
-    expect(bodies[0].classes()).toContain("vc-search-bar-acc-leave-active");
-    expect(bodies[1].classes()).toContain("vc-search-bar-acc-enter-active");
-    // jsdom reports no transition duration, so both finish on the next frames
-    await new Promise((r) => setTimeout(r, 50));
-    expect(w.findAll(".vc-search-bar__acc-body")).toHaveLength(1);
+    const wrappers = w.findAll(".vc-accordion-item__content-wrapper");
+    // jsdom has no stylesheet transition: give the open body one
+    (wrappers[0].element as HTMLElement).style.transitionDuration = "200ms";
+    await w.findAll(".vc-search-bar__acc .vc-accordion-item__header")[1].trigger("click");
     expect(expanded(w)).toEqual([list[1].label]);
+    // the closing editor stays until its body has closed, out of reach meanwhile
+    expect(w.findAll(".vc-search-bar__acc-body")).toHaveLength(2);
+    expect(wrappers[0].attributes("inert")).toBeDefined();
+    await wrappers[0].trigger("transitionend");
+    expect(w.findAll(".vc-search-bar__acc-body")).toHaveLength(1);
     w.unmount();
   });
 
@@ -355,14 +362,15 @@ describe("FieldAccordion", () => {
     const list = fields.filter((f) => f.kind !== "toggle");
     const w = mount(FieldAccordion, {
       props: { fields: list, state: { search: "", values: {} }, initiallyOpen: list[0].id },
-      global: { ...global, stubs: { ...global.stubs, transition: false } },
+      global,
       attachTo: document.body,
     });
-    const toggles = w.findAll(".vc-search-bar__acc-toggle");
+    const toggles = w.findAll(".vc-search-bar__acc .vc-accordion-item__header");
     const id = toggles[0].attributes("aria-controls");
     await toggles[1].trigger("click");
     await toggles[0].trigger("click");
     expect(document.querySelectorAll(`[id="${id}"]`)).toHaveLength(1);
+    expect(w.findAll(".vc-search-bar__acc-body")).toHaveLength(1);
     w.unmount();
   });
 

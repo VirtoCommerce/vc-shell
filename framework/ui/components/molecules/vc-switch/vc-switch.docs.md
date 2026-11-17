@@ -264,9 +264,10 @@ const isActive = ref(true);
 
 ## Slots
 
-| Slot    | Description                                                       |
-| ------- | ----------------------------------------------------------------- |
-| `error` | Custom error message markup. Replaces the default `VcHint` error. |
+| Slot      | Description                                                                                                                                                      |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `error`   | Custom error message markup. Replaces the default `VcHint` error.                                                                                                |
+| `default` | Inline label after the track, in the same row. It is a `<label>` for the switch: it names it (without `ariaLabel`) and toggles it on click. Long text truncates. |
 
 ## CSS Variables
 

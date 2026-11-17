@@ -1,41 +1,15 @@
 <template>
   <div class="vc-search-bar__acc">
-    <div
+    <template
       v-for="f in fields"
       :key="f.id"
-      class="vc-search-bar__acc-item"
     >
-      <div class="vc-search-bar__acc-row">
-        <!-- a toggle has nothing to expand: the row shows it and its remove button -->
-        <component
-          :is="f.kind === 'toggle' ? 'div' : 'button'"
-          :type="f.kind === 'toggle' ? undefined : 'button'"
-          class="vc-search-bar__acc-toggle"
-          :aria-expanded="f.kind === 'toggle' ? undefined : isOpen(f.id)"
-          :aria-controls="f.kind === 'toggle' ? undefined : bodyId(f.id)"
-          @click="f.kind !== 'toggle' && flip(f.id)"
-        >
-          <span
-            v-if="f.kind === 'toggle'"
-            class="vc-search-bar__acc-chevron"
-            aria-hidden="true"
-          />
-          <VcIcon
-            v-else
-            icon="lucide-chevron-down"
-            :custom-size="14"
-            class="vc-search-bar__acc-chevron"
-            :class="{ 'vc-search-bar__acc-chevron--closed': !isOpen(f.id) }"
-          />
-          <span class="vc-search-bar__acc-label">{{ f.label }}</span>
-          <span
-            v-if="f.kind !== 'toggle'"
-            class="vc-search-bar__acc-value"
-            :class="{ 'vc-search-bar__acc-value--set': isSet(f.id) }"
-            :title="isSet(f.id) ? summary(f).title : undefined"
-            >{{ isSet(f.id) ? summary(f).text : $t(`${K}PANEL.ANY`) }}</span
-          >
-        </component>
+      <!-- a toggle has nothing to expand: the row shows it and its remove button -->
+      <div
+        v-if="f.kind === 'toggle'"
+        class="vc-search-bar__acc-item vc-search-bar__acc-static"
+      >
+        <span class="vc-search-bar__acc-label">{{ f.label }}</span>
         <VcButton
           v-if="isSet(f.id)"
           class="vc-search-bar__acc-clear"
@@ -46,38 +20,59 @@
           @click="emit('clear-field', f.id)"
         />
       </div>
-      <!-- the body grows from 0 to its content's height and back; the editor unmounts after the close -->
-      <Transition
-        name="vc-search-bar-acc"
-        @before-enter="collapse"
-        @enter="expandToContent"
-        @after-enter="release"
-        @before-leave="fixHeight"
-        @leave="collapse"
+      <!-- one open at a time; the editor mounts on open and unmounts once the body has closed -->
+      <VcAccordionItem
+        v-else
+        class="vc-search-bar__acc-item"
+        :class="{ 'vc-search-bar__acc-item--set': isSet(f.id) }"
+        :is-expanded="isOpen(f.id)"
+        :max-expanded-height="256"
+        icon-position="start"
+        lazy
+        @toggle="flip(f.id, $event)"
       >
-        <div
-          v-if="f.kind !== 'toggle' && isOpen(f.id)"
-          :id="bodyId(f.id)"
-          class="vc-search-bar__acc-body"
+        <template #title>
+          <span class="vc-search-bar__acc-title">
+            <span class="vc-search-bar__acc-label">{{ f.label }}</span>
+            <span
+              class="vc-search-bar__acc-value"
+              :class="{ 'vc-search-bar__acc-value--set': isSet(f.id) }"
+              :title="isSet(f.id) ? summary(f).title : undefined"
+              >{{ isSet(f.id) ? summary(f).text : $t(`${K}PANEL.ANY`) }}</span
+            >
+          </span>
+        </template>
+        <template
+          v-if="isSet(f.id)"
+          #actions
         >
-          <div class="vc-search-bar__acc-scroll">
-            <PillEditor
-              :field="f"
-              :value="state.values[f.id]"
-              :counts="counts?.[f.id]"
-              @update:value="onValue"
-            />
-          </div>
+          <VcButton
+            class="vc-search-bar__acc-clear"
+            variant="ghost"
+            size="icon-sm"
+            icon="lucide-x"
+            :aria-label="$t(`${K}REMOVE_FILTER`, { label: f.label })"
+            @click="emit('clear-field', f.id)"
+          />
+        </template>
+        <div class="vc-search-bar__acc-body">
+          <PillEditor
+            :field="f"
+            :value="state.values[f.id]"
+            :counts="counts?.[f.id]"
+            @update:value="onValue"
+          />
         </div>
-      </Transition>
-    </div>
+      </VcAccordionItem>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, useId } from "vue";
+import { ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { VcButton, VcIcon } from "@ui/components/atoms";
+import { VcButton } from "@ui/components/atoms";
+import { VcAccordionItem } from "@ui/components/molecules";
 import type { BarField } from "../lib/fields";
 import { chipLabel, isEmptyValue } from "../lib/values";
 import type { SearchBarState, SearchBarValue } from "../types";
@@ -97,34 +92,13 @@ const emit = defineEmits<{ set: [id: string, value: SearchBarValue]; "clear-fiel
 
 const K = "COMPONENTS.ORGANISMS.VC_SEARCH_BAR.";
 const { t, locale } = useI18n({ useScope: "global" });
-const uid = `vc-search-bar-acc-${useId()}`;
 
 // One field open at a time: opening another closes it, clicking the open one closes it
 const open = ref<string | undefined>(props.initiallyOpen);
 const isOpen = (id: string) => open.value === id;
-const flip = (id: string) => {
-  open.value = open.value === id ? undefined : id;
-};
-const bodyId = (id: string) => `${uid}-${id}`;
-
-// The body's height animates between 0 and its content's measured height; the CSS transition ends each step
-const collapse = (el: Element) => {
-  const body = el as HTMLElement;
-  void body.offsetHeight;
-  body.style.height = "0px";
-};
-const fixHeight = (el: Element) => {
-  (el as HTMLElement).style.height = `${(el as HTMLElement).offsetHeight}px`;
-  // a field reopened while it closes mounts a new body with the same id; the leaving one gives it up
-  el.removeAttribute("id");
-};
-const expandToContent = (el: Element) => {
-  const body = el as HTMLElement;
-  void body.offsetHeight;
-  body.style.height = `${body.scrollHeight}px`;
-};
-const release = (el: Element) => {
-  (el as HTMLElement).style.height = "";
+const flip = (id: string, expanded: boolean) => {
+  if (expanded) open.value = id;
+  else if (open.value === id) open.value = undefined;
 };
 
 const isSet = (id: string) => !isEmptyValue(props.state.values[id]);
@@ -135,39 +109,40 @@ const onValue = (v: SearchBarValue | undefined, id: string) =>
 </script>
 
 <style lang="scss">
-.vc-search-bar {
-  &__acc {
-    @apply tw-flex tw-flex-col;
-  }
-  &__acc-item + &__acc-item {
+.vc-search-bar__acc {
+  @apply tw-flex tw-flex-col;
+  // the bar's 13px rows; the open body on a grey ground, the closing and the opening one move together
+  --accordion-item-border-radius: 0;
+  --accordion-item-header-padding: 10px 12px 10px 10px;
+  --accordion-item-header-background: transparent;
+  --accordion-item-header-background-hover: var(--neutrals-50);
+  --accordion-item-header-color: var(--neutrals-900);
+  --accordion-item-header-font-size: 13px;
+  --accordion-item-icon-margin-left: 6px;
+  --accordion-item-icon-color: var(--neutrals-500);
+  --accordion-item-content-padding: 8px 12px;
+  --accordion-item-content-background: var(--neutrals-50);
+  --accordion-item-content-font-size: 13px;
+  --accordion-item-transition-duration: 200ms;
+
+  > .vc-search-bar__acc-item + .vc-search-bar__acc-item {
     border-top: 1px solid var(--neutrals-100);
   }
-  &__acc-row {
-    @apply tw-flex tw-items-center tw-gap-1 tw-px-2;
-    min-height: 40px;
+  // the value sits close to its remove button
+  > .vc-search-bar__acc-item--set {
+    --accordion-item-header-padding: 10px 8px 10px 10px;
   }
-  &__acc-toggle {
-    @apply tw-flex tw-flex-1 tw-items-center tw-gap-2 tw-min-w-0 tw-px-1 tw-text-left tw-rounded-md;
-    min-height: 32px;
-    font-size: 13px;
-  }
-  button.vc-search-bar__acc-toggle:hover {
-    background: var(--neutrals-50);
-  }
-  &__acc-chevron {
-    @apply tw-shrink-0 tw-transition-transform;
-    width: 14px;
-    color: var(--neutrals-500);
-  }
-  &__acc-chevron--closed {
-    transform: rotate(-90deg);
+}
+
+.vc-search-bar {
+  &__acc-title {
+    @apply tw-flex tw-items-center tw-gap-2 tw-min-w-0;
   }
   &__acc-label {
-    @apply tw-shrink-0 tw-font-medium;
-    color: var(--neutrals-900);
+    @apply tw-shrink-0;
   }
   &__acc-value {
-    @apply tw-ms-auto tw-truncate;
+    @apply tw-ms-auto tw-truncate tw-font-normal;
     max-width: 60%;
     font-size: 12.5px;
     color: var(--neutrals-400);
@@ -177,27 +152,19 @@ const onValue = (v: SearchBarValue | undefined, id: string) =>
   }
   &__acc-clear {
     --button-ghost-text-color: var(--neutrals-500);
-    @apply tw-shrink-0;
+    @apply tw-shrink-0 tw-me-2;
   }
-  &__acc-body {
-    background: var(--neutrals-50);
-  }
-  &__acc-scroll {
-    @apply tw-overflow-y-auto tw-px-3 tw-py-2;
-    max-height: 256px;
-  }
-}
+  // a toggle's row: the header's text and height, no chevron
+  &__acc-static {
+    @apply tw-flex tw-items-center tw-gap-2 tw-font-medium;
+    min-height: 40px;
+    padding-inline: 34px 0;
+    font-size: 13px;
+    color: var(--neutrals-900);
 
-// VcAccordion's duration; the closing field and the opening one move together
-.vc-search-bar-acc-enter-active,
-.vc-search-bar-acc-leave-active {
-  @apply tw-overflow-hidden;
-  transition: height 200ms ease;
-}
-@media (prefers-reduced-motion: reduce) {
-  .vc-search-bar-acc-enter-active,
-  .vc-search-bar-acc-leave-active {
-    transition: none;
+    .vc-search-bar__acc-label {
+      @apply tw-flex-1 tw-truncate;
+    }
   }
 }
 </style>

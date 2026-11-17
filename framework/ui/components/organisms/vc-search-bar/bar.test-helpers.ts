@@ -9,38 +9,27 @@ import {
 import VcSearchBar from "./VcSearchBar.vue";
 import type { SearchBarChange, SearchBarField } from "./types";
 
-export const InputStub = defineComponent({
-  name: "VcInput",
-  props: { modelValue: { type: String, default: undefined } },
-  emits: ["update:modelValue", "blur"],
-  setup:
-    (props, { emit }) =>
-    () =>
-      h("input", {
-        class: "input-stub",
-        value: props.modelValue,
-        onInput: (e: Event) => emit("update:modelValue", (e.target as HTMLInputElement).value),
-        onBlur: () => emit("blur"),
-      }),
-});
 export const SwitchStub = defineComponent({
   name: "VcSwitch",
   props: { modelValue: Boolean, ariaLabel: String },
   emits: ["update:modelValue"],
+  // the inline label slot wraps the switch, as VcSwitch's label names it
   setup:
-    (props, { emit }) =>
+    (props, { emit, slots }) =>
     () =>
-      h("input", {
-        type: "checkbox",
-        role: "switch",
-        class: "switch-stub",
-        checked: props.modelValue,
-        "aria-label": props.ariaLabel,
-        onChange: (e: Event) => emit("update:modelValue", (e.target as HTMLInputElement).checked),
-      }),
+      h("label", [
+        h("input", {
+          type: "checkbox",
+          role: "switch",
+          class: "switch-stub",
+          checked: props.modelValue,
+          "aria-label": props.ariaLabel,
+          onChange: (e: Event) => emit("update:modelValue", (e.target as HTMLInputElement).checked),
+        }),
+        slots.default?.(),
+      ]),
 });
 export const stubs = {
-  VcInput: InputStub,
   VcIcon: true,
   VcCheckbox: true,
   VcDatePicker: true,
@@ -66,7 +55,7 @@ export const accLabels = () =>
   [...document.body.querySelectorAll<HTMLElement>(".vc-search-bar__acc-label")].map((l) => l.textContent?.trim());
 /** Opens a field's editor in an accordion by its label */
 export const expandField = async (label: string) => {
-  [...document.body.querySelectorAll<HTMLElement>(".vc-search-bar__acc-toggle")]
+  [...document.body.querySelectorAll<HTMLElement>(".vc-search-bar__acc .vc-accordion-item__header")]
     .find((b) => b.textContent?.includes(label))!
     .click();
   await nextTick();

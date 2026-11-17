@@ -236,6 +236,10 @@ function onClick(e: Event): void {
   // vertically centred; only the button box grows.
   --button-link-target-size: 24px;
 
+  // Hit area: VcButton's ::after reaches this size around a smaller button (WCAG 2.5.8). Buttons set edge to
+  // edge (an attached group, stacked menu rows) set it to 0, so one does not take its neighbour's clicks
+  --button-hit-area-size: 44px;
+
   // FOCUS RING
   --button-focus-ring-color: var(--primary-300);
   --button-focus-ring-width: 2px;
@@ -280,8 +284,8 @@ $variants: append($variants, tonal);
     position: absolute;
     inset: 50% auto auto 50%;
     transform: translate(-50%, -50%);
-    min-width: 44px;
-    min-height: 44px;
+    min-width: var(--button-hit-area-size);
+    min-height: var(--button-hit-area-size);
     width: 100%;
     height: 100%;
   }

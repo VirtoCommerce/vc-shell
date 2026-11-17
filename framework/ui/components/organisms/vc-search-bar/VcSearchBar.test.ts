@@ -95,7 +95,7 @@ describe("VcSearchBar", () => {
       expect(wrapper.findAll(CHIP).map((c) => c.text())).toEqual(["Store: x"]);
       await wrapper.get(".vc-search-bar__more").trigger("click");
       expect(accLabels()).toEqual(["Status", "Overdue"]);
-      const open = document.body.querySelector(".vc-search-bar__acc-toggle[aria-expanded='true']");
+      const open = document.body.querySelector(".vc-search-bar__acc .vc-accordion-item__header[aria-expanded='true']");
       expect(open?.textContent).toContain("Status");
       document.body.querySelector<HTMLElement>(".vc-search-bar__acc-clear")!.click();
       await nextTick();
@@ -211,7 +211,9 @@ describe("VcSearchBar", () => {
       await wrapper.setProps({ modelValue: { search: "", values: { store: "x" } } });
       await wrapper.setProps({ modelValue: { search: "", values: { store: "x", status: ["a"] } } });
       await wrapper.get(".vc-search-bar__filters-main").trigger("click");
-      const open = [...document.body.querySelectorAll(".vc-search-bar__acc-toggle[aria-expanded='true']")];
+      const open = [
+        ...document.body.querySelectorAll(".vc-search-bar__acc .vc-accordion-item__header[aria-expanded='true']"),
+      ];
       expect(open.map((b) => b.querySelector(".vc-search-bar__acc-label")?.textContent)).toEqual(["Store"]);
     });
 
@@ -352,9 +354,9 @@ describe("VcSearchBar", () => {
       expect(active()).toBe("status:new");
       await input.trigger("keydown", { key: "ArrowUp" });
       expect(active()).toBe("status:paid");
-      expect(input.attributes("aria-activedescendant")).toBe(
-        wrapper.get(".vc-search-bar__suggest-item--active").attributes("id"),
-      );
+      const option = wrapper.get("[role='option'][aria-selected='true']");
+      expect(option.find(".vc-search-bar__suggest-item--active").exists()).toBe(true);
+      expect(input.attributes("aria-activedescendant")).toBe(option.attributes("id"));
       await input.trigger("keydown", { key: "Enter" });
       expect(lastChange(wrapper).filters).toEqual({ status: "paid" });
       expect(input.attributes("aria-expanded")).toBe("false");
@@ -558,10 +560,12 @@ describe("VcSearchBar", () => {
       wrapper = mountBar({ fields: [...fields, total] });
       await wrapper.get(".vc-search-bar__filters-main").trigger("click");
       await expandField("Total");
-      const input = panel()!.querySelector<HTMLInputElement>(".vc-search-bar-editor__range .input-stub")!;
+      const input = panel()!.querySelector<HTMLInputElement>(".vc-search-bar-editor__range input")!;
       input.value = "7";
       input.dispatchEvent(new Event("input"));
       await nextTick();
+      // a keypress comes after the editor mounted: Vue drops an event no newer than its listener, and the clock is fake
+      vi.advanceTimersByTime(1);
       input.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
       await nextTick();
       const models = wrapper.emitted("update:modelValue") as SearchBarState[][];
@@ -571,7 +575,7 @@ describe("VcSearchBar", () => {
     it("stays open for a click inside its own panel", async () => {
       wrapper = mountBar();
       await wrapper.get(".vc-search-bar__filters-main").trigger("click");
-      down(panel()!.querySelector(".vc-search-bar__acc-toggle")!);
+      down(panel()!.querySelector(".vc-search-bar__acc .vc-accordion-item__header")!);
       await nextTick();
       expect(panel()).not.toBeNull();
     });

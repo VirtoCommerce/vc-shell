@@ -38,11 +38,14 @@
         </VcButton>
         <span class="vc-search-bar__sheet-title">
           {{ $t(`${K}FILTERS`) }}
-          <span
+          <VcBadge
             v-if="active"
             class="vc-search-bar__sheet-count"
-            >{{ active }}</span
-          >
+            :content="active"
+            size="s"
+            inline
+            solid
+          />
         </span>
         <VcButton
           ref="closeBtn"
@@ -97,16 +100,12 @@
           class="vc-search-bar__toggle"
         >
           <VcSwitch
+            class="vc-search-bar__toggle-switch"
             :model-value="isSet(f.id)"
-            :aria-label="f.label"
             @update:model-value="setToggle(f.id, $event)"
-          />
-          <span
-            class="vc-search-bar__toggle-label"
-            aria-hidden="true"
-            @click="setToggle(f.id, !isSet(f.id))"
-            >{{ f.label }}</span
           >
+            {{ f.label }}
+          </VcSwitch>
           <span
             v-if="toggleCount(f.id) !== undefined"
             class="vc-search-bar__toggle-count"
@@ -168,7 +167,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, ref, useId, watch, type ComponentPublicInstance } from "vue";
-import { VcButton } from "@ui/components/atoms";
+import { VcBadge, VcButton } from "@ui/components/atoms";
 import { VcSwitch } from "@ui/components/molecules";
 import type { BarField } from "../lib/fields";
 import { isEmptyValue } from "../lib/values";
@@ -287,8 +286,8 @@ function clearAll() {
     min-height: 36px;
     font-size: 13px;
   }
-  &__toggle-label {
-    @apply tw-flex-1 tw-truncate tw-cursor-pointer;
+  &__toggle-switch {
+    @apply tw-flex-1 tw-min-w-0;
     color: var(--neutrals-900);
   }
   &__toggle-count {
@@ -320,8 +319,15 @@ function clearAll() {
       @apply tw-flex-1;
     }
     .vc-search-bar__toggle,
-    .vc-search-bar__acc-row {
+    .vc-search-bar__acc-static {
       min-height: 48px;
+    }
+    .vc-search-bar__acc {
+      --accordion-item-header-padding: 14px 12px 14px 10px;
+
+      > .vc-search-bar__acc-item--set {
+        --accordion-item-header-padding: 14px 8px 14px 10px;
+      }
     }
   }
   &__sheet-head {
@@ -346,13 +352,11 @@ function clearAll() {
     font-size: 17px;
     color: var(--neutrals-900);
   }
+  // the count: a 20px primary-600 disc with a white number
   &__sheet-count {
-    @apply tw-inline-flex tw-items-center tw-justify-center tw-rounded-full tw-px-1.5;
-    min-width: 20px;
-    height: 20px;
-    background: var(--primary-600);
-    color: var(--additional-50);
-    font-size: 11px;
+    --badge-size-small: 20px;
+    --badge-background-color-primary: var(--primary-600);
+    --badge-text-color: white;
   }
   &__sheet-views {
     @apply tw-shrink-0 tw-pb-1;
@@ -386,8 +390,8 @@ function clearAll() {
     // over the button's own size: its height comes from the size variable
     .vc-search-bar__sheet-show {
       --button-default-height: 48px;
+      --button-border-radius: 16px;
       @apply tw-w-full;
-      border-radius: 16px;
     }
   }
 }

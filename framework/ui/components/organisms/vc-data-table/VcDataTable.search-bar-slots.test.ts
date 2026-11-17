@@ -58,20 +58,6 @@ vi.mock("@vueuse/core", async (importOriginal) => {
   };
 });
 
-const InputStub = defineComponent({
-  name: "VcInput",
-  props: ["modelValue"],
-  emits: ["update:modelValue"],
-  setup:
-    (props, { emit }) =>
-    () =>
-      h("input", {
-        class: "input-stub",
-        value: props.modelValue,
-        onInput: (e: Event) => emit("update:modelValue", (e.target as HTMLInputElement).value),
-      }),
-});
-
 const globalFilters: GlobalFilterConfig[] = [
   {
     id: "status",
@@ -136,7 +122,7 @@ describe("VcDataTable search bar slots", () => {
       },
       slots,
       global: {
-        stubs: { VcInput: InputStub, VcIcon: true },
+        stubs: { VcIcon: true },
         provide: { [IsMobileKey as symbol]: ref(mobile.value), [TableQueryStateKey as symbol]: service },
         directives: { loading: { mounted() {}, updated() {} } },
         mocks: { $t: (k: string) => k },
@@ -359,7 +345,7 @@ describe("VcDataTable search bar slots", () => {
     });
     wrapper = mount(Host, {
       global: {
-        stubs: { VcInput: InputStub, VcIcon: true },
+        stubs: { VcIcon: true },
         provide: { [IsMobileKey as symbol]: ref(false) },
         directives: { loading: { mounted() {}, updated() {} } },
         mocks: { $t: (k: string) => k },

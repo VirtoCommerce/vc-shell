@@ -7,30 +7,51 @@
       'vc-accordion-item--has-overflow': hasOverflow,
     }"
   >
-    <button
-      :id="triggerId"
-      type="button"
-      class="vc-accordion-item__header"
-      :aria-expanded="isExpandedInternal ? 'true' : 'false'"
-      :aria-controls="panelId"
-      :disabled="disabled || !hasOverflow"
-      @click="toggle"
+    <DefineHeader>
+      <button
+        :id="triggerId"
+        type="button"
+        class="vc-accordion-item__header"
+        :aria-expanded="isExpandedInternal ? 'true' : 'false'"
+        :aria-controls="panelId"
+        :disabled="disabled || !expandable"
+        @click="toggle"
+      >
+        <VcIcon
+          v-if="expandable && iconPosition === 'start'"
+          class="vc-accordion-item__icon vc-accordion-item__icon--start"
+          :class="{ 'vc-accordion-item__icon--rotated': isExpandedInternal }"
+          icon="lucide-chevron-down"
+        />
+        <span class="vc-accordion-item__title">
+          <slot name="title">
+            {{ title }}
+          </slot>
+        </span>
+        <VcIcon
+          v-if="expandable && iconPosition !== 'start'"
+          class="vc-accordion-item__icon"
+          :class="{ 'vc-accordion-item__icon--rotated': isExpandedInternal }"
+          icon="lucide-chevron-down"
+        />
+      </button>
+    </DefineHeader>
+
+    <!-- actions sit next to the header button, never inside it -->
+    <div
+      v-if="$slots.actions"
+      class="vc-accordion-item__head"
     >
-      <span class="vc-accordion-item__title">
-        <slot name="title">
-          {{ title }}
-        </slot>
-      </span>
-      <VcIcon
-        v-if="hasOverflow"
-        class="vc-accordion-item__icon"
-        :class="{ 'vc-accordion-item__icon--rotated': isExpandedInternal }"
-        icon="lucide-chevron-down"
-      />
-    </button>
+      <ReuseHeader />
+      <div class="vc-accordion-item__actions">
+        <slot name="actions" />
+      </div>
+    </div>
+    <ReuseHeader v-else />
 
     <div
       :id="panelId"
+      ref="wrapperRef"
       role="region"
       :aria-labelledby="triggerId"
       class="vc-accordion-item__content-wrapper"
@@ -39,19 +60,22 @@
         'vc-accordion-item__content-wrapper--scrollable': isExpandedInternal && hasScrollInExpandedState,
       }"
       :style="contentWrapperStyle"
+      :inert="(lazy && !isExpandedInternal) || undefined"
+      @transitionend="onTransitionEnd"
     >
       <div
         ref="contentRef"
         class="vc-accordion-item__content"
       >
-        <slot></slot>
+        <slot v-if="contentMounted"></slot>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { watch, useId } from "vue";
+import { computed, ref, watch, useId } from "vue";
+import { createReusableTemplate } from "@vueuse/core";
 import { VcIcon } from "@ui/components/atoms/vc-icon";
 import { useCollapsible } from "@ui/composables/useCollapsible";
 
@@ -61,6 +85,13 @@ export interface Props {
   maxExpandedHeight?: number;
   isExpanded?: boolean;
   disabled?: boolean;
+  /**
+   * Mount the content only while the item is open: it mounts on open and unmounts once the close animation
+   * ends. The item counts as expandable while its content is not there to measure, and the closed panel is inert.
+   */
+  lazy?: boolean;
+  /** Chevron after the title (`end`) or before it (`start`, pointing to the text while closed, down while open) */
+  iconPosition?: "start" | "end";
 }
 
 export interface Emits {
@@ -72,6 +103,8 @@ const props = withDefaults(defineProps<Props>(), {
   collapsedHeight: 0,
   isExpanded: false,
   disabled: false,
+  lazy: false,
+  iconPosition: "end",
 });
 
 const emit = defineEmits<Emits>();
@@ -83,7 +116,11 @@ defineOptions({
 defineSlots<{
   default: (props?: any) => any;
   title: (props?: any) => any;
+  /** Controls next to the header button (outside it), e.g. a remove button */
+  actions: (props?: any) => any;
 }>();
+
+const [DefineHeader, ReuseHeader] = createReusableTemplate();
 
 // Accessibility IDs
 const uid = useId();
@@ -101,6 +138,27 @@ const {
   maxExpandedHeight: props.maxExpandedHeight,
   expanded: props.isExpanded,
 });
+
+// A lazy item has nothing to measure while closed, so it can always open
+const expandable = computed(() => props.lazy || hasOverflow.value);
+
+const wrapperRef = ref<HTMLElement>();
+const contentMounted = ref(!props.lazy || isExpandedInternal.value);
+
+watch(isExpandedInternal, (open) => {
+  if (!props.lazy) return;
+  if (open) {
+    contentMounted.value = true;
+    return;
+  }
+  // without a close animation there is no transitionend to wait for
+  const el = wrapperRef.value;
+  if (!el || !parseFloat(getComputedStyle(el).transitionDuration)) contentMounted.value = false;
+});
+
+function onTransitionEnd(e: TransitionEvent) {
+  if (props.lazy && e.target === e.currentTarget && !isExpandedInternal.value) contentMounted.value = false;
+}
 
 function toggle() {
   isExpandedInternal.value = !isExpandedInternal.value;
@@ -136,6 +194,7 @@ watch(
   // Icon
   --accordion-item-icon-margin-left: 12px;
   --accordion-item-icon-size: 20px;
+  --accordion-item-icon-color: currentColor;
 
   // Content
   --accordion-item-content-padding: 16px;
@@ -200,12 +259,39 @@ watch(
 
   &__icon {
     margin-inline-start: var(--accordion-item-icon-margin-left);
+    color: var(--accordion-item-icon-color);
     transition: transform var(--accordion-item-transition-duration) ease;
     flex-shrink: 0;
 
     &--rotated {
       transform: rotate(180deg);
     }
+  }
+
+  // a chevron before the title: it points to the text while closed and down while open
+  &__icon--start {
+    margin-inline: 0 var(--accordion-item-icon-margin-left);
+    transform: rotate(-90deg);
+
+    [dir="rtl"] & {
+      transform: rotate(90deg);
+    }
+
+    &.vc-accordion-item__icon--rotated {
+      transform: none;
+    }
+  }
+
+  &__head {
+    @apply tw-flex tw-items-center;
+
+    > .vc-accordion-item__header {
+      @apply tw-flex-1 tw-min-w-0;
+    }
+  }
+
+  &__actions {
+    @apply tw-flex tw-items-center tw-shrink-0;
   }
 
   &__content-wrapper {

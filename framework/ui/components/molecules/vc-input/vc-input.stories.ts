@@ -1033,3 +1033,45 @@ export const Skeleton: Story = {
     template: '<VcInput v-bind="args" />',
   }),
 };
+
+/**
+ * `inputAttrs` puts attributes on the native `<input>` (the root takes the rest): here the combobox role and
+ * state of a field that owns a suggestion list. `focus()` is exposed, and `--input-padding-start/-end` and
+ * `--input-adornment-gap` tighten the field around a leading icon.
+ */
+export const InputAttrsAndFocus: Story = {
+  render: () => ({
+    components: { VcInput, VcButton, VcIcon },
+    setup() {
+      const value = ref("");
+      const field = ref<InstanceType<typeof VcInput>>();
+      return { value, field };
+    },
+    template: `
+      <div class="tw-max-w-lg tw-flex tw-flex-col tw-gap-3">
+        <VcInput
+          ref="field"
+          v-model="value"
+          placeholder="Search"
+          aria-label="Search"
+          autocomplete="off"
+          :input-attrs="{ role: 'combobox', 'aria-autocomplete': 'list', 'aria-expanded': false }"
+          style="--input-padding-start: 10px; --input-padding-end: 6px; --input-adornment-gap: 8px"
+        >
+          <template #prepend-inner>
+            <VcIcon icon="lucide-search" size="s" />
+          </template>
+        </VcInput>
+        <VcButton variant="secondary" size="sm" class="tw-self-start" @click="field?.focus()">Focus the field</VcButton>
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("combobox", { name: "Search" });
+    await expect(input.tagName).toBe("INPUT");
+    await expect(input).toHaveAttribute("aria-expanded", "false");
+    await userEvent.click(canvas.getByRole("button", { name: "Focus the field" }));
+    await expect(input).toHaveFocus();
+  },
+};

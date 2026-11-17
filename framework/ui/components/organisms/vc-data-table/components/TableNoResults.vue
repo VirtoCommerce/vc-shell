@@ -12,20 +12,24 @@
       <li
         v-for="tag in appliedFields"
         :key="tag.id"
-        class="vc-data-table__no-results-tag"
       >
-        <span>{{ tag.text }}</span>
-        <button
-          type="button"
-          class="vc-data-table__no-results-tag-x"
-          :aria-label="$t('COMPONENTS.ORGANISMS.VC_SEARCH_BAR.REMOVE_FILTER', { label: tag.label })"
-          @click="emit('remove', tag.id)"
+        <!-- the bar's chip, without its editor: the text in a tonal frame, and its × -->
+        <VcButtonGroup
+          class="vc-data-table__no-results-tag"
+          role="presentation"
+          size="2xs"
+          attached
         >
-          <VcIcon
+          <span class="vc-data-table__no-results-tag-text">{{ tag.text }}</span>
+          <VcButton
+            class="vc-data-table__no-results-tag-x"
+            variant="tonal"
             icon="lucide-x"
-            size="xs"
+            icon-size="xs"
+            :aria-label="$t('COMPONENTS.ORGANISMS.VC_SEARCH_BAR.REMOVE_FILTER', { label: tag.label })"
+            @click="emit('remove', tag.id)"
           />
-        </button>
+        </VcButtonGroup>
       </li>
     </ul>
     <template #action>
@@ -52,7 +56,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { VcIcon, VcButton } from "@ui/components/atoms";
+import { VcButton, VcButtonGroup } from "@ui/components/atoms";
 import TableEmpty from "@ui/components/organisms/vc-data-table/components/TableEmpty.vue";
 import type { SearchBarAppliedField } from "@ui/components/organisms/vc-data-table/types";
 
@@ -90,35 +94,21 @@ const hint = computed(() => t(props.appliedFields.length ? `${K}.HINT_FILTERS` :
   }
 
   &__no-results-tag {
-    @apply tw-inline-flex tw-items-center tw-whitespace-nowrap;
-    height: 28px;
     max-width: 260px;
-    padding-inline-start: 8px;
-    border: 1px solid var(--primary-200);
-    border-radius: 6px;
-    background: var(--primary-50);
-    color: var(--primary-700);
-    font-size: 12.5px;
-
-    > span {
-      @apply tw-truncate;
-    }
   }
 
-  &__no-results-tag-x {
-    @apply tw-inline-flex tw-items-center tw-justify-center tw-h-full tw-shrink-0;
-    width: 24px;
-    color: var(--primary-700);
-    border-radius: 0 6px 6px 0;
-
-    &:hover {
-      background: var(--primary-100);
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--primary-300);
-      outline-offset: -2px;
-    }
+  // the text in the frame of a 2xs tonal button, the × attached to it (as the bar's toggle chip)
+  &__no-results-tag-text {
+    @apply tw-block tw-min-w-0 tw-text-xs tw-box-border tw-border tw-border-solid tw-rounded-s-[var(--button-border-radius)]
+      tw-whitespace-nowrap;
+    height: var(--button-2xs-height);
+    line-height: calc(var(--button-2xs-height) - 2px);
+    padding-inline: var(--button-2xs-padding-hor);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-color: var(--button-tonal-border-color);
+    background: var(--button-tonal-background-color);
+    color: var(--button-tonal-text-color);
   }
 
   &__no-results .vc-table-composition__empty-action {

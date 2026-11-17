@@ -60,20 +60,6 @@ vi.mock("@vueuse/core", async (importOriginal) => {
   };
 });
 
-const InputStub = defineComponent({
-  name: "VcInput",
-  props: ["modelValue"],
-  emits: ["update:modelValue"],
-  setup:
-    (props, { emit }) =>
-    () =>
-      h("input", {
-        class: "input-stub",
-        value: props.modelValue,
-        onInput: (e: Event) => emit("update:modelValue", (e.target as HTMLInputElement).value),
-      }),
-});
-
 const globalFilters: GlobalFilterConfig[] = [
   {
     id: "status",
@@ -118,7 +104,7 @@ describe("VcDataTable search bar: footer status and empty state", () => {
       },
       slots,
       global: {
-        stubs: { VcInput: InputStub, VcIcon: true },
+        stubs: { VcIcon: true },
         provide: { [IsMobileKey as symbol]: ref(false), [TableQueryStateKey as symbol]: service },
         directives: { loading: { mounted() {}, updated() {} } },
         mocks: { $t: (k: string, p?: Record<string, unknown>) => (p ? `${k}:${JSON.stringify(p)}` : k) },

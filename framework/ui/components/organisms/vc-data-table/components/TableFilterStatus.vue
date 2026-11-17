@@ -6,19 +6,20 @@
     </template>
     <span>{{ reason }}</span>
     <span aria-hidden="true">·</span>
-    <button
-      type="button"
+    <VcButton
       class="vc-data-table__filter-status-clear"
+      variant="link"
       @click="emit('clear-all')"
     >
       {{ $t("COMPONENTS.ORGANISMS.VC_DATA_TABLE.STATUS.CLEAR_ALL") }}
-    </button>
+    </VcButton>
   </span>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
+import { VcButton } from "@ui/components/atoms/vc-button";
 
 const props = defineProps<{
   /** Bar fields with a value */
@@ -48,20 +49,6 @@ const reason = computed(() => {
   &__filter-status {
     @apply tw-inline-flex tw-items-center tw-gap-1.5 tw-text-sm tw-whitespace-nowrap;
     color: var(--neutrals-500);
-  }
-
-  &__filter-status-clear {
-    @apply tw-font-medium tw-rounded-sm;
-    color: var(--primary-600);
-
-    &:hover {
-      text-decoration: underline;
-    }
-
-    &:focus-visible {
-      outline: 2px solid var(--primary-300);
-      outline-offset: 2px;
-    }
   }
 }
 </style>

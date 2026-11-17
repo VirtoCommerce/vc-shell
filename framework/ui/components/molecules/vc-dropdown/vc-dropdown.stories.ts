@@ -1,6 +1,8 @@
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
+import { expect, userEvent, within } from "storybook/test";
 import { VcDropdown } from "@ui/components/molecules/vc-dropdown";
+import { VcInput } from "@ui/components/molecules/vc-input";
 import { VcButton, VcIcon } from "@ui/components/atoms";
 
 type ActionItem = {
@@ -428,4 +430,108 @@ export const ForceMount: Story = {
       </div>
     `,
   }),
+};
+
+const fruits = ["Apple", "Apricot", "Banana", "Blueberry", "Cherry", "Grape", "Mango"];
+
+/**
+ * Combobox mode: the field in the trigger keeps the focus and its arrow keys move the active option;
+ * Enter or a click takes it. The list is not focusable, and the field names the active option.
+ */
+export const Combobox: Story = {
+  render: (args) => ({
+    components: { VcDropdown, VcInput },
+    setup() {
+      const text = ref("");
+      const focused = ref(false);
+      const active = ref(0);
+      const picked = ref("");
+      const items = computed(() => fruits.filter((f) => f.toLowerCase().startsWith(text.value.toLowerCase())));
+      const open = computed(() => focused.value && !!text.value && items.value.length > 0);
+      const pick = (item: string) => {
+        picked.value = item;
+        text.value = "";
+      };
+      const onKeydown = (e: KeyboardEvent) => {
+        if (!open.value) return;
+        const n = items.value.length;
+        if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+          e.preventDefault();
+          active.value = (active.value + (e.key === "ArrowDown" ? 1 : n - 1)) % n;
+        } else if (e.key === "Enter") {
+          e.preventDefault();
+          pick(items.value[active.value]);
+        }
+      };
+      const onText = (v: unknown) => {
+        text.value = String(v ?? "");
+        active.value = 0;
+      };
+      return { args, text, focused, active, picked, items, open, pick, onKeydown, onText };
+    },
+    template: `
+      <div class="tw-min-h-[320px] tw-max-w-sm tw-flex tw-flex-col tw-gap-3">
+        <VcDropdown
+          v-bind="args"
+          :model-value="open"
+          :items="items"
+          role="listbox"
+          aria-label="Fruits"
+          combobox
+          floating
+          :teleport="false"
+          placement="bottom-start"
+          :offset="{ mainAxis: 4 }"
+          :auto-focus-panel="false"
+          :close-on-escape="false"
+          :close-on-click-outside="false"
+          :is-item-active="(item) => items.indexOf(item) === active"
+          style="--vc-dropdown-trigger-flex: 1 1 auto"
+          @item-click="pick"
+        >
+          <template #trigger="{ panelId, itemId }">
+            <VcInput
+              class="tw-w-full"
+              :model-value="text"
+              aria-label="Fruit"
+              placeholder="Type a fruit"
+              autocomplete="off"
+              :input-attrs="{
+                role: 'combobox',
+                'aria-autocomplete': 'list',
+                'aria-expanded': open,
+                'aria-controls': open ? panelId : undefined,
+                'aria-activedescendant': open ? itemId(active) : undefined,
+              }"
+              @update:model-value="onText"
+              @focus="focused = true"
+              @blur="focused = false"
+              @keydown="onKeydown"
+            />
+          </template>
+          <template #header>
+            <div class="tw-px-2 tw-py-1 tw-text-xs tw-uppercase tw-text-[color:var(--neutrals-500)]">Fruits</div>
+          </template>
+          <template #item="{ item }">
+            <span class="tw-px-1 tw-py-0.5 tw-text-sm">{{ item }}</span>
+          </template>
+        </VcDropdown>
+        <p class="tw-text-sm">Picked: <strong data-testid="picked">{{ picked || "nothing" }}</strong></p>
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const field = canvas.getByRole("combobox", { name: "Fruit" });
+    await userEvent.click(field);
+    await userEvent.type(field, "ap");
+    const list = await canvas.findByRole("listbox", { name: "Fruits" });
+    await expect(list).not.toHaveAttribute("tabindex", "0");
+    await userEvent.keyboard("{ArrowDown}");
+    const options = within(list).getAllByRole("option");
+    await expect(field).toHaveAttribute("aria-activedescendant", options[1].id);
+    await userEvent.click(options[0]);
+    await expect(field).toHaveFocus();
+    await expect(canvas.getByTestId("picked")).toHaveTextContent("Apple");
+  },
 };

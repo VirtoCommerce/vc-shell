@@ -156,7 +156,7 @@
                 :id="inputId"
                 ref="inputRef"
                 v-model="handleValue"
-                v-bind="inputAttrs"
+                v-bind="{ ...nativeInputAttrs, ...props.inputAttrs }"
                 :step="step"
                 :placeholder="placeholder"
                 :type="internalTypeComputed"
@@ -359,6 +359,12 @@ export interface Props extends ITextFieldProps {
    * @see https://vue3datepicker.com/
    */
   datePickerOptions?: VueDatePickerProps;
+  /**
+   * Attributes bound to the native `<input>` (the root takes the component's other attributes), e.g. the
+   * `role="combobox"` and `aria-*` state of a field that owns a list of suggestions.
+   * Not used with the date and color types.
+   */
+  inputAttrs?: Record<string, string | number | boolean | undefined>;
 }
 
 export interface Emits {
@@ -394,7 +400,7 @@ const attrs = useAttrs();
  */
 const NATIVE_INPUT_ATTRS = new Set(["min", "max", "minlength", "pattern", "inputmode"]);
 
-const inputAttrs = computed(() =>
+const nativeInputAttrs = computed(() =>
   Object.fromEntries(Object.entries(attrs).filter(([key]) => NATIVE_INPUT_ATTRS.has(key.toLowerCase()))),
 );
 
@@ -595,6 +601,11 @@ function handleFocus() {
   isFocused.value = true;
   emit("focus");
 }
+
+defineExpose({
+  /** Moves the focus to the native input */
+  focus,
+});
 </script>
 
 <style lang="scss">
@@ -649,7 +660,9 @@ function handleFocus() {
   }
 
   &__field-wrapper {
-    @apply tw-px-[var(--input-padding)] tw-relative tw-flex tw-flex-nowrap tw-w-full tw-min-w-0 tw-box-border tw-grow
+    // the sides default to --input-padding; a field with a leading icon can set them apart
+    padding-inline: var(--input-padding-start, var(--input-padding)) var(--input-padding-end, var(--input-padding));
+    @apply tw-relative tw-flex tw-flex-nowrap tw-w-full tw-min-w-0 tw-box-border tw-grow
       tw-border tw-border-solid tw-border-[color:var(--input-border-color)]
       tw-rounded-[var(--input-border-radius)] tw-bg-[color:var(--input-background-color)]
       tw-shadow-sm tw-transition-[color,box-shadow] tw-duration-150 tw-ease-in-out
@@ -674,11 +687,11 @@ function handleFocus() {
   }
 
   &__append-inner {
-    @apply tw-ps-3;
+    padding-inline-start: var(--input-adornment-gap, 12px);
   }
 
   &__prepend-inner {
-    @apply tw-pe-3;
+    padding-inline-end: var(--input-adornment-gap, 12px);
   }
 
   &__field {

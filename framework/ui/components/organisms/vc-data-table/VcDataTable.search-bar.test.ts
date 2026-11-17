@@ -68,8 +68,11 @@ vi.mock("@vueuse/core", async (importOriginal) => ({
 }));
 
 /** The Filters panel's switch of a toggle field */
+/** A toggle's switch in the panel, named by its inline label */
 const panelSwitch = (label: string) =>
-  document.body.querySelector<HTMLInputElement>(`.vc-search-bar__panel input[role='switch'][aria-label='${label}']`)!;
+  [...document.body.querySelectorAll<HTMLElement>(".vc-search-bar__panel .vc-search-bar__toggle")]
+    .find((row) => row.textContent?.includes(label))!
+    .querySelector<HTMLInputElement>("input[role='switch']")!;
 
 describe("VcDataTable search bar header", () => {
   let wrapper: VueWrapper | undefined;

@@ -48,7 +48,7 @@ describe("VcSearchBar focus", () => {
       await resize(760, 600);
       await wrapper.get(".vc-search-bar__more").trigger("click");
       await settle();
-      expect(active()!.matches(".vc-search-bar__acc-toggle[aria-expanded='true']")).toBe(true);
+      expect(active()!.matches(".vc-search-bar__acc .vc-accordion-item__header[aria-expanded='true']")).toBe(true);
     });
 
     it("Tab and Shift+Tab stay inside the open menu", async () => {

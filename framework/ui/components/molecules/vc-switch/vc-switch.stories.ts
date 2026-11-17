@@ -358,3 +358,31 @@ export const Skeleton: Story = {
     template: '<VcSwitch v-bind="args" />',
   }),
 };
+
+/**
+ * The default slot is an inline label after the track: it names the switch and a click on it toggles it.
+ * Long text truncates, so rows of switches line up in a narrow panel.
+ */
+export const InlineLabel: Story = {
+  render: () => ({
+    components: { VcSwitch },
+    setup() {
+      const overdue = ref(true);
+      const unpaid = ref(false);
+      return { overdue, unpaid };
+    },
+    template: `
+      <div class="tw-flex tw-flex-col tw-gap-2 tw-w-56">
+        <VcSwitch v-model="overdue">Overdue</VcSwitch>
+        <VcSwitch v-model="unpaid">Unpaid orders older than thirty days</VcSwitch>
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const unpaid = canvas.getByRole("switch", { name: "Unpaid orders older than thirty days" });
+    await expect(unpaid).not.toBeChecked();
+    await userEvent.click(canvas.getByText("Unpaid orders older than thirty days"));
+    await expect(unpaid).toBeChecked();
+  },
+};

@@ -1,59 +1,81 @@
 <template>
-  <div
+  <!-- the field keeps the focus while the suggestions are open: the list only shows the active one -->
+  <VcDropdown
     class="vc-search-bar__search"
-    :class="{ 'vc-search-bar__search--disabled': disabled }"
+    :model-value="open"
+    :items="suggestions.items"
+    :item-key="(s: Suggestion) => s.text"
+    :is-item-active="(s: Suggestion) => suggestions.items.indexOf(s) === active"
+    role="listbox"
+    :aria-label="$t(...title)"
+    combobox
+    floating
+    :teleport="false"
+    placement="bottom-start"
+    :offset="{ mainAxis: 4 }"
+    :max-height="400"
+    :auto-focus-panel="false"
+    :close-on-escape="false"
+    :close-on-click-outside="false"
+    @item-click="pick"
   >
-    <VcIcon
-      icon="lucide-search"
-      :custom-size="16"
-      class="vc-search-bar__search-icon"
-    />
-    <input
-      ref="input"
-      class="vc-search-bar__search-input"
-      type="text"
-      role="combobox"
-      autocomplete="off"
-      aria-autocomplete="list"
-      :aria-expanded="open"
-      :aria-controls="open ? listId : undefined"
-      :aria-activedescendant="open ? `${listId}-${active}` : undefined"
-      :aria-label="label"
-      :placeholder="short ? t('COMPONENTS.ORGANISMS.VC_SEARCH_BAR.SEARCH_PLACEHOLDER') : label"
-      :value="modelValue"
-      :disabled="disabled"
-      @input="onInput(($event.target as HTMLInputElement).value)"
-      @keydown="onKeydown"
-      @focus="focused = true"
-      @blur="focused = false"
-    />
-    <!-- one fixed slot for the key hint and the clear button: the input keeps its width while typing -->
-    <span class="vc-search-bar__search-end">
-      <kbd
-        v-if="!hideHint && !modelValue && !focused && !disabled"
-        class="vc-search-bar__search-hint"
-        aria-hidden="true"
-        >/</kbd
-      >
-      <VcButton
-        v-if="modelValue"
-        class="vc-search-bar__search-clear"
-        variant="ghost"
-        size="icon-sm"
-        icon="lucide-x"
-        icon-size="xs"
-        :aria-label="$t('COMPONENTS.ORGANISMS.VC_SEARCH_BAR.CLEAR_SEARCH')"
+    <template #trigger="{ panelId, itemId }">
+      <VcInput
+        ref="input"
+        class="vc-search-bar__search-field"
+        :model-value="text"
+        :aria-label="label"
+        :placeholder="short ? t('COMPONENTS.ORGANISMS.VC_SEARCH_BAR.SEARCH_PLACEHOLDER') : label"
         :disabled="disabled"
-        @click="clearText"
-      />
-    </span>
-    <div
-      v-if="open"
-      class="vc-search-bar__suggest"
-    >
+        autocomplete="off"
+        :input-attrs="{
+          class: 'vc-search-bar__search-input',
+          role: 'combobox',
+          'aria-autocomplete': 'list',
+          'aria-expanded': open,
+          'aria-controls': open ? panelId : undefined,
+          'aria-activedescendant': open ? itemId(active) : undefined,
+        }"
+        @update:model-value="onInput(String($event ?? ''))"
+        @keydown="onKeydown"
+        @focus="focused = true"
+        @blur="focused = false"
+      >
+        <template #prepend-inner>
+          <VcIcon
+            icon="lucide-search"
+            :custom-size="16"
+            class="vc-search-bar__search-icon"
+          />
+        </template>
+        <!-- one fixed slot for the key hint and the clear button: the input keeps its width while typing -->
+        <template #append-inner>
+          <span class="vc-search-bar__search-end">
+            <ShortcutKbd
+              v-if="!hideHint && !modelValue && !focused && !disabled"
+              class="vc-search-bar__search-hint"
+              :parts="['/']"
+              aria-hidden="true"
+            />
+            <VcButton
+              v-if="modelValue"
+              class="vc-search-bar__search-clear"
+              variant="ghost"
+              size="icon-sm"
+              icon="lucide-x"
+              icon-size="xs"
+              :aria-label="$t('COMPONENTS.ORGANISMS.VC_SEARCH_BAR.CLEAR_SEARCH')"
+              :disabled="disabled"
+              @click="clearText"
+            />
+          </span>
+        </template>
+      </VcInput>
+    </template>
+    <template #header>
       <div class="vc-search-bar__suggest-head">
         <span class="vc-search-bar__suggest-title">{{ $t(...title) }}</span>
-        <kbd
+        <ShortcutKbd
           class="vc-search-bar__suggest-key"
           aria-hidden="true"
         >
@@ -62,46 +84,37 @@
             :custom-size="10"
           />
           {{ $t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.SUGGEST.ADD") }}
-        </kbd>
+        </ShortcutKbd>
       </div>
-      <ul
-        :id="listId"
-        role="listbox"
-        :aria-label="$t(...title)"
-        class="vc-search-bar__suggest-list"
+    </template>
+    <template #item="{ item: s }">
+      <span
+        class="vc-search-bar__suggest-item"
+        :class="{ 'vc-search-bar__suggest-item--active': suggestions.items.indexOf(s) === active }"
       >
-        <li
-          v-for="(s, i) in suggestions.items"
-          :id="`${listId}-${i}`"
-          :key="s.text"
-          role="option"
-          class="vc-search-bar__suggest-item"
-          :class="{ 'vc-search-bar__suggest-item--active': i === active }"
-          :aria-selected="i === active"
-          @mousedown.prevent="pick(s)"
+        <span class="vc-search-bar__suggest-label">{{ s.labelKey ? $t(s.labelKey) : s.label }}</span>
+        <span
+          v-if="s.kind === 'value'"
+          class="vc-search-bar__suggest-token"
+          >{{ s.text.trim() }}</span
         >
-          <span class="vc-search-bar__suggest-label">{{ s.labelKey ? $t(s.labelKey) : s.label }}</span>
-          <span
-            v-if="s.kind === 'value'"
-            class="vc-search-bar__suggest-token"
-            >{{ s.text.trim() }}</span
-          >
-          <VcIcon
-            v-if="s.selected"
-            icon="lucide-check"
-            size="s"
-            class="vc-search-bar__suggest-check"
-          />
-        </li>
-      </ul>
-    </div>
-  </div>
+        <VcIcon
+          v-if="s.selected"
+          icon="lucide-check"
+          size="s"
+          class="vc-search-bar__suggest-check"
+        />
+      </span>
+    </template>
+  </VcDropdown>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, useId, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { VcButton, VcIcon } from "@ui/components/atoms";
+import { VcDropdown, VcInput } from "@ui/components/molecules";
+import { ShortcutKbd } from "@ui/components/shared/shortcut-kbd";
 import type { BarField } from "../lib/fields";
 import { chipFromTyped, getSuggestions, isAmbiguousTyped, type Suggestion } from "../composables/useSearchSyntax";
 
@@ -128,9 +141,13 @@ const emit = defineEmits<{
 
 const { t } = useI18n({ useScope: "global" });
 const label = computed(() => props.placeholder ?? t("COMPONENTS.ORGANISMS.VC_SEARCH_BAR.SEARCH_PLACEHOLDER"));
-const listId = `vc-search-bar-suggest-${useId()}`;
-
-const input = ref<HTMLInputElement>();
+const input = ref<InstanceType<typeof VcInput>>();
+// What the field shows: the model, and for a tick the typed text a chip took over (see onInput)
+const text = ref(props.modelValue);
+watch(
+  () => props.modelValue,
+  (v) => (text.value = v),
+);
 const focused = ref(false);
 const dismissed = ref(false);
 const active = ref(0);
@@ -152,19 +169,26 @@ watch(
   },
 );
 
+/**
+ * The field shows the typed text first, then the model: a chip or a dropped space can leave the model as it
+ * was, and the field would keep the typed word without the change in between
+ */
+function showModel(typed: string) {
+  text.value = typed;
+  void nextTick(() => (text.value = props.modelValue));
+}
+
 function onInput(next: string) {
   dismissed.value = false;
   const chip = chipFromTyped(next, props.fields);
   if (!chip && isAmbiguousTyped(next, props.fields)) {
     // the space would close the suggestions of a value that names several options
-    const typed = next.slice(0, -1);
-    if (input.value) input.value.value = typed;
-    return emit("update:modelValue", typed);
+    emit("update:modelValue", next.slice(0, -1));
+    return showModel(next);
   }
   if (!chip) return emit("update:modelValue", next);
-  // the typed word is gone even when the text before it equals the old value
-  if (input.value) input.value.value = chip.rest;
   emit("chip", chip);
+  showModel(next);
 }
 
 function pick(s: Suggestion) {
@@ -177,6 +201,8 @@ function clearText() {
 }
 
 function onKeydown(e: KeyboardEvent) {
+  // the field's own keys; the clear button next to it keeps its own
+  if (!(e.target instanceof HTMLInputElement)) return;
   const items = suggestions.value.items;
   switch (e.key) {
     case "ArrowDown":
@@ -195,7 +221,7 @@ function onKeydown(e: KeyboardEvent) {
       e.preventDefault();
       if (open.value) dismissed.value = true;
       else if (props.modelValue) emit("update:modelValue", "");
-      else input.value?.blur();
+      else e.target.blur();
       return;
     case "Backspace":
       if (!props.modelValue) emit("backspace-empty");
@@ -206,57 +232,30 @@ defineExpose({ focus: () => input.value?.focus() });
 </script>
 
 <style lang="scss">
-.vc-search-bar {
-  &__search {
-    @apply tw-relative tw-flex tw-items-center tw-gap-2;
-    flex: 1 1 0;
-    min-width: max(200px, 22%);
-    height: 36px;
-    padding-inline: 10px 6px;
-    border: 1px solid var(--neutrals-300);
-    border-radius: 8px;
-    background: var(--additional-50);
-    transition:
-      border-color 0.15s,
-      box-shadow 0.15s;
+.vc-dropdown.vc-search-bar__search {
+  --vc-dropdown-trigger-flex: 1 1 auto;
+  --vc-dropdown-radius: 8px;
+  --vc-dropdown-shadow: 0 8px 24px rgb(0 0 0 / 12%);
+  --vc-dropdown-accent: var(--primary-50);
+  --vc-dropdown-accent-foreground: var(--neutrals-900);
+  @apply tw-h-auto;
+  flex: 1 1 0;
+  min-width: max(200px, 22%);
+}
 
-    &:focus-within {
-      border-color: var(--primary-300);
-      box-shadow: 0 0 0 3px var(--primary-100);
-    }
-    &--disabled {
-      @apply tw-opacity-50;
-    }
+.vc-search-bar {
+  &__search-field {
+    --input-border-radius: 8px;
+    --input-border-color-focus: var(--primary-300);
+    --input-text-color: var(--neutrals-900);
+    --input-padding-start: 10px;
+    --input-padding-end: 6px;
+    --input-adornment-gap: 8px;
+    @apply tw-flex-1 tw-min-w-0;
   }
   &__search-icon {
     @apply tw-shrink-0;
     color: var(--neutrals-400);
-  }
-  &__search-input {
-    @apply tw-flex-1 tw-min-w-0 tw-h-full tw-bg-transparent tw-outline-none;
-    font-size: 13.5px;
-    color: var(--neutrals-900);
-
-    &::placeholder {
-      color: var(--neutrals-400);
-    }
-  }
-  // a key cap: light grey, the glyph centred in a square
-  &__search-hint,
-  &__suggest-key {
-    @apply tw-inline-flex tw-items-center tw-justify-center tw-shrink-0 tw-rounded;
-    box-sizing: border-box;
-    height: 18px;
-    font-size: 11px;
-    font-family: inherit;
-    line-height: 1;
-    color: var(--neutrals-500);
-    background: var(--neutrals-100);
-    border: 1px solid var(--neutrals-300);
-  }
-  &__search-hint {
-    width: 18px;
-    padding: 0;
   }
   &__search-end {
     @apply tw-inline-flex tw-items-center tw-justify-center tw-shrink-0;
@@ -266,53 +265,32 @@ defineExpose({ focus: () => input.value?.focus() });
     --button-ghost-text-color: var(--neutrals-500);
     @apply tw-shrink-0;
   }
-  &__suggest {
-    @apply tw-absolute tw-rounded-lg tw-py-1;
-    top: calc(100% + 4px);
-    left: 0;
-    min-width: 240px;
-    z-index: var(--z-overlay-dropdown);
-    background: var(--additional-50);
-    box-shadow:
-      0 0 0 1px var(--neutrals-200),
-      0 8px 24px rgb(0 0 0 / 12%);
-  }
+  // the list is at least as wide as this head (the panel adds 8px of padding)
   &__suggest-head {
-    @apply tw-flex tw-items-center tw-justify-between tw-gap-3 tw-px-3 tw-py-1;
+    @apply tw-flex tw-items-center tw-justify-between tw-gap-3 tw-px-2 tw-py-1;
+    min-width: 232px;
   }
   &__suggest-title {
     @apply tw-uppercase tw-font-semibold;
     font-size: 11px;
     color: var(--neutrals-400);
   }
-  &__suggest-key {
-    @apply tw-gap-1 tw-px-1;
+  // a row is 32px with the item's own 4px padding; its text starts 12px in from the panel edge
+  &__suggest-item {
+    @apply tw-flex tw-flex-1 tw-items-center tw-justify-between tw-gap-3 tw-px-2 tw-min-w-0 tw-cursor-pointer;
+    height: 24px;
+    font-size: 13px;
   }
   &__suggest-label {
     @apply tw-flex-1 tw-truncate;
-  }
-  &__suggest-check {
-    @apply tw-shrink-0;
-    color: var(--primary-600);
-  }
-  &__suggest-item {
-    @apply tw-flex tw-items-center tw-justify-between tw-gap-3 tw-px-3 tw-cursor-pointer;
-    height: 32px;
-    font-size: 13px;
-
-    &--active {
-      background: var(--primary-50);
-    }
   }
   &__suggest-token {
     font-size: 11.5px;
     color: var(--neutrals-500);
   }
-}
-
-// dark theme: --neutrals-100 is the input's own surface there, so the key cap takes the next step
-:root[data-theme="dark"] .vc-search-bar__search-hint,
-:root[data-theme="dark"] .vc-search-bar__suggest-key {
-  background: var(--neutrals-200);
+  &__suggest-check {
+    @apply tw-shrink-0;
+    color: var(--primary-600);
+  }
 }
 </style>

@@ -23,4 +23,15 @@ describe("ShortcutKbd", () => {
     const wrapper = mount(ShortcutKbd, { props: { parts: ["⌘", "S"], separated: false } });
     expect(wrapper.text()).not.toContain("+");
   });
+
+  it("renders the default slot as one key", () => {
+    const wrapper = mount(ShortcutKbd, { slots: { default: "<i>icon</i> to add" } });
+    const kbds = wrapper.findAll("kbd");
+    expect(kbds).toHaveLength(1);
+    expect(kbds[0].html()).toContain("<i>icon</i> to add");
+  });
+
+  it("renders no key without parts or a slot", () => {
+    expect(mount(ShortcutKbd).findAll("kbd")).toHaveLength(0);
+  });
 });

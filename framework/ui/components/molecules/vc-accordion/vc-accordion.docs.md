@@ -240,12 +240,25 @@ interface AccordionItem {
 | --------- | ---------------------------------------------------------------- |
 | `default` | Place `VcAccordionItem` components directly for custom rendering |
 
+### VcAccordionItem Props
+
+| Prop                | Type               | Default | Description                                                                                                                                                               |
+| ------------------- | ------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`             | `string`           | --      | Header text                                                                                                                                                               |
+| `isExpanded`        | `boolean`          | `false` | Open state; the item also emits `toggle` and `update:isExpanded`                                                                                                          |
+| `collapsedHeight`   | `number`           | `0`     | Height in px shown while closed                                                                                                                                           |
+| `maxExpandedHeight` | `number`           | --      | Maximum open height in px; taller content scrolls                                                                                                                         |
+| `disabled`          | `boolean`          | `false` | Disables the header                                                                                                                                                       |
+| `lazy`              | `boolean`          | `false` | Mounts the content only while open: on open, and until the close animation ends. The item stays expandable with nothing mounted to measure, and the closed panel is inert |
+| `iconPosition`      | `"start" \| "end"` | `"end"` | Chevron after the title, or before it (pointing to the text while closed, down while open)                                                                                |
+
 ### VcAccordionItem Slots
 
-| Slot      | Description                                             |
-| --------- | ------------------------------------------------------- |
-| `title`   | Custom title rendering (replaces the `title` prop text) |
-| `default` | Content body of the accordion item                      |
+| Slot      | Description                                                                                                    |
+| --------- | -------------------------------------------------------------------------------------------------------------- |
+| `title`   | Custom title rendering (replaces the `title` prop text)                                                        |
+| `default` | Content body of the accordion item                                                                             |
+| `actions` | Controls next to the header button, outside it (e.g. a remove button). Without it the header renders as before |
 
 ## CSS Variables
 
@@ -269,6 +282,7 @@ interface AccordionItem {
 | `--accordion-item-header-gap`              | `0`                    | Gap between header label and icon         |
 | `--accordion-item-icon-margin-left`        | `12px`                 | Left margin of the chevron icon           |
 | `--accordion-item-icon-size`               | `20px`                 | Chevron icon size                         |
+| `--accordion-item-icon-color`              | `currentColor`         | Chevron color                             |
 | `--accordion-item-content-color`           | `var(--secondary-950)` | Content body text color                   |
 | `--accordion-item-content-font-size`       | `14px`                 | Content body font size                    |
 | `--accordion-item-content-line-height`     | `20px`                 | Content body line height                  |

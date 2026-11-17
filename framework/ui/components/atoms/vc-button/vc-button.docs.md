@@ -307,17 +307,18 @@ Use the `loading` prop, not `disabled`. A disabled button gives no progress feed
 
 All visual properties are customizable through CSS custom properties. Each variant has three property sets (normal, hover, disabled) for background, text, and border colors.
 
-| Pattern                                     | Example                                   | Description                   |
-| ------------------------------------------- | ----------------------------------------- | ----------------------------- |
-| `--button-{variant}-background-color`       | `--button-primary-background-color`       | Normal background             |
-| `--button-{variant}-background-color-hover` | `--button-primary-background-color-hover` | Hover background              |
-| `--button-{variant}-text-color`             | `--button-primary-text-color`             | Normal text color             |
-| `--button-{variant}-border-color`           | `--button-primary-border-color`           | Normal border color           |
-| `--button-border-radius`                    | `6px`                                     | Corner radius for all buttons |
-| `--button-focus-ring-color`                 | `var(--primary-300)`                      | Focus ring color              |
-| `--button-focus-ring-width`                 | `2px`                                     | Focus ring thickness          |
-| `--button-focus-ring-offset`                | `2px`                                     | Focus ring offset             |
-| `--button-{size}-height`                    | `--button-default-height: 36px`           | Height per size               |
+| Pattern                                     | Example                                   | Description                                                                                                                                                                                           |
+| ------------------------------------------- | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--button-{variant}-background-color`       | `--button-primary-background-color`       | Normal background                                                                                                                                                                                     |
+| `--button-{variant}-background-color-hover` | `--button-primary-background-color-hover` | Hover background                                                                                                                                                                                      |
+| `--button-{variant}-text-color`             | `--button-primary-text-color`             | Normal text color                                                                                                                                                                                     |
+| `--button-{variant}-border-color`           | `--button-primary-border-color`           | Normal border color                                                                                                                                                                                   |
+| `--button-border-radius`                    | `6px`                                     | Corner radius for all buttons                                                                                                                                                                         |
+| `--button-focus-ring-color`                 | `var(--primary-300)`                      | Focus ring color                                                                                                                                                                                      |
+| `--button-focus-ring-width`                 | `2px`                                     | Focus ring thickness                                                                                                                                                                                  |
+| `--button-focus-ring-offset`                | `2px`                                     | Focus ring offset                                                                                                                                                                                     |
+| `--button-{size}-height`                    | `--button-default-height: 36px`           | Height per size                                                                                                                                                                                       |
+| `--button-hit-area-size`                    | `44px`                                    | Minimum size of the `::after` hit area around the button. Set `0px` on a container whose buttons sit edge to edge (an attached group, stacked menu rows), so one does not take its neighbour's clicks |
 
 ## Accessibility
 

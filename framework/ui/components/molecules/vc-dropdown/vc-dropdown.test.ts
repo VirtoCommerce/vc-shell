@@ -202,4 +202,65 @@ describe("VcDropdown", () => {
       wrapper.unmount();
     });
   });
+
+  describe("combobox mode", () => {
+    const mountCombobox = (combobox: boolean) =>
+      mount(VcDropdown as any, {
+        props: {
+          modelValue: true,
+          items: ["One", "Two"],
+          itemText: (i: string) => i,
+          role: "listbox",
+          autoFocusPanel: false,
+          combobox,
+        },
+        slots: {
+          trigger: ({ itemId, panelId }: { itemId: (i: number) => string; panelId: string }) =>
+            h("input", { "data-item": itemId(1), "data-panel": panelId }),
+          header: () => h("div", { class: "head" }, "Title"),
+        },
+        attachTo: document.body,
+      });
+
+    it("keeps the panel out of the tab order and without its own active descendant", async () => {
+      const wrapper = mountCombobox(true);
+      await nextTick();
+      const panel = document.querySelector(".vc-dropdown__dropdown")!;
+      expect(panel.getAttribute("tabindex")).toBe("-1");
+      expect(panel.hasAttribute("aria-activedescendant")).toBe(false);
+      wrapper.unmount();
+    });
+
+    it("cancels a mouse press on the panel, so the field keeps the focus", async () => {
+      const wrapper = mountCombobox(true);
+      await nextTick();
+      const press = new MouseEvent("mousedown", { bubbles: true, cancelable: true });
+      document.querySelector(".vc-dropdown__item")!.dispatchEvent(press);
+      expect(press.defaultPrevented).toBe(true);
+      wrapper.unmount();
+    });
+
+    it("gives the trigger the item ids and renders the header above the items", async () => {
+      const wrapper = mountCombobox(true);
+      await nextTick();
+      const input = wrapper.find("input");
+      const items = document.querySelectorAll(".vc-dropdown__item");
+      expect(input.attributes("data-item")).toBe(items[1].id);
+      expect(input.attributes("data-panel")).toBe(document.querySelector(".vc-dropdown__dropdown")!.id);
+      const content = document.querySelector(".vc-dropdown__content")!;
+      expect(content.firstElementChild?.className).toBe("head");
+      wrapper.unmount();
+    });
+
+    it("stays a focusable panel that keeps its presses without combobox", async () => {
+      const wrapper = mountCombobox(false);
+      await nextTick();
+      const panel = document.querySelector(".vc-dropdown__dropdown")!;
+      expect(panel.getAttribute("tabindex")).toBe("0");
+      const press = new MouseEvent("mousedown", { bubbles: true, cancelable: true });
+      panel.dispatchEvent(press);
+      expect(press.defaultPrevented).toBe(false);
+      wrapper.unmount();
+    });
+  });
 });

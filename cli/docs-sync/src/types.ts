@@ -41,6 +41,7 @@ export interface SkippedEntry {
 
 export interface OrphanEntry {
   target: string; // path in vc-docs that has no source
+  removed?: boolean; // deleted by this sync (not a dry run)
 }
 
 export interface ErrorEntry {

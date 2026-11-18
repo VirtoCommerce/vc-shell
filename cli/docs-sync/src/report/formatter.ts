@@ -33,7 +33,12 @@ export function formatReport(report: SyncReport): string {
   }
 
   if (report.orphans.length > 0) {
-    lines.push("## Orphaned (synced previously, source gone)");
+    const removed = report.orphans.every((o) => o.removed);
+    lines.push(
+      removed
+        ? "## Removed (synced previously; source gone or internal)"
+        : "## Orphaned (synced previously; source gone or internal; removed on a real sync)",
+    );
     for (const o of report.orphans) lines.push(`- ${o.target}`);
     lines.push("");
   }

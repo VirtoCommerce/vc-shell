@@ -251,7 +251,7 @@ Output:
 vc-shell@v2.0.3 → /Users/me/DEV/vc-docs
   changes: 47
   skipped: 5
-  orphans: 1
+  orphans: 1 (removed)
   errors:  0
   report:  /Users/me/.../sync-report.md
 ```
@@ -404,7 +404,7 @@ cli/docs-sync/
       pages.ts                      # emit .pages files for awesome-pages
     report/
       tracker.ts                    # accumulate change/skip/error/orphan entries
-      orphans.ts                    # detect orphaned auto-generated files
+      orphans.ts                    # detect and remove orphaned auto-generated files
       formatter.ts                  # render SyncReport → markdown
     screenshot/
       defaults.ts                   # style-guide constants
@@ -471,7 +471,7 @@ Until Phase 0 is complete, `yarn docs:lint` reports many errors and warnings aga
 
 **Newly created `*.docs.md` is skipped without comment** — `yarn docs:lint` to surface the reason. Most often a frontmatter issue.
 
-**`docs:sync` shows N orphans** — files in vc-docs that carry the AUTO-GENERATED marker but no longer have a matching source. Decide per-file: either restore the source (rename happened?), or delete the orphan in a follow-up PR. The generator never deletes orphans automatically.
+**`docs:sync` shows N orphans** — files in vc-docs that carry the AUTO-GENERATED marker but no longer have a matching source: the `*.docs.md` was deleted, renamed, or marked `internal: true`. A real sync deletes them (and a folder left with only its `.nav.yml`); `--dry-run` only lists them. If a page was removed by mistake, restore or rename the source and sync again. Pages without the marker are never touched.
 
 **Screenshot command hangs / times out** — Playwright needs the chromium binary on first run. From inside the workspace: `yarn workspace @vc-shell/docs-sync exec playwright install chromium`.
 

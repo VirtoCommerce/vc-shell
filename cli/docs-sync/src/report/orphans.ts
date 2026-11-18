@@ -16,3 +16,20 @@ export async function findOrphans(targetRoot: string, syncedRelPaths: Set<string
   }
   return out;
 }
+
+/**
+ * Deletes orphaned pages. A folder left with no pages loses its generated `.nav.yml` and is removed
+ * too, so the site does not keep an empty section.
+ */
+export async function removeOrphans(targetRoot: string, orphans: OrphanEntry[]): Promise<OrphanEntry[]> {
+  const dirs = new Set<string>();
+  for (const o of orphans) {
+    await fs.rm(path.join(targetRoot, o.target), { force: true });
+    dirs.add(path.dirname(path.join(targetRoot, o.target)));
+  }
+  for (const dir of dirs) {
+    const left = await fs.readdir(dir).catch(() => [] as string[]);
+    if (left.every((f) => f === ".nav.yml")) await fs.rm(dir, { recursive: true, force: true });
+  }
+  return orphans.map((o) => ({ ...o, removed: true }));
+}

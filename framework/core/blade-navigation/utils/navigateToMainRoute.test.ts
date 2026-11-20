@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
-import type { Router } from "vue-router";
-import { navigateToMainRoute, resolveMainRoute } from "./navigateToMainRoute";
+import { createMemoryHistory, createRouter, type Router, type RouteRecordRaw } from "vue-router";
+import { mainRouteLocation, navigateToMainRoute, resolveMainRoute } from "./navigateToMainRoute";
 
 function routerWith(routes: Array<{ name?: string; path: string; meta?: object; aliasOf?: { path: string } }>) {
   const replace = vi.fn();
@@ -8,6 +8,23 @@ function routerWith(routes: Array<{ name?: string; path: string; meta?: object; 
     router: { getRoutes: () => routes, replace } as unknown as Router,
     replace,
   };
+}
+
+const Empty = { render: () => null };
+
+/** An app whose main route renders its default page as an empty-path child */
+function appRouter(mainPath = "/"): Router {
+  const routes: RouteRecordRaw[] = [
+    { path: "/login", name: "Login", component: Empty },
+    {
+      path: mainPath,
+      name: "App",
+      component: Empty,
+      meta: { root: true },
+      children: [{ path: "", name: "Home", component: Empty }],
+    },
+  ];
+  return createRouter({ history: createMemoryHistory(), routes });
 }
 
 describe("resolveMainRoute", () => {
@@ -42,13 +59,53 @@ describe("resolveMainRoute", () => {
   });
 });
 
+describe("mainRouteLocation", () => {
+  // Resolved by name, Vue Router matches only the named record, not its empty-path child,
+  // and the main route's <router-view> renders nothing. By path, the default page is matched.
+  it("is the main route's path, so its default child page is matched", () => {
+    const router = appRouter();
+
+    const location = mainRouteLocation(router);
+
+    expect(location).toEqual({ path: "/" });
+    expect(router.resolve(location!).matched.map((r) => r.name)).toEqual(["App", "Home"]);
+  });
+
+  it("keeps the tenant prefix", () => {
+    const router = appRouter("/:sellerId");
+
+    const location = mainRouteLocation(router, { sellerId: "acme" });
+
+    expect(location).toEqual({ path: "/acme" });
+    expect(router.resolve(location!).matched.map((r) => r.name)).toEqual(["App", "Home"]);
+  });
+
+  it("is undefined when no route declares meta.root", () => {
+    const { router } = routerWith([{ name: "Login", path: "/login" }]);
+
+    expect(mainRouteLocation(router)).toBeUndefined();
+  });
+});
+
 describe("navigateToMainRoute", () => {
-  it("replaces with the root route, passing params through", () => {
-    const { router, replace } = routerWith([{ name: "App", path: "/", meta: { root: true } }]);
+  it("lands on the main route's default child page", async () => {
+    const router = appRouter();
+    await router.push("/login");
+
+    navigateToMainRoute(router);
+    await vi.waitFor(() => expect(router.currentRoute.value.name).toBe("Home"));
+
+    expect(router.currentRoute.value.fullPath).toBe("/");
+    expect(router.currentRoute.value.matched.map((r) => r.name)).toEqual(["App", "Home"]);
+  });
+
+  it("replaces with the main route's path, passing params through", () => {
+    const router = appRouter("/:sellerId");
+    const replace = vi.spyOn(router, "replace");
 
     navigateToMainRoute(router, { sellerId: "acme" });
 
-    expect(replace).toHaveBeenCalledWith({ name: "App", params: { sellerId: "acme" } });
+    expect(replace).toHaveBeenCalledWith({ path: "/acme" });
   });
 
   it("does not navigate when no route declares meta.root", () => {

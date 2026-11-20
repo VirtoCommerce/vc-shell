@@ -6,9 +6,10 @@ import { restoreFromUrl } from "@core/blade-navigation/utils/restoreFromUrl";
 
 /**
  * Result of the blade router guard: `undefined` allows the navigation, `false` cancels it
- * (a beforeClose guard refused), and `{ path, query, replace }` redirects to a cleaned URL.
+ * (a beforeClose guard refused), and `{ path, query?, replace }` redirects — to a cleaned URL,
+ * or to the main route when the URL can't be opened.
  */
-export type BladeGuardResult = undefined | false | { path: string; query: Record<string, string>; replace: true };
+export type BladeGuardResult = undefined | false | { path: string; query?: Record<string, string>; replace: true };
 
 async function clearBladeStackRespectingGuards(bladeStack: IBladeStack): Promise<boolean> {
   while (bladeStack.blades.value.length > 1) {
@@ -92,10 +93,16 @@ export async function bladeRouterGuard(
   >;
 
   // Restore blade stack from URL (idempotent — skips if already matching)
-  const needsUrlCleanup = await restoreFromUrl(bladeStack, bladeRegistry, parsed, hasAccess, router, routeParams);
+  const restored = await restoreFromUrl(bladeStack, bladeRegistry, parsed, hasAccess, router, routeParams);
+
+  // A URL that can't be opened goes to the main route, by returning the redirect: Vue Router then
+  // replaces the URL itself, which a navigation started from inside this guard can't do reliably
+  if (typeof restored === "object") {
+    return restored;
+  }
 
   // If a non-routable blade was in the URL, clean up to match actual stack
-  if (needsUrlCleanup) {
+  if (restored) {
     const { path, query } = buildUrlFromStack(tenantPrefix, bladeStack.blades.value);
     return { path, query, replace: true };
   }

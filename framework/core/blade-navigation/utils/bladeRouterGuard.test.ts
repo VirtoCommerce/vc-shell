@@ -1,10 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { computed } from "vue";
 import { bladeRouterGuard } from "@core/blade-navigation/utils/bladeRouterGuard";
 import { createBladeStack } from "@core/blade-navigation/useBladeStack";
 import type { IBladeRegistry, IBladeRegistrationData } from "@core/composables/useBladeRegistry";
 import type { IBladeStack } from "@core/blade-navigation/types";
-import type { RouteLocationNormalized } from "vue-router";
+import { createMemoryHistory, createRouter, type RouteLocationNormalized, type Router } from "vue-router";
 
 // Mock notification to avoid ResizeObserver errors in jsdom
 vi.mock("@core/notifications", () => ({
@@ -266,6 +266,83 @@ describe("bladeRouterGuard", () => {
 
       expect(result).toBe(false);
       expect(stack.blades.value).toHaveLength(2);
+    });
+  });
+
+  // ── Addresses restoreFromUrl can't open ───────────────────────────────
+
+  describe("an address with no workspace", () => {
+    it("is redirected to the main route by the guard's result", async () => {
+      vi.spyOn(console, "warn").mockImplementation(() => {});
+      const router = {
+        replace: vi.fn(),
+        getRoutes: vi.fn().mockReturnValue([rootRecord]),
+        resolve: vi.fn().mockReturnValue({ path: "/" }),
+      };
+      const to = mockRoute({ path: "/no-such-page", matched: [rootRecord, catchAllRecord] });
+
+      const result = await bladeRouterGuard(to, stack, registry, undefined, router as unknown as Router);
+
+      expect(result).toEqual({ path: "/", replace: true });
+      expect(router.replace).not.toHaveBeenCalled();
+
+      vi.restoreAllMocks();
+    });
+
+    // The guard as BladeNavigationPlugin installs it, on a real router whose main route
+    // renders its default page as an empty-path child
+    describe("on a real router", () => {
+      let router: Router;
+      const Empty = { render: () => null };
+      const landed = () => ({
+        url: router.options.history.location,
+        matched: router.currentRoute.value.matched.map((r) => r.name ?? r.path),
+      });
+
+      beforeEach(() => {
+        vi.spyOn(console, "warn").mockImplementation(() => {});
+        router = createRouter({
+          history: createMemoryHistory(),
+          routes: [
+            {
+              path: "/",
+              name: "App",
+              component: Empty,
+              meta: { root: true },
+              children: [{ path: "", name: "Home", component: Empty }],
+            },
+          ],
+        });
+        router.addRoute("App", { path: ":pathMatch(.*)*", component: Empty, meta: { bladeCatchAll: true } });
+        router.beforeEach((to) => bladeRouterGuard(to, stack, registry, undefined, router));
+      });
+
+      afterEach(() => {
+        vi.restoreAllMocks();
+      });
+
+      it("opens the default page when the app starts at an unknown address", async () => {
+        await router.push("/no-such-page");
+
+        expect(landed()).toEqual({ url: "/", matched: ["App", "Home"] });
+      });
+
+      it("opens the default page from a workspace", async () => {
+        await router.push("/orders");
+        expect(stack.workspace.value?.name).toBe("Orders");
+
+        await router.push("/no-such-page");
+
+        expect(landed()).toEqual({ url: "/", matched: ["App", "Home"] });
+      });
+
+      it("stays on the default page, at its own address, when already there", async () => {
+        await router.push("/");
+
+        await router.push("/no-such-page");
+
+        expect(landed()).toEqual({ url: "/", matched: ["App", "Home"] });
+      });
     });
   });
 

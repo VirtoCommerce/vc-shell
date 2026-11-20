@@ -57,6 +57,17 @@ function createMockRegistry(
   };
 }
 
+/** A router whose main route ("App", meta.root) resolves to "/" or to "/<sellerId>" */
+function mockMainRouter() {
+  return {
+    replace: vi.fn(),
+    getRoutes: vi.fn().mockReturnValue([{ name: "App", meta: { root: true }, path: "/:sellerId?" }]),
+    resolve: vi.fn((to: { params?: Record<string, string> }) => ({
+      path: to.params?.sellerId ? `/${to.params.sellerId}` : "/",
+    })),
+  };
+}
+
 function defaultRegistry(): IBladeRegistry {
   return createMockRegistry({
     Orders: { route: "/orders", isWorkspace: true },
@@ -148,6 +159,39 @@ describe("restoreFromUrl", () => {
       expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("not a workspace"));
 
       warnSpy.mockRestore();
+    });
+
+    // The redirect is returned for the router guard to hand back to Vue Router: a navigation
+    // started from inside beforeEach cancels the one in progress, and when it resolves to the
+    // current route Vue Router skips it as a duplicate, leaving the bad URL in the address bar.
+    it.each([
+      ["no blade has the URL", "unknown"],
+      ["the blade isn't a workspace", "not-workspace"],
+    ])("returns a redirect to the main route when %s, without navigating", async (_case, workspaceUrl) => {
+      vi.spyOn(console, "warn").mockImplementation(() => {});
+      const router = mockMainRouter();
+
+      const result = await restoreFromUrl(stack, registry, { workspaceUrl }, undefined, router as any);
+
+      expect(result).toEqual({ path: "/", replace: true });
+      expect(router.replace).not.toHaveBeenCalled();
+      expect(stack.blades.value).toHaveLength(0);
+
+      vi.restoreAllMocks();
+    });
+
+    it("keeps the tenant prefix in the redirect", async () => {
+      vi.spyOn(console, "warn").mockImplementation(() => {});
+      const router = mockMainRouter();
+
+      const result = await restoreFromUrl(stack, registry, { workspaceUrl: "unknown" }, undefined, router as any, {
+        sellerId: "acme",
+      });
+
+      expect(router.resolve).toHaveBeenCalledWith({ name: "App", params: { sellerId: "acme" } });
+      expect(result).toEqual({ path: "/acme", replace: true });
+
+      vi.restoreAllMocks();
     });
   });
 
@@ -256,7 +300,7 @@ describe("restoreFromUrl", () => {
 
   describe("permission enforcement", () => {
     let protectedRegistry: IBladeRegistry;
-    let mockRouter: { replace: ReturnType<typeof vi.fn>; getRoutes: ReturnType<typeof vi.fn> };
+    let mockRouter: ReturnType<typeof mockMainRouter>;
 
     beforeEach(() => {
       protectedRegistry = createMockRegistry({
@@ -264,10 +308,7 @@ describe("restoreFromUrl", () => {
         Products: { route: "/products", isWorkspace: true },
         OrderDetails: { route: "/order", routable: true },
       });
-      mockRouter = {
-        replace: vi.fn(),
-        getRoutes: vi.fn().mockReturnValue([{ name: "App", meta: { root: true }, path: "/" }]),
-      };
+      mockRouter = mockMainRouter();
     });
 
     it("blocks workspace when hasAccess returns false", async () => {
@@ -283,10 +324,9 @@ describe("restoreFromUrl", () => {
         mockRouter as any,
       );
 
-      expect(result).toBe(false);
+      expect(result).toEqual({ path: "/", replace: true });
       expect(permStack.blades.value).toHaveLength(0);
       expect(hasAccess).toHaveBeenCalledWith("order:read");
-      expect(mockRouter.replace).toHaveBeenCalled();
       expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("Access denied"));
 
       warnSpy.mockRestore();
@@ -338,14 +378,21 @@ describe("restoreFromUrl", () => {
       expect(permStack.workspace.value?.name).toBe("Orders");
     });
 
-    it("redirects to main route on denial", async () => {
+    it("returns a redirect to the main route on denial, without navigating", async () => {
       const hasAccess = vi.fn().mockReturnValue(false);
       const permStack = createBladeStack(protectedRegistry);
       vi.spyOn(console, "warn").mockImplementation(() => {});
 
-      await restoreFromUrl(permStack, protectedRegistry, { workspaceUrl: "orders" }, hasAccess, mockRouter as any);
+      const result = await restoreFromUrl(
+        permStack,
+        protectedRegistry,
+        { workspaceUrl: "orders" },
+        hasAccess,
+        mockRouter as any,
+      );
 
-      expect(mockRouter.replace).toHaveBeenCalledWith(expect.objectContaining({ name: "App" }));
+      expect(result).toEqual({ path: "/", replace: true });
+      expect(mockRouter.replace).not.toHaveBeenCalled();
 
       vi.restoreAllMocks();
     });

@@ -1,5 +1,9 @@
 # Changelog
 
+# [2.13.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.12.0...v2.13.0) (2026-11-20)
+
+**Note:** Version bump only for package @vc-shell/vc-app-skill
+
 # [2.12.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.11.0...v2.12.0) (2026-11-17)
 
 ### Features

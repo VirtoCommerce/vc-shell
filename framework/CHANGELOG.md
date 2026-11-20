@@ -1,5 +1,15 @@
 # Changelog
 
+# [2.13.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.12.0...v2.13.0) (2026-11-20)
+
+### Features
+
+- **docs-sync:** remove orphaned pages on sync (#417) ([64f5617](https://github.com/VirtoCommerce/vc-shell/commit/64f5617852f2b8e6163331bf17032eba885051b1)), closes [#417](https://github.com/VirtoCommerce/vc-shell/issues/417) [VirtoCommerce/vc-docs#134](https://github.com/VirtoCommerce/vc-docs/issues/134) [#253](https://github.com/VirtoCommerce/vc-shell/issues/253) [VirtoCommerce/vc-docs#134](https://github.com/VirtoCommerce/vc-docs/issues/134)
+
+### Bug Fixes
+
+- **framework:** open the default page for an address no blade can open (#418) ([4c085d6](https://github.com/VirtoCommerce/vc-shell/commit/4c085d60dc0023fd89849a86ad86b713652b8500)), closes [#418](https://github.com/VirtoCommerce/vc-shell/issues/418) [VirtoCommerce/vc-module-admin-shell#20](https://github.com/VirtoCommerce/vc-module-admin-shell/issues/20)
+
 # [2.12.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.11.0...v2.12.0) (2026-11-17)
 
 ### Features

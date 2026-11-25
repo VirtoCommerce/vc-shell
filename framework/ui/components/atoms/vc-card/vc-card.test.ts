@@ -43,6 +43,37 @@ describe("VcCard", () => {
     expect(w.emitted("state:collapsed")).toBeTruthy();
   });
 
+  it("leaves a click on a button in the actions to that button", async () => {
+    const w = mountCard(
+      { header: "T", isCollapsable: true },
+      { default: "B", actions: '<button class="add">Add</button>' },
+    );
+    await w.find(".add").trigger("click");
+    expect(w.emitted("state:collapsed")).toBeUndefined();
+    expect(w.emitted("header:click")).toBeUndefined();
+  });
+
+  it("lets Enter and Space reach a button in the actions", async () => {
+    const w = mountCard(
+      { header: "T", isCollapsable: true },
+      { default: "B", actions: '<button class="add">Add</button>' },
+    );
+    const enter = new KeyboardEvent("keydown", { key: "Enter", bubbles: true, cancelable: true });
+    const space = new KeyboardEvent("keydown", { key: " ", bubbles: true, cancelable: true });
+    w.find(".add").element.dispatchEvent(enter);
+    w.find(".add").element.dispatchEvent(space);
+    expect(enter.defaultPrevented).toBe(false);
+    expect(space.defaultPrevented).toBe(false);
+    expect(w.emitted("state:collapsed")).toBeUndefined();
+  });
+
+  it("toggles from the keyboard on the header itself", async () => {
+    const w = mountCard({ header: "T", isCollapsable: true }, { default: "B" });
+    await w.find(".vc-card__header").trigger("keydown", { key: "Enter" });
+    await w.find(".vc-card__header").trigger("keydown", { key: " " });
+    expect(w.emitted("state:collapsed")).toHaveLength(2);
+  });
+
   it("sets aria-expanded when collapsable", () => {
     const w = mountCard({ header: "T", isCollapsable: true }, { default: "B" });
     expect(w.find(".vc-card__header").attributes("aria-expanded")).toBeDefined();

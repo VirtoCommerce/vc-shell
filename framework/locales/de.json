@@ -28,6 +28,17 @@
       "CHANGE_PASSWORD": "Passwort ändern",
       "PROFILE": "Profil",
       "LOGOUT": "Abmelden"
+    },
+    "DASHBOARD": {
+      "GRID_LABEL": "Dashboard-Widgets. Ziehen Sie ein Widget oder wählen Sie es aus und drücken Sie die Eingabetaste, um es mit den Pfeiltasten neu anzuordnen.",
+      "PICKED_UP": "{name} aufgenommen. Pfeiltasten verschieben, Umschalt und Pfeiltasten ändern die Größe, Eingabe legt ab, Escape bricht ab.",
+      "DROPPED": "{name} in Spalte {column}, Zeile {row} abgelegt.",
+      "MOVE_CANCELLED": "Verschieben abgebrochen. {name} ist wieder an der ursprünglichen Position und Größe.",
+      "MOVED": "{name} nach Spalte {column}, Zeile {row} verschoben.",
+      "RESIZED": "Größe von {name} auf {width} mal {height} Zellen geändert.",
+      "WIDGET_GRABBED": "Aufgenommen. Pfeiltasten verschieben, Eingabe legt ab, Escape bricht ab.",
+      "WIDGET_IDLE": "Drücken Sie die Eingabetaste, um das Widget aufzunehmen und mit den Pfeiltasten neu anzuordnen.",
+      "WIDGET_LABEL": "{name}, Widget {index} von {total}. {state}"
     }
   },
   "COMPONENTS": {
@@ -57,6 +68,9 @@
       },
       "VC_VIDEO": {
         "NO_SOURCE": "Keine Videoquelle"
+      },
+      "VC_PROGRESS": {
+        "LABEL": "Fortschritt"
       }
     },
     "MOLECULES": {
@@ -164,7 +178,8 @@
           "PREVIEW": "Vorschau",
           "SPLIT": "Nebeneinander-Ansicht",
           "SOURCE": "Quellcode"
-        }
+        },
+        "LABEL": "Rich-Text-Editor"
       }
     },
     "ORGANISMS": {
@@ -409,7 +424,8 @@
           "RESET": "Zurücksetzen"
         },
         "OF": "von",
-        "PAGE": "Seite"
+        "PAGE": "Seite",
+        "TOTAL": "Gesamt"
       },
       "VC_POPUP": {
         "OK": "OK",
@@ -421,6 +437,9 @@
           "ERROR": "Fehler",
           "INFO": "Info"
         }
+      },
+      "VC_SIDEBAR": {
+        "CLOSE": "Seitenleiste schließen"
       }
     },
     "THEME_SELECTOR": {

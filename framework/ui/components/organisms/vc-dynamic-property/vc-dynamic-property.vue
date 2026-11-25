@@ -43,6 +43,8 @@
         :disabled="disabled"
         :multilanguage="multilanguage"
         :current-language="currentLanguage"
+        option-label="value"
+        option-value="value"
       ></VcMultivalue>
     </template>
     <template v-else-if="controlKind === 'multivalue-dictionary'">
@@ -290,6 +292,7 @@
         type="color"
         :label="controlLabel"
         :aria-label="controlAriaLabel"
+        :disabled="disabled"
         :error="!!errors.length"
         :error-message="errorMessage"
         :placeholder="$t('COMPONENTS.ORGANISMS.VC_DYNAMIC_PROPERTY.VALUE_TYPE.COLOR.NAME')"

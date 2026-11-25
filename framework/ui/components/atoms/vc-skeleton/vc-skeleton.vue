@@ -8,9 +8,9 @@
     }"
     role="status"
     aria-busy="true"
-    :aria-label="ariaLabel"
+    :aria-label="ariaLabel ?? $t('COMPONENTS.ORGANISMS.VC_TABLE.LOADING')"
   >
-    <span class="tw-sr-only">{{ ariaLabel }}</span>
+    <span class="tw-sr-only">{{ ariaLabel ?? $t("COMPONENTS.ORGANISMS.VC_TABLE.LOADING") }}</span>
     <div
       v-for="index in rows"
       :key="index"
@@ -33,9 +33,9 @@
     }"
     role="status"
     aria-busy="true"
-    :aria-label="ariaLabel"
+    :aria-label="ariaLabel ?? $t('COMPONENTS.ORGANISMS.VC_TABLE.LOADING')"
   >
-    <span class="tw-sr-only">{{ ariaLabel }}</span>
+    <span class="tw-sr-only">{{ ariaLabel ?? $t("COMPONENTS.ORGANISMS.VC_TABLE.LOADING") }}</span>
   </div>
 </template>
 
@@ -58,7 +58,6 @@ const props = withDefaults(
     variant: "text",
     rows: 1,
     animated: true,
-    ariaLabel: "Loading...",
   },
 );
 

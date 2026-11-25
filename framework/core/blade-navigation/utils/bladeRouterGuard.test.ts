@@ -97,6 +97,7 @@ describe("bladeRouterGuard", () => {
     registry = createMockRegistry({
       Orders: { route: "/orders", isWorkspace: true },
       OrderDetails: { route: "/order", routable: true },
+      Products: { route: "/products", isWorkspace: true },
     });
     stack = createBladeStack(registry);
   });
@@ -269,6 +270,33 @@ describe("bladeRouterGuard", () => {
     });
   });
 
+  describe("switching to another workspace", () => {
+    it("cancels navigation when an open blade refuses to close", async () => {
+      await stack.openWorkspace({ name: "Orders" });
+      await stack.openBlade({ name: "OrderDetails", param: "123" });
+      stack.registerBeforeClose(stack.blades.value[1].id, async () => true);
+
+      const to = mockRoute({ path: "/products", matched: [rootRecord, catchAllRecord] });
+      const result = await bladeRouterGuard(to, stack, registry);
+
+      expect(result).toBe(false);
+      expect(stack.workspace.value?.name).toBe("Orders");
+      expect(stack.blades.value).toHaveLength(2);
+    });
+
+    it("switches when the open blades agree to close", async () => {
+      await stack.openWorkspace({ name: "Orders" });
+      await stack.openBlade({ name: "OrderDetails", param: "123" });
+      stack.registerBeforeClose(stack.blades.value[1].id, async () => false);
+
+      const to = mockRoute({ path: "/products", matched: [rootRecord, catchAllRecord] });
+      const result = await bladeRouterGuard(to, stack, registry);
+
+      expect(result).toBeUndefined();
+      expect(stack.workspace.value?.name).toBe("Products");
+    });
+  });
+
   // ── Addresses restoreFromUrl can't open ───────────────────────────────
 
   describe("an address with no workspace", () => {
@@ -343,6 +371,52 @@ describe("bladeRouterGuard", () => {
 
         expect(landed()).toEqual({ url: "/", matched: ["App", "Home"] });
       });
+    });
+  });
+
+  // ── Deep link into a remote module ──────────────────────────────────────
+
+  describe("a deep link to a blade of a module that is still loading", () => {
+    it("keeps the address and opens the blade when the host replays it", async () => {
+      vi.spyOn(console, "warn").mockImplementation(() => {});
+      const Empty = { render: () => null };
+      // The module registers its blades only after it loads
+      const blades: Record<string, { route?: string; isWorkspace?: boolean }> = {};
+      const lazyRegistry: IBladeRegistry = {
+        registeredBladesMap: computed(() => new Map()),
+        getBlade: (name) => createMockRegistry(blades).getBlade(name),
+        getBladeComponent: () => undefined,
+        getBladeByRoute: (route) => createMockRegistry(blades).getBladeByRoute(route),
+      };
+      const lazyStack = createBladeStack(lazyRegistry);
+      let loading = true;
+      const router = createRouter({
+        history: createMemoryHistory(),
+        routes: [
+          {
+            path: "/",
+            name: "App",
+            component: Empty,
+            meta: { root: true },
+            children: [{ path: "", name: "Home", component: Empty }],
+          },
+        ],
+      });
+      router.addRoute("App", { path: ":pathMatch(.*)*", component: Empty, meta: { bladeCatchAll: true } });
+      router.beforeEach((to) => bladeRouterGuard(to, lazyStack, lazyRegistry, undefined, router, () => loading));
+
+      await router.push("/reviews");
+      expect(router.options.history.location).toBe("/reviews");
+      expect(lazyStack.workspace.value).toBeUndefined();
+
+      // The module loads, then the host replays the address
+      blades.Reviews = { route: "/reviews", isWorkspace: true };
+      loading = false;
+      await router.replace({ path: "/reviews", force: true });
+
+      expect(lazyStack.workspace.value?.name).toBe("Reviews");
+      expect(router.options.history.location).toBe("/reviews");
+      vi.restoreAllMocks();
     });
   });
 

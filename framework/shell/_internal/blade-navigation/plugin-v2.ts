@@ -1,5 +1,6 @@
 import { Router } from "vue-router";
-import { App } from "vue";
+import { App, inject } from "vue";
+import { ModulesReadyKey } from "@framework/injection-keys";
 import { BladeNavigationPlugin, BladeStackKey, BladeMessagingKey } from "@core/blade-navigation/types";
 import type { IBladeStack } from "@core/blade-navigation/types";
 import { createBladeStack } from "@core/blade-navigation/useBladeStack";
@@ -99,8 +100,10 @@ export const VcBladeNavigationComponent = {
     // back/forward, and the adapter's own push/replace — restoreFromUrl is idempotent.
     // Writes are suppressed for its duration: the guard restores the stack from the URL,
     // and a write-back from inside beforeEach would re-enter it.
+    // The host provides ModulesReady when it loads remote modules; without it there is nothing to wait for.
+    const modulesLoading = () => app.runWithContext(() => inject(ModulesReadyKey, null))?.value === false;
     router.beforeEach((to) =>
-      urlSink.suppressWhile(() => bladeRouterGuard(to, bladeStack, bladeRegistry, hasAccess, router)),
+      urlSink.suppressWhile(() => bladeRouterGuard(to, bladeStack, bladeRegistry, hasAccess, router, modulesLoading)),
     );
   },
 };

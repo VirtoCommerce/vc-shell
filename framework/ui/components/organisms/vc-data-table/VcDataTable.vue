@@ -23,7 +23,7 @@
       <VcSearchBar
         v-model="barState"
         :fields="globalFilters"
-        :placeholder="searchPlaceholder"
+        :placeholder="searchPlaceholder ?? $t('COMPONENTS.ORGANISMS.VC_TABLE.SEARCH')"
         :search-debounce="searchDebounce"
         :storage-key="stateKey"
         :name="searchName"
@@ -55,7 +55,7 @@
       v-else-if="searchable || globalFilters?.length || $slots['search-header-actions']"
       :searchable="searchable"
       :model-value="internalSearchValue"
-      :placeholder="searchPlaceholder"
+      :placeholder="searchPlaceholder ?? $t('COMPONENTS.ORGANISMS.VC_TABLE.SEARCH')"
       @update:model-value="handleSearchInput"
     >
       <template #actions>
@@ -557,7 +557,6 @@ const props = withDefaults(defineProps<VcDataTableExtendedProps<T> & { fitMode?:
   stateStorage: "local",
   searchable: false,
   searchValue: undefined,
-  searchPlaceholder: "Search...",
   emptyState: undefined,
   notFoundState: undefined,
   searchDebounce: 300,

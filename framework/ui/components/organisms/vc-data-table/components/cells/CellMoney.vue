@@ -90,7 +90,7 @@ const locale = window.navigator.language;
 
 const { isMobile, isDesktop } = useResponsive();
 
-const isEmpty = computed(() => typeof props.value === "undefined" || props.value === null || Number(props.value) === 0);
+const isEmpty = computed(() => props.value === undefined || props.value === null || props.value === "");
 
 const formatted = computed(() => {
   const num = Number(props.value);

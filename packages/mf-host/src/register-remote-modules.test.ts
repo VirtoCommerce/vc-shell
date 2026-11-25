@@ -151,6 +151,25 @@ describe("registerRemoteModules", () => {
   });
 
   describe("mapping — plugin → remote", () => {
+    it("replays the current address after loading, so a deep link to a module blade opens", async () => {
+      const { app, router } = createTestApp();
+      router.addRoute({ path: "/:pathMatch(.*)*", component: { template: "<div />" } });
+      await router.push("/reviews/review/42?tab=info");
+      expect(router.currentRoute.value.fullPath).toBe("/reviews/review/42?tab=info");
+      (global.fetch as any).mockResolvedValue(manifest200([makePlugin()]));
+      mockLoadRemote.mockResolvedValue({ default: { install: vi.fn() } });
+      const guard = vi.fn();
+      router.beforeEach((to) => {
+        guard(to.fullPath);
+      });
+
+      registerRemoteModules(app, { router, appName: "test-app" });
+      await flushPromises();
+
+      // A navigation to the current location runs the guards only when forced
+      expect(guard).toHaveBeenCalledWith("/reviews/review/42?tab=info");
+    });
+
     it("loads one valid plugin via createInstance + loadRemote", async () => {
       const { app, router } = createTestApp();
       (global.fetch as any).mockResolvedValue(manifest200([makePlugin()]));

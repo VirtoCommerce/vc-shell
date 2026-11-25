@@ -10,8 +10,9 @@ import { i18n } from "@core/plugins";
  * - `false` — nothing; the stack matches the URL
  * - `true` — clean the URL to match the stack (a non-routable blade was skipped)
  * - a location — redirect there: the URL can't be opened and the main route is shown instead
+ * - `"prevented"` — cancel the navigation: an open blade refused to close (unsaved changes)
  */
-export type RestoreFromUrlResult = boolean | { path: string; replace: true };
+export type RestoreFromUrlResult = boolean | "prevented" | { path: string; replace: true };
 
 /**
  * Restore the blade stack from a parsed URL.
@@ -32,6 +33,7 @@ export type RestoreFromUrlResult = boolean | { path: string; replace: true };
  * @param hasAccess - Optional permission check function
  * @param router - Optional router to resolve the main route's location for the redirect
  * @param routeParams - Route params to preserve on redirect (e.g. sellerId for tenant prefix)
+ * @param modulesLoading - True while remote modules are still loading; their blades are not registered yet
  * @returns `true` if the URL needs cleanup (non-routable blade was skipped), a location to redirect to
  *   if the URL can't be opened, `false` otherwise
  */
@@ -42,6 +44,7 @@ export async function restoreFromUrl(
   hasAccess?: (permissions: string | string[] | undefined) => boolean,
   router?: Router,
   routeParams?: Record<string, string>,
+  modulesLoading?: () => boolean,
 ): Promise<RestoreFromUrlResult> {
   // Skip if no workspace URL to restore
   if (!parsed.workspaceUrl) return false;
@@ -54,7 +57,9 @@ export async function restoreFromUrl(
   // Find workspace blade by URL segment
   const workspaceMatch = bladeRegistry.getBladeByRoute(parsed.workspaceUrl);
 
-  // Guard 1: blade not found
+  // Guard 1: blade not found. While remote modules load, their blades are not registered yet:
+  // keep the address, the host replays it once they are installed.
+  if (!workspaceMatch && modulesLoading?.()) return false;
   if (!workspaceMatch) {
     console.warn(`[restoreFromUrl] No workspace blade found for URL segment '${parsed.workspaceUrl}'`);
     return toMainRoute();
@@ -81,6 +86,7 @@ export async function restoreFromUrl(
   const currentWorkspace = bladeStack.workspace.value;
   if (currentWorkspace?.name !== workspaceMatch.name) {
     await bladeStack.openWorkspace({ name: workspaceMatch.name });
+    if (bladeStack.workspace.value?.name !== workspaceMatch.name) return "prevented";
   }
 
   // If there's a child blade URL, open it (if not already open with matching param)

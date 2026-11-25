@@ -125,7 +125,7 @@ These are reactive `ComputedRef` values that reflect the current blade's state. 
 | Method          | Signature                                  | Description                                                                                                    |
 | --------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
 | `closeSelf`     | `() => Promise<boolean>`                   | Close the current blade. Returns `true` if a guard prevented closure. Respects `onBeforeClose` guards.         |
-| `closeChildren` | `() => Promise<void>`                      | Close all child blades of the current blade                                                                    |
+| `closeChildren` | `() => Promise<boolean>`                   | Close all child blades of the current blade. Returns `true` if a guard kept a child open.                      |
 | `replaceWith`   | `(event: BladeOpenEvent) => Promise<void>` | Replace the current blade with a different one in the same position (destroys the old blade)                   |
 | `coverWith`     | `(event: BladeOpenEvent) => Promise<void>` | Cover the current blade — hides it and opens a new blade on top. Closing the new blade reveals the hidden one. |
 
@@ -228,12 +228,13 @@ const { closeSelf, closeChildren } = useBlade();
 // Close the current blade
 await closeSelf();
 
-// Close all children before doing something
-await closeChildren();
+// Close all children before deleting or reloading the record they edit
+if (await closeChildren()) return; // a child has unsaved changes and stayed open
+await deleteItem();
 </script>
 ```
 
-> **Tip:** `closeSelf()` returns `true` if a close guard prevented the blade from closing, and `false` if the blade was successfully closed. Always check the return value when you need to take action after closure.
+> **Tip:** `closeSelf()` and `closeChildren()` return `true` if a close guard prevented the close, and `false` otherwise. Check the return value before you delete, reload or overwrite data that an open child blade edits.
 
 ### Replacing the Current Blade
 

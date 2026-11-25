@@ -162,5 +162,10 @@ defineSlots<{
   &:hover {
     background: var(--dashboard-widget-card-icon-bg, var(--primary-50));
   }
+
+  &:focus-visible {
+    outline: 2px solid var(--primary-500);
+    outline-offset: -2px;
+  }
 }
 </style>

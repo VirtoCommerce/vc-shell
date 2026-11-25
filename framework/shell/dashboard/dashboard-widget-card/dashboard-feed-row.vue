@@ -2,7 +2,11 @@
 <template>
   <div
     class="dashboard-feed-row"
-    @click="$emit('click')"
+    role="button"
+    tabindex="0"
+    @click="emit('click')"
+    @keydown.enter="onKeydown"
+    @keydown.space="onKeydown"
   >
     <div class="tw-flex tw-items-center tw-gap-2.5 tw-min-w-0">
       <slot />
@@ -17,9 +21,17 @@
 </template>
 
 <script setup lang="ts">
-defineEmits<{
+const emit = defineEmits<{
   click: [];
 }>();
+
+// The row looks and acts clickable, so it opens from the keyboard too; a control in the
+// trailing slot keeps its own Enter/Space
+function onKeydown(event: KeyboardEvent) {
+  if (event.target !== event.currentTarget) return;
+  event.preventDefault();
+  emit("click");
+}
 
 defineSlots<{
   default: (props: any) => any;

@@ -74,7 +74,10 @@ export function useAiAgentContext<
 
   // Get current blade descriptor to identify which blade this context belongs to
   const bladeDescriptor = inject(BladeDescriptorKey, null);
-  const bladeId = computed(() => bladeDescriptor?.value?.id);
+  // The id is fixed for the blade's lifetime; keep the one from setup, so an unmount after
+  // the stack dropped this blade still clears its own context and not the active blade's
+  const ownBladeId = bladeDescriptor?.value?.id;
+  const bladeId = computed(() => bladeDescriptor?.value?.id ?? ownBladeId);
 
   // If service is not available, nothing to bind
   if (!service) {

@@ -20,7 +20,7 @@
               class="vc-data-table-mobile-view__empty-icon"
             />
             <p class="vc-data-table-mobile-view__empty-text">
-              {{ empty?.text || emptyText }}
+              {{ empty?.text || emptyText || $t("COMPONENTS.ORGANISMS.VC_TABLE.EMPTY_TITLE") }}
             </p>
             <VcButton
               v-if="empty?.action"
@@ -52,9 +52,9 @@
           :selection-mode="selectionMode"
           :any-selected="hasSelection"
           :data-key="dataKey"
-          :more-label="moreLabel"
-          :action-sheet-title="actionSheetTitle"
-          :cancel-label="cancelLabel"
+          :more-label="moreLabel ?? $t('COMPONENTS.ORGANISMS.VC_TABLE.MORE')"
+          :action-sheet-title="actionSheetTitle ?? $t('COMPONENTS.ORGANISMS.VC_TABLE.ACTIONS')"
+          :cancel-label="cancelLabel ?? $t('COMPONENTS.ORGANISMS.VC_POPUP.CANCEL')"
           :is-inline-editing="isInlineEditing"
           :is-new-row="newRowIndices?.has(index)"
           :expandable="canExpandRow(item)"
@@ -163,10 +163,6 @@ const props = withDefaults(
     loading: false,
     dataKey: "id",
     empty: undefined,
-    emptyText: "No data available",
-    moreLabel: "More",
-    actionSheetTitle: "Actions",
-    cancelLabel: "Cancel",
     pullToRefresh: false,
     pullToRefreshText: undefined,
     isInlineEditing: false,

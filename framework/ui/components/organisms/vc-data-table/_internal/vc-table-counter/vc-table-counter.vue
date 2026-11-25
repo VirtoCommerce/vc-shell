@@ -1,6 +1,6 @@
 <template>
   <div class="vc-table-counter">
-    <span class="vc-table-counter__label">{{ label }}&nbsp;</span>
+    <span class="vc-table-counter__label">{{ label ?? $t("COMPONENTS.ORGANISMS.VC_TABLE.TOTAL") }}&nbsp;</span>
     <span class="vc-table-counter__value">{{ value }}</span>
   </div>
 </template>
@@ -12,7 +12,6 @@ export interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-  label: "Total",
   value: 0,
 });
 </script>

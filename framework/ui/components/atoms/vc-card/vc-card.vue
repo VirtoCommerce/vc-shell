@@ -32,8 +32,8 @@
       :aria-expanded="isCollapsable ? !isCollapsedInternal : undefined"
       :aria-controls="isCollapsable ? cardBodyId : undefined"
       @click="onHeaderClick"
-      @keydown.enter.prevent="onHeaderClick"
-      @keydown.space.prevent="onHeaderClick"
+      @keydown.enter="onHeaderKeydown"
+      @keydown.space="onHeaderKeydown"
     >
       <slot name="header">
         <div class="vc-card__header-content">
@@ -123,7 +123,23 @@ defineSlots<{
 const cardBodyId = `vc-card-body-${useId()}`;
 const isCollapsedInternal = ref();
 
-function onHeaderClick() {
+// A control inside the header (the actions slot, or a button in a custom header) handles its own
+// clicks and keys; the header must not toggle on them or swallow their Enter/Space
+const INTERACTIVE = "button, a[href], input, select, textarea, [role='button'], [tabindex]";
+function isFromInnerControl(event: Event): boolean {
+  const target = event.target as HTMLElement | null;
+  const control = target?.closest?.(INTERACTIVE);
+  return !!control && control !== event.currentTarget;
+}
+
+function onHeaderKeydown(event: KeyboardEvent) {
+  if (isFromInnerControl(event)) return;
+  event.preventDefault();
+  onHeaderClick(event);
+}
+
+function onHeaderClick(event?: Event) {
+  if (event && isFromInnerControl(event)) return;
   if (props.isCollapsable) {
     isCollapsedInternal.value = !isCollapsedInternal.value;
     emit("state:collapsed", isCollapsedInternal.value);

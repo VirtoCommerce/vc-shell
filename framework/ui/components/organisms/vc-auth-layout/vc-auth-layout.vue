@@ -143,6 +143,13 @@ const containerStyle = computed(() => {
   --auth-layout-version-color: var(--neutrals-400);
 }
 
+// In the dark theme --neutrals-100 and --additional-50 are the same color, so the card
+// merged into the page: a darker page and a visible border set it apart
+:root[data-theme="dark"] {
+  --auth-layout-bg: var(--neutrals-50);
+  --auth-layout-card-border: var(--neutrals-300);
+}
+
 .vc-auth-layout {
   @apply tw-w-full tw-h-full tw-min-h-screen tw-box-border
     tw-flex tw-flex-col tw-items-center tw-justify-center

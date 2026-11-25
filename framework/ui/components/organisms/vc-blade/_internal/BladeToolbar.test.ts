@@ -97,6 +97,15 @@ describe("BladeToolbar", () => {
     expect(wrapper.find(".vc-blade-toolbar--mobile").exists()).toBe(false);
   });
 
+  it("marks a toolbar with no commands, so an empty strip is not shown", () => {
+    expect(factory().find(".vc-blade-toolbar--no-items").exists()).toBe(true);
+    expect(
+      factory({ items: [{ id: "save", title: "Save" }] })
+        .find(".vc-blade-toolbar--no-items")
+        .exists(),
+    ).toBe(false);
+  });
+
   it("renders widgets-container slot when provided", () => {
     const wrapper = factory({}, { "widgets-container": '<div class="widget-container-test">Widgets</div>' });
     expect(wrapper.find(".widget-container-test").exists()).toBe(true);

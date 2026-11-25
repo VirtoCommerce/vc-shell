@@ -28,6 +28,17 @@
       "CHANGE_PASSWORD": "Zmień hasło",
       "PROFILE": "Profil",
       "LOGOUT": "Wyloguj"
+    },
+    "DASHBOARD": {
+      "GRID_LABEL": "Widżety pulpitu. Przeciągnij widżet albo zaznacz go i naciśnij Enter, aby przestawić go klawiszami strzałek.",
+      "PICKED_UP": "Podniesiono {name}. Strzałki przesuwają, Shift ze strzałkami zmienia rozmiar, Enter upuszcza, Escape anuluje.",
+      "DROPPED": "Upuszczono {name} w kolumnie {column}, wierszu {row}.",
+      "MOVE_CANCELLED": "Przenoszenie anulowane. {name} wrócił na pierwotne miejsce i rozmiar.",
+      "MOVED": "Przeniesiono {name} do kolumny {column}, wiersza {row}.",
+      "RESIZED": "Zmieniono rozmiar {name} na {width} na {height} komórek.",
+      "WIDGET_GRABBED": "Podniesiono. Strzałki przesuwają, Enter upuszcza, Escape anuluje.",
+      "WIDGET_IDLE": "Naciśnij Enter, aby podnieść widżet i przestawić go strzałkami.",
+      "WIDGET_LABEL": "{name}, widżet {index} z {total}. {state}"
     }
   },
   "COMPONENTS": {
@@ -57,6 +68,9 @@
       },
       "VC_VIDEO": {
         "NO_SOURCE": "Brak źródła wideo"
+      },
+      "VC_PROGRESS": {
+        "LABEL": "Postęp"
       }
     },
     "MOLECULES": {
@@ -164,7 +178,8 @@
           "PREVIEW": "Podgląd",
           "SPLIT": "Widok obok siebie",
           "SOURCE": "Kod źródłowy"
-        }
+        },
+        "LABEL": "Edytor tekstu sformatowanego"
       }
     },
     "ORGANISMS": {
@@ -409,7 +424,8 @@
           "RESET": "Resetuj"
         },
         "OF": "z",
-        "PAGE": "Strona"
+        "PAGE": "Strona",
+        "TOTAL": "Łącznie"
       },
       "VC_POPUP": {
         "OK": "OK",
@@ -421,6 +437,9 @@
           "ERROR": "Błąd",
           "INFO": "Informacja"
         }
+      },
+      "VC_SIDEBAR": {
+        "CLOSE": "Zamknij panel boczny"
       }
     },
     "THEME_SELECTOR": {

@@ -6,7 +6,7 @@ import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import type { BladeContext } from "@core/types";
 
 export function useHeadlessWidgetHelpers() {
-  const { t } = useI18n({ useScope: "global" });
+  const { t, te } = useI18n({ useScope: "global" });
   // Widgets registered by blade name from another module have no component to inject it from
   const bladeContext = inject(BladeContextKey, undefined);
   const context = (): BladeContext => bladeContext?.value ?? {};
@@ -36,8 +36,9 @@ export function useHeadlessWidgetHelpers() {
   }
 
   function resolveTitle(widget: IWidget): string {
+    // Any widget's title may be a translation key (external widgets included), or plain text
     const title = widget.title ?? "";
-    return widget.headless ? t(title) : title;
+    return title && te(title) ? t(title) : title;
   }
 
   function handleHeadlessClick(widget: IWidget) {

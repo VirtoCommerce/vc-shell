@@ -181,7 +181,7 @@
           class="vc-data-table-mobile-card__expander"
           :class="{ 'vc-data-table-mobile-card__expander--expanded': isExpanded }"
           :aria-expanded="isExpanded"
-          :aria-label="expandLabel"
+          :aria-label="expandLabel ?? $t('COMPONENTS.ORGANISMS.VC_TABLE.EXPAND_ROW')"
           @click.stop="handleExpandToggle"
           @touchstart.stop
         >
@@ -218,7 +218,9 @@
         @click.stop="handleMoreClick"
       >
         <VcIcon icon="lucide-clock" />
-        <span class="vc-data-table-mobile-card__action-title">{{ moreLabel }}</span>
+        <span class="vc-data-table-mobile-card__action-title">{{
+          moreLabel ?? $t("COMPONENTS.ORGANISMS.VC_TABLE.MORE")
+        }}</span>
       </button>
 
       <!-- First 2 actions -->
@@ -244,9 +246,9 @@
     <!-- Action Sheet for overflow -->
     <MobileActionSheet
       :open="isActionSheetOpen"
-      :title="actionSheetTitle"
+      :title="actionSheetTitle ?? $t('COMPONENTS.ORGANISMS.VC_TABLE.ACTIONS')"
       :actions="allActions"
-      :cancel-label="cancelLabel"
+      :cancel-label="cancelLabel ?? $t('COMPONENTS.ORGANISMS.VC_POPUP.CANCEL')"
       @close="isActionSheetOpen = false"
       @action="handleSheetAction"
     />
@@ -321,14 +323,10 @@ const props = withDefaults(
     isInlineEditing: false,
     isNewRow: false,
     dataKey: "id",
-    moreLabel: "More",
-    actionSheetTitle: "Actions",
-    cancelLabel: "Cancel",
     reorderable: false,
     expandable: false,
     isExpanded: false,
     expandedIcon: "lucide-chevron-down",
-    expandLabel: "Toggle row details",
   },
 );
 

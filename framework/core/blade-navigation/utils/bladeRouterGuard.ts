@@ -49,6 +49,7 @@ export async function bladeRouterGuard(
   bladeRegistry: UseBladeRegistryReturn,
   hasAccess?: (permissions: string | string[] | undefined) => boolean,
   router?: Router,
+  modulesLoading?: () => boolean,
 ): Promise<BladeGuardResult> {
   // Only process routes under the root (App) route
   if (!to.matched.some((r) => r.meta?.root)) return undefined;
@@ -93,7 +94,20 @@ export async function bladeRouterGuard(
   >;
 
   // Restore blade stack from URL (idempotent — skips if already matching)
-  const restored = await restoreFromUrl(bladeStack, bladeRegistry, parsed, hasAccess, router, routeParams);
+  const restored = await restoreFromUrl(
+    bladeStack,
+    bladeRegistry,
+    parsed,
+    hasAccess,
+    router,
+    routeParams,
+    modulesLoading,
+  );
+
+  // An open blade refused to close, so stay where the user is
+  if (restored === "prevented") {
+    return false;
+  }
 
   // A URL that can't be opened goes to the main route, by returning the redirect: Vue Router then
   // replaces the URL itself, which a navigation started from inside this guard can't do reliably

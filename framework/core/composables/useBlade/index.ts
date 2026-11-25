@@ -27,7 +27,8 @@ export interface UseBladeReturn<TOptions = Record<string, unknown>> {
   openBlade(event: BladeOpenEvent & { isWorkspace?: boolean }): Promise<void>;
   // Actions — runtime error outside blade context
   closeSelf(): Promise<boolean>;
-  closeChildren(): Promise<void>;
+  /** Returns true if a guard kept a child open; the caller should not go on (e.g. delete or reload the record). */
+  closeChildren(): Promise<boolean>;
   replaceWith(event: BladeOpenEvent): Promise<void>;
   coverWith(event: BladeOpenEvent): Promise<void>;
   // Communication — runtime error outside blade context
@@ -188,9 +189,9 @@ export function useBlade<TOptions = Record<string, unknown>>(): UseBladeReturn<T
     return bladeStack.closeBlade(descriptor!.value.id);
   }
 
-  async function closeChildren(): Promise<void> {
+  async function closeChildren(): Promise<boolean> {
     if (!descriptor) requireContext("closeChildren()");
-    await bladeStack.closeChildren(descriptor!.value.id);
+    return bladeStack.closeChildren(descriptor!.value.id);
   }
 
   async function replaceWith(event: BladeOpenEvent): Promise<void> {

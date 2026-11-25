@@ -145,5 +145,22 @@ describe("assets utilities", () => {
       expect(anchor.rel).toBe("noopener");
       expect(document.body.contains(anchor)).toBe(false);
     });
+
+    it("ignores a url that would run script instead of downloading", () => {
+      const click = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+      const open = vi.spyOn(window, "open").mockImplementation(() => null);
+
+      downloadFile({ url: "javascript:alert(1)", name: "a.png" });
+      downloadFile({ url: " JavaScript:alert(1)" });
+
+      expect(click).not.toHaveBeenCalled();
+      expect(open).not.toHaveBeenCalled();
+    });
+
+    it("downloads a relative platform path", () => {
+      const click = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+      downloadFile({ url: "/assets/a.png" });
+      expect((click.mock.contexts[0] as HTMLAnchorElement).href).toBe(`${window.location.origin}/assets/a.png`);
+    });
   });
 });

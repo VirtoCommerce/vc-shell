@@ -39,4 +39,22 @@ describe("VcSwitch", () => {
       expect(mountSwitch().find(".vc-switch__text").exists()).toBe(false);
     });
   });
+
+  describe("disabled", () => {
+    // The root no longer blocks pointer events, so the label tooltip stays reachable.
+    // Toggling must still be blocked by the native disabled input.
+    it("does not toggle when the track or the inline label is clicked", async () => {
+      const wrapper = mount(VcSwitch as any, {
+        props: { modelValue: false, disabled: true, label: "Commission", labelTooltip: "Default rate" },
+        slots: { default: "Enabled" },
+        attachTo: document.body,
+      });
+      await wrapper.find(".vc-switch__track-label").trigger("click");
+      await wrapper.find(".vc-switch__text").trigger("click");
+      await wrapper.find(".vc-switch__label").trigger("click");
+      expect((wrapper.find('[role="switch"]').element as HTMLInputElement).checked).toBe(false);
+      expect(wrapper.emitted("update:modelValue")).toBeFalsy();
+      wrapper.unmount();
+    });
+  });
 });

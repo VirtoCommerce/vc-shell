@@ -147,3 +147,17 @@ describe("DataTableMobileCard — selection checkbox", () => {
     wrapper.unmount();
   });
 });
+
+describe("DataTableMobileCard — fields", () => {
+  const field = (id: string, type: string) => ({ id, field: id, label: id, type, column: { props: {} } });
+
+  it("gives a date with its time the whole row", () => {
+    const wrapper = mountCard({
+      ...baseProps,
+      layout: { ...baseLayout, fields: [field("customer", "text"), field("created", "datetime")] },
+    });
+    const fields = wrapper.findAll(".vc-data-table-mobile-card__field");
+    expect(fields[0].classes()).not.toContain("vc-data-table-mobile-card__field--wide");
+    expect(fields[1].classes()).toContain("vc-data-table-mobile-card__field--wide");
+  });
+});

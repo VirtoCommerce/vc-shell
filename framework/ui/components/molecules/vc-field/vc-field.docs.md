@@ -44,28 +44,31 @@ VcField renders without form-field chrome (borders, focus rings, placeholders) a
 
 ## Key Props
 
-| Prop           | Type                                                  | Default      | Description                                                                          |
-| -------------- | ----------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------ |
-| `label`        | `string`                                              | --           | Field label text                                                                     |
-| `modelValue`   | `string \| number \| Date`                            | --           | Field content to display                                                             |
-| `displayValue` | `string`                                              | --           | Text shown instead of `modelValue`; `modelValue` is still used for copy/link actions |
-| `type`         | `"text" \| "date" \| "date-ago" \| "link" \| "email"` | `"text"`     | Content type for formatting                                                          |
-| `copyable`     | `boolean`                                             | `false`      | Show a copy-to-clipboard button                                                      |
-| `orientation`  | `"vertical" \| "horizontal"`                          | `"vertical"` | Layout direction of label and value                                                  |
-| `aspectRatio`  | `[number, number]`                                    | `[1, 1]`     | Column width ratio for label and value in horizontal mode                            |
-| `tooltip`      | `string`                                              | --           | Tooltip shown on the label                                                           |
+| Prop           | Type                                                                | Default      | Description                                                                          |
+| -------------- | ------------------------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------ |
+| `label`        | `string`                                                            | --           | Field label text                                                                     |
+| `modelValue`   | `string \| number \| Date`                                          | --           | Field content to display                                                             |
+| `displayValue` | `string`                                                            | --           | Text shown instead of `modelValue`; `modelValue` is still used for copy/link actions |
+| `type`         | `"text" \| "date" \| "datetime" \| "date-ago" \| "link" \| "email"` | `"text"`     | Content type for formatting                                                          |
+| `copyable`     | `boolean`                                                           | `false`      | Show a copy-to-clipboard button                                                      |
+| `orientation`  | `"vertical" \| "horizontal"`                                        | `"vertical"` | Layout direction of label and value                                                  |
+| `aspectRatio`  | `[number, number]`                                                  | `[1, 1]`     | Column width ratio for label and value in horizontal mode                            |
+| `tooltip`      | `string`                                                            | --           | Tooltip shown on the label                                                           |
 
 ## Type Formatting
 
 Each `type` value renders the content differently:
 
-| Type         | Behavior                                                 |
-| ------------ | -------------------------------------------------------- |
-| `"text"`     | Renders the value as plain text                          |
-| `"date"`     | Formats the value as a localized date string             |
-| `"date-ago"` | Formats the value as relative time (e.g., "3 hours ago") |
-| `"link"`     | Renders as a clickable `<a>` tag opening in a new tab    |
-| `"email"`    | Renders as a clickable `mailto:` link                    |
+| Type         | Behavior                                                                                                 |
+| ------------ | -------------------------------------------------------------------------------------------------------- |
+| `"text"`     | Renders the value as plain text                                                                          |
+| `"date"`     | Formats the value as a localized date string                                                             |
+| `"datetime"` | The date with its time on one line ("Nov 19, 2026, 10:18 AM"); the full time with seconds as the tooltip |
+| `"date-ago"` | Formats the value as relative time (e.g., "3 hours ago")                                                 |
+| `"link"`     | Renders as a clickable `<a>` tag opening in a new tab                                                    |
+| `"email"`    | Renders as a clickable `mailto:` link                                                                    |
+
+Use `"datetime"` for audit dates such as Created / Modified, where records from the same day need telling apart. Keep `"date"` for dates whose time means nothing (birth date, "valid from"). `"datetime"` follows the user's regional format and time zone when the host app passes `dateTimeFormat` to the framework (see [Date Utilities](../../../../core/utilities/date/date-utilities.docs.md)), and the browser's otherwise.
 
 ## Common Patterns
 
@@ -82,7 +85,7 @@ Each `type` value renders the content differently:
     <VcField
       label="Created"
       :model-value="order.createdDate"
-      type="date"
+      type="datetime"
     />
     <VcField
       label="Last Modified"

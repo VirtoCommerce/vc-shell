@@ -1,6 +1,7 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import VcField from "@ui/components/molecules/vc-field/vc-field.vue";
+import { DateTimeFormatKey } from "@framework/injection-keys";
 
 describe("VcField", () => {
   const mountComponent = (props: Record<string, unknown> = {}) =>
@@ -83,5 +84,52 @@ describe("VcField", () => {
   it("does not reserve a label track in vertical mode when label is omitted", () => {
     const wrapper = mountComponent({ orientation: "vertical" });
     expect(wrapper.find(".vc-field__label").exists()).toBe(false);
+  });
+
+  describe('type "datetime"', () => {
+    const value = new Date(2026, 10, 19, 10, 18, 42);
+
+    it("shows the date with its time in the browser's format by default", () => {
+      const wrapper = mountComponent({ type: "datetime", modelValue: value });
+      const expected = new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(value);
+      expect(wrapper.find(".vc-field__text").text()).toBe(expected);
+    });
+
+    it("puts the full date and time with seconds in the title", () => {
+      const wrapper = mountComponent({ type: "datetime", modelValue: value });
+      const expected = new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "medium" }).format(value);
+      expect(wrapper.find(".vc-field__text").attributes("title")).toBe(expected);
+    });
+
+    it("parses an ISO string", () => {
+      const wrapper = mountComponent({ type: "datetime", modelValue: value.toISOString() });
+      const expected = new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(value);
+      expect(wrapper.find(".vc-field__text").text()).toBe(expected);
+    });
+
+    it("uses the host's formatter when one is provided", () => {
+      const formatDateTime = vi.fn((_value: unknown, options?: Intl.DateTimeFormatOptions) =>
+        options?.timeStyle === "medium" ? "full" : "host",
+      );
+      const wrapper = mount(VcField as any, {
+        props: { type: "datetime", modelValue: value },
+        global: { provide: { [DateTimeFormatKey as symbol]: { formatDateTime } }, stubs: { VcButton: true } },
+      });
+      expect(wrapper.find(".vc-field__text").text()).toBe("host");
+      expect(wrapper.find(".vc-field__text").attributes("title")).toBe("full");
+      expect(formatDateTime).toHaveBeenCalledWith(value, { dateStyle: "medium", timeStyle: "short" });
+    });
+
+    it('shows "N/A" and no title without a value', () => {
+      const wrapper = mountComponent({ type: "datetime" });
+      expect(wrapper.find(".vc-field__text").text()).toBe("N/A");
+      expect(wrapper.find(".vc-field__text").attributes("title")).toBeUndefined();
+    });
+
+    it("leaves type date without the time", () => {
+      const wrapper = mountComponent({ type: "date", modelValue: value });
+      expect(wrapper.find(".vc-field__text").text()).toBe(value.toLocaleDateString());
+      expect(wrapper.find(".vc-field__text").attributes("title")).toBeUndefined();
+    });
   });
 });

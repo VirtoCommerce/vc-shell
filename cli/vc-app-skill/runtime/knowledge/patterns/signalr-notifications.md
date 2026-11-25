@@ -117,13 +117,13 @@ export default defineAppModule({
 
 The `toast` object controls how the notification appears as a popup.
 
-| Property        | Type                               | Description                                                                             |
-| --------------- | ---------------------------------- | --------------------------------------------------------------------------------------- |
-| `mode`          | `"auto" \| "progress" \| "silent"` | `auto` = fire-and-forget; `progress` = persistent until complete; `silent` = no toast   |
-| `severity`      | `Severity \| (msg) => Severity`    | Static or dynamic: `"info"`, `"warning"`, `"error"`, `"critical"`                       |
-| `timeout`       | `number`                           | Override default timeout (ms). Defaults: info=5s, warning=8s, error/critical=persistent |
-| `isComplete`    | `(msg) => boolean`                 | For `"progress"` mode: returns true when the operation finishes                         |
-| `completedType` | `(msg) => string`                  | For `"progress"` mode: final toast variant (`"success"` or `"error"`)                   |
+| Property        | Type                                         | Description                                                                             |
+| --------------- | -------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `mode`          | `"auto" \| "progress" \| "silent"`           | `auto` = fire-and-forget; `progress` = persistent until complete; `silent` = no toast   |
+| `severity`      | `Severity \| (msg) => Severity`              | Static or dynamic: `"info"`, `"warning"`, `"error"`, `"critical"`                       |
+| `timeout`       | `number`                                     | Override default timeout (ms). Defaults: info=5s, warning=8s, error/critical=persistent |
+| `isComplete`    | `(msg) => boolean`                           | For `"progress"` mode: returns true when the operation finishes                         |
+| `completedType` | `(msg) => "success" \| "warning" \| "error"` | For `"progress"` mode: final toast variant                                              |
 
 #### Toast mode examples
 

@@ -281,10 +281,6 @@ function onInput(e: Event) {
     }
   }
 
-  &--disabled {
-    @apply tw-pointer-events-none;
-  }
-
   &--skeleton {
     @apply tw-flex tw-flex-row tw-items-center tw-gap-2;
   }

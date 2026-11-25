@@ -151,7 +151,7 @@ Formats as currency. Reads the currency code from each row's `currency` field by
 ### Date and Time
 
 ```vue
-<!-- Formatted date -->
+<!-- Date with the time under it -->
 <VcColumn id="created" field="createdDate" title="Created" type="datetime" />
 
 <!-- Relative time ("3 hours ago") -->
@@ -163,6 +163,8 @@ Formats as currency. Reads the currency code from each row's `currency` field by
 <!-- Time only -->
 <VcColumn id="time" field="startTime" title="Start" type="time" />
 ```
+
+`type="datetime"` shows the date on the first line and the time under it in a smaller, muted style, so it fits a narrow column. The tooltip has the full date and time with seconds. On mobile cards it is one line ("Nov 19, 2026, 10:18 AM"). A `format` keeps it on one line in that pattern. It follows the user's regional format and time zone when the host app passes `dateTimeFormat` to the framework (see [Date Utilities](../../../../core/utilities/date/date-utilities.docs.md)), and the browser's otherwise. `date` and `time` always use the browser's.
 
 ### Image
 

@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import VcField from "@ui/components/molecules/vc-field/vc-field.vue";
 import { provide, ref } from "vue";
-import { BladeLoadingKey } from "@framework/injection-keys";
+import { BladeLoadingKey, DateTimeFormatKey } from "@framework/injection-keys";
 
-const TYPE = ["text", "date", "date-ago", "link", "email"];
+const TYPE = ["text", "date", "datetime", "date-ago", "link", "email"];
 const ORIENTATION = ["vertical", "horizontal"];
 
 /**
@@ -86,6 +86,7 @@ The VcField component is used to display labeled read-only information in variou
 
 - Plain text
 - Formatted dates
+- Dates with their time
 - Relative time (date ago)
 - Clickable links
 - Email addresses with mailto links
@@ -118,6 +119,42 @@ export const DateType: Story = {
     type: "date",
     modelValue: new Date(),
   },
+};
+
+/**
+ * Field displaying a date with its time, e.g. "Nov 19, 2026, 10:18 AM". Hover for the time with seconds.
+ */
+export const DateTime: Story = {
+  args: {
+    label: "Created",
+    type: "datetime",
+    modelValue: new Date(2026, 10, 19, 10, 18, 42),
+  },
+};
+
+/**
+ * The host app's regional format and time zone (here German format, Tokyo time), passed to the framework as
+ * `dateTimeFormat`. The story provides it under `DateTimeFormatKey`, as `app.use` does.
+ */
+export const DateTimeRegionalFormat: Story = {
+  args: {
+    label: "Erstellt",
+    type: "datetime",
+    modelValue: new Date(Date.UTC(2026, 10, 19, 10, 18, 42)),
+  },
+  decorators: [
+    () => ({
+      setup() {
+        provide(DateTimeFormatKey, {
+          formatDateTime: (value, options) =>
+            value
+              ? new Intl.DateTimeFormat("de-DE", { timeZone: "Asia/Tokyo", ...options }).format(new Date(value))
+              : "",
+        });
+      },
+      template: "<story />",
+    }),
+  ],
 };
 
 /**

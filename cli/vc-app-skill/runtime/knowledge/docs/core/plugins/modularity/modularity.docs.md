@@ -380,13 +380,13 @@ export default defineAppModule({
 
 **`ToastConfig` options:**
 
-| Field           | Type                               | Default           | Description                                                                           |
-| --------------- | ---------------------------------- | ----------------- | ------------------------------------------------------------------------------------- |
-| `mode`          | `"auto" \| "progress" \| "silent"` | required          | `auto` = show and auto-dismiss; `progress` = stay until complete; `silent` = no toast |
-| `severity`      | `Severity \| (msg) => Severity`    | `"info"`          | Toast type: `"info"`, `"warning"`, `"error"`, `"critical"`                            |
-| `timeout`       | `number`                           | varies            | Auto-dismiss timeout in milliseconds                                                  |
-| `isComplete`    | `(msg) => boolean`                 | `msg.finished`    | For `progress` mode: when to close the toast                                          |
-| `completedType` | `(msg) => "success" \| "error"`    | `() => "success"` | For `progress` mode: final toast type                                                 |
+| Field           | Type                                         | Default           | Description                                                                           |
+| --------------- | -------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------- |
+| `mode`          | `"auto" \| "progress" \| "silent"`           | required          | `auto` = show and auto-dismiss; `progress` = stay until complete; `silent` = no toast |
+| `severity`      | `Severity \| (msg) => Severity`              | `"info"`          | Toast type: `"info"`, `"warning"`, `"error"`, `"critical"`                            |
+| `timeout`       | `number`                                     | varies            | Auto-dismiss timeout in milliseconds                                                  |
+| `isComplete`    | `(msg) => boolean`                           | `msg.finished`    | For `progress` mode: when to close the toast                                          |
+| `completedType` | `(msg) => "success" \| "warning" \| "error"` | `() => "success"` | For `progress` mode: final toast type                                                 |
 
 ### Adding Locales
 
@@ -885,7 +885,7 @@ interface ToastConfig {
   severity?: Severity | ((msg: PushNotification) => Severity);
   timeout?: number;
   isComplete?: (msg: PushNotification) => boolean;
-  completedType?: (msg: PushNotification) => "success" | "error";
+  completedType?: (msg: PushNotification) => "success" | "warning" | "error";
 }
 ```
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.13.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.13.0...v2.13.1) (2026-11-25)
+
+### Bug Fixes
+
+- **framework:** allow "warning" as a progress toast's completed type (#419) ([fe601e8](https://github.com/VirtoCommerce/vc-shell/commit/fe601e83cf20c5dba9ea7f296d94ef776f3dc0c2)), closes [#419](https://github.com/VirtoCommerce/vc-shell/issues/419)
+
 # [2.13.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.12.0...v2.13.0) (2026-11-20)
 
 ### Features

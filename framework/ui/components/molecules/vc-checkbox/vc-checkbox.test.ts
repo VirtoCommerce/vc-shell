@@ -73,6 +73,21 @@ describe("VcCheckbox", () => {
     expect(wrapper.find(".vc-checkbox--disabled").exists()).toBe(true);
   });
 
+  it("does not toggle when a disabled checkbox or its labels are clicked", async () => {
+    const wrapper = mount(VcCheckbox as any, {
+      props: { modelValue: false, disabled: true, label: "Commission", tooltip: "Default rate" },
+      slots: { default: "Enabled" },
+      global: { stubs: { VcIcon: true } },
+      attachTo: document.body,
+    });
+    await wrapper.find(".vc-checkbox__container").trigger("click");
+    await wrapper.find(".vc-checkbox__text").trigger("click");
+    await wrapper.find(".vc-checkbox__label").trigger("click");
+    expect((wrapper.find("input").element as HTMLInputElement).checked).toBe(false);
+    expect(wrapper.emitted("update:modelValue")).toBeFalsy();
+    wrapper.unmount();
+  });
+
   describe("v-model contract", () => {
     it("renders modelValue=true as a checked checkbox", () => {
       const wrapper = mountCheckbox({ modelValue: true });

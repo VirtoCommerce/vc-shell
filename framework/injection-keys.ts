@@ -13,6 +13,7 @@ import type { ISettingsMenuService } from "@core/services/settings-menu-service"
 import type { IAppBarWidgetService } from "@core/services/app-bar-menu-service";
 import type { IAppBarMobileButtonsService } from "@core/services/app-bar-mobile-buttons-service";
 import type { ILanguageService } from "@core/services/language-service";
+import type { DateTimeFormatter } from "@core/utilities/date/dateTimeFormatter";
 
 // Blade navigation keys
 export const BladeBackButtonKey: InjectionKey<Component | undefined> = Symbol("BladeBackButton");
@@ -100,3 +101,6 @@ export const BladeFormKey: InjectionKey<BladeFormInjection> = Symbol("BladeForm"
 
 // Blade loading state (skeleton mode for child components)
 export const BladeLoadingKey: InjectionKey<Ref<boolean>> = Symbol("BladeLoading");
+
+// Date and time formatting in the user's regional format and time zone (FrameworkInstallArgs.dateTimeFormat)
+export const DateTimeFormatKey: InjectionKey<DateTimeFormatter> = Symbol("DateTimeFormat");

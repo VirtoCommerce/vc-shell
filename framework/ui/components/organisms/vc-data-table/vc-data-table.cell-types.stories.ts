@@ -322,6 +322,42 @@ export const CellTypeDateAgo: Story = {
 };
 
 /**
+ * Date-Time Cell Type
+ *
+ * `type="datetime"` puts the time under the date, so it fits the default column width. Hover a cell for the
+ * time with seconds.
+ */
+
+export const CellTypeDateTime: Story = {
+  render: () => ({
+    components: { VcDataTable, VcColumn },
+    setup() {
+      const items = ref([
+        { id: 1, number: "CO261119-00012", customer: "Acme Corp", createdDate: new Date(2026, 10, 19, 10, 18, 42) },
+        { id: 2, number: "CO261119-00011", customer: "Globex", createdDate: new Date(2026, 10, 19, 9, 2, 7) },
+        { id: 3, number: "CO261118-00010", customer: "Initech", createdDate: new Date(2026, 10, 18, 17, 45, 0) },
+        { id: 4, number: "CO261117-00009", customer: "Umbrella", createdDate: null },
+      ]);
+
+      return { items };
+    },
+    template: `
+    <div style="height: 400px">
+      <div class="tw-mb-4 tw-p-3 tw-bg-primary-50 tw-rounded tw-text-sm">
+        <p class="tw-font-semibold">Date-Time Cell Type</p>
+        <p class="tw-text-neutrals-600">Use <code>type="datetime"</code> for audit dates such as Created / Modified. Keep <code>type="date"</code> where the time means nothing.</p>
+      </div>
+      <VcDataTable :items="items">
+        <VcColumn id="number" field="number" title="Number" />
+        <VcColumn id="customer" field="customer" title="Customer" />
+        <VcColumn id="createdDate" field="createdDate" title="Created" type="datetime" sortable />
+      </VcDataTable>
+    </div>
+  `,
+  }),
+};
+
+/**
  * All Cell Types Combined
  *
  * Demonstrates all available cell types in a single table.

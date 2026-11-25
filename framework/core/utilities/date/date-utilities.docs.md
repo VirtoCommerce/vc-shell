@@ -22,6 +22,7 @@ The framework migrated from Moment.js to `date-fns`. These utilities handle the 
 | `convertMomentFormat`   | Converts a Moment.js format string to date-fns format                |
 | `resolveLocale`         | Async: loads and caches a date-fns locale by code (e.g., "fr", "de") |
 | `resolveLocaleSync`     | Sync: returns cached locale or falls back to `enUS` while loading    |
+| `DateTimeFormatter`     | Type: the host app's date-and-time formatter (see below)             |
 
 ## Usage
 
@@ -93,6 +94,26 @@ const locale = resolveLocaleSync("de");
 ```
 
 The locale resolver tries the full code first (e.g., `pt-BR`), then the base language (`pt`), and falls back to `enUS` if neither is available.
+
+### Regional format and time zone
+
+`VcField type="datetime"` and `VcColumn type="datetime"` format dates through a `DateTimeFormatter`. By default it is the browser's (`Intl.DateTimeFormat` with the browser's language and zone). A host app that knows the user's regional format and time zone passes its own at install:
+
+```typescript
+import VirtoShellFramework, { type DateTimeFormatter } from "@vc-shell/framework";
+
+const dateTimeFormat: DateTimeFormatter = {
+  formatDateTime: (value, options) => {
+    if (!value) return "";
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? "" : new Intl.DateTimeFormat(user.locale, { timeZone: user.timeZone, ...options }).format(date);
+  },
+};
+
+app.use(VirtoShellFramework, { router, dateTimeFormat });
+```
+
+`formatDateTime` gets the `Intl.DateTimeFormatOptions` the component needs (`{ dateStyle: "medium" }`, `{ timeStyle: "short" }`, both together, or `timeStyle: "medium"` for the tooltip) and returns `""` for no value or an invalid date. Read reactive state inside it: components call it from computed properties, so they re-render when the user changes the settings. It is also provided under `DateTimeFormatKey` for a test or a Storybook decorator.
 
 ## Tips
 

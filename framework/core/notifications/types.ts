@@ -1,6 +1,7 @@
 import { Component, ComputedRef, InjectionKey } from "vue";
 import { PushNotification } from "@core/api/platform";
 import type { Severity } from "@core/types/severity";
+import type { NotificationType } from "./toast-types";
 
 export type { Severity };
 
@@ -11,8 +12,11 @@ export interface ToastConfig {
   timeout?: number;
   /** For progress mode: determines when the operation is complete. Default: (msg) => !!(msg as any).finished */
   isComplete?: (msg: PushNotification) => boolean;
-  /** For progress mode: determines toast type on completion. Default: () => "success" */
-  completedType?: (msg: PushNotification) => "success" | "error";
+  /**
+   * For progress mode: determines toast type on completion — `"success"`, `"warning"` (e.g. finished with
+   * partial failures) or `"error"`. Default: () => "success"
+   */
+  completedType?: (msg: PushNotification) => Exclude<NotificationType, "default">;
 }
 
 export interface NotificationTypeConfig {

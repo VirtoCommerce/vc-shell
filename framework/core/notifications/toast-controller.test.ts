@@ -94,6 +94,23 @@ describe("ToastController", () => {
         expect.objectContaining({ type: "success", timeout: 5000 }),
       );
     });
+
+    it("passes a completedType of warning through to the completed toast", () => {
+      const progressConfig: NotificationTypeConfig = {
+        toast: {
+          mode: "progress",
+          severity: "info",
+          isComplete: (msg) => !!(msg as any).finished,
+          completedType: () => "warning",
+        },
+      };
+      controller.handle(makePush(), progressConfig);
+      controller.handle(makePush({ ...({} as any), finished: new Date() }), progressConfig);
+      expect(notification.update).toHaveBeenCalledWith(
+        "toast-id-1",
+        expect.objectContaining({ type: "warning", timeout: 5000 }),
+      );
+    });
   });
 
   describe("silent mode", () => {

@@ -264,6 +264,10 @@ onMounted(() => {
     @apply tw-inline-flex tw-items-center tw-cursor-pointer tw-select-none;
   }
 
+  &--disabled &__container {
+    @apply tw-cursor-not-allowed;
+  }
+
   &__input {
     @apply tw-absolute tw-opacity-0 tw-w-0 tw-h-0;
 
@@ -346,7 +350,6 @@ onMounted(() => {
   }
 
   &--disabled {
-    @apply tw-cursor-not-allowed tw-pointer-events-none;
     opacity: var(--checkbox-disabled-opacity);
   }
 

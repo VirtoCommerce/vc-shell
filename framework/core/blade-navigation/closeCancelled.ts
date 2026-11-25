@@ -6,7 +6,8 @@
  * child edits, so stopping it is the point: the rejection ends the caller without a check.
  * vc-shell treats it as a cancellation, not a failure: its error handlers show no toast,
  * no blade error banner and log nothing. Catch it with `isBladeCloseCancelled` only to do
- * something on cancel.
+ * something on cancel. New code passes the action instead, `closeChildren(action)`, which skips
+ * the action without throwing.
  */
 export class BladeCloseCancelledError extends Error {
   constructor() {

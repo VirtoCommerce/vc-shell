@@ -29,9 +29,16 @@ export interface UseBladeReturn<TOptions = Record<string, unknown>> {
   // Actions — runtime error outside blade context
   closeSelf(): Promise<boolean>;
   /**
+   * Closes the child blades, then runs the action. If the user keeps a child open (unsaved
+   * changes), the action does not run. Ask for confirmation inside the action, so the
+   * unsaved-changes question comes first. Resolves to true when the action ran.
+   */
+  closeChildren(action: () => unknown): Promise<boolean>;
+  /**
    * Closes the child blades. If the user keeps one open (unsaved changes), it rejects with
    * BladeCloseCancelledError, so the code after it (delete, reload) does not run; vc-shell
-   * treats that rejection as a cancel and shows no error.
+   * treats that rejection as a cancel and shows no error. That rejection is a safety net for
+   * code written before closeChildren(action); new code passes the action.
    */
   closeChildren(): Promise<void>;
   replaceWith(event: BladeOpenEvent): Promise<void>;
@@ -194,9 +201,18 @@ export function useBlade<TOptions = Record<string, unknown>>(): UseBladeReturn<T
     return bladeStack.closeBlade(descriptor!.value.id);
   }
 
-  async function closeChildren(): Promise<void> {
+  function closeChildren(action: () => unknown): Promise<boolean>;
+  function closeChildren(): Promise<void>;
+  async function closeChildren(action?: () => unknown): Promise<boolean | void> {
     if (!descriptor) requireContext("closeChildren()");
-    if (await bladeStack.closeChildren(descriptor!.value.id)) throw new BladeCloseCancelledError();
+    const kept = await bladeStack.closeChildren(descriptor!.value.id);
+    if (action) {
+      if (kept) return false;
+      await action();
+      return true;
+    }
+    // Without an action, stop the caller: its next line usually deletes or overwrites the record
+    if (kept) throw new BladeCloseCancelledError();
   }
 
   async function replaceWith(event: BladeOpenEvent): Promise<void> {

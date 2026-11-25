@@ -2,6 +2,7 @@ import type { App } from "vue";
 import { notification } from "@core/notifications/notification";
 import { parseError } from "@core/utilities/error";
 import { createLogger } from "@core/utilities";
+import { isBladeCloseCancelled } from "@core/blade-navigation/closeCancelled";
 
 const logger = createLogger("global-error-handler");
 
@@ -32,6 +33,8 @@ export function setupGlobalErrorHandlers(app: App): void {
   // 1. Vue component errors — chain to existing handler
   const existingHandler = app.config.errorHandler;
   app.config.errorHandler = (err, instance, info) => {
+    // The user kept a child blade open: a cancel, not an error
+    if (isBladeCloseCancelled(err)) return;
     logger.error("Unhandled Vue error:", err, "\nInfo:", info);
     if (!isDuplicate(err)) {
       const parsed = parseError(err);
@@ -51,6 +54,10 @@ export function setupGlobalErrorHandlers(app: App): void {
   win.__VC_GLOBAL_ERROR_HANDLERS_INSTALLED__ = true;
 
   const onUnhandledRejection = (event: PromiseRejectionEvent) => {
+    if (isBladeCloseCancelled(event.reason)) {
+      event.preventDefault();
+      return;
+    }
     logger.error("Unhandled rejection:", event.reason);
     if (!isDuplicate(event.reason)) {
       const parsed = parseError(event.reason);

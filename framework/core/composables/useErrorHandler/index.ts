@@ -3,6 +3,7 @@ import { useAppInsights } from "@core/composables/useAppInsights";
 import { useUserManagement } from "@core/composables/useUserManagement";
 import { DisplayableError, parseError } from "@core/utilities/error";
 import { createLogger } from "@core/utilities";
+import { isBladeCloseCancelled } from "@core/blade-navigation/closeCancelled";
 
 const logger = createLogger("use-error-handler");
 
@@ -38,6 +39,8 @@ export function useErrorHandler(capture?: boolean): UseErrorHandlerReturn {
   }
 
   onErrorCaptured((err: unknown) => {
+    // The user kept a child blade open: nothing failed, so no banner and no global toast
+    if (isBladeCloseCancelled(err)) return false;
     if (isProcessing.value) {
       return !capture;
     }

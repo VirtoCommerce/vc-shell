@@ -4,6 +4,7 @@ import { parseError, DisplayableError } from "@core/utilities/error";
 import { setPendingErrorNotification } from "@core/utilities/pendingErrorNotifications";
 import { isSessionExpired } from "@core/utilities/sessionExpiration";
 import { createLogger } from "@core/utilities";
+import { isBladeCloseCancelled } from "@core/blade-navigation/closeCancelled";
 
 // Lazy-resolved reference to the notification singleton.
 // We avoid a top-level import of `@core/notifications/notification`
@@ -54,6 +55,8 @@ export function useAsync<Payload = void, Result = void>(
     try {
       return await innerAction(payload, ...rest);
     } catch (e) {
+      // A cancel, not a failure: keep stopping the caller, without an error state or a toast
+      if (isBladeCloseCancelled(e)) throw e;
       const parsed = parseError(e);
       error.value = parsed;
       logger.error("Async action failed:", e);

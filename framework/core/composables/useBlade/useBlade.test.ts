@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { nextTick } from "vue";
 import { useBlade } from "./index";
+import { BladeCloseCancelledError } from "@core/blade-navigation/closeCancelled";
 import {
   mountWithBladeContext,
   mountWithoutBladeContext,
@@ -42,6 +43,30 @@ describe("useBlade() inside blade context", () => {
     });
     await result.closeChildren();
     expect(mockStack.closeChildren).toHaveBeenCalledWith("blade-parent");
+  });
+
+  it("closeChildren() stops the caller when the user keeps a child blade open", async () => {
+    const { result, mockStack } = mountWithBladeContext(() => useBlade(), {
+      descriptor: { id: "blade-parent" },
+    });
+    vi.mocked(mockStack.closeChildren).mockResolvedValueOnce(true);
+    const deleteRecord = vi.fn();
+
+    const run = async () => {
+      await result.closeChildren();
+      deleteRecord();
+    };
+
+    await expect(run()).rejects.toBeInstanceOf(BladeCloseCancelledError);
+    expect(deleteRecord).not.toHaveBeenCalled();
+  });
+
+  it("closeChildren() lets the caller go on once the children closed", async () => {
+    const { result, mockStack } = mountWithBladeContext(() => useBlade(), {
+      descriptor: { id: "blade-parent" },
+    });
+    vi.mocked(mockStack.closeChildren).mockResolvedValueOnce(false);
+    await expect(result.closeChildren()).resolves.toBeUndefined();
   });
 
   it("callParent() delegates to bladeMessaging.callParent with own id and method", async () => {

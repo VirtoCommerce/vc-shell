@@ -2,6 +2,7 @@
 export { useBladeStack } from "@core/blade-navigation/useBladeStack";
 export { useBladeMessaging } from "@core/blade-navigation/useBladeMessaging";
 export * from "@core/blade-navigation/types";
+export { BladeCloseCancelledError, isBladeCloseCancelled } from "@core/blade-navigation/closeCancelled";
 export { __registerBladeConfig, getBladeConfig, getAllBladeConfigs } from "@core/blade-navigation/bladeConfigRegistry";
 // Table query-state: page-facing pull-accessor only. The TableQueryStateKey service
 // and createBladeQueryState factory stay internal (consumed directly by VcDataTable

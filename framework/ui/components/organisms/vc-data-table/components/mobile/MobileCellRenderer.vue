@@ -45,6 +45,7 @@
         :currency="currency"
         :format="config.column.props.format"
         :variant="dateVariant"
+        inline
         :validate-on-mount="validateOnMount"
         @update="$emit('update', $event)"
         @blur="$emit('blur', $event)"

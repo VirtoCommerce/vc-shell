@@ -74,6 +74,7 @@
         <span
           v-else
           class="vc-field__text"
+          :title="title"
           >{{ formattedValue }}</span
         >
       </div>
@@ -100,13 +101,15 @@ import { VcLabel } from "@ui/components/atoms/vc-label";
 import { VcLink } from "@ui/components/atoms/vc-link";
 import { VcButton } from "@ui/components/atoms/vc-button";
 import { formatDateRelative } from "@core/utilities/date";
+import { useDateTimeFormat } from "@ui/composables/useDateTimeFormat";
 
 const bladeLoading = useBladeLoading();
 
 export interface VcFieldProps {
   label?: string;
   tooltip?: string;
-  type?: "text" | "date" | "date-ago" | "link" | "email";
+  /** "datetime": the date with its time ("Nov 19, 2026, 10:18 AM") in the user's regional format and time zone */
+  type?: "text" | "date" | "datetime" | "date-ago" | "link" | "email";
   modelValue?: string | number | Date;
   /** Text to display instead of modelValue. modelValue is still used for copy/link actions. */
   displayValue?: string;
@@ -121,20 +124,30 @@ const props = withDefaults(defineProps<VcFieldProps>(), {
   aspectRatio: () => [1, 1],
 });
 
+const dateTimeFormat = useDateTimeFormat();
+
+const isDateType = computed(() => props.type === "date" || props.type === "datetime" || props.type === "date-ago");
+
 const formattedValue = computed(() => {
   const val = props.modelValue;
   if (val == null || val === "") {
-    return props.type === "date" || props.type === "date-ago" ? "N/A" : "";
+    return isDateType.value ? "N/A" : "";
   }
 
   if (props.type === "date") {
     return val instanceof Date ? val.toLocaleDateString() : String(val);
+  }
+  if (props.type === "datetime") {
+    return dateTimeFormat.dateTime(val) || String(val);
   }
   if (props.type === "date-ago") {
     return formatDateRelative(val) || "N/A";
   }
   return String(val);
 });
+
+// The full date and time with seconds, for audit-like checks
+const title = computed(() => (props.type === "datetime" && dateTimeFormat.full(props.modelValue)) || undefined);
 
 const copyIcon = ref("lucide-copy");
 

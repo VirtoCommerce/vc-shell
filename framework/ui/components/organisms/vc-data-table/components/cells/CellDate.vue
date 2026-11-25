@@ -1,7 +1,16 @@
 <template>
   <span
-    v-if="value"
+    v-if="stacked && formatted"
+    class="vc-table-cell-date vc-table-cell-date--stacked"
+    :title="dateTimeFormat.full(dateValue)"
+  >
+    <span class="vc-table-cell-date__date">{{ dateTimeFormat.date(dateValue) }}</span>
+    <span class="vc-table-cell-date__time">{{ dateTimeFormat.time(dateValue) }}</span>
+  </span>
+  <span
+    v-else-if="value"
     class="vc-table-cell-date"
+    :title="variant === 'date-time' && !format ? dateTimeFormat.full(dateValue) || undefined : undefined"
     >{{ formatted }}</span
   >
   <span
@@ -16,6 +25,7 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { formatDateWithPattern } from "@core/utilities/date";
+import { useDateTimeFormat } from "@ui/composables/useDateTimeFormat";
 
 const props = defineProps<{
   /** The date value to display (Date, string, or number) */
@@ -24,10 +34,20 @@ const props = defineProps<{
   variant?: "date" | "time" | "date-time";
   /** Custom date format string (moment.js tokens auto-converted) */
   format?: string;
+  /** Date and time on one line instead of two (mobile cards). Only for the 'date-time' variant */
+  inline?: boolean;
 }>();
 
 const { t } = useI18n({ useScope: "global" });
 const locale = window.navigator.language;
+const dateTimeFormat = useDateTimeFormat();
+
+const dateValue = computed(() => props.value as Date | string | number | null | undefined);
+
+// 'date-time' without a custom format: the date with the time under it, in the user's regional format and zone
+const stacked = computed(
+  () => props.variant === "date-time" && !props.format && !props.inline && !!dateTimeFormat.date(dateValue.value),
+);
 
 const formatted = computed(() => {
   if (!props.value) return "";
@@ -42,7 +62,7 @@ const formatted = computed(() => {
   const variant = props.variant || "date";
 
   if (variant === "time") return d.toLocaleTimeString(locale);
-  if (variant === "date-time") return d.toLocaleString(locale);
+  if (variant === "date-time") return dateTimeFormat.dateTime(dateValue.value) || String(props.value);
   return d.toLocaleDateString(locale);
 });
 </script>
@@ -54,6 +74,20 @@ const formatted = computed(() => {
 
   &--not-set {
     color: var(--neutrals-400);
+  }
+
+  &--stacked {
+    @apply tw-flex tw-flex-col tw-min-w-0;
+  }
+
+  &__date {
+    @apply tw-truncate;
+    color: var(--neutrals-600);
+  }
+
+  &__time {
+    @apply tw-truncate tw-text-xs;
+    color: var(--neutrals-500);
   }
 }
 </style>

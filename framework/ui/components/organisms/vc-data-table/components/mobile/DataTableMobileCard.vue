@@ -127,7 +127,10 @@
               v-for="field in layout.fields"
               :key="field.id"
               class="vc-data-table-mobile-card__field"
-              :class="{ 'vc-data-table-mobile-card__field--editing': isInlineEditing }"
+              :class="{
+                'vc-data-table-mobile-card__field--editing': isInlineEditing,
+                'vc-data-table-mobile-card__field--wide': field.type === 'datetime',
+              }"
             >
               <span
                 v-if="field.label"
@@ -819,6 +822,11 @@ onBeforeUnmount(() => {
     // In editing mode, stack label above input
     &--editing {
       @apply tw-flex-col tw-items-stretch;
+    }
+
+    // A date with its time doesn't fit half a phone-width card: give it the whole row
+    &--wide {
+      grid-column: 1 / -1;
     }
   }
 

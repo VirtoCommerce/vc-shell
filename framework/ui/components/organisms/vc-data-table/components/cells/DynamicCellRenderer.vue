@@ -79,6 +79,8 @@ const props = defineProps<{
   format?: string;
   /** Date variant (date, time, date-time) */
   variant?: "date" | "time" | "date-time";
+  /** Date and time on one line instead of two (mobile cards) */
+  inline?: boolean;
   /** Whether to trigger validation on mount (for new rows) */
   validateOnMount?: boolean;
 }>();
@@ -137,6 +139,7 @@ const cellProps = computed(() => {
 
   if ((props.type === "date" || props.type === "time" || props.type === "datetime") && props.variant) {
     baseProps.variant = props.variant;
+    if (props.inline) baseProps.inline = true;
   }
 
   if (props.format) {

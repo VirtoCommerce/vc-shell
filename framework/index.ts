@@ -58,7 +58,9 @@ import {
   IsTabletKey,
   IsTouchKey,
   BladeRoutesKey,
+  DateTimeFormatKey,
 } from "@framework/injection-keys";
+import type { DateTimeFormatter } from "@core/utilities/date/dateTimeFormatter";
 
 import "@fortawesome/fontawesome-free/css/fontawesome.min.css";
 import "@fortawesome/fontawesome-free/css/solid.min.css";
@@ -96,6 +98,19 @@ export interface FrameworkInstallArgs {
    * ```
    */
   aiAgent?: AiAgentPluginOptions;
+  /**
+   * Formats the dates with their time (`VcField` and `VcColumn` type "datetime") in the user's regional format and
+   * time zone. Without it, the browser's are used.
+   *
+   * @example
+   * ```typescript
+   * app.use(VirtoShellFramework, {
+   *   router,
+   *   dateTimeFormat: { formatDateTime: (value, options) => myFormat(value, options) },
+   * });
+   * ```
+   */
+  dateTimeFormat?: DateTimeFormatter;
 }
 
 export interface VcShellFrameworkPlugin {
@@ -315,6 +330,8 @@ export default {
     setupLegacyGlobals(app);
     createAndProvideServices(app);
     installPlugins(app, args);
+
+    if (args.dateTimeFormat) app.provide(DateTimeFormatKey, args.dateTimeFormat);
 
     // Provide AppInsights options synchronously (components inject at setup time)
     provideApplicationInsightsOptions(app, args);

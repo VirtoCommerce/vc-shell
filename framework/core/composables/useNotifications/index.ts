@@ -57,7 +57,7 @@ export function useNotifications(notifyType?: string | string[]): UseNotificatio
   });
 
   return {
-    notifications: computed(() => orderBy(store.history.value, ["created"], ["desc"])),
+    notifications: computed(() => orderBy(store.history.value, [(x) => !!x.isNew, "created"], ["desc", "desc"])),
     moduleNotifications,
     loadFromHistory: store.loadHistory,
     addNotification: store.ingest,

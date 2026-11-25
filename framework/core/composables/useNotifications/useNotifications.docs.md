@@ -60,7 +60,7 @@ For the canonical blade-side example and the registration of notification types 
 
 | Property                 | Type                                                          | Description                                                                                                                    |
 | ------------------------ | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `notifications`          | `ComputedRef<PushNotification[]>`                             | All notification history, sorted newest first. Includes both read and unread.                                                  |
+| `notifications`          | `ComputedRef<PushNotification[]>`                             | All notification history, unread first, then newest first. Includes both read and unread.                                      |
 | `moduleNotifications`    | `ComputedRef<PushNotification[]>`                             | New real-time notifications matching the subscribed types. Only includes items where `isNew` is `true`.                        |
 | `loadFromHistory`        | `(take?: number) => Promise<void>`                            | Loads notification history from the server. `take` controls how many to fetch.                                                 |
 | `addNotification`        | `(message: PushNotification) => void`                         | Manually ingests a notification into the store (e.g., for testing or synthetic events).                                        |

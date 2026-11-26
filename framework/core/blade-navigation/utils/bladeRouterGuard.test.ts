@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { bladeRouterGuard } from "@core/blade-navigation/utils/bladeRouterGuard";
+import { authGuard } from "@core/utilities/authGuard";
+import { takeRedirectAfterLogin } from "@core/utilities/redirectAfterLogin";
 import { createBladeStack } from "@core/blade-navigation/useBladeStack";
 import type { IBladeRegistry, IBladeRegistrationData } from "@core/composables/useBladeRegistry";
 import type { IBladeStack } from "@core/blade-navigation/types";
@@ -420,14 +422,15 @@ describe("bladeRouterGuard", () => {
     });
   });
 
-  describe("a deep link opened while signed out", () => {
-    // The sign-in redirect runs after this guard and remembers the address the user asked for. Checking the
-    // workspace's permissions first would send a signed-out user to the main route, and that is what got remembered.
-    it("leaves the address to the sign-in redirect instead of denying the workspace", async () => {
+  describe("a link opened while signed out", () => {
+    // The framework registers the sign-in redirect before this guard (framework/index.ts). In the other order the
+    // guard denied the workspace to the signed-out user first, and "/" was remembered instead of the link.
+    it("is remembered for after sign-in, before the workspace's permissions are checked", async () => {
       const Empty = { render: () => null };
       const router = createRouter({
         history: createMemoryHistory(),
         routes: [
+          { path: "/login", name: "Login", component: Empty },
           {
             path: "/",
             name: "App",
@@ -438,24 +441,22 @@ describe("bladeRouterGuard", () => {
         ],
       });
       router.addRoute("App", { path: ":pathMatch(.*)*", component: Empty, meta: { bladeCatchAll: true } });
+      // a workspace that needs a permission, which a signed-out user doesn't have
+      const securedRegistry = createMockRegistry({ Orders: { route: "/orders", isWorkspace: true } });
+      securedRegistry.getBladeByRoute("/orders")!.data.permissions = ["order:read"];
+      const securedStack = createBladeStack(securedRegistry);
       const hasAccess = vi.fn(() => false);
-      router.beforeEach((to) => bladeRouterGuard(to, stack, registry, hasAccess, router, undefined, async () => true));
+      router.beforeEach((to) =>
+        authGuard(to, { authState: ref("anonymous"), loadUser: async () => undefined, onSessionCheckFailed: vi.fn() }),
+      );
+      router.beforeEach((to) => bladeRouterGuard(to, securedStack, securedRegistry, hasAccess, router));
 
       await router.push("/orders");
 
-      expect(router.options.history.location).toBe("/orders");
-      expect(stack.workspace.value).toBeUndefined();
+      expect(router.currentRoute.value.name).toBe("Login");
+      expect(takeRedirectAfterLogin()).toBe("/orders");
       expect(hasAccess).not.toHaveBeenCalled();
-    });
-
-    it("restores the workspace as usual once signed in", async () => {
-      const hasAccess = vi.fn(() => true);
-      const to = mockRoute({ path: "/orders", matched: [rootRecord, catchAllRecord] });
-
-      const result = await bladeRouterGuard(to, stack, registry, hasAccess, undefined, undefined, () => false);
-
-      expect(result).toBeUndefined();
-      expect(stack.workspace.value?.name).toBe("Orders");
+      expect(securedStack.workspace.value).toBeUndefined();
     });
   });
 

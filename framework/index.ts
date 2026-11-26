@@ -268,6 +268,23 @@ function installApplicationInsightsDeferred(app: App, args: FrameworkInstallArgs
   });
 }
 
+// Check if user is authenticated and redirect to login page if not.
+// TODO add check if app has login page
+// Only a definitive "not signed in" leads to Login — see authGuard (VM-1829).
+// Registered before the plugins' guards: the blade navigation guard checks a workspace's permissions, which a
+// signed-out user has none of, and would send the link to the main route before it is remembered for after sign-in.
+function setupAuthGuard(router: Router) {
+  router.beforeEach((to) => {
+    const { authState, loadUser } = useUserManagement();
+    return authGuard(to, {
+      authState,
+      loadUser,
+      onSessionCheckFailed: () =>
+        notification.error(i18n.global.t("CORE.ERRORS.SESSION_CHECK_FAILED"), { timeout: 5000 }),
+    });
+  });
+}
+
 function setupRouterGuards(router: Router) {
   const getParam = (to: RouteLocationNormalized) => {
     let param: {
@@ -280,19 +297,6 @@ function setupRouterGuards(router: Router) {
 
     return param;
   };
-
-  // Check if user is authenticated and redirect to login page if not.
-  // TODO add check if app has login page
-  // Only a definitive "not signed in" leads to Login — see authGuard (VM-1829).
-  router.beforeEach((to) => {
-    const { authState, loadUser } = useUserManagement();
-    return authGuard(to, {
-      authState,
-      loadUser,
-      onSessionCheckFailed: () =>
-        notification.error(i18n.global.t("CORE.ERRORS.SESSION_CHECK_FAILED"), { timeout: 5000 }),
-    });
-  });
 
   // Check if user has access to the page and redirect to previous path if not.
   router.beforeEach((to, from) => {
@@ -329,6 +333,7 @@ export default {
     setupBreakpoints(app);
     setupLegacyGlobals(app);
     createAndProvideServices(app);
+    setupAuthGuard(args.router);
     installPlugins(app, args);
 
     if (args.dateTimeFormat) app.provide(DateTimeFormatKey, args.dateTimeFormat);

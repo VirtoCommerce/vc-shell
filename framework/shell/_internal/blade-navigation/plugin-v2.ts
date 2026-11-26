@@ -10,7 +10,6 @@ import { createRouterUrlSink } from "@core/blade-navigation/utils/urlSync";
 import { useBladeRegistry } from "@core/composables/useBladeRegistry";
 import type { IBladeRegistry } from "@core/composables/useBladeRegistry";
 import { usePermissions } from "@core/composables/usePermissions";
-import { useUserManagement } from "@core/composables/useUserManagement";
 import {
   setBladeNavigationInstance,
   setBladeStackInstance,
@@ -103,17 +102,8 @@ export const VcBladeNavigationComponent = {
     // and a write-back from inside beforeEach would re-enter it.
     // The host provides ModulesReady when it loads remote modules; without it there is nothing to wait for.
     const modulesLoading = () => app.runWithContext(() => inject(ModulesReadyKey, null))?.value === false;
-    // Signed out, a link is left to the sign-in redirect (it runs after this guard). A session nobody has asked about
-    // yet is asked about first; that load is shared with the sign-in redirect's own.
-    const { authState, loadUser } = app.runWithContext(() => useUserManagement());
-    const signedOut = async () => {
-      if (authState.value === "unknown") await loadUser().catch(() => undefined);
-      return authState.value === "anonymous";
-    };
     router.beforeEach((to) =>
-      urlSink.suppressWhile(() =>
-        bladeRouterGuard(to, bladeStack, bladeRegistry, hasAccess, router, modulesLoading, signedOut),
-      ),
+      urlSink.suppressWhile(() => bladeRouterGuard(to, bladeStack, bladeRegistry, hasAccess, router, modulesLoading)),
     );
   },
 };

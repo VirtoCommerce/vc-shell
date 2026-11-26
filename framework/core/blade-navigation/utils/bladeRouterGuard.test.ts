@@ -420,6 +420,45 @@ describe("bladeRouterGuard", () => {
     });
   });
 
+  describe("a deep link opened while signed out", () => {
+    // The sign-in redirect runs after this guard and remembers the address the user asked for. Checking the
+    // workspace's permissions first would send a signed-out user to the main route, and that is what got remembered.
+    it("leaves the address to the sign-in redirect instead of denying the workspace", async () => {
+      const Empty = { render: () => null };
+      const router = createRouter({
+        history: createMemoryHistory(),
+        routes: [
+          {
+            path: "/",
+            name: "App",
+            component: Empty,
+            meta: { root: true },
+            children: [{ path: "", name: "Home", component: Empty }],
+          },
+        ],
+      });
+      router.addRoute("App", { path: ":pathMatch(.*)*", component: Empty, meta: { bladeCatchAll: true } });
+      const hasAccess = vi.fn(() => false);
+      router.beforeEach((to) => bladeRouterGuard(to, stack, registry, hasAccess, router, undefined, async () => true));
+
+      await router.push("/orders");
+
+      expect(router.options.history.location).toBe("/orders");
+      expect(stack.workspace.value).toBeUndefined();
+      expect(hasAccess).not.toHaveBeenCalled();
+    });
+
+    it("restores the workspace as usual once signed in", async () => {
+      const hasAccess = vi.fn(() => true);
+      const to = mockRoute({ path: "/orders", matched: [rootRecord, catchAllRecord] });
+
+      const result = await bladeRouterGuard(to, stack, registry, hasAccess, undefined, undefined, () => false);
+
+      expect(result).toBeUndefined();
+      expect(stack.workspace.value?.name).toBe("Orders");
+    });
+  });
+
   // ── Tenant prefix ──────────────────────────────────────────────────────
 
   describe("tenant prefix handling", () => {

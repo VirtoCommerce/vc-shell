@@ -50,6 +50,7 @@ export async function bladeRouterGuard(
   hasAccess?: (permissions: string | string[] | undefined) => boolean,
   router?: Router,
   modulesLoading?: () => boolean,
+  signedOut?: () => boolean | Promise<boolean>,
 ): Promise<BladeGuardResult> {
   // Only process routes under the root (App) route
   if (!to.matched.some((r) => r.meta?.root)) return undefined;
@@ -84,6 +85,12 @@ export async function bladeRouterGuard(
         return false;
       }
     }
+    return undefined;
+  }
+
+  // Signed out, the sign-in redirect that runs after this guard takes the address and remembers it for after
+  // sign-in; checking the workspace's permissions here would send the user to the main route first
+  if (await signedOut?.()) {
     return undefined;
   }
 

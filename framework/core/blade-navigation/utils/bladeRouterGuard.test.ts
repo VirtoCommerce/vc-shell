@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { bladeRouterGuard } from "@core/blade-navigation/utils/bladeRouterGuard";
+import { authGuard } from "@core/utilities/authGuard";
+import { takeRedirectAfterLogin } from "@core/utilities/redirectAfterLogin";
 import { createBladeStack } from "@core/blade-navigation/useBladeStack";
 import type { IBladeRegistry, IBladeRegistrationData } from "@core/composables/useBladeRegistry";
 import type { IBladeStack } from "@core/blade-navigation/types";
@@ -417,6 +419,44 @@ describe("bladeRouterGuard", () => {
       expect(lazyStack.workspace.value?.name).toBe("Reviews");
       expect(router.options.history.location).toBe("/reviews");
       vi.restoreAllMocks();
+    });
+  });
+
+  describe("a link opened while signed out", () => {
+    // The framework registers the sign-in redirect before this guard (framework/index.ts). In the other order the
+    // guard denied the workspace to the signed-out user first, and "/" was remembered instead of the link.
+    it("is remembered for after sign-in, before the workspace's permissions are checked", async () => {
+      const Empty = { render: () => null };
+      const router = createRouter({
+        history: createMemoryHistory(),
+        routes: [
+          { path: "/login", name: "Login", component: Empty },
+          {
+            path: "/",
+            name: "App",
+            component: Empty,
+            meta: { root: true },
+            children: [{ path: "", name: "Home", component: Empty }],
+          },
+        ],
+      });
+      router.addRoute("App", { path: ":pathMatch(.*)*", component: Empty, meta: { bladeCatchAll: true } });
+      // a workspace that needs a permission, which a signed-out user doesn't have
+      const securedRegistry = createMockRegistry({ Orders: { route: "/orders", isWorkspace: true } });
+      securedRegistry.getBladeByRoute("/orders")!.data.permissions = ["order:read"];
+      const securedStack = createBladeStack(securedRegistry);
+      const hasAccess = vi.fn(() => false);
+      router.beforeEach((to) =>
+        authGuard(to, { authState: ref("anonymous"), loadUser: async () => undefined, onSessionCheckFailed: vi.fn() }),
+      );
+      router.beforeEach((to) => bladeRouterGuard(to, securedStack, securedRegistry, hasAccess, router));
+
+      await router.push("/orders");
+
+      expect(router.currentRoute.value.name).toBe("Login");
+      expect(takeRedirectAfterLogin()).toBe("/orders");
+      expect(hasAccess).not.toHaveBeenCalled();
+      expect(securedStack.workspace.value).toBeUndefined();
     });
   });
 

@@ -101,6 +101,38 @@ describe("notification-dropdown ↔ store integration", () => {
     wrapper.unmount();
   });
 
+  it("lists unread notifications first, then newest first", async () => {
+    const store = createNotificationStore();
+    vi.spyOn(store, "markAllAsRead").mockResolvedValue(undefined as any);
+
+    const i18n = createI18n({
+      legacy: false,
+      locale: "en",
+      messages: { en: { COMPONENTS: { NOTIFICATION_DROPDOWN: { EMPTY: "No notifications" } } } },
+    });
+
+    const NotificationDropdown = (await import("./notification-dropdown.vue")).default;
+
+    const wrapper = mount(NotificationDropdown, {
+      global: {
+        plugins: [i18n],
+        provide: {
+          [NotificationStoreKey as symbol]: store,
+        },
+      },
+    });
+
+    store.ingest(makePush({ id: "read-newer", isNew: false, created: new Date("2026-03-03T00:00:00Z") }));
+    store.ingest(makePush({ id: "unset-newest", isNew: undefined, created: new Date("2026-04-01T00:00:00Z") }));
+    store.ingest(makePush({ id: "unread-older", isNew: true, created: new Date("2026-01-01T00:00:00Z") }));
+    await nextTick();
+
+    const ids = wrapper.findAll(".notification-item").map((x) => x.attributes("data-testid"));
+    expect(ids).toEqual(["unread-older", "unset-newest", "read-newer"]);
+
+    wrapper.unmount();
+  });
+
   it("calls markAllAsRead on unmount when there are unread notifications", async () => {
     const store = createNotificationStore();
     vi.spyOn(store, "markAllAsRead").mockResolvedValue(undefined as any);

@@ -145,7 +145,8 @@ export function createNotificationStore(options?: NotificationStoreOptions): Not
 
   async function loadHistory(take = 10) {
     try {
-      const criteria: PushNotificationSearchCriteria = { take };
+      // Unread first, so every unread notification the badge should count fits in the loaded window ahead of read ones
+      const criteria: PushNotificationSearchCriteria = { take, sort: "isNew:desc;created:desc" };
       const result = await notificationsClient.searchPushNotification(criteria);
       history.value = result.notifyEvents ?? [];
     } catch (e) {

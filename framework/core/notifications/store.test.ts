@@ -207,6 +207,16 @@ describe("NotificationStore", () => {
       expect(store.history.value[1].id).toBe("h-2");
     });
 
+    it("requests unread notifications first, then newest first", async () => {
+      mockSearchPushNotification.mockResolvedValueOnce({ notifyEvents: [] });
+
+      await store.loadHistory();
+
+      expect(mockSearchPushNotification).toHaveBeenCalledWith(
+        expect.objectContaining({ take: 10, sort: "isNew:desc;created:desc" }),
+      );
+    });
+
     it("sets empty array when notifyEvents is undefined", async () => {
       mockSearchPushNotification.mockResolvedValueOnce({ notifyEvents: undefined });
 

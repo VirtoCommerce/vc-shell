@@ -30,10 +30,13 @@ import { VcScrollableContainer } from "@ui/components/atoms/vc-scrollable-contai
 const store = useNotificationStore();
 const { t } = useI18n({ useScope: "global" });
 
-// Sort with timestamp normalization to handle mixed string/Date created values
+// Unread first, then newest first. A missing isNew counts as read.
+// Timestamp normalization handles mixed string/Date created values.
 const notifications = computed(() =>
   [...store.history.value].sort(
-    (a, b) => new Date(b.created as unknown as string).getTime() - new Date(a.created as unknown as string).getTime(),
+    (a, b) =>
+      Number(!!b.isNew) - Number(!!a.isNew) ||
+      new Date(b.created as unknown as string).getTime() - new Date(a.created as unknown as string).getTime(),
   ),
 );
 

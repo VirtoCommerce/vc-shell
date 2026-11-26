@@ -36,6 +36,24 @@ describe("useNotifications", () => {
     expect(result.notifications.value).toEqual([]);
   });
 
+  it("notifications lists unread first, then newest first", () => {
+    mockStore.history.value = [
+      { id: "read-newer", isNew: false, created: "2026-03-03T00:00:00Z" },
+      { id: "unset-newest", created: "2026-04-01T00:00:00Z" },
+      { id: "unread-older", isNew: true, created: "2026-01-01T00:00:00Z" },
+    ] as never;
+    try {
+      const { result } = mountWithSetup(() => useNotifications());
+      expect(result.notifications.value.map((x: { id: string }) => x.id)).toEqual([
+        "unread-older",
+        "unset-newest",
+        "read-newer",
+      ]);
+    } finally {
+      mockStore.history.value = [];
+    }
+  });
+
   it("delegates loadFromHistory to store", async () => {
     const { result } = mountWithSetup(() => useNotifications());
     await result.loadFromHistory(10);

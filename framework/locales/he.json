@@ -28,6 +28,17 @@
       "CHANGE_PASSWORD": "שינוי סיסמה",
       "PROFILE": "פרופיל",
       "LOGOUT": "יציאה"
+    },
+    "DASHBOARD": {
+      "GRID_LABEL": "וידג'טים של לוח הבקרה. יש לגרור וידג'ט, או להתמקד בו וללחוץ Enter כדי לסדר מחדש באמצעות מקשי החצים.",
+      "PICKED_UP": "{name} נבחר. החצים מזיזים, Shift והחצים משנים גודל, Enter משחרר, Escape מבטל.",
+      "DROPPED": "{name} שוחרר בעמודה {column}, שורה {row}.",
+      "MOVE_CANCELLED": "ההזזה בוטלה. {name} חזר למיקום ולגודל המקוריים.",
+      "MOVED": "{name} הוזז לעמודה {column}, שורה {row}.",
+      "RESIZED": "הגודל של {name} שונה ל-{width} על {height} תאים.",
+      "WIDGET_GRABBED": "נבחר. החצים מזיזים, Enter משחרר, Escape מבטל.",
+      "WIDGET_IDLE": "הקישו Enter כדי לבחור ולסדר מחדש בעזרת החצים.",
+      "WIDGET_LABEL": "{name}, וידג׳ט {index} מתוך {total}. {state}"
     }
   },
   "COMPONENTS": {
@@ -57,6 +68,9 @@
       },
       "VC_VIDEO": {
         "NO_SOURCE": "אין מקור וידאו"
+      },
+      "VC_PROGRESS": {
+        "LABEL": "התקדמות"
       }
     },
     "MOLECULES": {
@@ -164,7 +178,8 @@
           "PREVIEW": "תצוגה מקדימה",
           "SPLIT": "תצוגה זה לצד זה",
           "SOURCE": "קוד מקור"
-        }
+        },
+        "LABEL": "עורך טקסט עשיר"
       }
     },
     "ORGANISMS": {
@@ -409,7 +424,8 @@
           "RESET": "איפוס"
         },
         "OF": "מתוך",
-        "PAGE": "עמוד"
+        "PAGE": "עמוד",
+        "TOTAL": "סה\"כ"
       },
       "VC_POPUP": {
         "OK": "אישור",
@@ -421,6 +437,9 @@
           "ERROR": "שגיאה",
           "INFO": "מידע"
         }
+      },
+      "VC_SIDEBAR": {
+        "CLOSE": "סגירת הסרגל הצדדי"
       }
     },
     "THEME_SELECTOR": {

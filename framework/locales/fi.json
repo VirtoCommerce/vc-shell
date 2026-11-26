@@ -28,6 +28,17 @@
       "CHANGE_PASSWORD": "Vaihda salasana",
       "PROFILE": "Profiili",
       "LOGOUT": "Kirjaudu ulos"
+    },
+    "DASHBOARD": {
+      "GRID_LABEL": "Koontinäytön pienoisohjelmat. Vedä pienoisohjelmaa tai valitse se ja paina Enter järjestääksesi sen nuolinäppäimillä.",
+      "PICKED_UP": "{name} valittu. Nuolinäppäimet siirtävät, Vaihto ja nuolet muuttavat kokoa, Enter pudottaa, Esc peruuttaa.",
+      "DROPPED": "{name} pudotettu sarakkeeseen {column}, riville {row}.",
+      "MOVE_CANCELLED": "Siirto peruttu. {name} palasi alkuperäiseen paikkaan ja kokoon.",
+      "MOVED": "{name} siirretty sarakkeeseen {column}, riville {row}.",
+      "RESIZED": "{name} muutettu kokoon {width} × {height} solua.",
+      "WIDGET_GRABBED": "Valittu. Nuolet siirtävät, Enter pudottaa, Esc peruuttaa.",
+      "WIDGET_IDLE": "Paina Enter valitaksesi ja järjestä uudelleen nuolinäppäimillä.",
+      "WIDGET_LABEL": "{name}, pienoissovellus {index}/{total}. {state}"
     }
   },
   "COMPONENTS": {
@@ -57,6 +68,9 @@
       },
       "VC_VIDEO": {
         "NO_SOURCE": "Ei videolähdettä"
+      },
+      "VC_PROGRESS": {
+        "LABEL": "Edistyminen"
       }
     },
     "MOLECULES": {
@@ -164,7 +178,8 @@
           "PREVIEW": "Esikatselu",
           "SPLIT": "Rinnakkaisnäkymä",
           "SOURCE": "Lähdekoodi"
-        }
+        },
+        "LABEL": "Muotoillun tekstin editori"
       }
     },
     "ORGANISMS": {
@@ -409,7 +424,8 @@
           "RESET": "Nollaa"
         },
         "OF": "/",
-        "PAGE": "Sivu"
+        "PAGE": "Sivu",
+        "TOTAL": "Yhteensä"
       },
       "VC_POPUP": {
         "OK": "OK",
@@ -421,6 +437,9 @@
           "ERROR": "Virhe",
           "INFO": "Tietoa"
         }
+      },
+      "VC_SIDEBAR": {
+        "CLOSE": "Sulje sivupalkki"
       }
     },
     "THEME_SELECTOR": {

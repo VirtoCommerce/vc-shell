@@ -65,8 +65,17 @@ vi.mock("@ui/components/organisms/vc-app/_internal/app-bar/composables/useAppBar
   provideAppBarState: vi.fn(),
 }));
 
+const mockRouteQuery: Record<string, string> = {};
+
+vi.mock("@core/composables/useEnvironmentName", async () => {
+  const { ref } = await import("vue");
+  return {
+    useEnvironmentName: () => ({ environmentName: ref("QA"), isIgnored: ref(false), color: ref(undefined) }),
+  };
+});
+
 vi.mock("vue-router", () => ({
-  useRoute: () => ({ query: {} }),
+  useRoute: () => ({ query: mockRouteQuery }),
   useRouter: () => ({
     getRoutes: () => [],
     push: vi.fn(),
@@ -177,6 +186,23 @@ describe("vc-app", () => {
     mockBladeStack.blades.value = [];
     mockBladeStack.isMaximized.mockReset();
     mockBladeStack.isMaximized.mockReturnValue(false);
+  });
+
+  it("shows the environment banner", () => {
+    mockIsAppReady.value = true;
+    const wrapper = mountApp();
+    expect(wrapper.find(".vc-environment-banner").exists()).toBe(true);
+  });
+
+  it("hides the environment banner in embedded mode; the host app shows its own", () => {
+    mockRouteQuery.EmbeddedMode = "true";
+    mockIsAppReady.value = true;
+    try {
+      const wrapper = mountApp();
+      expect(wrapper.find(".vc-environment-banner").exists()).toBe(false);
+    } finally {
+      delete mockRouteQuery.EmbeddedMode;
+    }
   });
 
   it("shows loading state when app is not ready", () => {

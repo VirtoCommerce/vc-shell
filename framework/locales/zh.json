@@ -28,6 +28,17 @@
       "CHANGE_PASSWORD": "更改密码",
       "PROFILE": "个人资料",
       "LOGOUT": "退出登录"
+    },
+    "DASHBOARD": {
+      "GRID_LABEL": "仪表板小组件。拖动小组件，或选中后按 Enter 键，再用方向键重新排列。",
+      "PICKED_UP": "已选中 {name}。使用方向键移动，Shift 加方向键调整大小，Enter 放置，Escape 取消。",
+      "DROPPED": "{name} 已放置在第 {column} 列、第 {row} 行。",
+      "MOVE_CANCELLED": "已取消移动。{name} 已恢复到原来的位置和大小。",
+      "MOVED": "{name} 已移动到第 {column} 列、第 {row} 行。",
+      "RESIZED": "{name} 已调整为 {width} × {height} 个单元格。",
+      "WIDGET_GRABBED": "已选中。方向键移动，Enter 放置，Escape 取消。",
+      "WIDGET_IDLE": "按 Enter 选中，然后用方向键重新排列。",
+      "WIDGET_LABEL": "{name}，第 {index} 个小部件，共 {total} 个。{state}"
     }
   },
   "COMPONENTS": {
@@ -57,6 +68,9 @@
       },
       "VC_VIDEO": {
         "NO_SOURCE": "无视频源"
+      },
+      "VC_PROGRESS": {
+        "LABEL": "进度"
       }
     },
     "MOLECULES": {
@@ -164,7 +178,8 @@
           "PREVIEW": "预览",
           "SPLIT": "并排视图",
           "SOURCE": "源代码"
-        }
+        },
+        "LABEL": "富文本编辑器"
       }
     },
     "ORGANISMS": {
@@ -409,7 +424,8 @@
           "RESET": "重置"
         },
         "OF": "/",
-        "PAGE": "页"
+        "PAGE": "页",
+        "TOTAL": "总计"
       },
       "VC_POPUP": {
         "OK": "确定",
@@ -421,6 +437,9 @@
           "ERROR": "错误",
           "INFO": "信息"
         }
+      },
+      "VC_SIDEBAR": {
+        "CLOSE": "关闭侧边栏"
       }
     },
     "THEME_SELECTOR": {

@@ -176,6 +176,7 @@
 </template>
 <script lang="ts" setup>
 import { ref, watch, onBeforeUnmount, computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { useBladeLoading } from "@ui/composables/useBladeLoading";
 import { VcSkeleton } from "@ui/components/atoms/vc-skeleton";
 
@@ -239,6 +240,11 @@ export interface VcEditorProps extends IFormFieldProps {
   toolbar?: ToolbarNames[];
   extensions?: Extension[];
   customButtons?: CustomToolbarItem[];
+  /**
+   * The format the value is stored in. Without it the editor guesses from the value, and an empty
+   * value is taken as Markdown, so a field the server keeps as HTML gets Markdown on its first save.
+   */
+  contentType?: "html" | "markdown";
 }
 
 export interface VcEditorEmits {
@@ -252,6 +258,7 @@ const props = withDefaults(defineProps<VcEditorProps>(), {
 });
 
 const emit = defineEmits<VcEditorEmits>();
+const { t } = useI18n({ useScope: "global" });
 
 // The same source of ids and invalid state every other form control uses, so a
 // group-level invalid reaches the editor and the error element can be referenced.
@@ -386,8 +393,8 @@ const formattedSource = ref(props.modelValue || "");
 watch(
   () => props.modelValue,
   (value) => {
-    // Detect content type
-    detectedType.value = detectContentType(value || "");
+    // The declared format wins; guessing is only the fallback
+    detectedType.value = props.contentType ?? detectContentType(value || "");
 
     if (detectedType.value === "html") {
       try {
@@ -494,7 +501,7 @@ const editableAttributes = computed<Record<string, string>>(() => {
     // plain <div> is treated as generic, which prohibits aria-label.
     role: "textbox",
     "aria-multiline": "true",
-    "aria-label": props.label || "Rich text editor",
+    "aria-label": props.label || t("COMPONENTS.MOLECULES.VC_EDITOR.LABEL"),
   };
   // The error element is not rendered in fullscreen, and pointing at an id that
   // does not exist is worse than pointing at nothing.

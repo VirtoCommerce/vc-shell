@@ -4,7 +4,7 @@ import { mount } from "@vue/test-utils";
 import WidgetAlertsPopover from "./WidgetAlertsPopover.vue";
 import type { IWidgetAlert } from "@core/services/widget-service";
 
-vi.mock("vue-i18n", () => ({ useI18n: () => ({ t: (k: string) => k }) }));
+vi.mock("vue-i18n", () => ({ useI18n: () => ({ t: (k: string) => k, te: () => false }) }));
 vi.mock("@ui/composables/useTeleportTarget", () => ({ useTeleportTarget: () => ({ teleportTarget: "body" }) }));
 
 function mountPopover(alerts: IWidgetAlert[], props: Record<string, unknown> = {}) {

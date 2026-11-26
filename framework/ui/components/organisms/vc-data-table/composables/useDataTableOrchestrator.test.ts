@@ -369,6 +369,36 @@ describe("useDataTableOrchestrator", () => {
     const emitted = (options: VcDataTableOrchestratorOptions<TestItem>, event: string) =>
       (options.emit as ReturnType<typeof vi.fn>).mock.calls.filter(([name]) => name === event);
 
+    const clickIn = (columnId: string) => {
+      const cell = document.createElement("td");
+      cell.setAttribute("data-column-id", columnId);
+      const input = document.createElement("span");
+      cell.appendChild(input);
+      const event = new MouseEvent("click");
+      Object.defineProperty(event, "target", { value: input });
+      return event;
+    };
+
+    it("does not report a row click when the click opens a cell editor", () => {
+      const options = cellEditOptions();
+      const readonlyCol = { props: { id: "name", field: "name" }, slots: {} } as unknown as ColumnInstance;
+      options.visibleColumns = computed(() => [editableCol, readonlyCol]);
+      const { result, app } = withSetup(() => useDataTableOrchestrator<TestItem>(options));
+      const [a] = options.props.items as TestItem[];
+
+      try {
+        result.handleCellClick(a, "key", 0, editableCol);
+        result.handleRowClick(a, 0, clickIn("key"));
+        expect(emitted(options, "row-click")).toHaveLength(0);
+
+        // A read-only cell of the same row still opens the record
+        result.handleRowClick(a, 0, clickIn("name"));
+        expect(emitted(options, "row-click")).toHaveLength(1);
+      } finally {
+        app.unmount();
+      }
+    });
+
     it("ignores a second complete or cancel for a cell that is already closed", () => {
       const options = cellEditOptions();
       const { result, app } = withSetup(() => useDataTableOrchestrator<TestItem>(options));

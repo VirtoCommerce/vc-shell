@@ -785,7 +785,19 @@ export function useDataTableOrchestrator<T extends Record<string, unknown>>(
     onSelectAll: handleSelectAllChange,
   });
 
+  // In cell edit mode a click on an editable cell opens (or stays in) its editor; it is not
+  // a click on the row, which usually opens the record's blade
+  const isEditableCellClick = (event: Event): boolean => {
+    if (props.editMode !== "cell") return false;
+    const cell = (event.target as HTMLElement | null)?.closest?.("[data-column-id]");
+    const columnId = cell?.getAttribute("data-column-id");
+    if (!columnId) return false;
+    const col = visibleColumns.value.find((c) => c.props.id === columnId);
+    return !!col && !!(col.slots.editor || col.props.editable);
+  };
+
   const handleRowClick = (item: T, index: number, event: Event) => {
+    if (isEditableCellClick(event)) return;
     const itemKey = getItemKey(item, index);
     const isSameItem = props.activeItemId != null && itemKey === String(props.activeItemId);
     emit("update:activeItemId", isSameItem ? undefined : itemKey);

@@ -84,7 +84,7 @@ describe("VcProgress", () => {
 
     it("has default aria-label", () => {
       const wrapper = mountComponent();
-      expect(wrapper.attributes("aria-label")).toBe("Progress");
+      expect(wrapper.attributes("aria-label")).toBe("COMPONENTS.ATOMS.VC_PROGRESS.LABEL");
     });
 
     it("uses custom aria-label", () => {

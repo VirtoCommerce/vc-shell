@@ -80,9 +80,10 @@ defineSlots<{
 $variants: info, warning, danger, success, light-danger, info-dark, primary;
 
 .vc-status {
-  @apply tw-inline-block tw-font-normal tw-whitespace-nowrap tw-text-xs tw-truncate tw-text-center tw-border tw-border-solid tw-box-border;
+  @apply tw-font-normal tw-whitespace-nowrap tw-text-xs tw-truncate tw-text-center tw-border tw-border-solid tw-box-border;
   @apply tw-py-1 tw-px-3 tw-rounded-[var(--status-border-radius)];
-  @apply tw-flex tw-items-center tw-justify-center tw-flex-row tw-relative;
+  // inline: the badge is as wide as its text, not the cell or row it sits in
+  @apply tw-inline-flex tw-max-w-full tw-items-center tw-justify-center tw-flex-row tw-relative;
   @apply tw-border-[length:var(--status-border-width)] tw-bg-[color:var(--status-bg-color)] tw-border-[color:var(--status-border-color)];
 
   &.vc-status--dot {

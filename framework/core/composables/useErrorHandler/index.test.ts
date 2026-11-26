@@ -34,6 +34,28 @@ vi.mock("@core/utilities/error", () => ({
 }));
 
 import { useErrorHandler } from "./index";
+import { BladeCloseCancelledError } from "@core/blade-navigation/closeCancelled";
+import { defineComponent, h, type Ref } from "vue";
+import { mount } from "@vue/test-utils";
+import type { DisplayableError } from "@core/utilities/error";
+
+// A child that throws from setup, under a parent that captures with useErrorHandler
+function captureFrom(error: Error) {
+  let captured!: Ref<DisplayableError | null>;
+  const Child = defineComponent({
+    setup() {
+      throw error;
+    },
+  });
+  const Parent = defineComponent({
+    setup() {
+      captured = useErrorHandler(true).error;
+      return () => h(Child);
+    },
+  });
+  mount(Parent);
+  return captured;
+}
 
 describe("useErrorHandler", () => {
   it("returns the expected API shape", () => {
@@ -61,5 +83,13 @@ describe("useErrorHandler", () => {
     expect(typeof result.reset).toBe("function");
     // Should not throw
     result.reset();
+  });
+
+  it("records a real error from a child", () => {
+    expect(captureFrom(new Error("boom")).value?.message).toBe("boom");
+  });
+
+  it("does not turn a kept-open child blade into an error", () => {
+    expect(captureFrom(new BladeCloseCancelledError()).value).toBeNull();
   });
 });

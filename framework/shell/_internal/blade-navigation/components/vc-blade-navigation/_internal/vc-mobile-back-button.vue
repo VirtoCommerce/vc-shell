@@ -6,11 +6,12 @@
   >
     <template #trigger="{ click }">
       <OnLongPress
-        as="button"
+        as="span"
         @trigger="click"
       >
         <VcButton
           ref="buttonRef"
+          :aria-label="$t('COMPONENTS.MOLECULES.VC_BREADCRUMBS.BACK')"
           icon="lucide-arrow-left"
           icon-class="tw-text-neutrals-500"
           icon-size="l"

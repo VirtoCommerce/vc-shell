@@ -14,7 +14,10 @@ vi.mock("@vueuse/core", async (importOriginal) => ({
   useElementSize: () => ({ width: stripWidth, height: ref(0) }),
 }));
 vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string, p?: Record<string, unknown>) => (p?.title ? `${k}:${p.title}` : k) }),
+  useI18n: () => ({
+    t: (k: string, p?: Record<string, unknown>) => (p?.title ? `${k}:${p.title}` : k),
+    te: () => false,
+  }),
 }));
 vi.mock("@ui/composables/useTeleportTarget", () => ({ useTeleportTarget: () => ({ teleportTarget: "body" }) }));
 vi.mock("sortablejs", () => ({ default: { create: () => ({ option: vi.fn(), destroy: vi.fn() }) } }));

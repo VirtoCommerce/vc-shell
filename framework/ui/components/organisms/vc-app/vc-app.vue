@@ -13,7 +13,7 @@
     }"
   >
     <VcEnvironmentBanner
-      v-if="!isEnvironmentIgnored && environmentName"
+      v-if="!isEmbedded && !isEnvironmentIgnored && environmentName"
       :name="environmentName"
       :color="environmentColor"
     />

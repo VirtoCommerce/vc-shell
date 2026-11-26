@@ -150,8 +150,10 @@ export function createBladeStack(
       return false;
     }
 
-    // Close all existing blades (no guards — workspace switch is unconditional)
-    _closeBladesCleanup([..._blades.value]);
+    // Switching the workspace closes every blade, so each one may refuse (unsaved changes)
+    const bladesToClose = [..._blades.value];
+    if (await _checkGuards(bladesToClose)) return false;
+    _closeBladesCleanup(bladesToClose);
 
     // Create workspace descriptor
     const descriptor = createWorkspaceDescriptor(event, _descriptorCtx);
@@ -327,22 +329,21 @@ export function createBladeStack(
 
   // ── Close Children ──────────────────────────────────────────────────────
 
-  /** @returns true when children were actually closed. */
-  async function _closeChildren(parentId: string): Promise<boolean> {
+  async function _closeChildren(parentId: string): Promise<CloseOutcome> {
     const parentIndex = _blades.value.findIndex((b) => b.id === parentId);
-    if (parentIndex === -1) return false;
+    if (parentIndex === -1) return "refused";
 
     const children = _blades.value.slice(parentIndex + 1);
-    if (children.length === 0) return false;
+    if (children.length === 0) return "refused";
 
     // Check guards (deepest first)
     const prevented = await _checkGuards(children);
-    if (prevented) return false;
+    if (prevented) return "prevented";
 
     // Cleanup and remove
     _closeBladesCleanup(children);
     _blades.value = _blades.value.slice(0, parentIndex + 1);
-    return true;
+    return "closed";
   }
 
   // URL sync. The sink resolves the location from this stack, so it runs after the
@@ -376,8 +377,10 @@ export function createBladeStack(
     return outcome === "prevented";
   }
 
-  async function closeChildren(parentId: string): Promise<void> {
-    if (await _closeChildren(parentId)) urlSink.replace();
+  async function closeChildren(parentId: string): Promise<boolean> {
+    const outcome = await _closeChildren(parentId);
+    if (outcome === "closed") urlSink.replace();
+    return outcome === "prevented";
   }
 
   // ── Guards ────────────────────────────────────────────────────────────────

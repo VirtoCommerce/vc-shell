@@ -76,7 +76,7 @@
                   v-if="closeButton"
                   type="button"
                   class="vc-sidebar__close"
-                  :aria-label="closeAriaLabel"
+                  :aria-label="closeAriaLabel ?? $t('COMPONENTS.ORGANISMS.VC_SIDEBAR.CLOSE')"
                   @click="closeByReason('action')"
                 >
                   <VcIcon
@@ -235,7 +235,6 @@ const props = withDefaults(defineProps<Props>(), {
   title: "",
   subtitle: "",
   ariaLabel: "",
-  closeAriaLabel: "Close sidebar",
   closeButton: true,
   inset: true,
   zIndex: 9200,

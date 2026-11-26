@@ -28,6 +28,17 @@
       "CHANGE_PASSWORD": "Ändra lösenord",
       "PROFILE": "Profil",
       "LOGOUT": "Logga ut"
+    },
+    "DASHBOARD": {
+      "GRID_LABEL": "Instrumentpanelens widgetar. Dra en widget, eller markera den och tryck på Enter för att flytta den med piltangenterna.",
+      "PICKED_UP": "{name} upplockad. Piltangenterna flyttar, Skift och piltangenterna ändrar storlek, Retur släpper, Escape avbryter.",
+      "DROPPED": "{name} släppt i kolumn {column}, rad {row}.",
+      "MOVE_CANCELLED": "Flytten avbröts. {name} är tillbaka på sin ursprungliga plats och storlek.",
+      "MOVED": "{name} flyttad till kolumn {column}, rad {row}.",
+      "RESIZED": "{name} ändrad till {width} gånger {height} celler.",
+      "WIDGET_GRABBED": "Upplockad. Piltangenterna flyttar, Retur släpper, Escape avbryter.",
+      "WIDGET_IDLE": "Tryck på Retur för att plocka upp och ordna om med piltangenterna.",
+      "WIDGET_LABEL": "{name}, widget {index} av {total}. {state}"
     }
   },
   "COMPONENTS": {
@@ -57,6 +68,9 @@
       },
       "VC_VIDEO": {
         "NO_SOURCE": "Ingen videokälla"
+      },
+      "VC_PROGRESS": {
+        "LABEL": "Förlopp"
       }
     },
     "MOLECULES": {
@@ -164,7 +178,8 @@
           "PREVIEW": "Förhandsgranska",
           "SPLIT": "Sida vid sida",
           "SOURCE": "Källkod"
-        }
+        },
+        "LABEL": "Redigerare för formaterad text"
       }
     },
     "ORGANISMS": {
@@ -409,7 +424,8 @@
           "RESET": "Återställ"
         },
         "OF": "av",
-        "PAGE": "Sida"
+        "PAGE": "Sida",
+        "TOTAL": "Totalt"
       },
       "VC_POPUP": {
         "OK": "OK",
@@ -421,6 +437,9 @@
           "ERROR": "Fel",
           "INFO": "Information"
         }
+      },
+      "VC_SIDEBAR": {
+        "CLOSE": "Stäng sidofältet"
       }
     },
     "THEME_SELECTOR": {

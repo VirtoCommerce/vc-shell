@@ -1,4 +1,24 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+
+// The real English texts, so the announcements read as a screen reader user hears them
+vi.mock("vue-i18n", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("vue-i18n")>();
+  const en = (await import("../../../locales/en.json")).default as Record<string, unknown>;
+  const lookup = (key: string) =>
+    key.split(".").reduce<unknown>((node, part) => (node as Record<string, unknown> | undefined)?.[part], en);
+  return {
+    ...actual,
+    useI18n: () => ({
+      t: (key: string, params: Record<string, unknown> = {}) => {
+        const message = lookup(key);
+        return typeof message === "string"
+          ? message.replace(/\{(\w+)\}/g, (_, name: string) => String(params[name] ?? ""))
+          : key;
+      },
+      te: (key: string) => typeof lookup(key) === "string",
+    }),
+  };
+});
 import { mount, flushPromises } from "@vue/test-utils";
 import { defineComponent, h, markRaw, ref } from "vue";
 import GridstackDashboard from "./GridstackDashboard.vue";
@@ -139,9 +159,8 @@ describe("GridstackDashboard", () => {
   it("renders default aria-label on the grid", () => {
     const wrapper = mountGridstack();
     const grid = wrapper.find(".grid-stack");
-    expect(grid.attributes("aria-label")).toBe(
-      "Dashboard widgets. Drag a widget, or focus one and press Enter to rearrange with the arrow keys.",
-    );
+    // The template's $t, which unit mounts stub to return the key
+    expect(grid.attributes("aria-label")).toBe("SHELL.DASHBOARD.GRID_LABEL");
   });
 
   it("renders custom aria-label", () => {

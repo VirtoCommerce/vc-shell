@@ -204,7 +204,7 @@ export interface IBladeStack {
   /** The last visible blade */
   readonly activeBlade: ComputedRef<BladeDescriptor | undefined>;
 
-  /** Switch to a different workspace — clears all existing blades */
+  /** Switch to a different workspace — closes all existing blades, respecting their guards */
   openWorkspace(event: BladeOpenEvent): Promise<void>;
   /** Open a new blade as a child of the active blade */
   openBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void>;
@@ -214,8 +214,8 @@ export interface IBladeStack {
   replaceCurrentBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void>;
   /** Cover the current blade — hides it and opens a new blade on top (closing reveals the hidden blade) */
   coverCurrentBlade(event: BladeOpenEvent & { parentId?: string }): Promise<void>;
-  /** Close all children of a blade (deepest first, respecting guards) */
-  closeChildren(parentId: string): Promise<void>;
+  /** Close all children of a blade (deepest first, respecting guards). Returns true if a guard prevented the close. */
+  closeChildren(parentId: string): Promise<boolean>;
 
   /**
    * Register a before-close guard for a blade.

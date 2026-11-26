@@ -28,6 +28,17 @@
       "CHANGE_PASSWORD": "パスワード変更",
       "PROFILE": "プロフィール",
       "LOGOUT": "ログアウト"
+    },
+    "DASHBOARD": {
+      "GRID_LABEL": "ダッシュボードのウィジェット。ウィジェットをドラッグするか、選択して Enter キーを押し、矢印キーで並べ替えます。",
+      "PICKED_UP": "{name} を選択しました。矢印キーで移動、Shift と矢印キーでサイズ変更、Enter で配置、Escape でキャンセルします。",
+      "DROPPED": "{name} を {column} 列 {row} 行に配置しました。",
+      "MOVE_CANCELLED": "移動をキャンセルしました。{name} は元の位置とサイズに戻りました。",
+      "MOVED": "{name} を {column} 列 {row} 行に移動しました。",
+      "RESIZED": "{name} のサイズを {width} × {height} セルに変更しました。",
+      "WIDGET_GRABBED": "選択中。矢印キーで移動、Enter で配置、Escape でキャンセル。",
+      "WIDGET_IDLE": "Enter キーを押して選択し、矢印キーで並べ替えます。",
+      "WIDGET_LABEL": "{name}、ウィジェット {index}/{total}。{state}"
     }
   },
   "COMPONENTS": {
@@ -57,6 +68,9 @@
       },
       "VC_VIDEO": {
         "NO_SOURCE": "動画ソースがありません"
+      },
+      "VC_PROGRESS": {
+        "LABEL": "進行状況"
       }
     },
     "MOLECULES": {
@@ -164,7 +178,8 @@
           "PREVIEW": "プレビュー",
           "SPLIT": "左右に並べて表示",
           "SOURCE": "ソースコード"
-        }
+        },
+        "LABEL": "リッチテキストエディター"
       }
     },
     "ORGANISMS": {
@@ -409,7 +424,8 @@
           "RESET": "リセット"
         },
         "OF": "/",
-        "PAGE": "ページ"
+        "PAGE": "ページ",
+        "TOTAL": "合計"
       },
       "VC_POPUP": {
         "OK": "OK",
@@ -421,6 +437,9 @@
           "ERROR": "エラー",
           "INFO": "情報"
         }
+      },
+      "VC_SIDEBAR": {
+        "CLOSE": "サイドバーを閉じる"
       }
     },
     "THEME_SELECTOR": {

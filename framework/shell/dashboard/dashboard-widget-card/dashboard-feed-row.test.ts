@@ -48,4 +48,22 @@ describe("DashboardFeedRow", () => {
     await wrapper.find(".dashboard-feed-row").trigger("click");
     expect(wrapper.emitted("click")).toHaveLength(2);
   });
+
+  it("opens from the keyboard", async () => {
+    const wrapper = mount(DashboardFeedRow);
+    const row = wrapper.find(".dashboard-feed-row");
+    expect(row.attributes("role")).toBe("button");
+    expect(row.attributes("tabindex")).toBe("0");
+    await row.trigger("keydown", { key: "Enter" });
+    await row.trigger("keydown", { key: " " });
+    expect(wrapper.emitted("click")).toHaveLength(2);
+  });
+
+  it("leaves Enter on a control in the trailing slot to that control", async () => {
+    const wrapper = mount(DashboardFeedRow, {
+      slots: { trailing: "<button class='more'>More</button>" },
+    });
+    await wrapper.find(".more").trigger("keydown", { key: "Enter" });
+    expect(wrapper.emitted("click")).toBeUndefined();
+  });
 });

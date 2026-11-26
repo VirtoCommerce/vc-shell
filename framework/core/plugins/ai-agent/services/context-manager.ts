@@ -82,10 +82,10 @@ export function createContextManager(options: ContextManagerOptions): ContextMan
     suggestions?: ISuggestion[],
     bladeId?: string,
   ): { cleared: boolean } => {
-    // Always use bladeGetter().id as the Map key — it returns blade.type.name (e.g. "offerslist"),
-    // which matches getActiveBladeContext() lookup. bladeId from BladeDescriptorKey is a runtime
-    // unique ID (e.g. "blade_1_abc") that would cause a key mismatch.
-    const targetBladeId = bladeGetter()?.id || bladeId;
+    // Key by the blade that owns the data. Both ids are blade stack descriptor ids; the active
+    // blade is a different one when a parent updates in the background or a child unmounts
+    // after the stack already dropped it, and keying by it would overwrite another blade's context.
+    const targetBladeId = bladeId || bladeGetter()?.id;
     if (!targetBladeId) {
       logger.warn("Cannot set context data: no blade id available");
       return { cleared: false };

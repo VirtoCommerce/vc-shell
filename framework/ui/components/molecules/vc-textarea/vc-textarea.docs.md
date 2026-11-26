@@ -243,7 +243,7 @@ const description = ref<string>("");
 | `placeholder`     | `string`  | --          | Placeholder text inside the empty textarea                                                           |
 | `hint`            | `string`  | --          | Helper text displayed below the field                                                                |
 | `tooltip`         | `string`  | --          | Tooltip on the label info icon                                                                       |
-| `maxlength`       | `string`  | `"1024"`    | Maximum character count (native HTML attribute)                                                      |
+| `maxlength`       | `string`  | —           | Maximum character count (native HTML attribute)                                                      |
 | `required`        | `boolean` | `false`     | Shows a required indicator on the label                                                              |
 | `error`           | `boolean` | `false`     | Enables error styling (red border + ring)                                                            |
 | `errorMessage`    | `string`  | --          | Error message text below the field                                                                   |

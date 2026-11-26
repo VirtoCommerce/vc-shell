@@ -16,7 +16,7 @@ import { PopupPluginKey } from "@core/composables/usePopup/keys";
 import type { PopupPlugin, UsePopupInternal, UsePopupProps } from "@core/composables/usePopup/types";
 import { popupPluginInstance } from "@core/composables/usePopup/singleton";
 import { getPopupPreset } from "@core/composables/usePopup/preset-registry";
-import { useI18n } from "vue-i18n";
+import { i18n } from "@core/plugins/i18n";
 import { createLogger, focusFallbackTarget, focusIfLoose } from "@core/utilities";
 
 const logger = createLogger("use-popup");
@@ -63,7 +63,8 @@ function usePopupInternal() {
 }
 
 export function usePopup<T extends Component = Component>(options?: MaybeRef<UsePopupProps<T>>): IUsePopup {
-  const { t } = useI18n({ useScope: "global" });
+  // The global composer, not useI18n: usePopup also runs outside setup (stores, guards, plain functions)
+  const t = i18n.global.t;
   const popupInstance = usePopupInternal();
   const closeFallbackTimers = new WeakMap<object, ReturnType<typeof setTimeout>>();
   let rawPopup: (UsePopupProps & UsePopupInternal) | undefined;

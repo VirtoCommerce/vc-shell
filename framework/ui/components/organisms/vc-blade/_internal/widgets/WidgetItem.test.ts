@@ -9,7 +9,10 @@ import { BladeDescriptorKey } from "@core/blade-navigation/types";
 import WidgetItem from "./WidgetItem.vue";
 
 vi.mock("vue-i18n", () => ({
-  useI18n: () => ({ t: (k: string, p?: { title?: string }) => (p?.title !== undefined ? `${p.title}|${k}` : k) }),
+  useI18n: () => ({
+    t: (k: string, p?: { title?: string }) => (p?.title !== undefined ? `${p.title}|${k}` : k),
+    te: () => false,
+  }),
 }));
 vi.mock("@ui/composables/useTeleportTarget", () => ({ useTeleportTarget: () => ({ teleportTarget: "body" }) }));
 

@@ -233,24 +233,25 @@ const content = ref("<h1>Title</h1>");
 
 ## Props
 
-| Prop              | Type                  | Default     | Description                                                       |
-| ----------------- | --------------------- | ----------- | ----------------------------------------------------------------- |
-| `modelValue`      | `string`              | `""`        | Content string via `v-model` (Markdown or HTML)                   |
-| `label`           | `string`              | --          | Label text above the editor                                       |
-| `placeholder`     | `string`              | --          | Placeholder when editor is empty                                  |
-| `disabled`        | `boolean`             | `false`     | Disables all editing                                              |
-| `required`        | `boolean`             | `false`     | Shows a required asterisk on the label                            |
-| `tooltip`         | `string`              | --          | Tooltip text shown on label hover                                 |
-| `errorMessage`    | `string`              | --          | Error message below the editor (also activates error styling)     |
-| `error`           | `boolean`             | `false`     | Inherited from `IFormFieldProps`; accepted but unused (no effect) |
-| `name`            | `string`              | --          | Form field name attribute                                         |
-| `toolbar`         | `ToolbarNames[]`      | all buttons | Array of toolbar button names to show                             |
-| `maxlength`       | `number`              | --          | Character limit (counter shown in source/split mode)              |
-| `assetsFolder`    | `string`              | --          | API folder path for image uploads                                 |
-| `extensions`      | `Extension[]`         | --          | Additional TipTap extensions                                      |
-| `customButtons`   | `CustomToolbarItem[]` | --          | Plugin toolbar buttons or dropdowns                               |
-| `multilanguage`   | `boolean`             | `false`     | Enables multilanguage indicator on the label                      |
-| `currentLanguage` | `string`              | --          | Current language code for multilanguage mode                      |
+| Prop              | Type                   | Default     | Description                                                                                         |
+| ----------------- | ---------------------- | ----------- | --------------------------------------------------------------------------------------------------- |
+| `modelValue`      | `string`               | `""`        | Content string via `v-model` (Markdown or HTML)                                                     |
+| `label`           | `string`               | --          | Label text above the editor                                                                         |
+| `placeholder`     | `string`               | --          | Placeholder when editor is empty                                                                    |
+| `disabled`        | `boolean`              | `false`     | Disables all editing                                                                                |
+| `required`        | `boolean`              | `false`     | Shows a required asterisk on the label                                                              |
+| `tooltip`         | `string`               | --          | Tooltip text shown on label hover                                                                   |
+| `errorMessage`    | `string`               | --          | Error message below the editor (also activates error styling)                                       |
+| `error`           | `boolean`              | `false`     | Inherited from `IFormFieldProps`; accepted but unused (no effect)                                   |
+| `name`            | `string`               | --          | Form field name attribute                                                                           |
+| `toolbar`         | `ToolbarNames[]`       | all buttons | Array of toolbar button names to show                                                               |
+| `maxlength`       | `number`               | --          | Character limit (counter shown in source/split mode)                                                |
+| `assetsFolder`    | `string`               | --          | API folder path for image uploads                                                                   |
+| `extensions`      | `Extension[]`          | --          | Additional TipTap extensions                                                                        |
+| `customButtons`   | `CustomToolbarItem[]`  | --          | Plugin toolbar buttons or dropdowns                                                                 |
+| `contentType`     | `"html" \| "markdown"` | --          | Storage format of the value. Set it for HTML fields: without it an empty value is saved as Markdown |
+| `multilanguage`   | `boolean`              | `false`     | Enables multilanguage indicator on the label                                                        |
+| `currentLanguage` | `string`               | --          | Current language code for multilanguage mode                                                        |
 
 ## Events
 

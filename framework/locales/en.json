@@ -28,6 +28,17 @@
       "CHANGE_PASSWORD": "Change password",
       "PROFILE": "Profile",
       "LOGOUT": "Log Out"
+    },
+    "DASHBOARD": {
+      "GRID_LABEL": "Dashboard widgets. Drag a widget, or focus one and press Enter to rearrange with the arrow keys.",
+      "PICKED_UP": "{name} picked up. Use arrow keys to move, Shift and arrow keys to resize, Enter to drop, Escape to cancel.",
+      "DROPPED": "{name} dropped at column {column}, row {row}.",
+      "MOVE_CANCELLED": "Move cancelled. {name} returned to its original position and size.",
+      "MOVED": "{name} moved to column {column}, row {row}.",
+      "RESIZED": "{name} resized to {width} by {height} cells.",
+      "WIDGET_GRABBED": "Picked up. Arrow keys move, Enter drops, Escape cancels.",
+      "WIDGET_IDLE": "Press Enter to pick up and rearrange with the arrow keys.",
+      "WIDGET_LABEL": "{name}, widget {index} of {total}. {state}"
     }
   },
   "COMPONENTS": {
@@ -57,6 +68,9 @@
       },
       "VC_VIDEO": {
         "NO_SOURCE": "No video source"
+      },
+      "VC_PROGRESS": {
+        "LABEL": "Progress"
       }
     },
     "MOLECULES": {
@@ -164,7 +178,8 @@
           "PREVIEW": "Preview",
           "SPLIT": "Side-by-side view",
           "SOURCE": "Source code"
-        }
+        },
+        "LABEL": "Rich text editor"
       }
     },
     "ORGANISMS": {
@@ -409,7 +424,8 @@
           "RESET": "Reset"
         },
         "OF": "of",
-        "PAGE": "Page"
+        "PAGE": "Page",
+        "TOTAL": "Total"
       },
       "VC_POPUP": {
         "OK": "OK",
@@ -421,6 +437,9 @@
           "ERROR": "Error",
           "INFO": "Info"
         }
+      },
+      "VC_SIDEBAR": {
+        "CLOSE": "Close sidebar"
       }
     },
     "THEME_SELECTOR": {

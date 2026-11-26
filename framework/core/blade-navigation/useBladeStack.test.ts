@@ -108,6 +108,29 @@ describe("createBladeStack", () => {
       expect(stack.workspace.value?.name).toBe("Products");
     });
 
+    it("keeps the stack when an open blade refuses to close", async () => {
+      await stack.openWorkspace({ name: "Orders" });
+      await stack.openBlade({ name: "OrderDetails", param: "123" });
+      const childId = stack.activeBlade.value!.id;
+      stack.registerBeforeClose(childId, async () => true);
+
+      await stack.openWorkspace({ name: "Products" });
+
+      expect(stack.workspace.value?.name).toBe("Orders");
+      expect(stack.activeBlade.value?.id).toBe(childId);
+    });
+
+    it("asks the workspace blade too before switching", async () => {
+      await stack.openWorkspace({ name: "Orders" });
+      const guard = vi.fn(async () => false);
+      stack.registerBeforeClose(stack.workspace.value!.id, guard);
+
+      await stack.openWorkspace({ name: "Products" });
+
+      expect(guard).toHaveBeenCalledOnce();
+      expect(stack.workspace.value?.name).toBe("Products");
+    });
+
     it("is a no-op when opening the same workspace", async () => {
       await stack.openWorkspace({ name: "Orders" });
       const firstId = stack.workspace.value!.id;
@@ -212,6 +235,34 @@ describe("createBladeStack", () => {
   });
 
   // ── closeBlade ─────────────────────────────────────────────────────────────
+
+  describe("closeChildren", () => {
+    it("closes the children and reports nothing prevented it", async () => {
+      await stack.openWorkspace({ name: "Orders" });
+      await stack.openBlade({ name: "OrderDetails", param: "123" });
+
+      const prevented = await stack.closeChildren(stack.workspace.value!.id);
+
+      expect(prevented).toBe(false);
+      expect(stack.blades.value).toHaveLength(1);
+    });
+
+    it("reports that a child refused to close, so the parent can stop", async () => {
+      await stack.openWorkspace({ name: "Orders" });
+      await stack.openBlade({ name: "OrderDetails", param: "123" });
+      stack.registerBeforeClose(stack.activeBlade.value!.id, async () => true);
+
+      const prevented = await stack.closeChildren(stack.workspace.value!.id);
+
+      expect(prevented).toBe(true);
+      expect(stack.blades.value).toHaveLength(2);
+    });
+
+    it("reports nothing prevented when there are no children", async () => {
+      await stack.openWorkspace({ name: "Orders" });
+      expect(await stack.closeChildren(stack.workspace.value!.id)).toBe(false);
+    });
+  });
 
   describe("closeBlade", () => {
     beforeEach(async () => {

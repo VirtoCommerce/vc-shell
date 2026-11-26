@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { useAsync } from "./index";
+import { BladeCloseCancelledError } from "@core/blade-navigation/closeCancelled";
 import { DisplayableError, parseError } from "@core/utilities/error";
 import { cancelPendingErrorNotification } from "@core/utilities/pendingErrorNotifications";
 import { markSessionExpired, resetSessionExpired } from "@core/utilities/sessionExpiration";
@@ -50,6 +51,16 @@ describe("useAsync", () => {
     shouldFail = false;
     await action();
     expect(error.value).toBeNull();
+  });
+
+  it("passes a kept-open child blade through as a cancel: no error state, no toast", async () => {
+    const { action, error } = useAsync(async () => {
+      throw new BladeCloseCancelledError();
+    });
+    await expect(action()).rejects.toBeInstanceOf(BladeCloseCancelledError);
+    await vi.runAllTimersAsync();
+    expect(error.value).toBeNull();
+    expect(notification.error).not.toHaveBeenCalled();
   });
 
   it("should schedule deferred notification by default", async () => {

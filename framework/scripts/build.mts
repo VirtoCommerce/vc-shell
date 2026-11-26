@@ -58,8 +58,10 @@ async function buildLocales() {
 
 function jsonToInterface(obj: Record<string, unknown>, indent = 2): string {
   const lines: string[] = [];
-  for (const [key, value] of Object.entries(obj)) {
+  for (const [rawKey, value] of Object.entries(obj)) {
     const pad = " ".repeat(indent);
+    // A key like "Repeat-password" is not an identifier and must be quoted, or the .d.ts does not parse
+    const key = /^[A-Za-z_$][\w$]*$/.test(rawKey) ? rawKey : JSON.stringify(rawKey);
     if (value && typeof value === "object" && !Array.isArray(value)) {
       lines.push(`${pad}${key}: {`);
       lines.push(jsonToInterface(value as Record<string, unknown>, indent + 2));

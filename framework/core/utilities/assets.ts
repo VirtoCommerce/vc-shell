@@ -53,7 +53,18 @@ function absoluteUrl(url: string): string {
   return new URL(url, window.location.origin).href;
 }
 
+const DOWNLOADABLE_PROTOCOLS = new Set(["http:", "https:", "blob:", "data:"]);
+
 function downloadFile({ url, name }: { url: string; name?: string }): void {
+  // A javascript: (or any other scheme) url would run or navigate instead of downloading.
+  let protocol: string;
+  try {
+    protocol = new URL(url, window.location.href).protocol;
+  } catch {
+    return;
+  }
+  if (!DOWNLOADABLE_PROTOCOLS.has(protocol)) return;
+
   try {
     const link = document.createElement("a");
     link.href = url;

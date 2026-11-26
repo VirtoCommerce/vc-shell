@@ -5,6 +5,20 @@ import { PopupPluginKey } from "@core/composables/usePopup/keys";
 import type { PopupPlugin, UsePopupProps, UsePopupInternal } from "@core/composables/usePopup/types";
 import { usePopup } from "./index";
 import { registerPopupPreset, _resetPopupPresets } from "./preset-registry";
+import { setPopupPluginInstance, _resetPopupSingleton } from "./singleton";
+
+// Like the real vue-i18n: useI18n throws outside a component's setup
+vi.mock("vue-i18n", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("vue-i18n")>();
+  const { getCurrentInstance } = await import("vue");
+  return {
+    ...actual,
+    useI18n: () => {
+      if (!getCurrentInstance()) throw new Error("Must be called at the top of a `setup` function");
+      return { t: (key: string) => key };
+    },
+  };
+});
 
 // Mock preset components (simple defineComponent stubs)
 const MockWarning = defineComponent({ name: "MockWarning", emits: ["close", "confirm"], template: "<div />" });
@@ -43,6 +57,20 @@ describe("usePopup", () => {
     registerPopupPreset("warning", MockWarning);
     registerPopupPreset("error", MockError);
     registerPopupPreset("info", MockInfo);
+  });
+
+  describe("outside a component", () => {
+    it("shows a confirmation from a plain function, e.g. a store or a route guard", () => {
+      const plugin = createPopupPlugin();
+      setPopupPluginInstance(plugin);
+      try {
+        const popup = usePopup();
+        void popup.showConfirmation("Discard changes?");
+        expect(plugin.popups).toHaveLength(1);
+      } finally {
+        _resetPopupSingleton();
+      }
+    });
   });
 
   describe("built-in dialogs (no options)", () => {

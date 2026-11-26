@@ -28,6 +28,17 @@
       "CHANGE_PASSWORD": "Changer le mot de passe",
       "PROFILE": "Profil",
       "LOGOUT": "Se déconnecter"
+    },
+    "DASHBOARD": {
+      "GRID_LABEL": "Widgets du tableau de bord. Faites glisser un widget, ou sélectionnez-le et appuyez sur Entrée pour le déplacer avec les flèches.",
+      "PICKED_UP": "{name} saisi. Les flèches déplacent, Maj et les flèches redimensionnent, Entrée dépose, Échap annule.",
+      "DROPPED": "{name} déposé en colonne {column}, ligne {row}.",
+      "MOVE_CANCELLED": "Déplacement annulé. {name} a retrouvé sa position et sa taille d’origine.",
+      "MOVED": "{name} déplacé en colonne {column}, ligne {row}.",
+      "RESIZED": "{name} redimensionné à {width} sur {height} cellules.",
+      "WIDGET_GRABBED": "Saisi. Les flèches déplacent, Entrée dépose, Échap annule.",
+      "WIDGET_IDLE": "Appuyez sur Entrée pour saisir le widget et le réorganiser avec les flèches.",
+      "WIDGET_LABEL": "{name}, widget {index} sur {total}. {state}"
     }
   },
   "COMPONENTS": {
@@ -57,6 +68,9 @@
       },
       "VC_VIDEO": {
         "NO_SOURCE": "Aucune source vidéo"
+      },
+      "VC_PROGRESS": {
+        "LABEL": "Progression"
       }
     },
     "MOLECULES": {
@@ -164,7 +178,8 @@
           "PREVIEW": "Aperçu",
           "SPLIT": "Vue côte à côte",
           "SOURCE": "Code source"
-        }
+        },
+        "LABEL": "Éditeur de texte enrichi"
       }
     },
     "ORGANISMS": {
@@ -409,7 +424,8 @@
           "RESET": "Réinitialiser"
         },
         "OF": "sur",
-        "PAGE": "Page"
+        "PAGE": "Page",
+        "TOTAL": "Total"
       },
       "VC_POPUP": {
         "OK": "OK",
@@ -421,6 +437,9 @@
           "ERROR": "Erreur",
           "INFO": "Information"
         }
+      },
+      "VC_SIDEBAR": {
+        "CLOSE": "Fermer la barre latérale"
       }
     },
     "THEME_SELECTOR": {

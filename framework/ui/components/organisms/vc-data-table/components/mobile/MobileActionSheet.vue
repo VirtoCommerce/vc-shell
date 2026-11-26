@@ -38,7 +38,7 @@
           class="vc-mobile-action-sheet__cancel-btn"
           @click="handleClose"
         >
-          {{ cancelLabel }}
+          {{ cancelLabel ?? $t("COMPONENTS.ORGANISMS.VC_POPUP.CANCEL") }}
         </button>
       </div>
     </template>
@@ -69,7 +69,6 @@ const _props = withDefaults(
   }>(),
   {
     title: undefined,
-    cancelLabel: "Cancel",
   },
 );
 

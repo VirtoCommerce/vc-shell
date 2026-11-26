@@ -19,9 +19,9 @@ describe("VcTableCounter", () => {
     expect(wrapper.find(".vc-table-counter__value").text()).toBe("42");
   });
 
-  it("defaults label to 'Total'", () => {
+  it("defaults label to the translated 'Total'", () => {
     const wrapper = mount(VcTableCounter);
-    expect(wrapper.find(".vc-table-counter__label").text()).toContain("Total");
+    expect(wrapper.find(".vc-table-counter__label").text()).toContain("COMPONENTS.ORGANISMS.VC_TABLE.TOTAL");
   });
 
   it("defaults value to 0", () => {

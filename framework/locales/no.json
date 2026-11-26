@@ -28,6 +28,17 @@
       "CHANGE_PASSWORD": "Endre passord",
       "PROFILE": "Profil",
       "LOGOUT": "Logg ut"
+    },
+    "DASHBOARD": {
+      "GRID_LABEL": "Kontrollpanel-widgeter. Dra en widget, eller velg den og trykk Enter for å flytte den med piltastene.",
+      "PICKED_UP": "{name} plukket opp. Piltastene flytter, Shift og piltastene endrer størrelse, Enter slipper, Escape avbryter.",
+      "DROPPED": "{name} sluppet i kolonne {column}, rad {row}.",
+      "MOVE_CANCELLED": "Flytting avbrutt. {name} er tilbake på opprinnelig plass og størrelse.",
+      "MOVED": "{name} flyttet til kolonne {column}, rad {row}.",
+      "RESIZED": "{name} endret til {width} ganger {height} celler.",
+      "WIDGET_GRABBED": "Plukket opp. Piltastene flytter, Enter slipper, Escape avbryter.",
+      "WIDGET_IDLE": "Trykk Enter for å plukke opp og ordne med piltastene.",
+      "WIDGET_LABEL": "{name}, widget {index} av {total}. {state}"
     }
   },
   "COMPONENTS": {
@@ -57,6 +68,9 @@
       },
       "VC_VIDEO": {
         "NO_SOURCE": "Ingen videokilde"
+      },
+      "VC_PROGRESS": {
+        "LABEL": "Fremdrift"
       }
     },
     "MOLECULES": {
@@ -164,7 +178,8 @@
           "PREVIEW": "Forhåndsvisning",
           "SPLIT": "Side ved side",
           "SOURCE": "Kildekode"
-        }
+        },
+        "LABEL": "Redigeringsprogram for formatert tekst"
       }
     },
     "ORGANISMS": {
@@ -409,7 +424,8 @@
           "RESET": "Tilbakestill"
         },
         "OF": "av",
-        "PAGE": "Side"
+        "PAGE": "Side",
+        "TOTAL": "Totalt"
       },
       "VC_POPUP": {
         "OK": "OK",
@@ -421,6 +437,9 @@
           "ERROR": "Feil",
           "INFO": "Informasjon"
         }
+      },
+      "VC_SIDEBAR": {
+        "CLOSE": "Lukk sidepanelet"
       }
     },
     "THEME_SELECTOR": {

@@ -46,7 +46,7 @@
           <VcInput
             ref="searchInputRef"
             :model-value="modelValue"
-            :placeholder="placeholder"
+            :placeholder="placeholder ?? $t('COMPONENTS.ORGANISMS.VC_TABLE.SEARCH')"
             size="small"
             clearable
             @update:model-value="handleInput"
@@ -120,7 +120,6 @@ const _props = withDefaults(
   }>(),
   {
     modelValue: "",
-    placeholder: "Search...",
     activeFilterCount: 0,
     disableFilter: false,
     showFilterButton: false,

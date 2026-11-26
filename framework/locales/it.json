@@ -28,6 +28,17 @@
       "CHANGE_PASSWORD": "Cambia password",
       "PROFILE": "Profilo",
       "LOGOUT": "Esci"
+    },
+    "DASHBOARD": {
+      "GRID_LABEL": "Widget della dashboard. Trascina un widget, oppure selezionalo e premi Invio per riordinarlo con i tasti freccia.",
+      "PICKED_UP": "{name} selezionato. Le frecce spostano, Maiusc e le frecce ridimensionano, Invio rilascia, Esc annulla.",
+      "DROPPED": "{name} rilasciato nella colonna {column}, riga {row}.",
+      "MOVE_CANCELLED": "Spostamento annullato. {name} è tornato alla posizione e alle dimensioni originali.",
+      "MOVED": "{name} spostato nella colonna {column}, riga {row}.",
+      "RESIZED": "{name} ridimensionato a {width} per {height} celle.",
+      "WIDGET_GRABBED": "Selezionato. Le frecce spostano, Invio rilascia, Esc annulla.",
+      "WIDGET_IDLE": "Premi Invio per selezionare e riordinare con le frecce.",
+      "WIDGET_LABEL": "{name}, widget {index} di {total}. {state}"
     }
   },
   "COMPONENTS": {
@@ -57,6 +68,9 @@
       },
       "VC_VIDEO": {
         "NO_SOURCE": "Nessuna sorgente video"
+      },
+      "VC_PROGRESS": {
+        "LABEL": "Avanzamento"
       }
     },
     "MOLECULES": {
@@ -164,7 +178,8 @@
           "PREVIEW": "Anteprima",
           "SPLIT": "Vista affiancata",
           "SOURCE": "Codice sorgente"
-        }
+        },
+        "LABEL": "Editor di testo formattato"
       }
     },
     "ORGANISMS": {
@@ -409,7 +424,8 @@
           "RESET": "Reimposta"
         },
         "OF": "di",
-        "PAGE": "Pagina"
+        "PAGE": "Pagina",
+        "TOTAL": "Totale"
       },
       "VC_POPUP": {
         "OK": "OK",
@@ -421,6 +437,9 @@
           "ERROR": "Errore",
           "INFO": "Informazioni"
         }
+      },
+      "VC_SIDEBAR": {
+        "CLOSE": "Chiudi barra laterale"
       }
     },
     "THEME_SELECTOR": {

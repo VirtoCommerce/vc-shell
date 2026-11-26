@@ -7,7 +7,7 @@
       :model-value="isChecked"
       :disabled="disabled"
       :indeterminate="indeterminate"
-      :aria-label="ariaLabel"
+      :aria-label="ariaLabel ?? $t('COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ROW')"
       @update:model-value="handleChange"
     />
   </div>
@@ -26,9 +26,7 @@ const props = withDefaults(
     /** Accessible name for the selection checkbox. */
     ariaLabel?: string;
   }>(),
-  {
-    ariaLabel: "Select row",
-  },
+  {},
 );
 
 const emit = defineEmits<{

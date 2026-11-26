@@ -131,7 +131,6 @@ defineSlots<{
 
 const props = withDefaults(defineProps<Props>(), {
   name: "Field",
-  maxlength: "1024",
 });
 
 const bladeLoading = useBladeLoading();

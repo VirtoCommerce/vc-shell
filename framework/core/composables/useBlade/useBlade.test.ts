@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { nextTick } from "vue";
 import { useBlade } from "./index";
+import { BladeCloseCancelledError } from "@core/blade-navigation/closeCancelled";
 import {
   mountWithBladeContext,
   mountWithoutBladeContext,
@@ -42,6 +43,64 @@ describe("useBlade() inside blade context", () => {
     });
     await result.closeChildren();
     expect(mockStack.closeChildren).toHaveBeenCalledWith("blade-parent");
+  });
+
+  it("closeChildren() stops the caller when the user keeps a child blade open", async () => {
+    const { result, mockStack } = mountWithBladeContext(() => useBlade(), {
+      descriptor: { id: "blade-parent" },
+    });
+    vi.mocked(mockStack.closeChildren).mockResolvedValueOnce(true);
+    const deleteRecord = vi.fn();
+
+    const run = async () => {
+      await result.closeChildren();
+      deleteRecord();
+    };
+
+    await expect(run()).rejects.toBeInstanceOf(BladeCloseCancelledError);
+    expect(deleteRecord).not.toHaveBeenCalled();
+  });
+
+  it("closeChildren(action) runs the action once the children closed", async () => {
+    const { result, mockStack } = mountWithBladeContext(() => useBlade(), {
+      descriptor: { id: "blade-parent" },
+    });
+    vi.mocked(mockStack.closeChildren).mockResolvedValueOnce(false);
+    const deleteRecord = vi.fn();
+
+    await expect(result.closeChildren(deleteRecord)).resolves.toBe(true);
+    expect(mockStack.closeChildren).toHaveBeenCalledWith("blade-parent");
+    expect(deleteRecord).toHaveBeenCalledOnce();
+  });
+
+  it("closeChildren(action) skips the action, without an error, when the user keeps a child open", async () => {
+    const { result, mockStack } = mountWithBladeContext(() => useBlade(), {
+      descriptor: { id: "blade-parent" },
+    });
+    vi.mocked(mockStack.closeChildren).mockResolvedValueOnce(true);
+    const deleteRecord = vi.fn();
+
+    await expect(result.closeChildren(deleteRecord)).resolves.toBe(false);
+    expect(deleteRecord).not.toHaveBeenCalled();
+  });
+
+  it("closeChildren(action) waits for the action and passes its error on", async () => {
+    const { result } = mountWithBladeContext(() => useBlade(), {
+      descriptor: { id: "blade-parent" },
+    });
+    await expect(
+      result.closeChildren(async () => {
+        throw new Error("delete failed");
+      }),
+    ).rejects.toThrow("delete failed");
+  });
+
+  it("closeChildren() lets the caller go on once the children closed", async () => {
+    const { result, mockStack } = mountWithBladeContext(() => useBlade(), {
+      descriptor: { id: "blade-parent" },
+    });
+    vi.mocked(mockStack.closeChildren).mockResolvedValueOnce(false);
+    await expect(result.closeChildren()).resolves.toBeUndefined();
   });
 
   it("callParent() delegates to bladeMessaging.callParent with own id and method", async () => {
@@ -110,6 +169,11 @@ describe("useBlade() outside blade context", () => {
   it("closeChildren() throws descriptive error outside blade context", async () => {
     const { result } = mountWithoutBladeContext(() => useBlade());
     await expect(result.closeChildren()).rejects.toThrow(/closeChildren\(\) requires blade context/);
+  });
+
+  it("closeChildren(action) throws descriptive error outside blade context", async () => {
+    const { result } = mountWithoutBladeContext(() => useBlade());
+    await expect(result.closeChildren(() => {})).rejects.toThrow(/closeChildren\(\) requires blade context/);
   });
 
   it("id.value throws descriptive error outside blade context", () => {

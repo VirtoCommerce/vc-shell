@@ -390,11 +390,11 @@ function dropListeners(entry: BlobEntry) {
   }
 
   &__check {
-    @apply tw-left-2 tw-p-1;
+    @apply tw-start-2 tw-p-1;
   }
 
   &__menu {
-    @apply tw-right-2;
+    @apply tw-end-2;
   }
 
   &__more {

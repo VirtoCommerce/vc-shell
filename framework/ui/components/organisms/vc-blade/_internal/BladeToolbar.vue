@@ -5,6 +5,7 @@
     :class="{
       'vc-blade-toolbar--mobile': isMobile,
       'vc-blade-toolbar--loading': loading,
+      'vc-blade-toolbar--no-items': !loading && !visibleItems.length,
     }"
   >
     <div class="vc-blade-toolbar__content">
@@ -121,6 +122,12 @@ const { visibleItems } = useToolbarRegistration(toRef(props, "items"));
     &--reserved {
       min-width: var(--blade-toolbar-buttons-min-width);
     }
+  }
+
+  // A blade with no commands and no widgets shows no empty strip. The widget container stays
+  // mounted (it registers external widgets), so the strip is hidden rather than removed.
+  &--no-items:not(:has(.vc-widget-container-desktop, .vc-widget-container-mobile)) {
+    display: none;
   }
 
   &--mobile {

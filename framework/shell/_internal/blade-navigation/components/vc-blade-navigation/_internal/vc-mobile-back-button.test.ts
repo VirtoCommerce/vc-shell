@@ -11,8 +11,8 @@ vi.mock("@vueuse/components", () => ({
   OnLongPress: defineComponent({
     name: "OnLongPress",
     props: ["as"],
-    setup(_, { slots }) {
-      return () => h("div", { class: "mock-long-press" }, slots.default?.());
+    setup(props, { slots }) {
+      return () => h(props.as ?? "div", { class: "mock-long-press" }, slots.default?.());
     },
   }),
   vOnClickOutside: {},
@@ -23,8 +23,8 @@ vi.mock("@ui/components/atoms/vc-button", () => ({
     name: "VcButton",
     props: ["icon", "iconClass", "iconSize", "text"],
     emits: ["click"],
-    setup(_, { emit }) {
-      return () => h("button", { class: "mock-vc-button", onClick: () => emit("click") }, "Back");
+    setup(_, { emit, attrs }) {
+      return () => h("button", { ...attrs, class: "mock-vc-button", onClick: () => emit("click") });
     },
   }),
 }));
@@ -44,6 +44,15 @@ describe("vc-mobile-back-button.vue", () => {
     { title: "Home", id: "home" },
     { title: "Products", id: "products" },
   ];
+
+  it("is one named button, not a button inside a button", () => {
+    const wrapper = mount(VcMobileBackButton, {
+      props: { breadcrumbs, onBack: vi.fn() },
+    });
+    expect(wrapper.findAll("button")).toHaveLength(1);
+    expect(wrapper.find("button button").exists()).toBe(false);
+    expect(wrapper.find("button").attributes("aria-label")).toBe("COMPONENTS.MOLECULES.VC_BREADCRUMBS.BACK");
+  });
 
   it("renders the back button", () => {
     const wrapper = mount(VcMobileBackButton, {

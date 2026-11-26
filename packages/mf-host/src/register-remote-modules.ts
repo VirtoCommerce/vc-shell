@@ -232,8 +232,10 @@ export function registerRemoteModules(app: App, options: RegisterRemoteModulesOp
       }
       modulesReady.value = true;
 
-      const resolvedPath = options.router.currentRoute.value.fullPath;
-      if (resolvedPath !== "/") options.router.replace(resolvedPath);
+      // Replay the address so a deep link to a module blade opens now that the blade is registered.
+      // force: a navigation to the current location is otherwise skipped as a duplicate, guards and all.
+      const { path, query, hash } = options.router.currentRoute.value;
+      if (path !== "/") options.router.replace({ path, query, hash, force: true });
 
       performance.mark("vc:modules-done");
     } catch (error) {

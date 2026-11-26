@@ -7,6 +7,7 @@ import { BladeDescriptorKey } from "@core/blade-navigation/types";
 vi.mock("vue-i18n", () => ({
   useI18n: () => ({
     t: (key: string) => `translated:${key}`,
+    te: (key: string) => key.includes("."),
   }),
 }));
 
@@ -115,15 +116,22 @@ describe("useHeadlessWidgetHelpers", () => {
   });
 
   describe("resolveTitle", () => {
-    it("returns raw title when no headless config", () => {
+    it("returns a plain-text title as is", () => {
       const { result } = mountWithSetup(() => useHeadlessWidgetHelpers());
       expect(result.resolveTitle(makeWidget({ title: "Hello" }))).toBe("Hello");
     });
 
-    it("returns translated title when headless config exists", () => {
+    it("translates a headless widget's title key", () => {
       const { result } = mountWithSetup(() => useHeadlessWidgetHelpers());
       const widget = makeWidget({ title: "key.label", headless: {} as any });
       expect(result.resolveTitle(widget)).toBe("translated:key.label");
+    });
+
+    it("translates an external widget's title key too", () => {
+      const { result } = mountWithSetup(() => useHeadlessWidgetHelpers());
+      expect(result.resolveTitle(makeWidget({ title: "ORDERS.WIDGETS.SHIPMENTS" }))).toBe(
+        "translated:ORDERS.WIDGETS.SHIPMENTS",
+      );
     });
 
     it("returns empty string when no title", () => {

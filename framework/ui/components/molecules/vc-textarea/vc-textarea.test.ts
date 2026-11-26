@@ -9,6 +9,11 @@ describe("VcTextarea", () => {
       global: { stubs: { VcLabel: false, VcHint: false } },
     });
 
+  it("does not limit the length unless maxlength is set", () => {
+    const wrapper = mountTextarea();
+    expect(wrapper.find("textarea").attributes("maxlength")).toBeUndefined();
+  });
+
   describe("v-model contract", () => {
     it("renders modelValue in the textarea", () => {
       const wrapper = mountTextarea({ modelValue: "hello world" });

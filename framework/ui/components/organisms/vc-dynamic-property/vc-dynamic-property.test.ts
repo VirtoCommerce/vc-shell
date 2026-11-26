@@ -76,7 +76,18 @@ function factory(propOverrides: Record<string, unknown> = {}) {
         },
         VcMultivalue: {
           name: "VcMultivalue",
-          props: ["modelValue", "label", "disabled", "required", "placeholder", "errorMessage", "error", "loading"],
+          props: [
+            "modelValue",
+            "label",
+            "disabled",
+            "required",
+            "placeholder",
+            "errorMessage",
+            "error",
+            "loading",
+            "optionLabel",
+            "optionValue",
+          ],
           template: '<div class="vc-multivalue-stub"></div>',
         },
         VcTextarea: {
@@ -173,6 +184,27 @@ describe("VcDynamicProperty", () => {
       modelValue: [],
     });
     expect(wrapper.find(".vc-multivalue-stub").exists()).toBe(true);
+  });
+
+  it("keys ShortText multivalue items by value, the shape the platform stores", () => {
+    const wrapper = factory({
+      property: { ...baseProperty, multivalue: true },
+      valueType: "ShortText",
+      multivalue: true,
+      modelValue: [{ value: "red" }],
+    });
+    const multivalue = wrapper.findComponent({ name: "VcMultivalue" });
+    expect(multivalue.props("optionLabel")).toBe("value");
+    expect(multivalue.props("optionValue")).toBe("value");
+  });
+
+  it("disables the Color control", () => {
+    const wrapper = factory({
+      disabled: true,
+      property: { ...baseProperty, valueType: "Color" },
+      valueType: "Color",
+    });
+    expect(wrapper.findComponent({ name: "VcInput" }).props("disabled")).toBe(true);
   });
 
   it("renders VcMultivalue for ShortText + multivalue + dictionary", () => {

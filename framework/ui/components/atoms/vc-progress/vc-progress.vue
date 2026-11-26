@@ -8,7 +8,7 @@
     :aria-valuenow="clampedValue"
     aria-valuemin="0"
     aria-valuemax="100"
-    :aria-label="ariaLabel"
+    :aria-label="ariaLabel ?? $t('COMPONENTS.ATOMS.VC_PROGRESS.LABEL')"
   >
     <div
       class="vc-progress__value"
@@ -30,7 +30,6 @@ export interface Props {
 const props = withDefaults(defineProps<Props>(), {
   value: 0,
   variant: "default",
-  ariaLabel: "Progress",
 });
 
 const clampedValue = computed(() => Math.max(0, Math.min(100, props.value)));

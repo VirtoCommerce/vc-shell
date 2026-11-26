@@ -17,9 +17,9 @@ describe("VcSkeleton", () => {
     expect(el.attributes("aria-busy")).toBe("true");
   });
 
-  it("renders default aria-label 'Loading...'", () => {
+  it("renders the translated 'Loading...' as the default aria-label", () => {
     const wrapper = mountComponent();
-    expect(wrapper.find("[role='status']").attributes("aria-label")).toBe("Loading...");
+    expect(wrapper.find("[role='status']").attributes("aria-label")).toBe("COMPONENTS.ORGANISMS.VC_TABLE.LOADING");
   });
 
   it("renders custom aria-label", () => {
@@ -29,7 +29,7 @@ describe("VcSkeleton", () => {
 
   it("renders screen reader text", () => {
     const wrapper = mountComponent();
-    expect(wrapper.find(".tw-sr-only").text()).toBe("Loading...");
+    expect(wrapper.find(".tw-sr-only").text()).toBe("COMPONENTS.ORGANISMS.VC_TABLE.LOADING");
   });
 
   it("renders 1 row by default for text variant", () => {

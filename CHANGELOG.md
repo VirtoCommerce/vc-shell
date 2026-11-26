@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.14.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.14.0...v2.14.1) (2026-11-26)
+
+### Bug Fixes
+
+- **framework:** a link opened while signed out survives sign-in (VCST-6926) (#424) ([685d457](https://github.com/VirtoCommerce/vc-shell/commit/685d4578ebc7147ce4c779be94f4f94e68ab968a)), closes [#424](https://github.com/VirtoCommerce/vc-shell/issues/424)
+
 # [2.14.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.13.1...v2.14.0) (2026-11-26)
 
 ### Features

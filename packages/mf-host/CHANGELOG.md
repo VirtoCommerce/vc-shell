@@ -1,5 +1,11 @@
 # Changelog
 
+# [2.14.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.13.1...v2.14.0) (2026-11-26)
+
+### Features
+
+- **framework:** fix the bugs Admin Shell and module UIs work around (VCST-6926) (#422) ([ae41954](https://github.com/VirtoCommerce/vc-shell/commit/ae41954ee86e9bafbcf4caecb9f0621bd40b63e6)), closes [#422](https://github.com/VirtoCommerce/vc-shell/issues/422)
+
 ## [2.13.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.13.0...v2.13.1) (2026-11-25)
 
 **Note:** Version bump only for package @vc-shell/mf-host

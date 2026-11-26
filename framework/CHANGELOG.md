@@ -1,5 +1,17 @@
 # Changelog
 
+# [2.14.0](https://github.com/VirtoCommerce/vc-shell/compare/v2.13.1...v2.14.0) (2026-11-26)
+
+### Features
+
+- **framework:** add a "datetime" type to VcField and a two-line datetime cell (VCST-6956) (#421) ([3a2c979](https://github.com/VirtoCommerce/vc-shell/commit/3a2c9792d981d2f344b9ae24806bdf69d68ff2d8)), closes [#421](https://github.com/VirtoCommerce/vc-shell/issues/421)
+- **framework:** fix the bugs Admin Shell and module UIs work around (VCST-6926) (#422) ([ae41954](https://github.com/VirtoCommerce/vc-shell/commit/ae41954ee86e9bafbcf4caecb9f0621bd40b63e6)), closes [#422](https://github.com/VirtoCommerce/vc-shell/issues/422)
+
+### Bug Fixes
+
+- **framework:** keep label tooltip reachable on disabled VcSwitch and VcCheckbox (#420) ([64016e5](https://github.com/VirtoCommerce/vc-shell/commit/64016e59f192844d3532411b87b24d75a6d0e9ca)), closes [#420](https://github.com/VirtoCommerce/vc-shell/issues/420)
+- **framework:** load and list unread notifications first (#423) ([67b0465](https://github.com/VirtoCommerce/vc-shell/commit/67b04650483a9de64fb6e53d932dbee43eb02a04)), closes [#423](https://github.com/VirtoCommerce/vc-shell/issues/423) [#419](https://github.com/VirtoCommerce/vc-shell/issues/419)
+
 ## [2.13.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.13.0...v2.13.1) (2026-11-25)
 
 ### Bug Fixes

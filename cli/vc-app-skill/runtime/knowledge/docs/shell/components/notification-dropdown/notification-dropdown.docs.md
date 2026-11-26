@@ -9,7 +9,7 @@ internal: true
 
 > **Note:** `useNotifications()` is deprecated (it logs a dev warning). Use `useBladeNotifications()` for blade-scoped subscriptions, or `useNotificationStore()` for direct store access — an advanced escape hatch that most apps do not need, since the shell already wires the bell and unread badge. The component itself uses `useNotificationStore()`.
 
-Dropdown panel that displays the push notification history in reverse chronological order. This component renders a scrollable list of all received push notifications, backed by the `useNotificationStore()`. It automatically marks unread notifications as read when the dropdown is closed (unmounted), updating the unread badge count in the toolbar.
+Dropdown panel that displays the push notification history, unread first, then newest first. This component renders a scrollable list of all received push notifications, backed by the `useNotificationStore()`. It automatically marks unread notifications as read when the dropdown is closed (unmounted), updating the unread badge count in the toolbar.
 
 The dropdown is designed for persistent notification history (server-side push notifications via SignalR), not for transient toast messages.
 
@@ -113,7 +113,7 @@ When a notification's `notifyType` matches a registered template, that component
 ## Details
 
 - **Unread tracking**: Notifications have an `isNew` flag. When the dropdown is mounted, it displays all notifications. On unmount (dropdown closes), all visible notifications are marked as read (`isNew = false`), which updates the unread badge count.
-- **Reverse chronological order**: Notifications are displayed newest-first, sorted by their `created` timestamp.
+- **Unread first, then newest first**: Unread notifications (`isNew`) are listed ahead of read ones; within each group, notifications are sorted newest-first by their `created` timestamp.
 - **SignalR integration**: Push notifications arrive via SignalR from the VirtoCommerce Platform, delivered by the `signalR` plugin and ingested into the notification store; the dropdown renders from that store.
 - **Scroll behavior**: The notification list is scrollable with a fixed maximum height to prevent the dropdown from growing beyond the viewport.
 

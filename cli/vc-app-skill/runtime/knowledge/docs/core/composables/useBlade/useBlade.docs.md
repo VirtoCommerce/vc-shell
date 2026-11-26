@@ -122,12 +122,13 @@ These are reactive `ComputedRef` values that reflect the current blade's state. 
 
 #### Action Methods (blade context required)
 
-| Method          | Signature                                  | Description                                                                                                    |
-| --------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
-| `closeSelf`     | `() => Promise<boolean>`                   | Close the current blade. Returns `true` if a guard prevented closure. Respects `onBeforeClose` guards.         |
-| `closeChildren` | `() => Promise<void>`                      | Close all child blades of the current blade                                                                    |
-| `replaceWith`   | `(event: BladeOpenEvent) => Promise<void>` | Replace the current blade with a different one in the same position (destroys the old blade)                   |
-| `coverWith`     | `(event: BladeOpenEvent) => Promise<void>` | Cover the current blade — hides it and opens a new blade on top. Closing the new blade reveals the hidden one. |
+| Method          | Signature                                     | Description                                                                                                                      |
+| --------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `closeSelf`     | `() => Promise<boolean>`                      | Close the current blade. Returns `true` if a guard prevented closure. Respects `onBeforeClose` guards.                           |
+| `closeChildren` | `(action: () => unknown) => Promise<boolean>` | Close all child blades, then run the action. The action is skipped when the user keeps a child open; resolves `true` when it ran |
+| `closeChildren` | `() => Promise<void>`                         | Close all child blades. Rejects with `BladeCloseCancelledError` if the user keeps one open (safety net for existing code)        |
+| `replaceWith`   | `(event: BladeOpenEvent) => Promise<void>`    | Replace the current blade with a different one in the same position (destroys the old blade)                                     |
+| `coverWith`     | `(event: BladeOpenEvent) => Promise<void>`    | Cover the current blade — hides it and opens a new blade on top. Closing the new blade reveals the hidden one.                   |
 
 #### Communication Methods (blade context required)
 
@@ -228,12 +229,24 @@ const { closeSelf, closeChildren } = useBlade();
 // Close the current blade
 await closeSelf();
 
-// Close all children before doing something
-await closeChildren();
+// Delete, move or reload the record an open child blade may be editing: pass the action to
+// closeChildren. It closes the children first, then runs the action. If a child has unsaved
+// changes and the user keeps it open, the action does not run.
+await closeChildren(async () => {
+  if (!(await showConfirmation(t("ITEMS.DELETE_CONFIRM")))) return;
+  await deleteItem();
+});
 </script>
 ```
 
-> **Tip:** `closeSelf()` returns `true` if a close guard prevented the blade from closing, and `false` if the blade was successfully closed. Always check the return value when you need to take action after closure.
+> **Tip:** Ask for confirmation inside the action, not before `closeChildren`: the user first decides about the
+> unsaved changes, then about the delete.
+
+> **Note:** `closeChildren()` without an action closes the children and rejects with `BladeCloseCancelledError` when
+> the user keeps one open, so `await closeChildren(); await deleteItem();` in existing code does not delete. vc-shell
+> treats that rejection as a cancel (no toast, no banner). It is a safety net for code written before
+> `closeChildren(action)`; in new code, pass the action. To react to the cancel, catch it and check
+> `isBladeCloseCancelled(err)`.
 
 ### Replacing the Current Blade
 

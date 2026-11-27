@@ -86,6 +86,7 @@ function renderBlade(config: StoryConfig, height: string) {
         setBladeError: () => {},
         clearBladeError: () => {},
         setBladeTitle: () => {},
+        _closeAll: async () => true,
         _restoreStack: () => {},
       } as never);
       provide(BladeMessagingKey, { callParent: async () => undefined, onParentCall: () => () => {} } as never);

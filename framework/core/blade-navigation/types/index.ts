@@ -258,6 +258,9 @@ export interface IBladeStack {
   /** Toggle a blade's maximized state */
   toggleMaximized(id: string): void;
 
+  /** Close every blade, the workspace included; false when one refused (then nothing closes). Used by the router guard */
+  _closeAll(): Promise<boolean>;
+
   /** Restore stack from descriptors (used by HistoryManager — bypasses guards) */
   _restoreStack(descriptors: BladeDescriptor[]): void;
 }

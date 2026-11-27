@@ -161,6 +161,7 @@ export function provideStoryStack(activeId: Ref<string>, onClose: (id: string) =
     setBladeError: () => {},
     clearBladeError: () => {},
     setBladeTitle: () => {},
+    _closeAll: async () => true,
     _restoreStack: () => {},
   } as never);
 }

@@ -74,7 +74,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO_ID: ${{ github.repository_id }}
           FORCE: ${{ inputs.force || 'false' }}
-        run: .github/scripts/ci-plan.sh
+        run: bash .github/scripts/ci-plan.sh
 
   static-checks:
     needs: plan

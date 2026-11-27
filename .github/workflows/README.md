@@ -14,7 +14,7 @@ Overview of every GitHub Actions workflow in this repository. Each workflow file
 
 Runs on `pull_request`, on push to `main` / `dev`, and on `workflow_dispatch`. Jobs:
 
-- **`plan`** — decides which jobs can be skipped (see [Skipping jobs that already passed](#skipping-jobs-that-already-passed)).
+- **`plan`** — decides which jobs can be skipped (see [Skipping jobs with nothing to check](#skipping-jobs-with-nothing-to-check)).
 - **`static-checks`** — lint (`--max-warnings=0`), Prettier, stylelint, typecheck, locales, circular deps (madge), layers, story argTypes. One step per check so the failing one is obvious.
 - **`unit-tests`** — framework vitest suite in three parallel shards (`--shard=N/3`).
 - **`test`** — reports one result for the three shards. It exists because `test` is a required check by name and a matrix job never reports a plain `test`.
@@ -27,19 +27,16 @@ The branch ruleset on `main` requires `static-checks`, `test` and `lint` (the la
 
 Shared setup (Node 22, corepack, `yarn install --immutable` with `node_modules` restored from cache) lives in `.github/actions/setup`. Only `static-checks` saves the cache, so parallel jobs do not race for the key.
 
-### Skipping jobs that already passed
+### Skipping jobs with nothing to check
 
-`plan` runs `.github/scripts/ci-plan.sh`. For each job it hashes the tracked files the job reads, plus the CI files themselves. A job that passes uploads an empty artifact named `ci-pass-<job>-<hash>` (`.github/actions/record-pass`). If an artifact with that name already exists, `plan` skips the job, but only when the run that uploaded it was `ci.yml` from this repository with the same `ci.yml`, `.github/actions` and `.github/scripts` as the current commit. Anyone who can push a branch can upload an artifact with any name from a workflow of their own; a marker counts only if the real CI code wrote it, and that code writes it only after the job passed.
+`plan` runs `.github/scripts/ci-plan.sh`:
 
-What that buys:
+- **Pull request.** A job is skipped when the pull request changes none of the files it reads, compared with the base: a pull request touching only a root `README.md` runs `static-checks` alone. `static-checks` always runs. Nothing outside the checkout is consulted.
+- **Push to `main` / `dev`.** A job is skipped when the merged pull request's head has the same tree as the pushed commit and a `pull_request` run of `ci.yml` on that head passed the job. Branches must be up to date before merging, so the tree is normally identical; if it is not, everything runs. This reads job conclusions, the same evidence the ruleset used to allow the merge, and nothing a job's own code can write.
 
-- **main after a merge.** Branches must be up to date before merging, so the squashed tree on `main` is the tree the pull request already tested, and the push run skips the checks. If `main` moved in between, the hash differs and everything runs.
-- **Pushes that change only what a job does not read.** A `*.docs.md` edit reruns `static-checks` and the Storybook jobs, not the unit tests. A root `README.md` edit reruns only `static-checks`.
-- **Re-running after a flaky failure.** "Re-run all jobs" skips the jobs that already passed. A matrix job is skipped only when all of its shards passed.
+Inputs per job are listed in `ci-plan.sh`, and so are the job names it looks up on `main`, shard counts included. When a job starts reading a file outside its inputs, add the file there. To skip nothing, run the workflow manually with **force**. If `plan` fails or the GitHub API does, every job runs: a broken plan never turns into skipped checks.
 
-Inputs per job are listed in `ci-plan.sh`. When a job starts reading a new file outside its inputs, add the file there, or a change to it will not rerun the job. To ignore the markers, run the workflow manually with **force**.
-
-If `plan` itself fails, every job runs: a broken plan never turns into skipped checks.
+A flaky failure in a pull request: use "Re-run failed jobs".
 
 ## Dependency review (`dependency-review.yml`)
 

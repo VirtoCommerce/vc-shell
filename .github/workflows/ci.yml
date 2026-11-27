@@ -3,10 +3,10 @@
 # push covers only main and dev. Trunk runs are never cancelled -- see the
 # concurrency block for why.
 #
-# A job is skipped when the files it reads have already passed it, in any run
-# of this repository: see .github/scripts/ci-plan.sh. That is what keeps main
-# from re-testing a merged pull request, and a docs-only push from re-running
-# the unit tests.
+# Jobs are skipped when there is nothing for them to check (see
+# .github/scripts/ci-plan.sh): on a pull request that changes none of a job's
+# inputs, and on main when the merged pull request already passed the job on
+# the identical tree.
 #
 # See .github/workflows/README.md for the full workflow overview.
 
@@ -20,7 +20,7 @@ on:
   workflow_dispatch:
     inputs:
       force:
-        description: "Run every job, even when its inputs already passed"
+        description: "Run every job, even ones plan would skip"
         type: boolean
         default: false
   pull_request:
@@ -55,24 +55,24 @@ jobs:
     permissions:
       contents: read
       actions: read
+      pull-requests: read
     outputs:
-      static-key: ${{ steps.plan.outputs.static-key }}
       static-pass: ${{ steps.plan.outputs.static-pass }}
-      unit-key: ${{ steps.plan.outputs.unit-key }}
       unit-pass: ${{ steps.plan.outputs.unit-pass }}
-      storybook-tests-key: ${{ steps.plan.outputs.storybook-tests-key }}
       storybook-tests-pass: ${{ steps.plan.outputs.storybook-tests-pass }}
-      storybook-build-key: ${{ steps.plan.outputs.storybook-build-key }}
       storybook-build-pass: ${{ steps.plan.outputs.storybook-build-pass }}
     steps:
+      # Depth 2: on a pull request the checkout is the test merge commit, and
+      # its first parent is the base the diff is taken against.
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
 
-      - name: Find jobs whose inputs already passed
+      - name: Find jobs that can be skipped
         id: plan
         env:
           GH_TOKEN: ${{ github.token }}
-          REPO_ID: ${{ github.repository_id }}
           FORCE: ${{ inputs.force || 'false' }}
         run: bash .github/scripts/ci-plan.sh
 
@@ -118,14 +118,9 @@ jobs:
       - name: Story argTypes check
         run: yarn check:story-argtypes
 
-      - name: Record pass
-        uses: ./.github/actions/record-pass
-        with:
-          name: ci-pass-static-${{ needs.plan.outputs.static-key }}
-
   # Framework unit tests in three parallel shards. A single run took ~6 min and
   # was the longest job; the suite is bound by module import, not by the tests,
-  # so it splits evenly. The shard count is also in ci-plan.sh (marker names).
+  # so it splits evenly. ci-plan.sh looks these jobs up by name, shard count included.
   unit-tests:
     needs: plan
     if: >-
@@ -149,11 +144,6 @@ jobs:
 
       - name: Run framework tests
         run: yarn workspace @vc-shell/framework run test --shard=${{ matrix.shard }}/3
-
-      - name: Record pass
-        uses: ./.github/actions/record-pass
-        with:
-          name: ci-pass-unit-${{ needs.plan.outputs.unit-key }}-${{ matrix.shard }}
 
   # `test` is a required check by name, and a matrix job reports one check per
   # shard ("unit-tests (1/3)"), never a plain "test". This job is that name.
@@ -212,6 +202,7 @@ jobs:
       fail-fast: false
       matrix:
         shard: [1, 2]
+    # ci-plan.sh looks these jobs up by name, shard count included.
     name: storybook-tests (${{ matrix.shard }}/2)
     steps:
       - name: Checkout
@@ -272,11 +263,6 @@ jobs:
         env:
           NODE_OPTIONS: "--max-old-space-size=6144"
 
-      - name: Record pass
-        uses: ./.github/actions/record-pass
-        with:
-          name: ci-pass-storybook-tests-${{ needs.plan.outputs.storybook-tests-key }}-${{ matrix.shard }}
-
   # PR-only validation: build the Storybook bundle so a broken story (bad
   # import, invalid syntax) fails review instead of only surfacing after merge
   # on the main-push deploy above. Build only — no Docker image, no ArgoCD
@@ -305,11 +291,6 @@ jobs:
         env:
           NODE_OPTIONS: "--max-old-space-size=6144"
 
-      - name: Record pass
-        uses: ./.github/actions/record-pass
-        with:
-          name: ci-pass-storybook-build-${{ needs.plan.outputs.storybook-build-key }}
-
   # One check for the whole workflow. It runs on every event, even when a
   # dependency fails, so it always reports a result -- unlike the jobs it
   # watches, which report nothing when their event or condition skips them.
@@ -325,7 +306,7 @@ jobs:
     steps:
       - name: Check results of required jobs
         env:
-          # A skipped job is a pass: its inputs already passed, storybook-build
+          # A skipped job is a pass: nothing to check (see plan), storybook-build
           # is pull-request only, and everything skips on a `release:` commit.
           # `plan` failing is not: the jobs then ran in full, but say so.
           NEEDS: ${{ toJSON(needs) }}

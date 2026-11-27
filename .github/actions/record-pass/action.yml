@@ -1,0 +1,23 @@
+name: Record a passed CI job
+description: Uploads an empty marker artifact that .github/scripts/ci-plan.sh looks up to skip the job next time.
+
+inputs:
+  name:
+    description: Marker name, `ci-pass-<job>-<key>[-<shard>]`.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Write marker
+      shell: bash
+      run: echo "${{ github.sha }}" > "$RUNNER_TEMP/ci-pass"
+
+    - name: Upload marker
+      uses: actions/upload-artifact@v7
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ runner.temp }}/ci-pass
+        retention-days: 30
+        # A re-run attempt of the same job writes the same name.
+        overwrite: true

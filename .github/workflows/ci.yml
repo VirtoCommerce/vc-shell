@@ -3,17 +3,26 @@
 # push covers only main and dev. Trunk runs are never cancelled -- see the
 # concurrency block for why.
 #
+# A job is skipped when the files it reads have already passed it, in any run
+# of this repository: see .github/scripts/ci-plan.sh. That is what keeps main
+# from re-testing a merged pull request, and a docs-only push from re-running
+# the unit tests.
+#
 # See .github/workflows/README.md for the full workflow overview.
 
 name: CI
 
 # No `paths:` filter. This workflow produces the checks branch protection
 # requires, and a filtered-out workflow never reports them, so the PR waits
-# forever on a check that will not start. 52 tracked files matched none of the
-# old patterns, including .storybook/*.ts, the root vitest configs, scripts/*.ts,
-# commitlint.config.ts, .husky/* and .gitattributes.
+# forever on a check that will not start. Skipping happens per job instead: a
+# job skipped by its `if:` still reports, and counts as passed.
 on:
   workflow_dispatch:
+    inputs:
+      force:
+        description: "Run every job, even when its inputs already passed"
+        type: boolean
+        default: false
   pull_request:
   # Trunk only. Topic branches are covered by pull_request; listing them here
   # too runs CI twice per commit, and the two runs land in different
@@ -33,33 +42,57 @@ concurrency:
   group: ci-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+# Every check job below uses the same condition shape:
+#   !cancelled()                      run even if `plan` failed ...
+#   needs.plan.outputs.<job>-pass     ... because then this output is empty and
+#                                     the job runs. A broken plan must never
+#                                     turn into skipped, i.e. passed, checks.
+#   !startsWith(... 'release:')       the release commit was tested as a PR.
 jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      static-key: ${{ steps.plan.outputs.static-key }}
+      static-pass: ${{ steps.plan.outputs.static-pass }}
+      unit-key: ${{ steps.plan.outputs.unit-key }}
+      unit-pass: ${{ steps.plan.outputs.unit-pass }}
+      storybook-tests-key: ${{ steps.plan.outputs.storybook-tests-key }}
+      storybook-tests-pass: ${{ steps.plan.outputs.storybook-tests-pass }}
+      storybook-build-key: ${{ steps.plan.outputs.storybook-build-key }}
+      storybook-build-pass: ${{ steps.plan.outputs.storybook-build-pass }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Find jobs whose inputs already passed
+        id: plan
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO_ID: ${{ github.repository_id }}
+          FORCE: ${{ inputs.force || 'false' }}
+        run: .github/scripts/ci-plan.sh
+
   static-checks:
-    if: ${{ !startsWith(github.event.head_commit.message, 'release:') }}
+    needs: plan
+    if: >-
+      ${{
+        !cancelled() && needs.plan.outputs.static-pass != 'true' &&
+        !startsWith(github.event.head_commit.message, 'release:')
+      }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Setup Node 22
-        uses: actions/setup-node@v7
+      - name: Setup
+        uses: ./.github/actions/setup
         with:
-          node-version: "22"
-          cache: "yarn"
-          cache-dependency-path: "yarn.lock"
-
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Install dependencies
-        run: yarn install --immutable
-
-      - name: Lockfile drift hint
-        if: failure()
-        run: |
-          echo "::error title=yarn.lock is out of sync with package manifests::The previous step failed with YN0028 because yarn.lock does not match the current workspace versions. Run 'yarn install' locally, commit the updated yarn.lock, and push. See docs/superpowers/specs/2026-04-20-fix-ci-lockfile-design.md for context."
-          exit 1
+          save-cache: "true"
 
       - name: Lint check
         run: yarn lint:check
@@ -85,45 +118,64 @@ jobs:
       - name: Story argTypes check
         run: yarn check:story-argtypes
 
-  test:
-    if: ${{ !startsWith(github.event.head_commit.message, 'release:') }}
+      - name: Record pass
+        uses: ./.github/actions/record-pass
+        with:
+          name: ci-pass-static-${{ needs.plan.outputs.static-key }}
+
+  # Framework unit tests in three parallel shards. A single run took ~6 min and
+  # was the longest job; the suite is bound by module import, not by the tests,
+  # so it splits evenly. The shard count is also in ci-plan.sh (marker names).
+  unit-tests:
+    needs: plan
+    if: >-
+      ${{
+        !cancelled() && needs.plan.outputs.unit-pass != 'true' &&
+        !startsWith(github.event.head_commit.message, 'release:')
+      }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+    name: unit-tests (${{ matrix.shard }}/3)
     steps:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Setup Node 22
-        uses: actions/setup-node@v7
-        with:
-          node-version: "22"
-          cache: "yarn"
-          cache-dependency-path: "yarn.lock"
-
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Install dependencies
-        run: yarn install --immutable
-
-      - name: Lockfile drift hint
-        if: failure()
-        run: |
-          echo "::error title=yarn.lock is out of sync with package manifests::The previous step failed with YN0028 because yarn.lock does not match the current workspace versions. Run 'yarn install' locally, commit the updated yarn.lock, and push. See docs/superpowers/specs/2026-04-20-fix-ci-lockfile-design.md for context."
-          exit 1
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Run framework tests
-        run: yarn workspace @vc-shell/framework run test
+        run: yarn workspace @vc-shell/framework run test --shard=${{ matrix.shard }}/3
+
+      - name: Record pass
+        uses: ./.github/actions/record-pass
+        with:
+          name: ci-pass-unit-${{ needs.plan.outputs.unit-key }}-${{ matrix.shard }}
+
+  # `test` is a required check by name, and a matrix job reports one check per
+  # shard ("unit-tests (1/3)"), never a plain "test". This job is that name.
+  test:
+    needs: unit-tests
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check unit test shards
+        env:
+          RESULT: ${{ needs.unit-tests.result }}
+        run: |
+          echo "unit-tests: $RESULT"
+          [ "$RESULT" = success ] || [ "$RESULT" = skipped ]
 
   # Deploy the hosted Storybook preview. storybook-ci.yml is a reusable
-  # (workflow_call) workflow with no push trigger of its own; the caller that
-  # used to invoke it lived in the removed main.yml. This job restores that
-  # invocation. It deliberately omits the `release:` skip guard the other jobs
-  # carry, so the release commit pushed to main also redeploys Storybook.
+  # (workflow_call) workflow with no push trigger of its own. It deliberately
+  # omits the `release:` skip guard and the plan, so every push to main,
+  # including the release commit, redeploys Storybook.
   storybook:
-    if: >-
-      github.event_name == 'push' &&
-      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feat/redesign')
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       contents: read
       packages: write
@@ -140,26 +192,33 @@ jobs:
   # `yarn build` first: the Storybook config resolves @vc-shell/config-generator,
   # a workspace package. The storybookTest plugin starts its own Storybook on
   # port 6011 (see vitest.config.storybook.ts).
+  #
+  # Two shards, one browser each. A single browser does not give memory back
+  # between story files, so one 95-file run dies of its own accumulation near
+  # the end ("Browser connection was closed", around file 84). Halving the
+  # files each browser sees keeps it under the ceiling. They used to run one
+  # after the other in a single job to build only once; as parallel jobs each
+  # builds (~1 min) and the pair finishes ~1.5 min sooner.
   storybook-tests:
-    if: ${{ !startsWith(github.event.head_commit.message, 'release:') }}
+    needs: plan
+    if: >-
+      ${{
+        !cancelled() && needs.plan.outputs.storybook-tests-pass != 'true' &&
+        !startsWith(github.event.head_commit.message, 'release:')
+      }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
+    name: storybook-tests (${{ matrix.shard }}/2)
     steps:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Setup Node 22
-        uses: actions/setup-node@v7
-        with:
-          node-version: "22"
-          cache: "yarn"
-          cache-dependency-path: "yarn.lock"
-
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Install dependencies
-        run: yarn install --immutable
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Build workspace packages
         run: yarn build
@@ -202,53 +261,41 @@ jobs:
           yarn playwright install-deps chromium
           || echo "::warning title=Chromium system deps::apt failed, running on the runner's preinstalled libraries"
 
-      # Two shards, sequentially, in one job. Not for speed — each invocation
-      # launches a fresh browser, and that is the point. The browser does not
-      # give memory back between story files, so a single 95-file run dies of
-      # its own accumulation near the end: "Browser connection was closed",
-      # around file 84, on whichever file happened to be in flight. Halving
-      # the concurrency only moved it to file 93. Halving the files each
-      # browser sees is what actually keeps it under the ceiling.
-      #
-      # Sharding by job would duplicate the build; sharding here does not.
       # The #359 failure on main reported "No space left on device". It has not
       # reproduced since — the runner shows ~87 GB free — so if it returns it
       # should be read off the log rather than theorised about a second time.
       - name: Show free disk
         run: df -h /
-      - name: Run story tests (shard 1/2)
-        run: yarn test:storybook --shard=1/2
+
+      - name: Run story tests
+        run: yarn test:storybook --shard=${{ matrix.shard }}/2
         env:
           NODE_OPTIONS: "--max-old-space-size=6144"
-      - name: Run story tests (shard 2/2)
-        run: yarn test:storybook --shard=2/2
-        env:
-          NODE_OPTIONS: "--max-old-space-size=6144"
+
+      - name: Record pass
+        uses: ./.github/actions/record-pass
+        with:
+          name: ci-pass-storybook-tests-${{ needs.plan.outputs.storybook-tests-key }}-${{ matrix.shard }}
 
   # PR-only validation: build the Storybook bundle so a broken story (bad
   # import, invalid syntax) fails review instead of only surfacing after merge
   # on the main-push deploy above. Build only — no Docker image, no ArgoCD
   # deploy. The full deploy path is the `storybook` job, gated to push.
   storybook-build:
-    if: github.event_name == 'pull_request'
+    needs: plan
+    if: >-
+      ${{
+        !cancelled() && github.event_name == 'pull_request' &&
+        needs.plan.outputs.storybook-build-pass != 'true'
+      }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Setup Node 22
-        uses: actions/setup-node@v7
-        with:
-          node-version: "22"
-          cache: "yarn"
-          cache-dependency-path: "yarn.lock"
-
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Install dependencies
-        run: yarn install --immutable
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Build framework
         run: yarn build
@@ -258,24 +305,29 @@ jobs:
         env:
           NODE_OPTIONS: "--max-old-space-size=6144"
 
-  # The single check branch protection should require. It runs on every event,
-  # even when a dependency fails, so it always reports a result -- unlike the
-  # jobs it watches, which report nothing when their event or condition skips
-  # them and leave a required check pending forever.
+      - name: Record pass
+        uses: ./.github/actions/record-pass
+        with:
+          name: ci-pass-storybook-build-${{ needs.plan.outputs.storybook-build-key }}
+
+  # One check for the whole workflow. It runs on every event, even when a
+  # dependency fails, so it always reports a result -- unlike the jobs it
+  # watches, which report nothing when their event or condition skips them.
   #
-  # Pointing protection here instead of at the individual jobs means adding,
-  # renaming or splitting a job needs no ruleset change. The cost is that the
-  # `needs` list below is now load-bearing: a job dropped from it stops gating.
+  # The `needs` list below is load-bearing: a job dropped from it stops gating
+  # here. The branch ruleset still requires `static-checks` and `test` by name;
+  # requiring `ci-gate` instead would make renaming or splitting a job free.
   ci-gate:
     if: always()
-    needs: [static-checks, test, storybook-tests, storybook-build]
+    needs: [plan, static-checks, test, storybook-tests, storybook-build]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Check results of required jobs
         env:
-          # A skipped job is a pass: storybook-build is pull-request only, and
-          # everything skips on a `release:` commit.
+          # A skipped job is a pass: its inputs already passed, storybook-build
+          # is pull-request only, and everything skips on a `release:` commit.
+          # `plan` failing is not: the jobs then ran in full, but say so.
           NEEDS: ${{ toJSON(needs) }}
         run: |
           echo "$NEEDS"

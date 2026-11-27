@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.14.2](https://github.com/VirtoCommerce/vc-shell/compare/v2.14.1...v2.14.2) (2026-11-27)
+
+### Bug Fixes
+
+- **mf:** share the framework's dashboard and charts entries (VCST-6926) (#426) ([d4cf34c](https://github.com/VirtoCommerce/vc-shell/commit/d4cf34c1be93eb9ffb2f61cfc396188bc9888dc9)), closes [#426](https://github.com/VirtoCommerce/vc-shell/issues/426) [#255](https://github.com/VirtoCommerce/vc-shell/issues/255)
+
 ## [2.14.1](https://github.com/VirtoCommerce/vc-shell/compare/v2.14.0...v2.14.1) (2026-11-26)
 
 ### Bug Fixes

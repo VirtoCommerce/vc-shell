@@ -22,6 +22,8 @@ export const SHARED_DEPS_BASE: Record<string, Omit<SharedDepConfig, "import">> =
   "@vc-shell/framework/ui": { singleton: true, requiredVersion: "^2.0.0" },
   "@vc-shell/framework/ai-agent": { singleton: true, requiredVersion: "^2.0.0" },
   "@vc-shell/framework/extensions": { singleton: true, requiredVersion: "^2.0.0" },
+  "@vc-shell/framework/dashboard": { singleton: true, requiredVersion: "^2.0.0" },
+  "@vc-shell/framework/charts": { singleton: true, requiredVersion: "^2.0.0" },
 };
 
 /**
@@ -40,6 +42,8 @@ export const SHARED_DEP_NAMES = Object.keys(SHARED_DEPS_BASE) as ReadonlyArray<
   | "@vc-shell/framework/ui"
   | "@vc-shell/framework/ai-agent"
   | "@vc-shell/framework/extensions"
+  | "@vc-shell/framework/dashboard"
+  | "@vc-shell/framework/charts"
 >;
 
 /**

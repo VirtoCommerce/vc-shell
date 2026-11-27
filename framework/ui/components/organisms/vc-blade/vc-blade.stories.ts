@@ -56,6 +56,7 @@ function provideMockBladeContext(overrides: Partial<BladeDescriptor> = {}, opts:
     setBladeError: () => {},
     clearBladeError: () => {},
     setBladeTitle: () => {},
+    _closeAll: async () => true,
     _restoreStack: () => {},
   } as any);
 

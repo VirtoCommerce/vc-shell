@@ -493,6 +493,18 @@ export function createBladeStack(
     r.value = !r.value;
   }
 
+  /**
+   * Close every blade, the workspace included, leaving no workspace open.
+   * @returns false when a blade refused to close; then nothing is closed.
+   */
+  async function _closeAll(): Promise<boolean> {
+    const bladesToClose = [..._blades.value];
+    if (await _checkGuards(bladesToClose)) return false;
+    _closeBladesCleanup(bladesToClose);
+    _blades.value = [];
+    return true;
+  }
+
   // ── Internal: Restore (used by HistoryManager) ────────────────────────────
 
   function _restoreStack(descriptors: BladeDescriptor[]): void {
@@ -526,6 +538,7 @@ export function createBladeStack(
     isMaximized,
     setMaximized,
     toggleMaximized,
+    _closeAll,
     _restoreStack,
   };
 }

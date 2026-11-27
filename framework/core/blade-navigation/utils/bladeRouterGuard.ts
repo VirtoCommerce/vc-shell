@@ -11,29 +11,6 @@ import { restoreFromUrl } from "@core/blade-navigation/utils/restoreFromUrl";
  */
 export type BladeGuardResult = undefined | false | { path: string; query?: Record<string, string>; replace: true };
 
-async function clearBladeStackRespectingGuards(bladeStack: IBladeStack): Promise<boolean> {
-  while (bladeStack.blades.value.length > 1) {
-    const bladesBeforeClose = bladeStack.blades.value;
-    const lastBlade = bladesBeforeClose[bladesBeforeClose.length - 1];
-    const prevented = await bladeStack.closeBlade(lastBlade.id);
-
-    if (prevented) {
-      return false;
-    }
-
-    // Defensive exit to avoid infinite loops if stack doesn't change unexpectedly.
-    if (bladeStack.blades.value.length >= bladesBeforeClose.length) {
-      return false;
-    }
-  }
-
-  if (bladeStack.blades.value.length > 0) {
-    bladeStack._restoreStack([]);
-  }
-
-  return true;
-}
-
 /**
  * Router guard that syncs URL navigation with the BladeStack.
  *
@@ -61,10 +38,7 @@ export async function bladeRouterGuard(
   if (!isBladeCatchAll) {
     // Clear any open blades so the page renders without stale blade state
     if (bladeStack.blades.value.length > 0) {
-      const wasCleared = await clearBladeStackRespectingGuards(bladeStack);
-      if (!wasCleared) {
-        return false;
-      }
+      if (!(await bladeStack._closeAll())) return false;
     }
     return undefined;
   }
@@ -79,10 +53,7 @@ export async function bladeRouterGuard(
     // No workspace in URL (e.g. navigating to "/") — clear the blade stack.
     // The app shell renders its own default view (e.g. dashboard) when the stack is empty.
     if (bladeStack.blades.value.length > 0) {
-      const wasCleared = await clearBladeStackRespectingGuards(bladeStack);
-      if (!wasCleared) {
-        return false;
-      }
+      if (!(await bladeStack._closeAll())) return false;
     }
     return undefined;
   }

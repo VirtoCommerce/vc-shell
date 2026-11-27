@@ -127,6 +127,7 @@ export function provideStoryBlade(name = "OrdersList") {
     setBladeError: () => {},
     clearBladeError: () => {},
     setBladeTitle: () => {},
+    _closeAll: async () => true,
     _restoreStack: () => {},
   } as never);
   provide(BladeMessagingKey, { callParent: async () => undefined, onParentCall: () => () => {} } as never);

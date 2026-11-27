@@ -176,6 +176,31 @@ describe("bladeRouterGuard", () => {
       expect(stack.blades.value).toHaveLength(2);
     });
 
+    it("asks the workspace itself before leaving it for a real route", async () => {
+      await stack.openWorkspace({ name: "Orders" });
+      const asked = vi.fn(async () => true);
+      stack.registerBeforeClose(stack.blades.value[0].id, asked);
+
+      const to = mockRoute({ path: "/", matched: [rootRecord, dashboardRecord] });
+      const result = await bladeRouterGuard(to, stack, registry);
+
+      expect(asked).toHaveBeenCalledOnce();
+      expect(result).toBe(false);
+      expect(stack.workspace.value?.name).toBe("Orders");
+    });
+
+    it("keeps the open child when the workspace refuses to close", async () => {
+      await stack.openWorkspace({ name: "Orders" });
+      await stack.openBlade({ name: "OrderDetails", param: "123" });
+      stack.registerBeforeClose(stack.blades.value[0].id, async () => true);
+
+      const to = mockRoute({ path: "/platform", matched: [rootRecord, platformRecord] });
+      const result = await bladeRouterGuard(to, stack, registry);
+
+      expect(result).toBe(false);
+      expect(stack.blades.value.map((b) => b.name)).toEqual(["Orders", "OrderDetails"]);
+    });
+
     it("skips blade restoration for Dashboard route", async () => {
       await stack.openWorkspace({ name: "Orders" });
       expect(stack.blades.value).toHaveLength(1);
@@ -251,6 +276,17 @@ describe("bladeRouterGuard", () => {
 
       expect(result).toBeUndefined();
       expect(stack.blades.value).toHaveLength(0);
+    });
+
+    it("asks the workspace itself before clearing the stack for the root catch-all", async () => {
+      await stack.openWorkspace({ name: "Orders" });
+      stack.registerBeforeClose(stack.blades.value[0].id, async () => true);
+
+      const to = mockRoute({ path: "/", matched: [rootRecord, catchAllRecord] });
+      const result = await bladeRouterGuard(to, stack, registry);
+
+      expect(result).toBe(false);
+      expect(stack.workspace.value?.name).toBe("Orders");
     });
 
     it("cancels navigation when beforeClose guard prevents clearing stack for root catch-all", async () => {

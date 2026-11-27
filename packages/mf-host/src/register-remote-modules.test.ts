@@ -1,4 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { createApp, type App } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 
@@ -20,6 +22,8 @@ vi.mock("@vc-shell/framework", () => ({
 vi.mock("@vc-shell/framework/ui", () => ({}));
 vi.mock("@vc-shell/framework/ai-agent", () => ({}));
 vi.mock("@vc-shell/framework/extensions", () => ({}));
+vi.mock("@vc-shell/framework/dashboard", () => ({}));
+vi.mock("@vc-shell/framework/charts", () => ({}));
 
 vi.mock("@vc-shell/framework/package.json", () => ({
   default: { version: "1.2.4" },
@@ -446,6 +450,20 @@ describe("registerRemoteModules", () => {
       expect(sharedKeys.sort()).toEqual(Object.keys(SHARED_DEPS_BASE).sort());
       expect(sharedKeys).toContain("@vc-shell/framework");
       expect(sharedKeys).toContain("@vc-shell/framework/ui");
+    });
+
+    // Module Federation matches `shared` by the exact import specifier: an entry left out is
+    // bundled into the remote as a second framework copy with its own provide/inject.
+    // Locale files are plain messages with no state, so a copy of them is harmless.
+    it("shares every JavaScript entry of @vc-shell/framework but the locale files", () => {
+      const pkg = JSON.parse(readFileSync(resolve(__dirname, "../../../framework/package.json"), "utf8"));
+      const entries = Object.entries(pkg.exports as Record<string, unknown>)
+        .filter(([, target]) => typeof target === "object" && target !== null && "import" in target)
+        .filter(([subpath]) => !subpath.startsWith("./locales/"))
+        .map(([subpath]) => (subpath === "." ? "@vc-shell/framework" : `@vc-shell/framework/${subpath.slice(2)}`));
+
+      expect(entries).toContain("@vc-shell/framework/dashboard");
+      expect(Object.keys(SHARED_DEPS_BASE)).toEqual(expect.arrayContaining(entries));
     });
   });
 

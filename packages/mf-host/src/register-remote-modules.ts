@@ -15,6 +15,8 @@ import * as Framework from "@vc-shell/framework";
 import * as FrameworkUi from "@vc-shell/framework/ui";
 import * as FrameworkAiAgent from "@vc-shell/framework/ai-agent";
 import * as FrameworkExtensions from "@vc-shell/framework/extensions";
+import * as FrameworkDashboard from "@vc-shell/framework/dashboard";
+import * as FrameworkCharts from "@vc-shell/framework/charts";
 
 // Read versions from package.json to avoid rollup warnings about missing named exports
 import vuePkg from "vue/package.json";
@@ -45,6 +47,8 @@ const RUNTIME_LIBS: Record<string, { lib: () => unknown; version: string }> = {
   "@vc-shell/framework/ui": { lib: () => FrameworkUi, version: frameworkPkg.version },
   "@vc-shell/framework/ai-agent": { lib: () => FrameworkAiAgent, version: frameworkPkg.version },
   "@vc-shell/framework/extensions": { lib: () => FrameworkExtensions, version: frameworkPkg.version },
+  "@vc-shell/framework/dashboard": { lib: () => FrameworkDashboard, version: frameworkPkg.version },
+  "@vc-shell/framework/charts": { lib: () => FrameworkCharts, version: frameworkPkg.version },
 };
 
 const SHARED_LIBS = Object.fromEntries(

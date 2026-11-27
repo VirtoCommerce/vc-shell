@@ -24,6 +24,23 @@ name: Publish
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+    # A preview only when a published package's code can differ. Safe as a
+    # workflow filter because no job here is a required check. Markdown is left
+    # out except in vc-app-skill, whose runtime/ is markdown: elsewhere it is
+    # at most a README, which a preview exists to test nothing about.
+    # Later patterns override earlier ones, so the re-include must come last.
+    paths:
+      - "framework/**"
+      - "cli/**"
+      - "configs/**"
+      - "packages/**"
+      - "package.json"
+      - "yarn.lock"
+      - ".yarnrc.yml"
+      - "scripts/**"
+      - ".github/workflows/publish.yml"
+      - "!**/*.md"
+      - "cli/vc-app-skill/**"
   workflow_dispatch:
     inputs:
       release-type:

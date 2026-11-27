@@ -2,34 +2,41 @@
 
 Overview of every GitHub Actions workflow in this repository. Each workflow file starts with a header comment that repeats the essentials below.
 
-| Workflow              | File                    | Trigger                                                                                                    | Purpose                                                                                                                                                                                       | Required for merge?                               |
-| --------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| **CI**                | `ci.yml`                | pull_request, push to main / dev / feat/\*\*                                                               | Static checks (lint, format, stylelint, typecheck, locales, circular, layers) and framework unit tests                                                                                        | Yes                                               |
-| **Dependency review** | `dependency-review.yml` | pull_request                                                                                               | Fails when the lockfile diff adds a dependency version with a high or critical advisory                                                                                                       | Yes                                               |
-| **PR Title**          | `pr-title.yml`          | pull_request (opened, edited, synchronize, reopened)                                                       | Validates the PR title is Conventional Commits format                                                                                                                                         | Yes                                               |
-| **Publish**           | `publish.yml`           | pull_request (opened, synchronize, reopened), workflow_dispatch                                            | One workflow for all npm publishing: `pr-<N>` previews on PR push and manual releases (version bump, CHANGELOG, tag, publish, GitHub Release). Both publish paths use OIDC — fully token-free | No (PR preview informational); manual for release |
-| **Storybook**         | `storybook-ci.yml`      | reusable (`workflow_call`) — invoked by `ci.yml` on push to main / feat/redesign; also `workflow_dispatch` | Builds Storybook + Docker image, pushes to ghcr.io, deploys to ArgoCD (`vc-shell-storybook.govirto.com`)                                                                                      | No                                                |
+| Workflow              | File                    | Trigger                                                                                    | Purpose                                                                                                                                                                                       | Required for merge?                               |
+| --------------------- | ----------------------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| **CI**                | `ci.yml`                | pull_request, push to main / dev, workflow_dispatch                                        | Static checks (lint, format, stylelint, typecheck, locales, circular, layers) and framework unit tests                                                                                        | Yes                                               |
+| **Dependency review** | `dependency-review.yml` | pull_request                                                                               | Fails when the lockfile diff adds a dependency version with a high or critical advisory                                                                                                       | Yes                                               |
+| **PR Title**          | `pr-title.yml`          | pull_request (opened, edited, synchronize, reopened)                                       | Validates the PR title is Conventional Commits format                                                                                                                                         | Yes                                               |
+| **Publish**           | `publish.yml`           | pull_request (opened, synchronize, reopened; package paths only), workflow_dispatch        | One workflow for all npm publishing: `pr-<N>` previews on PR push and manual releases (version bump, CHANGELOG, tag, publish, GitHub Release). Both publish paths use OIDC — fully token-free | No (PR preview informational); manual for release |
+| **Storybook**         | `storybook-ci.yml`      | reusable (`workflow_call`) — invoked by `ci.yml` on push to main; also `workflow_dispatch` | Builds Storybook + Docker image, pushes to ghcr.io, deploys to ArgoCD (`vc-shell-storybook.govirto.com`)                                                                                      | No                                                |
 
 ## CI (`ci.yml`)
 
-Splits pre-merge verification into two parallel jobs:
+Runs on `pull_request`, on push to `main` / `dev`, and on `workflow_dispatch`. Jobs:
 
-- **`static-checks`** — after `yarn install --immutable`, runs each of the checks below as a separate step so the failing one is obvious in the Actions UI:
-  - `yarn lint:check` (ESLint, `--max-warnings=0`)
-  - `yarn format:check` (Prettier)
-  - `yarn stylelint:check`
-  - `yarn typecheck` (framework `check:types`)
-  - `yarn check:locales`
-  - `yarn check:circular` (madge)
-  - `yarn check:layers`
-- **`test`** — `yarn workspace @vc-shell/framework run test` (vitest, single run).
+- **`plan`** — decides which jobs can be skipped (see [Skipping jobs with nothing to check](#skipping-jobs-with-nothing-to-check)).
+- **`static-checks`** — lint (`--max-warnings=0`), Prettier, stylelint, typecheck, locales, circular deps (madge), layers, story argTypes. One step per check so the failing one is obvious.
+- **`unit-tests`** — framework vitest suite in three parallel shards (`--shard=N/3`).
+- **`test`** — reports one result for the three shards. It exists because `test` is a required check by name and a matrix job never reports a plain `test`.
+- **`storybook-tests`** — every story rendered in Chromium with its play function and axe, in two parallel shards (one browser each; a single browser runs out of memory over the full set).
+- **`storybook-build`** — pull requests only: `yarn build` + `yarn build:storybook`, no image, no deploy.
+- **`storybook`** — push to `main` only: calls the reusable `storybook-ci.yml` to build, push the image, and deploy. It skips neither on `release:` commits nor through `plan`, so every push to `main` redeploys. See [Storybook CI](#storybook-ci-storybook-ciyml).
+- **`ci-gate`** — one result for the whole workflow; a skipped job counts as passed.
 
-`static-checks` and `test` are **required status checks** in the branch ruleset on `main`.
+The branch ruleset on `main` requires `static-checks`, `test` and `lint` (the last one comes from `pr-title.yml`).
 
-Two Storybook jobs also live here:
+Shared setup (Node 22, corepack, `yarn install --immutable` with `node_modules` restored from cache) lives in `.github/actions/setup`. Only `static-checks` saves the cache, so parallel jobs do not race for the key.
 
-- **`storybook`** — on push to `main` / `feat/redesign` only, calls the reusable `storybook-ci.yml` (with `secrets: inherit`) to build, push the image, and deploy to ArgoCD. It omits the `release:` skip guard the checks carry, so the release commit redeploys Storybook. See [Storybook CI](#storybook-ci-storybook-ciyml).
-- **`storybook-build`** — on `pull_request` only, builds the framework and the Storybook bundle (`yarn build` → `yarn build:storybook`) with no Docker push and no deploy. Catches broken stories in review instead of after merge.
+### Skipping jobs with nothing to check
+
+`plan` runs `.github/scripts/ci-plan.sh`:
+
+- **Pull request.** A job is skipped when the pull request changes none of the files it reads, compared with the base: a pull request touching only a root `README.md` runs `static-checks` alone. `static-checks` always runs. Nothing outside the checkout is consulted.
+- **Push to `main` / `dev`.** A job is skipped when the merged pull request's head has the same tree as the pushed commit and a `pull_request` run of `ci.yml` on that head passed the job. Branches must be up to date before merging, so the tree is normally identical; if it is not, everything runs. This reads job conclusions, the same evidence the ruleset used to allow the merge, and nothing a job's own code can write.
+
+Inputs per job are listed in `ci-plan.sh`, and so are the job names it looks up on `main`, shard counts included. When a job starts reading a file outside its inputs, add the file there. To skip nothing, run the workflow manually with **force**. If `plan` fails or the GitHub API does, every job runs: a broken plan never turns into skipped checks.
+
+A flaky failure in a pull request: use "Re-run failed jobs".
 
 ## Dependency review (`dependency-review.yml`)
 
@@ -50,6 +57,8 @@ A **single** workflow owns every npm publish. This is a hard requirement of npm 
 Jobs are gated by `github.event_name`:
 
 ### On `pull_request`
+
+Only when the push changes a published package: `framework/`, `cli/`, `configs/`, `packages/`, root manifests, `scripts/`, or this workflow. Markdown does not count, except under `cli/vc-app-skill/`, which publishes it.
 
 - **`pr-preview`** — PRs from a branch in this repository (not a fork). Computes a preview version `<current>-pr<N>.<sha7>`, syncs it to every workspace manifest via `scripts/compute-preview-version.ts`, runs `yarn publish:packages --tag pr-<N>` (OIDC), and updates a PR comment with install instructions.
 - **`notify-fork`** — Fork-origin PRs. Posts a one-time comment explaining previews aren't available for forks (GitHub doesn't expose secrets/OIDC to fork workflows).
@@ -86,7 +95,7 @@ npm install @vc-shell/framework@pr-<N>
 
 ## Storybook CI (`storybook-ci.yml`)
 
-A **reusable** workflow (`workflow_call` + `workflow_dispatch`) — it has no `push` trigger of its own. `ci.yml` invokes it (via a `uses: ./.github/workflows/storybook-ci.yml` job with `secrets: inherit`) on every push to `main` / `feat/redesign`, including the release commit. That caller job intentionally skips the `release:` guard the check/test jobs carry, so a release also redeploys Storybook. PRs do **not** invoke this workflow (it would push an image and deploy to the shared `vcmp-dev` env); they run the lighter build-only `storybook-build` job in `ci.yml` instead.
+A **reusable** workflow (`workflow_call` + `workflow_dispatch`) — it has no `push` trigger of its own. `ci.yml` invokes it (via a `uses: ./.github/workflows/storybook-ci.yml` job with `secrets: inherit`) on every push to `main`, including the release commit. That caller job intentionally skips the `release:` guard the check/test jobs carry, so a release also redeploys Storybook. PRs do **not** invoke this workflow (it would push an image and deploy to the shared `vcmp-dev` env); they run the lighter build-only `storybook-build` job in `ci.yml` instead.
 
 Two jobs:
 

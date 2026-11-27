@@ -29,7 +29,7 @@ Shared setup (Node 22, corepack, `yarn install --immutable` with `node_modules` 
 
 ### Skipping jobs that already passed
 
-`plan` runs `.github/scripts/ci-plan.sh`. For each job it hashes the tracked files the job reads, plus the CI files themselves. A job that passes uploads an empty artifact named `ci-pass-<job>-<hash>` (`.github/actions/record-pass`). If an artifact with that name already exists, uploaded by a run of this repository (fork runs do not count), `plan` skips the job.
+`plan` runs `.github/scripts/ci-plan.sh`. For each job it hashes the tracked files the job reads, plus the CI files themselves. A job that passes uploads an empty artifact named `ci-pass-<job>-<hash>` (`.github/actions/record-pass`). If an artifact with that name already exists, `plan` skips the job, but only when the run that uploaded it was `ci.yml` from this repository with the same `ci.yml`, `.github/actions` and `.github/scripts` as the current commit. Anyone who can push a branch can upload an artifact with any name from a workflow of their own; a marker counts only if the real CI code wrote it, and that code writes it only after the job passed.
 
 What that buys:
 

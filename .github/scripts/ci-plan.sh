@@ -24,15 +24,35 @@ files_hash() { git ls-files -s -- "$@" | git hash-object --stdin; }
 ci_files=$(files_hash .github/workflows/ci.yml .github/actions .github/scripts)
 key() { printf '%s\n%s\n' "$(files_hash "$@")" "$ci_files" | git hash-object --stdin | cut -c1-20; }
 
-# Only artifacts uploaded by a run of this repository count. A fork's pull
-# request runs its own copy of the workflows and could upload any name.
+# The CI code as git ids, in the shape the contents API reports them.
+ci_code="$(git rev-parse HEAD:.github/workflows/ci.yml) $(git rev-parse HEAD:.github/actions) $(git rev-parse HEAD:.github/scripts)"
+
+# Anyone who can push a branch can run any workflow there and upload an
+# artifact with any name, so a marker's name proves nothing by itself. It
+# counts only when the run that uploaded it was ci.yml with exactly this CI
+# code: that code uploads a marker after the job really passed, never before.
+# Fork runs are out too, their code is not ours to vouch for.
+trusted_run() { # run-id
+  local run sha code
+  run=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$1" \
+    --jq "select(.path == \".github/workflows/ci.yml\" and .head_repository.id == $REPO_ID) | .head_sha") || return 1
+  [ -n "$run" ] || return 1
+  code=$(gh api "repos/$GITHUB_REPOSITORY/contents/.github?ref=$run" --jq '
+    (map({(.name): .sha}) | add) as $d | "\($d.actions) \($d.scripts)"') || return 1
+  sha=$(gh api "repos/$GITHUB_REPOSITORY/contents/.github/workflows/ci.yml?ref=$run" --jq .sha) || return 1
+  [ "$sha $code" = "$ci_code" ]
+}
+
+# Any API failure means "run the job", never "skip it".
 passed() {
-  local name count
+  local name id ok
   for name in "$@"; do
-    count=$(gh api "repos/$GITHUB_REPOSITORY/actions/artifacts?name=$name&per_page=100" \
-      --jq "[.artifacts[] | select((.expired | not) and .workflow_run.head_repository_id == $REPO_ID)] | length") ||
-      count=0 # an API failure means "run the job", never "skip it"
-    [ "$count" -gt 0 ] || return 1
+    ok=false
+    for id in $(gh api "repos/$GITHUB_REPOSITORY/actions/artifacts?name=$name&per_page=20" \
+      --jq '.artifacts[] | select(.expired | not) | .workflow_run.id' 2>/dev/null); do
+      if trusted_run "$id"; then ok=true && break; fi
+    done
+    [ "$ok" = true ] || return 1
   done
 }
 

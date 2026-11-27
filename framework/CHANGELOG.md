@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.14.3](https://github.com/VirtoCommerce/vc-shell/compare/v2.14.2...v2.14.3) (2026-11-27)
+
+### Bug Fixes
+
+- **framework:** ask the workspace before leaving it for a page route (VCST-6926) (#427) ([08c8f9f](https://github.com/VirtoCommerce/vc-shell/commit/08c8f9ff0bbec00e318576df07d7cbf49b440672)), closes [#427](https://github.com/VirtoCommerce/vc-shell/issues/427)
+
 ## [2.14.2](https://github.com/VirtoCommerce/vc-shell/compare/v2.14.1...v2.14.2) (2026-11-27)
 
 **Note:** Version bump only for package @vc-shell/framework

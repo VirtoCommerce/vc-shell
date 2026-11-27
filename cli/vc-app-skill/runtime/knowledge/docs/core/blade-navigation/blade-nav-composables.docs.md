@@ -68,7 +68,7 @@ step to forget.
 | `closeChildren`       | `replace` | always                                 |
 
 Everything else — `updateBladeQuery`, `setBladeTitle`, `setBladeError`,
-`_restoreStack` — never writes the URL.
+`_closeAll`, `_restoreStack` — never writes the URL.
 
 The router guard restores the stack **from** the URL, so it suppresses the sink
 for the duration of the navigation (`RouterUrlSink.suppressWhile`): during
